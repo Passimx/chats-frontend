@@ -1,0 +1,49 @@
+#background{
+    background-image: url('/public/background.png');
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-position: top right;
+    background-size: 510px auto;
+    background-repeat: repeat;
+    background-color: #a1cff7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#menu{
+    --menu-width: 100%;
+    z-index: 11;
+    display: inline-block;
+    background-color: #062846;
+    overflow: hidden;
+    transition: 0.6s width ease;
+    unicode-bidi: isolate;
+    height: 100%;
+    position: absolute;
+    width: var(--menu-width);
+
+    @media(width > 600px){
+        position: initial;
+        --menu-width: 26.5rem;
+    }
+
+    @media(width > 926px){
+        --menu-width: 33vw;
+    }
+
+    @media(width > 1275px){
+        --menu-width: 25vw;
+    }
+}
+
+#chat{
+    z-index: 10;
+    width: 100%;
+    display: inline-block;
+
+    @media(width > 600px){
+        height: 100%;
+        width: calc(100% - var(--menu-width));
+    }
+}

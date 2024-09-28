@@ -1,0 +1,74 @@
+.chat_item{
+    height: 60px;
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.icon_avatar{
+    border-radius: 50%;
+    width: 50px;
+}
+
+/*noinspection CssInvalidPropertyValue*/
+.icon_public_or_private_chat{
+    -webkit-mask-image: radial-gradient(
+            circle at calc(40px) calc(10px),
+            transparent 10px,
+            #000 0
+    );
+
+}
+
+.look{
+    align-items: center;
+    justify-content: center;
+    display: grid;
+    width: 20px;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    margin-left: auto;
+    position: relative;
+    top: -53px; left: 0px;
+}
+
+.main_inf{
+    overflow: hidden;
+    padding-left: 5px;
+    padding-right: 15px;
+    display: grid;
+    grid-template-rows: 17px 33px;
+    color:white;
+}
+
+.title{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 300;
+}
+
+.message_block{
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr auto;
+}
+
+.message{
+    opacity: 0.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.count_message{
+    padding: 0 10px 0 10px;
+    height: 0.8cm;
+    border-radius: 0.4cm;
+    background-color: #0098EA;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}
