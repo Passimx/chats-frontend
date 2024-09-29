@@ -1,0 +1,112 @@
+#search{
+    height: 40px;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: auto 40px;
+    transition: 6s all ease;
+}
+
+#new_chats{
+    background-color: white;
+    z-index: 10;
+    border-radius: 10px;
+    box-shadow:0 0 10px 4px black;
+    cursor: pointer;
+    position: relative;
+    visibility: hidden;
+}
+
+#new_chat_icon{
+    cursor: pointer;
+    color: white;
+    font-size: 40px;
+    opacity: 0.7;
+}
+
+#new_chat_icon:hover{
+    opacity: 1;
+}
+
+.new_chats_item_logo{
+    font-size: 24px;
+}
+
+.new_chats_item{
+    padding: 8px;
+    display: grid;
+    grid-template-columns: auto 24px;
+    border-radius: 10px;
+}
+
+.new_chats_item:hover{
+    background-color: #a1cff7;
+}
+
+.new_chats_item_click{
+    align-items: center;
+    gap: 8px;
+    display: grid;
+    grid-template-columns: 24px auto;
+
+}
+
+.new_chats_item_info{
+    font-size: 24px;
+}
+
+
+.show_add{
+    animation: show_add .3s linear forwards;
+}
+
+.show_cancel{
+    animation: show_cancel .3s linear forwards;
+}
+
+.show_slowly{
+    animation: show_slowly 0.2s linear forwards;
+}
+
+.hide_slowly{
+    animation: hide_slowly 0.2s linear forwards;
+}
+
+
+@keyframes show_add{
+    from {
+        transform: rotate(135deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes show_cancel{
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(135deg);
+    }
+}
+
+@keyframes show_slowly{
+    from {
+        visibility: hidden;
+        opacity: 0;
+    }
+    to {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+@keyframes hide_slowly{
+    from {
+        visibility: visible;
+        opacity: 1;
+    }
+    to {
+        visibility: hidden;
+        opacity: 0;
+    }
+}

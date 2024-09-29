@@ -2,19 +2,6 @@
     height: 100%;
 }
 
-#search{
-    height: 40px;
-    padding: 8px;
-    display: grid;
-    grid-template-columns: auto 40px;
-}
-
-#new_chat_icon{
-    cursor: pointer;
-    color: white;
-    font-size: 40px;
- }
-
 #chats{
     overflow-y: scroll;
     height: calc(100% - 40px - 16px);

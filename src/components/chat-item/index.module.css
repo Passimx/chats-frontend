@@ -4,11 +4,15 @@
     grid-template-columns: 50px 1fr;
     cursor: pointer;
     overflow: hidden;
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 .icon_avatar{
     border-radius: 50%;
     width: 50px;
+    user-select: none;
+    pointer-events: none;
 }
 
 /*noinspection CssInvalidPropertyValue*/
@@ -31,6 +35,10 @@
     margin-left: auto;
     position: relative;
     top: -53px; left: 0px;
+}
+
+.look_svg{
+    font-size: 15px;
 }
 
 .main_inf{

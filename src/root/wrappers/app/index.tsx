@@ -5,7 +5,7 @@ import translationRU from '../../../../languages/ru/translation.json';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import moment from 'moment/min/moment-with-locales';
-import Chats from '../../../components/chats';
+import Chats from '../../../modules/chats';
 
 const resources = {
     en: {

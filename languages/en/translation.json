@@ -1,4 +1,8 @@
 {
   "search": "search",
-  "page_not_found": "Page not found"
+  "page_not_found": "Page not found",
+  "create_open_chat": "Open chat",
+  "create_shared_chat": "Shared chat",
+  "create_public_chat": "Usual chat",
+  "create_private_chat": "Private chat"
 }

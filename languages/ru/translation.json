@@ -1,4 +1,8 @@
 {
   "search": "поиск",
-  "page_not_found": "Страница не найдена"
+  "page_not_found": "Страница не найдена",
+  "create_open_chat": "Открытый чат",
+  "create_shared_chat": "Трансляционный чат",
+  "create_public_chat": "Обычный чат",
+  "create_private_chat": "Закрытый чат"
 }
