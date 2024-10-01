@@ -9,12 +9,15 @@ import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
 import useClickOutside from '../../common/hooks/use-click-outside.ts';
 import { useAppSelector } from '../../root/store';
 import { PropsType } from './props.type.ts';
+import Info from '../../components/info';
+import useSetPage from '../../root/store/app/hooks/use-set-page.ts';
 
 const Search: FC<PropsType> = ({ isLoading, onChange }) => {
     const { t } = useTranslation();
     const [input, setInput] = useState<string>();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const { aesKey } = useAppSelector((state) => state.user);
+    const setPage = useSetPage();
 
     const getVisibility = (visibilityClass: string, hiddenClass: string): string =>
         isVisible !== undefined ? (isVisible ? visibilityClass : hiddenClass) : '';
@@ -22,6 +25,11 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
     useEffect(() => {
         onChange(input);
     }, [input]);
+
+    const getChatInfo = (page: JSX.Element) => {
+        setIsVisible(false);
+        setPage(page);
+    };
 
     return (
         <div id={styles.search}>
@@ -41,7 +49,10 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
                         <AiOutlineGlobal className={styles.new_chats_item_logo} color="green" />
                         <div>{t('create_open_chat')}</div>
                     </div>
-                    <IoMdInformationCircleOutline className={styles.new_chats_item_info} />
+                    <IoMdInformationCircleOutline
+                        className={styles.new_chats_item_info}
+                        onClick={() => getChatInfo(<Info />)}
+                    />
                 </div>
                 {!aesKey && (
                     <>
@@ -50,21 +61,30 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
                                 <LiaEyeSolid className={styles.new_chats_item_logo} color="green" />
                                 <div>{t('create_shared_chat')}</div>
                             </div>
-                            <IoMdInformationCircleOutline className={styles.new_chats_item_info} />
+                            <IoMdInformationCircleOutline
+                                className={styles.new_chats_item_info}
+                                onClick={() => getChatInfo(<Info />)}
+                            />
                         </div>
                         <div className={styles.new_chats_item}>
                             <div className={styles.new_chats_item_click}>
                                 <RxLockOpen1 className={styles.new_chats_item_logo} color="green" />
                                 <div>{t('create_public_chat')}</div>
                             </div>
-                            <IoMdInformationCircleOutline className={styles.new_chats_item_info} />
+                            <IoMdInformationCircleOutline
+                                className={styles.new_chats_item_info}
+                                onClick={() => getChatInfo(<Info />)}
+                            />
                         </div>
                         <div className={styles.new_chats_item}>
                             <div className={styles.new_chats_item_click}>
                                 <RxLockClosed className={styles.new_chats_item_logo} color="red" />
                                 <div>{t('create_private_chat')}</div>
                             </div>
-                            <IoMdInformationCircleOutline className={styles.new_chats_item_info} />
+                            <IoMdInformationCircleOutline
+                                className={styles.new_chats_item_info}
+                                onClick={() => getChatInfo(<Info />)}
+                            />
                         </div>
                     </>
                 )}

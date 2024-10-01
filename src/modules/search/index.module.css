@@ -3,7 +3,7 @@
     padding: 8px;
     display: grid;
     grid-template-columns: auto 40px;
-    transition: 6s all ease;
+    transition: 0.3s all ease;
 }
 
 #new_chats{

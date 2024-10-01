@@ -1,5 +1,30 @@
+html{
+    --main-margin-left: 0px;
+    --scale-value: 1;
+    --menu-color: #062846;
+}
+
 #background{
     height: 100%;
+}
+
+#main{
+    background-color: var(--menu-color);
+    transform: scale(var(--scale-value));
+    transition-duration: 0.3s;
+    overflow: hidden;
+    position: absolute;
+    height:100%;
+    width: 100%;
+}
+
+#page{
+    position: absolute;
+    background-color: var(--menu-color);
+    height: 100%;
+    margin-left: calc(100% + var(--main-margin-left));
+    transition: all 0.3s;
+    width: 100%;
 }
 
 #chats{
