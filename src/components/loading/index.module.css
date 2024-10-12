@@ -1,0 +1,16 @@
+#background{
+    height: 100%;
+}
+
+.show{
+    height: 100%;
+    opacity: 1;
+    visibility: visible;
+}
+
+.hide{
+    position: absolute;
+    height: 0;
+    opacity: 0;
+    visibility: hidden;
+}

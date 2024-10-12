@@ -1,7 +1,7 @@
 interface request {
     headers?: { [key: string]: string | null };
     body?: object;
-    method?: string;
+    method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
     params?: object;
 }
 
@@ -13,13 +13,16 @@ export type IData<T> = {
 export const Envs = {
     chatsServiceUrl: 'http://localhost:7020/api',
     salt: 'SalT_For_ChAt',
+    chats: {
+        limit: 25,
+    },
 };
 
 export async function Api<T>(url: string, { headers, body, method, params }: request = {}): Promise<IData<T>> {
     const badResponse: IData<T> = { success: false, data: undefined };
 
     let query: string = '?';
-    if (params) for (const [key, value] of Object.entries(params)) if (key && value) query += `${key}=${value}`;
+    if (params) for (const [key, value] of Object.entries(params)) if (key && value) query += `${key}=${value}&`;
 
     const mainHeaders = {
         Connection: 'keep-alive',
@@ -39,6 +42,8 @@ export async function Api<T>(url: string, { headers, body, method, params }: req
             method,
             credentials: 'include',
         });
+        // todo
+        // заменить на первая фйифра 2
         if ([200, 201, 204].includes(result.status)) return (await result.json()) as IData<T>;
         return badResponse;
     } catch (e) {

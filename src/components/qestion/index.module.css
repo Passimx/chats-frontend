@@ -1,0 +1,69 @@
+.background{
+    width: 100%;
+    position: relative;
+}
+
+.question_block{
+    background-image: url('/question.png');
+    background-position: top right;
+    background-size: 200px auto;
+    background-repeat: repeat;
+    width: 100%;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    user-select: none;
+    /*pointer-events: none;*/
+}
+
+.question_logo{
+    font-size: 24px;
+    transform: rotate(45deg);
+}
+
+.answer{
+    overflow: hidden;
+    display: grid;
+    align-items: center;
+    height: 0;
+    padding-left: 40px;
+}
+
+.logo_show{
+    animation: show .3s ease forwards;
+}
+
+.logo_cancel{
+    animation: cancel .3s ease forwards;
+}
+
+.answer_hide{
+    transition: height .3s;
+    height: 0;
+}
+
+.answer_show{
+    transition: height 0.3s;
+    height: 140px;
+}
+
+@keyframes cancel {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(135deg);
+    }
+}
+
+@keyframes show {
+    from {
+        transform: rotate(135deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}

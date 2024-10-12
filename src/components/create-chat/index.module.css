@@ -1,0 +1,38 @@
+#background{
+    display: grid;
+    height: 100%;
+    grid-template-rows: 50px 1fr;
+    color: white;
+    align-content: start;
+    overflow-y: scroll;
+}
+
+.title_block{
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.title_icon{
+    font-size: 32px;
+}
+
+.title{
+    font-size: 30px;
+    font-weight: 700;
+}
+
+#form{
+    padding: 8px;
+    display: grid;
+    gap: 20px;
+    align-content: start;
+}
+
+.input{
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+}

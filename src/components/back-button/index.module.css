@@ -1,0 +1,14 @@
+#back{
+    display: flex;
+    height: 100%;
+    cursor: pointer;
+    color: white;
+    align-items: center;
+    border-bottom: 2px solid white;
+}
+
+#back_icon{
+    font-size: 30px;
+    color:white;
+    padding-left: 8px;
+}

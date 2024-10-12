@@ -1,0 +1,47 @@
+#background{
+    display: grid;
+    height: 100%;
+    grid-template-rows: 50px auto auto;
+    color: white;
+    align-content: start;
+    overflow-y: scroll;
+}
+
+.title_block{
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.title_icon{
+    font-size: 32px;
+}
+
+.title{
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.description{
+    width: calc(100% - 32px);
+    padding: 16px;
+}
+
+.questions{
+    display: grid;
+    gap: 8px;
+    height: 100%;
+    width: calc(100% - 16px);
+    align-content: start;
+}
+
+.questions::-webkit-scrollbar {
+    width: 8px;
+    background: none;
+}
+.questions::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 4px;
+}

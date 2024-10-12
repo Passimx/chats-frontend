@@ -1,26 +1,19 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { PropsType } from './types/props.type.ts';
-import styles from './index.module.css';
+import styles from './styles.module.css';
 import { MdOutlineCancel } from 'react-icons/md';
-import { useFormContext } from 'react-hook-form';
-import { FormType } from '../create-chat/types/form.type.ts';
+import { IoSearch } from 'react-icons/io5';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
-const Input: FC<Partial<PropsType>> = ({ placeholder, register, value = '' }) => {
+const SearchInput: FC<PropsType> = ({ onChange, placeholder, className, value = '', register, isLoading }) => {
     const [ownValue, setOwnValue] = useState<string>(value);
     const [isTexted, setIsTexted] = useState<boolean>(false);
-    const {
-        formState: { errors },
-    } = useFormContext<FormType>();
-    const fieldName = useMemo(() => {
-        return register?.name as keyof FormType;
-    }, []);
-    // const error = 'asd';
-    const error = useMemo(() => {
-        return errors[fieldName]?.message;
-    }, [errors[fieldName]]);
 
     useEffect(() => {
-        if (ownValue?.length > 0) setIsTexted(true);
+        if (ownValue?.length > 0) {
+            setIsTexted(true);
+            onChange(ownValue);
+        } else onChange(undefined);
     }, [ownValue]);
 
     const cancel = () => {
@@ -28,9 +21,16 @@ const Input: FC<Partial<PropsType>> = ({ placeholder, register, value = '' }) =>
     };
 
     return (
-        <div id={styles.background} className={`${error ? styles.error_border : ''}`}>
+        <div id={styles.background}>
+            <div id={styles.search_logos}>
+                {isLoading ? (
+                    <AiOutlineLoading3Quarters id={styles.loading_logo} className={styles.logo} />
+                ) : (
+                    <IoSearch id={isTexted ? styles.search_logo : ''} className={styles.logo} />
+                )}
+            </div>
             <input
-                className={styles.button}
+                className={`${styles.button} ${className ?? ''}`}
                 placeholder={placeholder}
                 value={ownValue}
                 {...register}
@@ -45,10 +45,8 @@ const Input: FC<Partial<PropsType>> = ({ placeholder, register, value = '' }) =>
                     />
                 )}
             </div>
-
-            {error && <div className={styles.error}>{error}</div>}
         </div>
     );
 };
 
-export default Input;
+export default SearchInput;

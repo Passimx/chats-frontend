@@ -3,6 +3,7 @@ import { EncryptChatItemType } from '../../types/chat/encrypt-chat-item.type.ts'
 import { ChatItemType } from '../../types/chat/chat-item.type.ts';
 import { ChatEnum } from '../../types/chat/chat.enum.ts';
 import { CryptoService } from '../../services/crypto.service.ts';
+import { CreateChatType } from '../../types/chat/create-chat.type.ts';
 
 export const getChats = async (title?: string, limit?: number, offset?: number): Promise<IData<ChatItemType[]>> => {
     const response = await Api<EncryptChatItemType[]>('/chats', { params: { title, limit, offset } });
@@ -31,4 +32,8 @@ export const getChats = async (title?: string, limit?: number, offset?: number):
     const chats: ChatItemType[] = await Promise.all(response.data.map((chat) => getChat(chat)));
 
     return { ...response, data: chats };
+};
+
+export const createChat = async (body: CreateChatType): Promise<IData<object>> => {
+    return Api('/chats', { method: 'POST', body });
 };

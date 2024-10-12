@@ -18,13 +18,24 @@ html{
     width: 100%;
 }
 
-#page{
+#page_block{
     position: absolute;
     background-color: var(--menu-color);
     height: 100%;
     margin-left: calc(100% + var(--main-margin-left));
     transition: all 0.3s;
     width: 100%;
+    /*background-color: white;*/
+}
+
+#page{
+    height: calc(100% - 60px);
+    overflow: hidden;
+}
+
+#page_button{
+    background-color: #0098EA;
+    height: 60px;
 }
 
 #chats{

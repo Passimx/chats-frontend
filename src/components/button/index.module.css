@@ -1,0 +1,38 @@
+.button{
+    border: none;
+    outline: none;
+    background-image:none;
+    background-color:transparent;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.16);
+    min-width: 140px;
+    height: 40px;
+    padding: 8px 16px 8px 12px;
+    width: 100%;
+    border-radius: 25px;
+    font-style: normal;
+    font-weight: 590;
+    font-size: 0.5cm;
+    line-height: 18px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+}
+
+.style_0{
+    color: #FFFFFF;
+    background-color: #0098EA;
+}
+
+.style_1{
+    color: black;
+    background-color: white;
+}
+
+.style_2{
+    color: white;
+    background-color: black;
+}
