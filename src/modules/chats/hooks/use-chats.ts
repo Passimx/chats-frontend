@@ -12,7 +12,7 @@ const useChats = (input?: string): [boolean, ChatItemType[], () => void] => {
     const key = useDebounced(input, 300);
     const { chats } = useAppSelector((state) => state.chats);
     const { setChats } = useAppAction();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [offset, setOffset] = useState<number>(0);
 
     const scrollBottom = () => {
@@ -20,14 +20,13 @@ const useChats = (input?: string): [boolean, ChatItemType[], () => void] => {
     };
 
     useEffect(() => {
+        setIsLoading(true);
         if (input === key) return setIsLoading(false);
 
         globalKey = input;
-        setIsLoading(true);
     }, [input]);
 
     useEffect(() => {
-        // setOffset(0);
         getChats(key, limit).then(({ success, data }) => {
             if (key !== globalKey) return;
             setIsLoading(false);

@@ -5,8 +5,10 @@ import styles from './index.module.css';
 const Loading: FC<PropsType> = ({ children, isLoading, loadingComponent }) => {
     return (
         <div id={styles.background}>
-            <div className={isLoading ? styles.show : styles.hide}>{loadingComponent}</div>
-            <div className={isLoading ? styles.hide : styles.show}>
+            <div id={styles.loading} className={!isLoading ? styles.hide : ''}>
+                {loadingComponent}
+            </div>
+            <div id={styles.content}>
                 <>{children}</>
             </div>
         </div>
