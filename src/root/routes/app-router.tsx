@@ -1,11 +1,20 @@
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 import { FC } from 'react';
 import AppWrapper from '../wrappers/app';
+import Chat from '../../pages/chat';
 
 const router = createBrowserRouter([
     {
-        element: <Outlet />,
+        element: (
+            <AppWrapper>
+                <Outlet />
+            </AppWrapper>
+        ),
         children: [
+            {
+                path: ':id',
+                element: <Chat />,
+            },
             {
                 path: '*',
                 element: <></>,
@@ -15,11 +24,7 @@ const router = createBrowserRouter([
 ]);
 
 const AppRouter: FC = () => {
-    return (
-        <AppWrapper>
-            <RouterProvider router={router} />
-        </AppWrapper>
-    );
+    return <RouterProvider router={router} />;
 };
 
 export default AppRouter;

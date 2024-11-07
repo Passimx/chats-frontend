@@ -4,8 +4,8 @@ import { ChatEnum } from './chat.enum.ts';
 export type EncryptChatItemType = {
     id: string;
     title: string;
+    sort: ChatEnum;
     encryptAesKey: string;
     lastMessage: null | EncryptMessageType;
-    sort: ChatEnum;
     countIsNotReadMessages: number;
 };

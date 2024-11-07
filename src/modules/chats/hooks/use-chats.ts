@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { getChats } from '../../../root/api/chats';
 import { useAppAction, useAppSelector } from '../../../root/store';
 import { ChatItemType } from '../../../root/types/chat/chat-item.type.ts';
-import { Envs } from '../../../root/api';
+import { Envs } from '../../../common/config/envs/envs.ts';
 
 let globalKey: string | undefined = undefined;
 

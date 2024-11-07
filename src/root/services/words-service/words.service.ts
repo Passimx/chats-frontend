@@ -1,7 +1,7 @@
 import { words } from './words.json';
 import { GenerateType } from './types/generate.type.ts';
 import md5 from 'md5';
-import { Envs } from '../../api';
+import { Envs } from '../../../common/config/envs/envs.ts';
 
 const wordsSet: Set<string> = new Set<string>(words);
 
