@@ -1,7 +1,55 @@
 #background{
-    background-color: #FFFFFF;
     width: 100%;
     height: 100%;
     display: grid;
     overflow: hidden;
+    grid-template-rows: auto 100px;
+}
+
+#main{
+    display: grid;
+    grid-template-rows: 60px auto;
+    grid-template-columns: 1fr;
+}
+
+#header{
+    display: grid;
+    grid-template-columns: 50px auto;
+    grid-template-rows: 40px;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--menu-color);
+    color: #FFFFFF;
+}
+
+#chat_inf{
+    display: grid;
+    grid-template-columns: 50px auto;
+    align-items: center;
+    gap: 10px;
+}
+
+
+#write_message{
+    width: 100%;
+    background-color: #a1cff7;
+    display: grid;
+    justify-content: center;
+}
+
+#write_message_block{
+    /*height: 100%;*/
+    /*background-color: #0098EA;*/
+    /*width: 8%;*/
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+}
+
+#back_icon{
+    font-size: 40px;
+    cursor: pointer;
+
+    @media(width > 926px){
+        display: none;
+    }
 }

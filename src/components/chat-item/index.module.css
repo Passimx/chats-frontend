@@ -8,39 +8,6 @@
     padding-right: 8px;
 }
 
-.icon_avatar{
-    border-radius: 50%;
-    width: 50px;
-    user-select: none;
-    pointer-events: none;
-}
-
-/*noinspection CssInvalidPropertyValue*/
-.icon_public_or_private_chat{
-    -webkit-mask-image: radial-gradient(
-            circle at calc(40px) calc(10px),
-            transparent 10px,
-            #000 0
-    );
-
-}
-
-.look{
-    align-items: center;
-    justify-content: center;
-    display: grid;
-    width: 20px;
-    border-radius: 50%;
-    aspect-ratio: 1/1;
-    margin-left: auto;
-    position: relative;
-    top: -53px; left: 0px;
-}
-
-.look_svg{
-    font-size: 15px;
-}
-
 .main_inf{
     overflow: hidden;
     padding-left: 5px;

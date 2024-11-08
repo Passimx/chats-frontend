@@ -14,7 +14,11 @@ const CreateChat: FC<PropsType> = ({ title: titleChatType, icon }) => {
     const methods = useForm<FormType>();
     const { handleSubmit, register } = methods;
     const { t } = useTranslation();
-    const regex = useMemo(() => /^(?!-)(?!.*-$)[\p{L}\p{N}-]*$/u, []);
+
+    const regex = useMemo(
+        () => /^(?![-. ])(?!.*[.-]{2})[A-Za-zА-Яа-яЁё\d]*(?:[ .-][A-Za-zА-Яа-яЁё\d]+)*[A-Za-zА-Яа-яЁё\d]$/,
+        [],
+    );
     const setPage = useSetPage();
 
     const onSubmit = async (data: FormType) => {

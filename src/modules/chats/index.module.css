@@ -25,7 +25,6 @@ html{
     margin-left: calc(100% + var(--main-margin-left));
     transition: all 0.3s;
     width: 100%;
-    /*background-color: white;*/
 }
 
 #page{
@@ -36,6 +35,7 @@ html{
 #page_button{
     background-color: #0098EA;
     height: 60px;
+    border-bottom: 2px solid white;
 }
 
 #chats{
