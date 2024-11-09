@@ -12,7 +12,10 @@ const useGetChat = (): [boolean, ChatItemType | null] => {
     useEffect(() => {
         if (!id) return;
 
-        if (state) return setChat(state);
+        if (state) {
+            setIsLoading(false);
+            return setChat(state);
+        }
         setIsLoading(true);
 
         getChatById(id).then((result) => {

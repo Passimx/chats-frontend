@@ -3,10 +3,11 @@
     height: 100%;
     display: grid;
     overflow: hidden;
-    grid-template-rows: auto 100px;
+    grid-template-rows: 60px 1fr;
 }
 
 #main{
+    overflow: hidden;
     display: grid;
     grid-template-rows: 60px auto;
     grid-template-columns: 1fr;
@@ -20,29 +21,10 @@
     padding: 10px;
     background-color: var(--menu-color);
     color: #FFFFFF;
-}
 
-#chat_inf{
-    display: grid;
-    grid-template-columns: 50px auto;
-    align-items: center;
-    gap: 10px;
-}
-
-
-#write_message{
-    width: 100%;
-    background-color: #a1cff7;
-    display: grid;
-    justify-content: center;
-}
-
-#write_message_block{
-    /*height: 100%;*/
-    /*background-color: #0098EA;*/
-    /*width: 8%;*/
-    /*margin-left: auto;*/
-    /*margin-right: auto;*/
+    @media(width > 926px){
+        grid-template-columns: 1fr
+    }
 }
 
 #back_icon{
@@ -52,4 +34,20 @@
     @media(width > 926px){
         display: none;
     }
+}
+
+#chat_inf{
+    display: grid;
+    grid-template-columns: 50px auto;
+    align-items: center;
+    gap: 10px;
+}
+
+#messages_block{
+    display: grid;
+    grid-template-rows: 1fr auto;
+}
+
+#messages{
+    overflow: hidden;
 }

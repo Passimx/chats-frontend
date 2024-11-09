@@ -1,7 +1,9 @@
 import styles from './index.module.css';
+import { useTranslation } from 'react-i18next';
 
 const LoadingChats = () => {
-    return <div id={styles.background}>Search Chats!</div>;
+    const { t } = useTranslation();
+    return <div id={styles.background}>{t('search_chats')}</div>;
 };
 
 export default LoadingChats;

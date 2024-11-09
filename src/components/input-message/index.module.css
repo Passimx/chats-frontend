@@ -1,0 +1,117 @@
+#write_message{
+    display: grid;
+    justify-content: center;
+    padding: 0 8px 8px 8px;
+    grid-template-columns: 1fr;
+
+    @media(width > 600px){
+        grid-template-columns:  584px;
+    }
+}
+
+#message_inputs{
+    min-height: 56px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+}
+
+#text_block{
+    position: relative;
+    border-radius: 15px;
+    min-height: 40px;
+    max-height: 16rem;
+    background-color: white;
+    overflow: hidden;
+    display: flex;
+    grid-template-columns: 40px auto;
+    padding-right: 10px;
+}
+
+.button_block{
+    display: grid;
+    align-items: end;
+}
+
+.button_emoji_background{
+    height: 40px;
+    width: 40px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.button_emoji{
+    font-size: 30px;
+    color: black;
+    opacity: 0.5;
+}
+
+#new_message_block{
+    overflow: auto;
+    min-height: 40px;
+    width: 100%;
+    padding: 8px;
+    background-color: #FFFFFF;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+    pointer-events: auto;
+    display: grid;
+    grid-template-rows: 1fr;
+    align-items: center;
+    cursor: pointer;
+}
+
+#new_message, #new_message *{
+    background-color: #FFFFFF !important;
+    outline: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    font-style: normal !important;
+    font-weight: 490 !important;
+    font-size: 15px !important;
+    line-height: 18px !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', Arial, Tahoma, Verdana, sans-serif !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    -webkit-tap-highlight-color: transparent !important;
+    white-space: pre-wrap !important;
+    -webkit-user-select: text !important;
+    user-select: text !important;
+    word-break: break-all !important;
+    color: black !important;
+}
+
+.button{
+    font-size: 53px;
+    color: var(--menu-color);
+}
+
+.button_background{
+    height: 56px;
+    width: 56px;
+    display: grid;
+    background-color: #FFFFFF;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+.placeholder_text{
+    opacity: 0.5;
+    position: absolute;
+    pointer-events: none;
+    unicode-bidi: plaintext;
+    text-align: initial;
+    line-height: 1.3125;
+    bottom: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+}

@@ -1,6 +1,8 @@
 {
   "search": "search",
+  "search_chats": "Search chats",
   "page_not_found": "Page not found",
+  "chats_enter_message": "Message",
   "create_open_chat": "Open chat",
   "create_shared_chat": "Shared chat",
   "create_public_chat": "Public chat",

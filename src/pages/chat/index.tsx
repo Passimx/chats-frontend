@@ -4,22 +4,29 @@ import styles from './index.module.css';
 import { MouseEvent, useEffect } from 'react';
 import ChatAvatar from '../../components/chat-avatar';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
+import InputMessage from '../../components/input-message';
 
 const Chat = () => {
     const navigate = useNavigate();
-
     const [isLoading, chat] = useGetChat();
 
     useEffect(() => {
-        if (!chat && !isLoading) navigate('/');
-    }, [isLoading, chat]);
+        if (!chat && !isLoading) {
+            document.documentElement.style.setProperty('--menu-margin', '0px');
+            navigate('/');
+        }
 
-    if (!chat) return <></>;
+        if (chat && !isLoading) {
+            document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
+        }
+    }, [isLoading, chat]);
 
     const back = (e: MouseEvent<unknown>) => {
         e.stopPropagation();
         document.documentElement.style.setProperty('--menu-margin', '0px');
     };
+
+    if (!chat) return <></>;
 
     return (
         <div id={styles.background}>
@@ -31,10 +38,10 @@ const Chat = () => {
                         <div>{chat.title}</div>
                     </div>
                 </div>
-                <div></div>
             </div>
-            <div id={styles.write_message}>
-                <div id={styles.write_message_block}>123</div>
+            <div id={styles.messages_block}>
+                <div id={styles.messages}></div>
+                <InputMessage />
             </div>
         </div>
     );
