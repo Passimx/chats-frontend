@@ -3,16 +3,16 @@ import { PropsType } from './types/props.type.ts';
 import styles from './index.module.css';
 import { BsEmojiSmile, BsFillArrowUpCircleFill } from 'react-icons/bs';
 import { useTranslation } from 'react-i18next';
+import useVisibility from '../../common/hooks/use-visibility.ts';
 
 const InputMessage: FC<PropsType> = () => {
     const { t } = useTranslation();
-    const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
+    const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>();
 
     const onInput = (event: FormEvent<HTMLDivElement>) => {
-        if (['', '\n'].includes(event.currentTarget.innerText)) {
-            event.currentTarget.innerText = '';
-            setIsShowPlaceholder(true);
-        } else setIsShowPlaceholder(false);
+        const isEmpty = ['', '\n'].includes(event.currentTarget.innerText);
+        if (isEmpty) event.currentTarget.innerText = '';
+        setIsShowPlaceholder(isEmpty);
     };
 
     return (
@@ -32,16 +32,17 @@ const InputMessage: FC<PropsType> = () => {
                             dir="auto"
                             onInput={onInput}
                         ></div>
-                        {isShowPlaceholder && (
-                            <span className={styles.placeholder_text} dir="auto">
-                                {t('chats_enter_message')}...
-                            </span>
-                        )}
+                        <div
+                            className={`${styles.placeholder_text} ${useVisibility(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)}`}
+                            dir="auto"
+                        >
+                            {t('chats_enter_message')}...
+                        </div>
                     </div>
                 </div>
                 <div className={styles.button_block}>
                     <div className={styles.button_background}>
-                        <BsFillArrowUpCircleFill className={styles.button} />
+                        <BsFillArrowUpCircleFill className={`${styles.button}`} />
                     </div>
                 </div>
             </div>

@@ -115,3 +115,35 @@
     max-width: 100%;
     transition: opacity 200ms ease-out, transform 200ms ease-out;
 }
+
+.show_slowly{
+    animation: show_slowly 0.2s linear forwards;
+}
+
+.hide_slowly{
+    animation: hide_slowly 0.2s linear forwards;
+}
+
+@keyframes show_slowly{
+    from {
+        visibility: hidden;
+        opacity: 0;
+        margin-left: 20px;
+    }
+    to {
+        visibility: visible;
+        opacity: 0.5;
+    }
+}
+
+@keyframes hide_slowly{
+    from {
+        visibility: visible;
+        opacity: 0.5;
+    }
+    to {
+        visibility: hidden;
+        opacity: 0;
+        margin-left: 20px;
+    }
+}
