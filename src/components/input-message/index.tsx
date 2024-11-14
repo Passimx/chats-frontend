@@ -4,15 +4,31 @@ import styles from './index.module.css';
 import { BsEmojiSmile, BsFillArrowUpCircleFill } from 'react-icons/bs';
 import { useTranslation } from 'react-i18next';
 import useVisibility from '../../common/hooks/use-visibility.ts';
+import { createMessage } from '../../root/api/chats';
+import { useParams } from 'react-router-dom';
 
 const InputMessage: FC<PropsType> = () => {
     const { t } = useTranslation();
     const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>();
+    const { id } = useParams();
+    const chatId = Number(id);
 
     const onInput = (event: FormEvent<HTMLDivElement>) => {
         const isEmpty = ['', '\n'].includes(event.currentTarget.innerText);
         if (isEmpty) event.currentTarget.innerText = '';
         setIsShowPlaceholder(isEmpty);
+    };
+
+    const sendMessage = async (): Promise<void> => {
+        const element = document.getElementById(styles.new_message);
+        if (!element) return;
+
+        const message = element.innerText;
+
+        element.innerText = '';
+        setIsShowPlaceholder(true);
+
+        await createMessage({ message, chatId });
     };
 
     return (
@@ -41,7 +57,7 @@ const InputMessage: FC<PropsType> = () => {
                     </div>
                 </div>
                 <div className={styles.button_block}>
-                    <div className={styles.button_background}>
+                    <div className={styles.button_background} onClick={sendMessage}>
                         <BsFillArrowUpCircleFill className={`${styles.button}`} />
                     </div>
                 </div>

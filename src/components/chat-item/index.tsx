@@ -1,10 +1,10 @@
 import { FC } from 'react';
 import styles from './index.module.css';
-import { ChatItemType } from '../../root/types/chat/chat-item.type.ts';
 import { useNavigate } from 'react-router-dom';
 import ChatAvatar from '../chat-avatar';
+import { ChatType } from '../../root/types/chat/chat.type.ts';
 
-const ChatItem: FC<{ chat: ChatItemType }> = ({ chat }) => {
+const ChatItem: FC<{ chat: ChatType }> = ({ chat }) => {
     const navigate = useNavigate();
 
     return (

@@ -1,13 +1,13 @@
 import { useLocation, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getChatById } from '../../../root/api/chats';
-import { ChatItemType } from '../../../root/types/chat/chat-item.type.ts';
+import { ChatType } from '../../../root/types/chat/chat.type.ts';
 
-const useGetChat = (): [boolean, ChatItemType | null] => {
-    const [chat, setChat] = useState<ChatItemType | null>(null);
+const useGetChat = (): [boolean, ChatType | null] => {
+    const [chat, setChat] = useState<ChatType | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const { id } = useParams();
-    const { state }: { state: ChatItemType | undefined } = useLocation();
+    const { state }: { state: ChatType | undefined } = useLocation();
 
     useEffect(() => {
         if (!id) return;

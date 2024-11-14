@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ChatItemType } from '../../types/chat/chat-item.type.ts';
+import { ChatType } from '../../types/chat/chat.type.ts';
 
 type ChatsType = {
-    chats: ChatItemType[];
+    chats: ChatType[];
 };
 
 const initialState: ChatsType = {
@@ -13,10 +13,10 @@ const ChatsSlice = createSlice({
     name: 'chats',
     initialState,
     reducers: {
-        setChats(state, { payload }: PayloadAction<ChatItemType[] | undefined>) {
+        setChats(state, { payload }: PayloadAction<ChatType[] | undefined>) {
             if (payload) state.chats = payload;
         },
-        addChat(state, { payload }: PayloadAction<ChatItemType>) {
+        addChat(state, { payload }: PayloadAction<ChatType>) {
             const chats = state.chats.filter((chat) => chat.id !== payload.id);
             state.chats = [payload, ...chats];
         },

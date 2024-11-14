@@ -1,12 +1,8 @@
 #write_message{
     display: grid;
-    justify-content: center;
-    padding: 0 8px 8px 8px;
     grid-template-columns: 1fr;
-
-    @media(width > 600px){
-        grid-template-columns:  584px;
-    }
+    justify-content: center;
+    padding: 8px 0 8px 0;
 }
 
 #message_inputs{
@@ -26,6 +22,9 @@
     display: flex;
     grid-template-columns: 40px auto;
     padding-right: 10px;
+
+    height: auto;
+    transition: height 10s ease;
 }
 
 .button_block{

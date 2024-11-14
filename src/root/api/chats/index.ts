@@ -1,9 +1,10 @@
 import { Api, IData } from '../index.ts';
-import { ChatItemType } from '../../types/chat/chat-item.type.ts';
 import { CreateChatType } from '../../types/chat/create-chat.type.ts';
+import { CreateMessageType } from '../../types/chat/create-message.type.ts';
+import { ChatType } from '../../types/chat/chat.type.ts';
 
-export const getChats = async (search?: string, limit?: number, offset?: number): Promise<IData<ChatItemType[]>> => {
-    return Api<ChatItemType[]>('/chats', { params: { search, limit, offset } });
+export const getChats = async (search?: string, limit?: number, offset?: number): Promise<IData<ChatType[]>> => {
+    return Api<ChatType[]>('/chats', { params: { search, limit, offset } });
     // const response = await Api<EncryptChatItemType[]>('/chats', { params: { search, limit, offset } });
     //
     // if (!response.success || !response.data?.length) return { ...response, data: [] };
@@ -36,6 +37,10 @@ export const createChat = async (body: CreateChatType): Promise<IData<object>> =
     return Api('/chats', { method: 'POST', body });
 };
 
-export const getChatById = async (id: string): Promise<IData<ChatItemType>> => {
-    return Api<ChatItemType>(`/chats/${id}`);
+export const getChatById = async (id: string): Promise<IData<ChatType>> => {
+    return Api<ChatType>(`/chats/${id}`);
+};
+
+export const createMessage = (body: CreateMessageType) => {
+    return Api('/messages', { body, method: 'POST' });
 };

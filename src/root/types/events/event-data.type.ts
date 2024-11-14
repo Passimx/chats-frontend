@@ -1,6 +1,6 @@
 import { EventsEnum } from './events.enum.ts';
 import { IData } from '../../api';
-import { ChatItemType } from '../chat/chat-item.type.ts';
+import { ChatType } from '../chat/chat.type.ts';
 
 type GetSocketId = {
     readonly event: EventsEnum.GET_SOCKET_ID;
@@ -9,7 +9,7 @@ type GetSocketId = {
 
 type CreateChat = {
     readonly event: EventsEnum.CREATE_CHAT;
-    readonly data: IData<ChatItemType>;
+    readonly data: IData<ChatType>;
 };
 
 type DataType = GetSocketId | CreateChat;
