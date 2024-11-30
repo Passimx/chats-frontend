@@ -14,6 +14,7 @@ const useChats = (input?: string): [boolean, ChatType[], () => void] => {
     const { setChats } = useAppAction();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [offset, setOffset] = useState<number>(0);
+    const isOnline = useAppSelector((state) => state.app.isOnline);
 
     const scrollBottom = () => {
         setOffset(offset + limit);
@@ -21,29 +22,21 @@ const useChats = (input?: string): [boolean, ChatType[], () => void] => {
 
     useEffect(() => {
         setIsLoading(true);
-        if (input === key) return setIsLoading(false);
-
+        if (input === key && isOnline && isLoading) return setIsLoading(false);
         globalKey = input;
-    }, [input]);
+    }, [input, isOnline]);
 
     useEffect(() => {
-        getChats(key, limit).then(({ success, data }) => {
+        if (!isOnline) return;
+
+        getChats(key, limit, offset).then(({ success, data }) => {
             if (key !== globalKey) return;
             setIsLoading(false);
 
-            if (success) setChats(data);
+            if (success && data) setChats(data);
             else setChats([]);
         });
-    }, [key]);
-
-    useEffect(() => {
-        if (!offset) return;
-
-        getChats(key, limit, offset).then(({ success, data }) => {
-            if (success && data) setChats(chats.concat(data));
-            else setChats([]);
-        });
-    }, [offset]);
+    }, [key, isOnline, offset]);
 
     return [isLoading, chats, scrollBottom];
 };

@@ -1,11 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ChatType } from '../../types/chat/chat.type.ts';
+import { StateType } from './types/state.type.ts';
 
-type ChatsType = {
-    chats: ChatType[];
-};
+const chatsMap: Map<number, ChatType> = new Map<number, ChatType>();
 
-const initialState: ChatsType = {
+const initialState: StateType = {
     chats: [],
 };
 
@@ -14,11 +13,16 @@ const ChatsSlice = createSlice({
     initialState,
     reducers: {
         setChats(state, { payload }: PayloadAction<ChatType[] | undefined>) {
-            if (payload) state.chats = payload;
+            if (!payload) return;
+
+            payload.forEach((chat) => chatsMap.set(chat.id, chat));
+
+            state.chats = Array.from(chatsMap.values());
         },
         addChat(state, { payload }: PayloadAction<ChatType>) {
-            const chats = state.chats.filter((chat) => chat.id !== payload.id);
-            state.chats = [payload, ...chats];
+            chatsMap.delete(payload.id);
+            chatsMap.set(payload.id, payload);
+            state.chats = Array.from(chatsMap.values()).reverse();
         },
     },
 });

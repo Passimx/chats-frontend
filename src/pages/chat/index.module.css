@@ -51,24 +51,21 @@
     justify-content: center;
     grid-template-rows: 1fr auto;
     grid-template-columns: 1fr;
-
-    @media(width > 600px){
-        grid-template-columns:  584px;
-    }
-
     overflow: hidden;
 }
 
 #messages_block{
     overflow: hidden;
     display: grid;
+    width: 100%;
 }
 
 #messages{
     overflow: scroll;
-    display: grid;
-    /*grid-template-rows: auto;*/
-    /*grid-template-columns: 1fr;*/
-    /*align-content: flex-end;*/
-    gap: 20px;
+    display: flex;
+    flex-direction: column-reverse;
+    gap:10px;
+
+    padding-left: calc(50% - 292px);
+    padding-right: calc(50% - 292px);
 }

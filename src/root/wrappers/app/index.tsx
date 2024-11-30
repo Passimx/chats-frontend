@@ -3,12 +3,19 @@ import styles from './index.module.css';
 import Chats from '../../../modules/chats';
 import { useSharedWorker } from './hooks/use-shared-worker.ts';
 import { useTranslation } from './hooks/use-translation.ts';
+import { useOnline } from './hooks/use-online.ts';
+import { useParams } from 'react-router-dom';
 
 const AppWrapper: FC<{ children: any }> = ({ children }) => {
     useSharedWorker();
+    useOnline();
     const isLoaded = useTranslation();
+    const { id } = useParams();
 
-    const hideMenu = () => document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
+    const hideMenu = () => {
+        if (!id) return;
+        document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
+    };
 
     if (isLoaded)
         return (

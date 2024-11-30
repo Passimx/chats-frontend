@@ -1,6 +1,7 @@
 import { JSX } from 'react';
 
-export type AppType = {
+export type StateType = {
+    isOnline: boolean;
     isOpenPage: boolean;
     page?: JSX.Element;
 };
