@@ -13,9 +13,12 @@ const useGetChat = (): [boolean, ChatType | null] => {
         if (!id) return;
 
         if (state) {
+            // чтобы при обновлении страницы обнулялся state и делался запрос на сервер
+            window.history.replaceState({}, '');
             setIsLoading(false);
             return setChat(state);
         }
+
         setIsLoading(true);
 
         getChatById(id).then((result) => {

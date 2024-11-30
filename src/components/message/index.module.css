@@ -3,3 +3,17 @@
     background-color: white;
     border-radius: 10px;
 }
+.system_background{
+    display: grid;
+    justify-content: center;
+}
+
+.system_message{
+    background: rgb(6, 40, 70, 0.5);
+    user-select: none;
+    word-break: break-word;
+    text-align: center;
+    color: white;
+    padding: 3px;
+    width: fit-content;
+}

@@ -2,7 +2,7 @@
     --input_search_height:40px;
     display: flex;
     background-color: white;
-    border-radius: 25px;
+    border-radius: 10px;
     align-items: center;
     height: var(--input_search_height);
 }

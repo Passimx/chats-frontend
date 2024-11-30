@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppType } from './types/app.type.ts';
+import { StateType } from './types/state.type.ts';
 
-const initialState: AppType = { isOpenPage: false };
+const initialState: StateType = { isOpenPage: false, isOnline: navigator.onLine };
 
 const AppSlice = createSlice({
     name: 'app',
@@ -16,6 +16,10 @@ const AppSlice = createSlice({
 
             if (page) document.documentElement.style.cssText = '--main-margin-left: -100%;--scale-value: 0.6;';
             else document.documentElement.style.cssText = '--main-margin-left: 0px;--scale-value: 1;';
+        },
+
+        setOnline(state, { payload }: PayloadAction<boolean>) {
+            state.isOnline = payload;
         },
     },
 });
