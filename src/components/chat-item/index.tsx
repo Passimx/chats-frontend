@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import styles from './index.module.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ChatAvatar from '../chat-avatar';
 import { ChatType } from '../../root/types/chat/chat.type.ts';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,7 @@ const ChatItem: FC<{ chat: ChatType }> = ({ chat }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [message, setMessage] = useState<string>();
+    const { id } = useParams();
 
     useEffect(() => {
         if (chat.type === ChatEnum.IS_OPEN) {
@@ -22,7 +23,7 @@ const ChatItem: FC<{ chat: ChatType }> = ({ chat }) => {
 
     return (
         <div
-            className={styles.chat_item}
+            className={`${styles.chat_item} ${id === `${chat.id}` && styles.selected_chat}`}
             onClick={() => {
                 document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
                 navigate(`${chat.id}`, { state: chat });

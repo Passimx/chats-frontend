@@ -65,7 +65,6 @@
     display: flex;
     flex-direction: column-reverse;
     gap:10px;
-
     padding-left: calc(50% - 292px);
     padding-right: calc(50% - 292px);
 }

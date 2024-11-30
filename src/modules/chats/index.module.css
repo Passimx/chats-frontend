@@ -52,8 +52,14 @@ html{
     border-radius: 4px;
 }
 
+.nav_background{
+    padding-bottom: 10px;
+}
+
 .nav_chats{
     color: white;
     padding: 10px;
-    background-color: #0a4375;
+    user-select: none;
+    background-color: #0c518d;
+    border-bottom: 2px solid var(--menu-color);;
 }
