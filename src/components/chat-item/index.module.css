@@ -25,11 +25,27 @@
     color:white;
 }
 
+.title_block{
+    display: grid;
+    grid-template-columns: 1fr auto;
+}
+
 .title{
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-weight: 300;
+}
+
+.time{
+    padding-left: 8px;
+    font-size: 13px;
+    color:#a6a6a6;
+    user-select: none;
+}
+
+.time::first-letter {
+    text-transform: uppercase;
 }
 
 .message_block{
