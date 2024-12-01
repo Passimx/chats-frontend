@@ -30,6 +30,7 @@ const Chats: FC = () => {
                         ) : (
                             <ChatsNotFound />
                         )}
+                        <div className={styles.nav_background}></div>
                         <VisibilityAction action={scrollBottom} size={chats.length} loading={isLoading} />
                     </Loading>
                 </div>

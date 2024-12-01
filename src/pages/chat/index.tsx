@@ -55,6 +55,7 @@ const Chat = () => {
                                     />
                                 ),
                         )}
+                        <div></div>
                     </div>
                 </div>
                 <InputMessage />
