@@ -1,6 +1,7 @@
 import { MessageTypeEnum } from './message-type.enum.ts';
+import { ChatType } from './chat.type.ts';
 
-export type OpenChatType = {
+export type MessageType = {
     id: string;
     chatId: number;
     message: string;
@@ -8,9 +9,10 @@ export type OpenChatType = {
     parentMessageId: number;
     type: MessageTypeEnum;
     createdAt: Date;
+    chat: ChatType;
 };
 
-export type EncryptChatType = {
+export type EncryptMessageType = {
     id: string;
     chatId: number;
     encryptMessage: string;

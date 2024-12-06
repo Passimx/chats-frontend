@@ -19,7 +19,9 @@ const Message: FC<PropsType> = ({ message, type, title, createdAt }) => {
         </div>
     ) : (
         <div className={`${styles.background}`}>
-            <div>{visibleMessage}</div>
+            <div>
+                <pre>{visibleMessage}</pre>
+            </div>
             <div className={styles.left_div2}>{time}</div>
         </div>
     );

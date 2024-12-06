@@ -11,8 +11,17 @@
 
 .selected_chat{
     transition: background .3s ease;
+
     @media(width > 600px){
         background-color: #0c518d;
+        border-radius: 10px;
+    }
+}
+
+.chat_item:hover:not(.selected_chat){
+    @media(width > 600px){
+        border-radius: 10px;
+        background-color: #08365e;
     }
 }
 
@@ -72,4 +81,34 @@
     justify-items: center;
     align-items: center;
     user-select: none;
+}
+
+.new_message{
+    animation: new_message .1s linear forwards;
+}
+
+@keyframes new_message{
+    from {
+        opacity: 0.4;
+        transform: scale(0.9);
+        height: 0;
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.hide_chat{
+    animation: hide_chat .1s linear forwards;
+}
+
+@keyframes hide_chat{
+    from {
+    }
+    to {
+        height: 0;
+        display: none;
+        padding: 0;
+    }
 }

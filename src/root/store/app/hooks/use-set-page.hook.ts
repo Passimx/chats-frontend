@@ -1,7 +1,7 @@
 import { useAppAction } from '../../index.ts';
 import { useCallback } from 'react';
 
-const useSetPage = () => {
+const useSetPageHook = () => {
     const { setPage } = useAppAction();
     const time = 300;
 
@@ -14,4 +14,4 @@ const useSetPage = () => {
     }, []);
 };
 
-export default useSetPage;
+export default useSetPageHook;

@@ -1,3 +1,5 @@
+const host = 'ws://localhost:7022';
+
 const ports = [];
 const sendMessage = (e) => ports.forEach((client) => client.postMessage(e));
 self.addEventListener('connect', async (event) => {
@@ -8,7 +10,7 @@ self.addEventListener('connect', async (event) => {
 
     if (ports.length > 1) return;
 
-    const socket = new WebSocket('ws://localhost:7022');
+    const socket = new WebSocket(host);
 
     socket.addEventListener('message', (event) => sendMessage(JSON.parse(event.data)));
 });

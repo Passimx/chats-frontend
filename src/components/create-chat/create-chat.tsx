@@ -8,7 +8,7 @@ import { FormType } from './types/form.type.ts';
 import Button from '../button';
 import { ButtonEnum } from '../button/types/button.enum.ts';
 import { createChat } from '../../root/api/chats';
-import useSetPage from '../../root/store/app/hooks/use-set-page.ts';
+import useSetPageHook from '../../root/store/app/hooks/use-set-page.hook.ts';
 
 const CreateChat: FC<PropsType> = ({ title: titleChatType, icon }) => {
     const methods = useForm<FormType>();
@@ -19,7 +19,7 @@ const CreateChat: FC<PropsType> = ({ title: titleChatType, icon }) => {
         () => /^(?![-. ])(?!.*[.-]{2})[A-Za-zА-Яа-яЁё\d]*(?:[ .-][A-Za-zА-Яа-яЁё\d]+)*[A-Za-zА-Яа-яЁё\d]$/,
         [],
     );
-    const setPage = useSetPage();
+    const setPage = useSetPageHook();
 
     const onSubmit = async (data: FormType) => {
         await createChat(data).finally(() => setPage(null));

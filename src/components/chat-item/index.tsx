@@ -7,8 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import moment from 'moment/min/moment-with-locales';
+import rawChats from '../../root/store/chats/chats.raw.ts';
 
-const ChatItem: FC<{ chat: ChatType }> = ({ chat }) => {
+const ChatItem: FC<{ chat: ChatType; isNew?: boolean }> = ({ chat, isNew = false }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [message, setMessage] = useState<string>();
@@ -26,7 +27,7 @@ const ChatItem: FC<{ chat: ChatType }> = ({ chat }) => {
         else setTime(moment(correctData).calendar());
     };
 
-    useEffect(() => {
+    const changeMessage = (chat: ChatType) => {
         if (chat.type === ChatEnum.IS_OPEN) {
             const message = chat.messages[0];
             const visibleMessage = message.type === MessageTypeEnum.IS_SYSTEM ? t('chat_is_create') : message.message;
@@ -34,11 +35,19 @@ const ChatItem: FC<{ chat: ChatType }> = ({ chat }) => {
             setMessage(visibleMessage);
             updateTime(message.createdAt);
         }
+    };
+
+    useEffect(() => {
+        changeMessage(chat);
     }, [chat]);
+
+    const chatFromRaw = rawChats.updatedChats.get(chat.id);
+
+    if (chatFromRaw && !isNew) return <div className={`${styles.chat_item} ${styles.hide_chat}`}></div>;
 
     return (
         <div
-            className={`${styles.chat_item} ${id === `${chat.id}` && styles.selected_chat}`}
+            className={`${styles.chat_item} ${id === `${chat.id}` && styles.selected_chat} ${isNew && styles.new_message}`}
             onClick={() => {
                 document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
                 navigate(`${chat.id}`, { state: chat });
