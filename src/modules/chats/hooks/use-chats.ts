@@ -7,11 +7,11 @@ import { ChatType } from '../../../root/types/chat/chat.type.ts';
 
 let globalKey: string | undefined = undefined;
 
-const useChats = (input?: string): [boolean, ChatType[], () => void] => {
+const useChats = (input?: string): [boolean, ChatType[], ChatType[], () => void] => {
     const limit = Envs.chats.limit;
     const key = useDebounced(input, 300);
-    const { chats } = useAppSelector((state) => state.chats);
-    const { setChats } = useAppAction();
+    const { chats, updatedChats } = useAppSelector((state) => state.chats);
+    const { setToEnd } = useAppAction();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [offset, setOffset] = useState<number>(0);
     const isOnline = useAppSelector((state) => state.app.isOnline);
@@ -33,12 +33,12 @@ const useChats = (input?: string): [boolean, ChatType[], () => void] => {
             if (key !== globalKey) return;
             setIsLoading(false);
 
-            if (success && data) setChats(data);
-            else setChats([]);
+            if (success && data) setToEnd(data);
+            else setToEnd([]);
         });
     }, [key, isOnline, offset]);
 
-    return [isLoading, chats, scrollBottom];
+    return [isLoading, chats, updatedChats, scrollBottom];
 };
 
 export default useChats;

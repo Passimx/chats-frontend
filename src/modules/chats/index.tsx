@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 const Chats: FC = () => {
     const { t } = useTranslation();
     const [input, setInput] = useState<string | undefined>(undefined);
-    const [isLoading, chats, scrollBottom] = useChats(input);
+    const [isLoading, chats, updatedChats, scrollBottom] = useChats(input);
     const page = useAppSelector((state) => state.app.page);
 
     return (
@@ -23,15 +23,16 @@ const Chats: FC = () => {
                 <Search isLoading={isLoading} onChange={setInput} />
                 <div id={styles.chats}>
                     <Loading isLoading={isLoading} loadingComponent={<LoadingChats />}>
-                        {}
                         <div className={styles.nav_chats}>{t('global_search')}</div>
+                        {updatedChats?.map((chat) => <ChatItem key={chat.id} chat={chat} isNew={true} />)}
+
                         {chats.length || isLoading ? (
                             chats.map((chat) => <ChatItem key={chat.id} chat={chat} />)
                         ) : (
                             <ChatsNotFound />
                         )}
-                        <div className={styles.nav_background}></div>
                         <VisibilityAction action={scrollBottom} size={chats.length} loading={isLoading} />
+                        <div className={styles.nav_padding}></div>
                     </Loading>
                 </div>
             </div>

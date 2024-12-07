@@ -1,5 +1,5 @@
 import { ChatEnum } from './chat.enum.ts';
-import { OpenChatType } from './message.type.ts';
+import { MessageType } from './message.type.ts';
 
 type ChatItemType = {
     id: number;
@@ -7,7 +7,7 @@ type ChatItemType = {
     type: ChatEnum.IS_OPEN;
     createdAt: Date;
     countMessages: number;
-    messages: OpenChatType[];
+    messages: MessageType[];
 };
 
 // type EncryptChatItemType = {

@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import styles from './index.module.css';
-import useSetPage from '../../root/store/app/hooks/use-set-page.ts';
+import useSetPageHook from '../../root/store/app/hooks/use-set-page.hook.ts';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import { useTranslation } from 'react-i18next';
 
 const BackButton: FC = () => {
-    const setPage = useSetPage();
+    const setPage = useSetPageHook();
     const { t } = useTranslation();
 
     return (

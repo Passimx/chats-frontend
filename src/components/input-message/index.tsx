@@ -1,4 +1,4 @@
-import { FC, FormEvent, useState } from 'react';
+import { FC, FormEvent, useEffect, useState } from 'react';
 import { PropsType } from './types/props.type.ts';
 import styles from './index.module.css';
 import { BsEmojiSmile, BsFillArrowUpCircleFill } from 'react-icons/bs';
@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 import useVisibility from '../../common/hooks/use-visibility.ts';
 import { createMessage } from '../../root/api/chats';
 import { useParams } from 'react-router-dom';
+
+import styles2 from '../../pages/chat/index.module.css';
 
 const InputMessage: FC<PropsType> = () => {
     const { t } = useTranslation();
@@ -20,16 +22,33 @@ const InputMessage: FC<PropsType> = () => {
     };
 
     const sendMessage = async (): Promise<void> => {
-        const element = document.getElementById(styles.new_message);
-        if (!element) return;
+        const element = document.getElementById(styles.new_message)!;
 
-        const message = element.innerText;
+        const message = element.innerText.replace(/^\n+|\n+$/g, '').trim();
 
         element.innerText = '';
         setIsShowPlaceholder(true);
 
+        const divElement = document.getElementById(styles2.messages)!;
+        divElement.scrollTop = 0;
+
         await createMessage({ message, chatId });
     };
+
+    useEffect(() => {
+        const element = document.getElementById(styles.new_message);
+
+        element?.addEventListener('keypress', (event) => {
+            if (event.code === 'Enter' && !event.shiftKey) event.preventDefault();
+        });
+
+        element?.addEventListener('keyup', async (event) => {
+            const element = document.getElementById(styles.new_message)!;
+            const isEmpty = element.innerText.replace(/^\n+|\n+$/g, '').trim() === '';
+
+            if (event.code === 'Enter' && !event.shiftKey && !isEmpty) await sendMessage();
+        });
+    }, []);
 
     return (
         <div id={styles.write_message}>

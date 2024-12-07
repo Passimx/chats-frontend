@@ -10,7 +10,7 @@ import useClickOutside from '../../common/hooks/use-click-outside.ts';
 import { useAppSelector } from '../../root/store';
 import { PropsType } from './props.type.ts';
 import OpenChatInfo from '../../components/chat-info/open-chat-info';
-import useSetPage from '../../root/store/app/hooks/use-set-page.ts';
+import useSetPageHook from '../../root/store/app/hooks/use-set-page.hook.ts';
 import SharedChatInfo from '../../components/chat-info/shared-chat-info';
 import PublicChatInfo from '../../components/chat-info/public-chat-info';
 import PrivateChatInfo from '../../components/chat-info/private-chat-info';
@@ -25,7 +25,7 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
     const [input, setInput] = useState<string>();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const { aesKey } = useAppSelector((state) => state.user);
-    const setPage = useSetPage();
+    const setPage = useSetPageHook();
 
     useEffect(() => {
         onChange(input);
