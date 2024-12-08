@@ -13,7 +13,7 @@ export const useSharedWorker = () => {
 
         // Обработка сообщений от SharedWorker
         sharedWorker.port.onmessage = ({ data: { event, data } }: EventDataType) => {
-            const x: any = document.getElementById('myAudio');
+            const audioSupport: any = document.getElementById('myAudio');
 
             switch (event) {
                 case EventsEnum.GET_SOCKET_ID:
@@ -26,7 +26,10 @@ export const useSharedWorker = () => {
                 case EventsEnum.CREATE_MESSAGE:
                     if (!data.success) break;
                     setToBegin({ ...data.data.chat, messages: [data.data] });
-                    x.play();
+
+                    audioSupport.pause();
+                    audioSupport.currentTime = 0;
+                    audioSupport.play();
                     break;
                 default:
                     break;

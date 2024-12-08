@@ -34,9 +34,9 @@ const ChatsSlice = createSlice({
             state.chats = Array.from(rawChats.chats.values()).reverse();
         },
 
-        remove(state, { payload }: PayloadAction<number>) {
-            rawChats.chats.delete(payload);
-            state.chats = Array.from(rawChats.chats.values()).reverse();
+        removeAll(state) {
+            rawChats.chats = new Map<number, ChatType>();
+            state.chats = [];
         },
 
         changeUpdatedChats(state, { payload }: PayloadAction<ChatType[]>) {

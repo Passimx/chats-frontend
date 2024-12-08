@@ -120,6 +120,12 @@
     transition: opacity 200ms ease-out, transform 200ms ease-out;
 }
 
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    _::-webkit-full-page-media, _:future, :root , .placeholder_text {
+        margin-top: 10px;
+    }
+}
+
 .show_slowly{
     animation: show_slowly 0.2s linear forwards;
 }

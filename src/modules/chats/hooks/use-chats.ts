@@ -11,7 +11,7 @@ const useChats = (input?: string): [boolean, ChatType[], ChatType[], () => void]
     const limit = Envs.chats.limit;
     const key = useDebounced(input, 300);
     const { chats, updatedChats } = useAppSelector((state) => state.chats);
-    const { setToEnd } = useAppAction();
+    const { setToEnd, removeAll } = useAppAction();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [offset, setOffset] = useState<number>(0);
     const isOnline = useAppSelector((state) => state.app.isOnline);
@@ -28,6 +28,7 @@ const useChats = (input?: string): [boolean, ChatType[], ChatType[], () => void]
 
     useEffect(() => {
         if (!isOnline) return;
+        if (!offset) return;
 
         getChats(key, limit, offset).then(({ success, data }) => {
             if (key !== globalKey) return;
@@ -36,7 +37,21 @@ const useChats = (input?: string): [boolean, ChatType[], ChatType[], () => void]
             if (success && data) setToEnd(data);
             else setToEnd([]);
         });
-    }, [key, isOnline, offset]);
+    }, [offset]);
+
+    useEffect(() => {
+        if (!isOnline) return;
+        setOffset(0);
+        removeAll();
+
+        getChats(key, limit, 0).then(({ success, data }) => {
+            if (key !== globalKey) return;
+            setIsLoading(false);
+
+            if (success && data) setToEnd(data);
+            else setToEnd([]);
+        });
+    }, [key, isOnline]);
 
     return [isLoading, chats, updatedChats, scrollBottom];
 };
