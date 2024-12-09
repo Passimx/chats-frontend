@@ -84,31 +84,25 @@
 }
 
 .new_message{
-    animation: new_message .1s linear forwards;
+    animation: new_message .2s linear forwards;
 }
 
 @keyframes new_message{
     from {
         opacity: 0.4;
-        transform: scale(0.9);
         height: 0;
+        padding: 0;
+        display: none;
+        transform: scale(0.8);
     }
     to {
         opacity: 1;
+        height: 55px;
         transform: scale(1);
     }
 }
 
 .hide_chat{
-    animation: hide_chat .1s linear forwards;
-}
-
-@keyframes hide_chat{
-    from {
-    }
-    to {
-        height: 0;
-        display: none;
-        padding: 0;
-    }
+    animation: new_message .2s linear forwards;
+    animation-direction: reverse;
 }

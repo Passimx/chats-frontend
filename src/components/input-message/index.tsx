@@ -1,12 +1,11 @@
 import { FC } from 'react';
-import { PropsType } from './types/props.type.ts';
 import styles from './index.module.css';
 import { BsEmojiSmile, BsFillArrowUpCircleFill } from 'react-icons/bs';
 import { useTranslation } from 'react-i18next';
 import useVisibility from '../../common/hooks/use-visibility.ts';
 import { useEnterHook } from './hooks/use-enter.hook.ts';
 
-const InputMessage: FC<PropsType> = () => {
+const InputMessage: FC = () => {
     const { t } = useTranslation();
     const [sendMessage, onInput, isShowPlaceholder] = useEnterHook();
 
