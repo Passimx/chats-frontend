@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import ChatItem from '../../components/chat-item';
 import styles from './index.module.css';
+import styles2 from '../../components/chat-item/index.module.css';
 import useChats from './hooks/use-chats.ts';
 import Search from '../search';
 import { useAppSelector } from '../../root/store';
@@ -14,7 +15,8 @@ import { useTranslation } from 'react-i18next';
 const Chats: FC = () => {
     const { t } = useTranslation();
     const [input, setInput] = useState<string | undefined>(undefined);
-    const [isLoading, chats, updatedChats, scrollBottom] = useChats(input);
+    const { chats, updatedChats } = useAppSelector((state) => state.chats);
+    const [isLoading, scrollBottom] = useChats(input);
     const page = useAppSelector((state) => state.app.page);
 
     return (
@@ -27,7 +29,13 @@ const Chats: FC = () => {
                         {updatedChats?.map((chat) => <ChatItem key={chat.id} chat={chat} isNew={true} />)}
 
                         {chats.length || isLoading ? (
-                            chats.map((chat) => <ChatItem key={chat.id} chat={chat} />)
+                            chats.map((chat, index) =>
+                                updatedChats.find((ch) => chat.id === ch.id) ? (
+                                    <div key={index} className={`${styles2.chat_item} ${styles2.hide_chat}`}></div>
+                                ) : (
+                                    <ChatItem key={chat.id} chat={chat} />
+                                ),
+                            )
                         ) : (
                             <ChatsNotFound />
                         )}
