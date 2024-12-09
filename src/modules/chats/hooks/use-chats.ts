@@ -3,14 +3,12 @@ import { useEffect, useState } from 'react';
 import { getChats } from '../../../root/api/chats';
 import { useAppAction, useAppSelector } from '../../../root/store';
 import { Envs } from '../../../common/config/envs/envs.ts';
-import { ChatType } from '../../../root/types/chat/chat.type.ts';
 
 let globalKey: string | undefined = undefined;
 
-const useChats = (input?: string): [boolean, ChatType[], ChatType[], () => void] => {
+const useChats = (input?: string): [boolean, () => void] => {
     const limit = Envs.chats.limit;
     const key = useDebounced(input, 300);
-    const { chats, updatedChats } = useAppSelector((state) => state.chats);
     const { setToEnd, removeAll } = useAppAction();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [offset, setOffset] = useState<number>(0);
@@ -53,7 +51,7 @@ const useChats = (input?: string): [boolean, ChatType[], ChatType[], () => void]
         });
     }, [key, isOnline]);
 
-    return [isLoading, chats, updatedChats, scrollBottom];
+    return [isLoading, scrollBottom];
 };
 
 export default useChats;

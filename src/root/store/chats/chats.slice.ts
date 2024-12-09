@@ -39,8 +39,15 @@ const ChatsSlice = createSlice({
             state.chats = [];
         },
 
-        changeUpdatedChats(state, { payload }: PayloadAction<ChatType[]>) {
-            state.updatedChats = payload;
+        addUpdatedChat(state, { payload }: PayloadAction<ChatType>) {
+            rawChats.updatedChats.delete(payload.id);
+            rawChats.updatedChats.set(payload.id, payload);
+            state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
+        },
+
+        removeUpdatedChats(state, { payload }: PayloadAction<ChatType>) {
+            rawChats.updatedChats.delete(payload.id);
+            state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
         },
     },
 });
