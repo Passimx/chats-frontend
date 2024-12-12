@@ -5,7 +5,7 @@ import { MessageType } from '../chat/message.type.ts';
 
 type GetSocketId = {
     readonly event: EventsEnum.GET_SOCKET_ID;
-    readonly data: string;
+    readonly data: string | undefined;
 };
 
 type CreateChat = {
@@ -18,7 +18,17 @@ type CreateMessage = {
     readonly data: IData<MessageType>;
 };
 
-type DataType = GetSocketId | CreateChat | CreateMessage;
+type CloseSocket = {
+    readonly event: EventsEnum.CLOSE_SOCKET;
+    readonly data: unknown;
+};
+
+type Error = {
+    readonly event: EventsEnum.ERROR;
+    readonly data: string;
+};
+
+type DataType = GetSocketId | CreateChat | CreateMessage | CloseSocket | Error;
 
 export type EventDataType = {
     data: DataType;

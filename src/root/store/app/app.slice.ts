@@ -21,6 +21,14 @@ const AppSlice = createSlice({
         setOnline(state, { payload }: PayloadAction<boolean>) {
             state.isOnline = payload;
         },
+
+        setSocketId(state, { payload }: PayloadAction<string | undefined>) {
+            state.socketId = payload;
+        },
+
+        setIsListening(state, { payload }: PayloadAction<boolean>) {
+            state.isListening = payload;
+        },
     },
 });
 

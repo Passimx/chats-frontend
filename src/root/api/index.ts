@@ -26,7 +26,7 @@ export async function Api<T>(url: string, { headers, body, method, params }: req
         'Access-Control-Allow-METHODS': 'GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH',
     };
 
-    if (Envs.socketId.length) mainHeaders['Websocket-key'] = Envs.socketId;
+    if (Envs.socketId?.length) mainHeaders['socket_id'] = Envs.socketId;
 
     try {
         const result = await fetch(`${Envs.chatsServiceUrl}${url}${query}`, {
@@ -38,9 +38,7 @@ export async function Api<T>(url: string, { headers, body, method, params }: req
             method,
             credentials: 'include',
         });
-        // todo
-        // заменить на первая фйифра 2
-        if ([200, 201, 204].includes(result.status)) return (await result.json()) as IData<T>;
+        if (result.status.toString()[0] === '2') return (await result.json()) as IData<T>;
     } catch (e) {
         console.log(e);
     }

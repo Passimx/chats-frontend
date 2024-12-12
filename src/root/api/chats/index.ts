@@ -50,3 +50,7 @@ export const getChatById = async (id: string): Promise<IData<ChatType>> => {
 export const createMessage = (body: CreateMessageType) => {
     return Api('/messages', { body, method: 'POST' });
 };
+
+export const listenChats = (favoriteChatIds: number[]) => {
+    return Api('/chats/join', { method: 'POST', body: { favoriteChatIds } });
+};
