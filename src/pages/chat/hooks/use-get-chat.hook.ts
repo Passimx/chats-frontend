@@ -1,12 +1,13 @@
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getChatById } from '../../../root/api/chats';
 import { ChatType } from '../../../root/types/chat/chat.type.ts';
 
-const useGetChat = (): [boolean, ChatType | null] => {
+const useGetChat = (): [ChatType | null] => {
     const [chat, setChat] = useState<ChatType | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const { id } = useParams();
+    const navigate = useNavigate();
     const { state }: { state: ChatType | undefined } = useLocation();
 
     useEffect(() => {
@@ -29,7 +30,18 @@ const useGetChat = (): [boolean, ChatType | null] => {
         });
     }, [id]);
 
-    return [isLoading, chat];
+    useEffect(() => {
+        if (!chat && !isLoading) {
+            document.documentElement.style.setProperty('--menu-margin', '0px');
+            navigate('/');
+        }
+
+        if (chat && !isLoading) {
+            document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
+        }
+    }, [isLoading, chat]);
+
+    return [chat];
 };
 
 export default useGetChat;

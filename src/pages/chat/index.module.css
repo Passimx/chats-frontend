@@ -3,16 +3,16 @@
     height: 100%;
     display: grid;
     overflow: hidden;
-    grid-template-rows: 56px 1fr;
+    grid-template-rows: auto 1fr;
 }
 
 #main{
     overflow: hidden;
     display: grid;
-    grid-template-rows: 56px auto;
+    grid-template-rows: 56px;
     grid-template-columns: 1fr;
-    box-shadow: 0 -5px 5px 5px black;
     z-index: 1;
+    box-shadow: 0 -5px 5px 5px black;
 }
 
 #header{
@@ -23,6 +23,7 @@
     padding: 8px;
     background-color: var(--menu-color);
     color: #FFFFFF;
+    box-shadow: 0 -5px 5px 5px black;
 
     @media(width > 926px){
         grid-template-columns: 1fr
@@ -69,4 +70,38 @@
     padding-left: calc(50% - 292px);
     scroll-behavior: smooth;
     padding-right: calc(50% - 292px);
+}
+
+.add_chat_block{
+    display: grid;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.5cm;
+    background-color: rgb(255, 255, 255, 60%);
+    backdrop-filter: blur(1px);
+    color: black;
+    font-weight: 600;
+    z-index: 2;
+    grid-template-columns: auto auto;
+    gap: 5px;
+}
+
+#new_chat_icon{
+    font-size: 0.8cm;
+}
+
+.chat_added{
+    animation: hide_slowly .2s linear forwards;
+}
+
+@keyframes hide_slowly{
+    from {
+        opacity: 1;
+        height: auto;
+    }
+    to {
+        opacity: 0;
+        display: none;
+    }
 }

@@ -3,8 +3,8 @@ import moment from 'moment/min/moment-with-locales';
 
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import translationEN from '../../../../../languages/en/translation.json';
-import translationRU from '../../../../../languages/ru/translation.json';
+import translationEN from '../../../../../public/languages/en/translation.json';
+import translationRU from '../../../../../public/languages/ru/translation.json';
 
 const resources = {
     en: {

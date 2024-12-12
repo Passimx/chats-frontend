@@ -17,26 +17,10 @@ const ChatsSlice = createSlice({
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
         },
 
-        setToEnd(state, { payload }: PayloadAction<ChatType[] | undefined>) {
-            if (!payload) return;
-            const newMap = new Map<number, ChatType>();
-
-            [...payload].reverse().forEach((chat) => newMap.set(chat.id, chat));
-
-            rawChats.chats = new Map<number, ChatType>([...newMap, ...rawChats.chats]);
-
-            state.chats = [...Array.from(rawChats.chats.values())].reverse();
-        },
-
         setToBegin(state, { payload }: PayloadAction<ChatType>) {
             rawChats.chats.delete(payload.id);
             rawChats.chats.set(payload.id, payload);
             state.chats = Array.from(rawChats.chats.values()).reverse();
-        },
-
-        removeAll(state) {
-            rawChats.chats = new Map<number, ChatType>();
-            state.chats = [];
         },
 
         addUpdatedChat(state, { payload }: PayloadAction<ChatType>) {
@@ -49,6 +33,20 @@ const ChatsSlice = createSlice({
             rawChats.updatedChats.delete(payload.id);
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
         },
+        // setToEnd(state, { payload }: PayloadAction<ChatType[] | undefined>) {
+        //     if (!payload) return;
+        //     const newMap = new Map<number, ChatType>();
+        //
+        //     [...payload].reverse().forEach((chat) => newMap.set(chat.id, chat));
+        //
+        //     rawChats.chats = new Map<number, ChatType>([...newMap, ...rawChats.chats]);
+        //
+        //     state.chats = [...Array.from(rawChats.chats.values())].reverse();
+        // },
+        // removeAll(state) {
+        //     rawChats.chats = new Map<number, ChatType>();
+        //     state.chats = [];
+        // },
     },
 });
 

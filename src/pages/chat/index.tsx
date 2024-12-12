@@ -1,26 +1,33 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
-import { useNavigate } from 'react-router-dom';
 import styles from './index.module.css';
-import { MouseEvent, useEffect } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import ChatAvatar from '../../components/chat-avatar';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import InputMessage from '../../components/input-message';
 import Message from '../../components/message';
+import { useTranslation } from 'react-i18next';
+import rawChats from '../../root/store/chats/chats.raw.ts';
+import { useUpdateChat } from '../../root/store/app/hooks/use-update-chat.hook.ts';
+import { IoIosAddCircleOutline } from 'react-icons/io';
 
 const Chat = () => {
-    const navigate = useNavigate();
-    const [isLoading, chat] = useGetChat();
+    const { t } = useTranslation();
+    const [chat] = useGetChat();
+    const [chatIsExist, setChatIsExist] = useState<boolean>();
+    const [chatAdded, setChatAdded] = useState<boolean>();
+    const setToBegin = useUpdateChat();
 
     useEffect(() => {
-        if (!chat && !isLoading) {
-            document.documentElement.style.setProperty('--menu-margin', '0px');
-            navigate('/');
-        }
+        if (!chat) return;
+        setChatAdded(false);
+        setChatIsExist(!!rawChats.chats.get(chat.id));
+    }, [chat]);
 
-        if (chat && !isLoading) {
-            document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
-        }
-    }, [isLoading, chat]);
+    const addChat = () => {
+        if (!chat) return;
+        setChatAdded(true);
+        setToBegin(chat);
+    };
 
     const back = (e: MouseEvent<unknown>) => {
         e.stopPropagation();
@@ -39,6 +46,12 @@ const Chat = () => {
                         <div>{chat.title}</div>
                     </div>
                 </div>
+                {!chatIsExist && (
+                    <div className={`${styles.add_chat_block} ${chatAdded && styles.chat_added}`} onClick={addChat}>
+                        <IoIosAddCircleOutline id={styles.new_chat_icon} />
+                        {t('add_chat')}
+                    </div>
+                )}
             </div>
             <div id={styles.messages_main_block}>
                 <div id={styles.messages_block}>

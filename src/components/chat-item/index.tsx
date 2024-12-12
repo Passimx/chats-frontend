@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import styles from './index.module.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChatAvatar from '../chat-avatar';
@@ -9,9 +9,18 @@ const ChatItem: FC<{ chat: ChatType; isNew?: boolean }> = ({ chat, isNew = false
     const navigate = useNavigate();
     const { id } = useParams();
     const [message, countMessages, time] = useMessage(chat);
+    const elementId = `chat-${chat.id}`;
+
+    useEffect(() => {
+        const element = document.getElementById(elementId)!;
+        element.addEventListener('contextmenu', function (event) {
+            event.preventDefault();
+        });
+    }, []);
 
     return (
         <div
+            id={elementId}
             className={`${styles.chat_item} ${id === `${chat.id}` && styles.selected_chat} ${isNew && styles.new_message}`}
             onClick={() => {
                 document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');

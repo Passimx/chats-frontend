@@ -1,0 +1,30 @@
+html{
+    --menu-color: #062846;
+}
+
+#chats{
+    overflow-y: scroll;
+    height: calc(100% - 40px - 16px);
+}
+
+#chats::-webkit-scrollbar {
+    width: 8px;
+    background: none;
+}
+#chats::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 4px;
+}
+
+.nav_padding{
+    padding-bottom: 10px;
+}
+
+.nav_chats{
+    color: white;
+    padding: 10px;
+    user-select: none;
+    background-color: #0c518d;
+    border-bottom: 2px solid var(--menu-color);;
+    border-top: 2px solid var(--menu-color);;
+}

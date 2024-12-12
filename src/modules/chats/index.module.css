@@ -34,7 +34,7 @@ html{
 
 #page_button{
     background-color: #0098EA;
-    height: 60px;
+    height: 56px;
     border-bottom: 2px solid white;
 }
 
@@ -50,16 +50,4 @@ html{
 #chats::-webkit-scrollbar-thumb {
     background-color: white;
     border-radius: 4px;
-}
-
-.nav_padding{
-    padding-bottom: 10px;
-}
-
-.nav_chats{
-    color: white;
-    padding: 10px;
-    user-select: none;
-    background-color: #0c518d;
-    border-bottom: 2px solid var(--menu-color);;
 }
