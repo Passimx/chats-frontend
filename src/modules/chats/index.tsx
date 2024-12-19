@@ -21,11 +21,11 @@ const Chats: FC = () => {
     const filterFunc = ({ title }: ChatType): boolean => {
         if (!input?.length) return true;
         const searchWords = input.split(' ');
-        const titleWords = title.split(' ');
 
-        return !searchWords.filter(
-            (word) => !titleWords.find((title) => title.toLowerCase().indexOf(word.toLowerCase()) === 0),
-        ).length;
+        return (
+            searchWords.filter((word) => ` ${title}`.toLowerCase().indexOf(` ${word}`.toLowerCase()) !== -1).length ===
+            searchWords.length
+        );
     };
 
     return (

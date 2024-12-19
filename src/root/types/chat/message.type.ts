@@ -2,7 +2,7 @@ import { MessageTypeEnum } from './message-type.enum.ts';
 import { ChatType } from './chat.type.ts';
 
 export type MessageType = {
-    id: string;
+    id: number;
     chatId: number;
     message: string;
     number: number;

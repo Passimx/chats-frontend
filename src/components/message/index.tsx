@@ -1,29 +1,32 @@
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import styles from './index.module.css';
 import { PropsType } from './types/props.type.ts';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
-import { useTranslation } from 'react-i18next';
-import moment from 'moment/min/moment-with-locales';
+import { useVisibility } from './hooks/use-visibility.hook.ts';
 
-const Message: FC<PropsType> = ({ message, type, title, createdAt }) => {
-    const { t } = useTranslation();
-    const visibleMessage = useMemo(() => {
-        return type == MessageTypeEnum.IS_SYSTEM ? `${t(message)} «${title}»` : message;
-    }, []);
+const Message: FC<PropsType> = (props) => {
+    const { number, type } = props;
+    const [observerTarget, visibleMessage, time] = useVisibility(props);
 
-    const time = moment(createdAt).format('LT');
-
-    return type == MessageTypeEnum.IS_SYSTEM ? (
-        <div className={styles.system_background}>
-            <div className={`${styles.background} ${styles.system_message}`}>{visibleMessage}</div>
-        </div>
-    ) : (
-        <div className={`${styles.background}`}>
-            <div>
-                <pre>{visibleMessage}</pre>
+    if (type == MessageTypeEnum.IS_SYSTEM)
+        return (
+            <div ref={observerTarget} id={`message${number}`} className={styles.system_background}>
+                <div className={`${styles.background} ${styles.system_message}`}>{visibleMessage}</div>
             </div>
-            <div className={styles.left_div2}>{time}</div>
-        </div>
+        );
+
+    return (
+        <>
+            <div ref={observerTarget} id={`message${number}`} className={`${styles.background}`}>
+                <div>
+                    <pre>
+                        {number}
+                        {visibleMessage}
+                    </pre>
+                </div>
+                <div className={styles.left_div2}>{time}</div>
+            </div>
+        </>
     );
 };
 

@@ -7,15 +7,16 @@ import InputMessage from '../../components/input-message';
 import Message from '../../components/message';
 import { useTranslation } from 'react-i18next';
 import rawChats from '../../root/store/chats/chats.raw.ts';
-import { useUpdateChat } from '../../root/store/app/hooks/use-update-chat.hook.ts';
 import { IoIosAddCircleOutline } from 'react-icons/io';
+import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { useAppAction } from '../../root/store';
 
 const Chat = () => {
     const { t } = useTranslation();
     const [chat] = useGetChat();
     const [chatIsExist, setChatIsExist] = useState<boolean>();
     const [chatAdded, setChatAdded] = useState<boolean>();
-    const setToBegin = useUpdateChat();
+    const { postMessage } = useAppAction();
 
     useEffect(() => {
         if (!chat) return;
@@ -26,7 +27,7 @@ const Chat = () => {
     const addChat = () => {
         if (!chat) return;
         setChatAdded(true);
-        setToBegin(chat);
+        postMessage({ data: { event: EventsEnum.CREATE_CHAT, data: { success: true, data: chat } } });
     };
 
     const back = (e: MouseEvent<unknown>) => {
@@ -57,12 +58,14 @@ const Chat = () => {
                 <div id={styles.messages_block}>
                     <div id={styles.messages}>
                         {chat.messages.map(
-                            ({ id, message, type, createdAt }) =>
+                            ({ id, message, type, createdAt, number }) =>
                                 message && (
                                     <Message
                                         key={id}
-                                        message={message}
+                                        chatId={chat.id}
                                         title={chat.title}
+                                        number={number}
+                                        message={message}
                                         type={type}
                                         createdAt={new Date(createdAt)}
                                     />
