@@ -6,9 +6,9 @@ import { ChatType } from '../../root/types/chat/chat.type.ts';
 import { useMessage } from './hooks/use-message.hook.ts';
 
 const ChatItem: FC<{ chat: ChatType; isNew?: boolean }> = ({ chat, isNew = false }) => {
+    const [message, countMessages, time] = useMessage(chat);
     const navigate = useNavigate();
     const { id } = useParams();
-    const [message, countMessages, time] = useMessage(chat);
     const elementId = `chat-${chat.id}`;
 
     useEffect(() => {
@@ -35,7 +35,7 @@ const ChatItem: FC<{ chat: ChatType; isNew?: boolean }> = ({ chat, isNew = false
                 </div>
                 <div className={styles.message_block}>
                     <div className={styles.message}>{message}</div>
-                    <div className={styles.count_message}>{countMessages}</div>
+                    {countMessages && <div className={styles.count_message}>{countMessages}</div>}
                 </div>
             </div>
         </div>

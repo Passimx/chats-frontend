@@ -4,8 +4,11 @@ import { MessageTypeEnum } from '../../../root/types/chat/message-type.enum.ts';
 import { useEffect, useState } from 'react';
 import moment from 'moment/min/moment-with-locales';
 import { useTranslation } from 'react-i18next';
+import { useAppSelector } from '../../../root/store';
+import rawChats from '../../../root/store/chats/chats.raw.ts';
 
 export const useMessage = (chat: ChatType): (string | undefined)[] => {
+    const { chatsRead } = useAppSelector((state) => state.chats);
     const { t } = useTranslation();
     const [message, setMessage] = useState<string>();
     const [countMessages, setCountMessages] = useState<string>();
@@ -33,7 +36,13 @@ export const useMessage = (chat: ChatType): (string | undefined)[] => {
     };
 
     const changeCountMessages = () => {
-        const count = chat.countMessages;
+        if (!chatsRead) return;
+        let count = chat.countMessages;
+        const number = rawChats.chatsRead.get(chat.id);
+        if (number) {
+            count = chat.countMessages - number;
+            if (count === 0) return setCountMessages(undefined);
+        }
 
         setCountMessages(count.toString());
         if (count >= 1000) setCountMessages(`${Math.floor(count / 1000)}К`);
@@ -42,8 +51,11 @@ export const useMessage = (chat: ChatType): (string | undefined)[] => {
 
     useEffect(() => {
         changeMessage();
-        changeCountMessages();
     }, [chat]);
+
+    useEffect(() => {
+        changeCountMessages();
+    }, [chatsRead, chat]);
 
     return [message, countMessages, time];
 };

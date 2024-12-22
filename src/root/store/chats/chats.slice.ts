@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ChatType } from '../../types/chat/chat.type.ts';
 import { StateType } from './types/state.type.ts';
 import rawChats from './chats.raw.ts';
+import { UpdateReadChatType } from './types/update-read-chat.type.ts';
 
 const initialState: StateType = {
     chats: [],
@@ -17,7 +18,7 @@ const updateChatAtIndexDb = (payload: ChatType) => {
 
     const request = chatsKeys.get(payload.id);
 
-    request.onsuccess = async () => {
+    request.onsuccess = () => {
         if (!IndexDb) return;
 
         if (request.result) IndexDb.transaction('chats', 'readwrite').objectStore('chats').delete(request.result);
@@ -26,6 +27,15 @@ const updateChatAtIndexDb = (payload: ChatType) => {
         IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys').delete(payload.id).onsuccess = () =>
             IndexDb?.transaction('chats-keys', 'readwrite').objectStore('chats-keys').add(dateNow, payload.id);
     };
+};
+
+const updateReadChat = (chatId: number, number: number) => {
+    const IndexDb = rawChats.indexDb;
+    rawChats.chatsRead.set(chatId, number);
+    if (!IndexDb) return;
+
+    IndexDb.transaction('chats-read', 'readwrite').objectStore('chats-read').delete(chatId);
+    IndexDb.transaction('chats-read', 'readwrite').objectStore('chats-read').add(number, chatId);
 };
 
 const ChatsSlice = createSlice({
@@ -43,6 +53,15 @@ const ChatsSlice = createSlice({
             rawChats.chats.set(payload.id, payload);
             state.chats = Array.from(rawChats.chats.values()).reverse();
             updateChatAtIndexDb(payload);
+        },
+
+        updateReadChat(state, { payload }: PayloadAction<UpdateReadChatType>) {
+            if (!state.chatsRead) state.chatsRead = [];
+            if (!payload) return;
+            const { chatId, number } = payload;
+
+            updateReadChat(chatId, number);
+            state.chatsRead.push({ chatId, number });
         },
 
         addUpdatedChat(state, { payload }: PayloadAction<ChatType>) {

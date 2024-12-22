@@ -7,15 +7,18 @@ import InputMessage from '../../components/input-message';
 import Message from '../../components/message';
 import { useTranslation } from 'react-i18next';
 import rawChats from '../../root/store/chats/chats.raw.ts';
-import { useUpdateChat } from '../../root/store/app/hooks/use-update-chat.hook.ts';
 import { IoIosAddCircleOutline } from 'react-icons/io';
+import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { useAppAction } from '../../root/store';
+import { useDebouncedFunction } from '../../common/hooks/use-debounced-function.ts.ts';
 
 const Chat = () => {
-    const { t } = useTranslation();
     const [chat] = useGetChat();
+    const readMessage = useDebouncedFunction(1000);
+    const { t } = useTranslation();
+    const { postMessage } = useAppAction();
     const [chatIsExist, setChatIsExist] = useState<boolean>();
     const [chatAdded, setChatAdded] = useState<boolean>();
-    const setToBegin = useUpdateChat();
 
     useEffect(() => {
         if (!chat) return;
@@ -26,12 +29,21 @@ const Chat = () => {
     const addChat = () => {
         if (!chat) return;
         setChatAdded(true);
-        setToBegin(chat);
+        postMessage({ data: { event: EventsEnum.CREATE_CHAT, data: { success: true, data: chat } } });
     };
 
     const back = (e: MouseEvent<unknown>) => {
         e.stopPropagation();
         document.documentElement.style.setProperty('--menu-margin', '0px');
+    };
+
+    const readMessageFunc = (number: number) => {
+        if (!chat?.id) return;
+        const num = rawChats.chatsRead.get(chat.id);
+        if (num && number > num)
+            readMessage(() =>
+                postMessage({ data: { event: EventsEnum.READ_MESSAGE, data: { chatId: chat.id, number } } }),
+            );
     };
 
     if (!chat) return <></>;
@@ -57,14 +69,17 @@ const Chat = () => {
                 <div id={styles.messages_block}>
                     <div id={styles.messages}>
                         {chat.messages.map(
-                            ({ id, message, type, createdAt }) =>
+                            ({ id, message, type, createdAt, number }) =>
                                 message && (
                                     <Message
                                         key={id}
-                                        message={message}
+                                        chatId={chat.id}
                                         title={chat.title}
+                                        number={number}
+                                        message={message}
                                         type={type}
                                         createdAt={new Date(createdAt)}
+                                        readMessage={readMessageFunc}
                                     />
                                 ),
                         )}
