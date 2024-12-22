@@ -28,7 +28,7 @@ export const useSharedWorker = () => {
                 case EventsEnum.CREATE_CHAT:
                     if (!data.success) break;
                     setToBegin(data.data);
-                    updateReadChat({ chatId: data.data.id, number: 1 });
+                    updateReadChat({ chatId: data.data.id, number: data.data.countMessages });
                     break;
                 case EventsEnum.CREATE_MESSAGE:
                     if (!data.success) break;
@@ -49,7 +49,6 @@ export const useSharedWorker = () => {
                     console.log(`${'\x1B[31m'}error: ${data}${'\x1B[31m'}`);
                     break;
                 default:
-                    alert(123);
                     break;
             }
         };

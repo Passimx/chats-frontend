@@ -10,13 +10,15 @@ import rawChats from '../../root/store/chats/chats.raw.ts';
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { useAppAction } from '../../root/store';
+import { useDebouncedFunction } from '../../common/hooks/use-debounced-function.ts.ts';
 
 const Chat = () => {
-    const { t } = useTranslation();
     const [chat] = useGetChat();
+    const readMessage = useDebouncedFunction(1000);
+    const { t } = useTranslation();
+    const { postMessage } = useAppAction();
     const [chatIsExist, setChatIsExist] = useState<boolean>();
     const [chatAdded, setChatAdded] = useState<boolean>();
-    const { postMessage } = useAppAction();
 
     useEffect(() => {
         if (!chat) return;
@@ -33,6 +35,15 @@ const Chat = () => {
     const back = (e: MouseEvent<unknown>) => {
         e.stopPropagation();
         document.documentElement.style.setProperty('--menu-margin', '0px');
+    };
+
+    const readMessageFunc = (number: number) => {
+        if (!chat?.id) return;
+        const num = rawChats.chatsRead.get(chat.id);
+        if (num && number > num)
+            readMessage(() =>
+                postMessage({ data: { event: EventsEnum.READ_MESSAGE, data: { chatId: chat.id, number } } }),
+            );
     };
 
     if (!chat) return <></>;
@@ -68,6 +79,7 @@ const Chat = () => {
                                         message={message}
                                         type={type}
                                         createdAt={new Date(createdAt)}
+                                        readMessage={readMessageFunc}
                                     />
                                 ),
                         )}

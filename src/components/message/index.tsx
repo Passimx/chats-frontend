@@ -19,10 +19,7 @@ const Message: FC<PropsType> = (props) => {
         <>
             <div ref={observerTarget} id={`message${number}`} className={`${styles.background}`}>
                 <div>
-                    <pre>
-                        {number}
-                        {visibleMessage}
-                    </pre>
+                    <pre>{visibleMessage}</pre>
                 </div>
                 <div className={styles.left_div2}>{time}</div>
             </div>

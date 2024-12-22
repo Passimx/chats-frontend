@@ -2,10 +2,6 @@ import { useEffect } from 'react';
 import { useAppAction } from '../../../store';
 import rawChats from '../../../store/chats/chats.raw.ts';
 
-// window.indexedDB.databases().then((r) => {
-//     for (let i = 0; i < r.length; i++) window.indexedDB.deleteDatabase(r[i].name);
-// });
-
 export const useIndexDbHook = () => {
     const { setToEnd, updateReadChat } = useAppAction();
 

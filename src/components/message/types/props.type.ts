@@ -7,4 +7,5 @@ export type PropsType = {
     type: MessageTypeEnum;
     title: string;
     number: number;
+    readMessage: (number: number) => unknown;
 };
