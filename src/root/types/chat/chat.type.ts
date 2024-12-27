@@ -7,7 +7,7 @@ type ChatItemType = {
     type: ChatEnum.IS_OPEN;
     createdAt: Date;
     countMessages: number;
-    messages: MessageType[];
+    message: MessageType;
 };
 
 // type EncryptChatItemType = {

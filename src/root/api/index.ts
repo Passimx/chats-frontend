@@ -16,7 +16,11 @@ export type IData<T> =
 
 export async function Api<T>(url: string, { headers, body, method, params }: request = {}): Promise<IData<T>> {
     let query: string = '?';
-    if (params) for (const [key, value] of Object.entries(params)) if (key && value) query += `${key}=${value}&`;
+    if (params)
+        for (const [key, value] of Object.entries(params)) {
+            if (Array.isArray(value) && !value.length) continue;
+            if (value) query += `${key}=${value}&`;
+        }
 
     const mainHeaders: any = {
         Connection: 'keep-alive',

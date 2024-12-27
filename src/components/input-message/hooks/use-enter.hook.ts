@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import styles2 from '../../../pages/chat/index.module.css';
 import { createMessage } from '../../../root/api/chats';
 
-let globalChatId: number;
+let globalChatId: string;
 
 export const useEnterHook = (): [() => Promise<void>, (event: FormEvent<HTMLDivElement>) => void, boolean] => {
     const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
@@ -36,7 +36,7 @@ export const useEnterHook = (): [() => Promise<void>, (event: FormEvent<HTMLDivE
         element.innerText = '';
         setIsShowPlaceholder(true);
 
-        globalChatId = Number(id);
+        globalChatId = String(id);
         // inf
         // 300 - время анимации, иначе быстро отрабатывает анимация
         setTimeout(() => element.focus(), 300);

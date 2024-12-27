@@ -5,7 +5,6 @@ import { listenChats } from '../../../api/chats';
 
 export const useListenAndUpdateChats = () => {
     const { socketId } = useAppSelector((state) => state.app);
-    const { chats } = useAppSelector((state) => state.chats);
     const { isListening } = useAppSelector((state) => state.app);
 
     const { setIsListening } = useAppAction();
@@ -19,5 +18,5 @@ export const useListenAndUpdateChats = () => {
 
         // todo
         // добавить логику на обновление информации чатов
-    }, [socketId, chats]);
+    }, [socketId]);
 };

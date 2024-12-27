@@ -32,7 +32,7 @@ export const useSharedWorker = () => {
                     break;
                 case EventsEnum.CREATE_MESSAGE:
                     if (!data.success) break;
-                    setToBegin({ ...data.data.chat, messages: [data.data] });
+                    setToBegin({ ...data.data.chat, message: data.data });
 
                     audioSupport.pause();
                     audioSupport.currentTime = 0;

@@ -11,9 +11,13 @@ import { IoIosAddCircleOutline } from 'react-icons/io';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { useAppAction } from '../../root/store';
 import { useDebouncedFunction } from '../../common/hooks/use-debounced-function.ts.ts';
+import { useGetMessages } from './hooks/use-get-messages.hook.ts';
+import { useJoinChat } from './hooks/use-join-chat.hook.ts';
 
 const Chat = () => {
     const [chat] = useGetChat();
+    useJoinChat(chat);
+    const messages = useGetMessages();
     const readMessage = useDebouncedFunction(1000);
     const { t } = useTranslation();
     const { postMessage } = useAppAction();
@@ -68,7 +72,7 @@ const Chat = () => {
             <div id={styles.messages_main_block}>
                 <div id={styles.messages_block}>
                     <div id={styles.messages}>
-                        {chat.messages.map(
+                        {messages.map(
                             ({ id, message, type, createdAt, number }) =>
                                 message && (
                                     <Message
