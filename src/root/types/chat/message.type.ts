@@ -3,7 +3,7 @@ import { ChatType } from './chat.type.ts';
 
 export type MessageType = {
     id: number;
-    chatId: number;
+    chatId: string;
     message: string;
     number: number;
     parentMessageId: number;
@@ -14,7 +14,7 @@ export type MessageType = {
 
 export type EncryptMessageType = {
     id: string;
-    chatId: number;
+    chatId: string;
     encryptMessage: string;
     number: number;
     parentMessageId: number;

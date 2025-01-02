@@ -24,6 +24,11 @@ type ReadMessage = {
     readonly data: UpdateReadChatType;
 };
 
+type RemoveChat = {
+    readonly event: EventsEnum.REMOVE_CHAT;
+    readonly data: string;
+};
+
 type CloseSocket = {
     readonly event: EventsEnum.CLOSE_SOCKET;
     readonly data: unknown;
@@ -34,7 +39,7 @@ type Error = {
     readonly data: string;
 };
 
-type DataType = GetSocketId | CreateChat | CreateMessage | ReadMessage | CloseSocket | Error;
+type DataType = GetSocketId | CreateChat | CreateMessage | ReadMessage | RemoveChat | CloseSocket | Error;
 
 export type EventDataType = {
     data: DataType;

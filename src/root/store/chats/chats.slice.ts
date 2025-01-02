@@ -13,23 +13,33 @@ const updateChatAtIndexDb = (payload: ChatType) => {
     const IndexDb = rawChats.indexDb;
 
     if (!IndexDb) return;
-    const dateNow = Date.now();
+    const dateNow = new Date(payload.message.createdAt).getTime();
     const chatsKeys = IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys');
 
     const request = chatsKeys.get(payload.id);
 
     request.onsuccess = () => {
-        if (!IndexDb) return;
-
         if (request.result) IndexDb.transaction('chats', 'readwrite').objectStore('chats').delete(request.result);
-
         IndexDb.transaction('chats', 'readwrite').objectStore('chats').add(payload, dateNow);
         IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys').delete(payload.id).onsuccess = () =>
             IndexDb?.transaction('chats-keys', 'readwrite').objectStore('chats-keys').add(dateNow, payload.id);
     };
 };
 
-const updateReadChat = (chatId: number, number: number) => {
+const deleteChatIndexDb = (id: string) => {
+    const IndexDb = rawChats.indexDb;
+    if (!IndexDb) return;
+
+    const chatsKeys = IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys');
+    const request = chatsKeys.get(id);
+    request.onsuccess = () => {
+        if (request.result) IndexDb.transaction('chats', 'readwrite').objectStore('chats').delete(request.result);
+        IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys').delete(id);
+        IndexDb.transaction('chats-read', 'readwrite').objectStore('chats-read').delete(id);
+    };
+};
+
+const updateReadChat = (chatId: string, number: number) => {
     const IndexDb = rawChats.indexDb;
     rawChats.chatsRead.set(chatId, number);
     if (!IndexDb) return;
@@ -77,18 +87,27 @@ const ChatsSlice = createSlice({
 
         setToEnd(state, { payload }: PayloadAction<ChatType[] | undefined>) {
             if (!payload) return;
-            const newMap = new Map<number, ChatType>();
+            const newMap = new Map<string, ChatType>();
 
             [...payload].reverse().forEach((chat) => newMap.set(chat.id, chat));
 
-            rawChats.chats = new Map<number, ChatType>([...newMap, ...rawChats.chats]);
+            rawChats.chats = new Map<string, ChatType>([...newMap, ...rawChats.chats]);
 
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
         },
-        // removeAll(state) {
-        //     rawChats.chats = new Map<number, ChatType>();
-        //     state.chats = [];
-        // },
+
+        setSearchChat(state, { payload }: PayloadAction<ChatType | null>) {
+            state.searchChat = payload ?? undefined;
+        },
+
+        removeChat(state, { payload }: PayloadAction<string>) {
+            const chat = rawChats.chats.get(payload);
+            if (!chat) return;
+            deleteChatIndexDb(payload);
+
+            rawChats.chats.delete(payload);
+            state.chats = [...Array.from(rawChats.chats.values())].reverse();
+        },
     },
 });
 

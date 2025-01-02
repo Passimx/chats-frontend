@@ -6,7 +6,7 @@ import useDebounced from '../../../common/hooks/use-debounced.ts';
 import { ChatType } from '../../../root/types/chat/chat.type.ts';
 import rawChats from '../../../root/store/chats/chats.raw.ts';
 
-let localRawChats = new Map<number, ChatType>();
+let localRawChats = new Map<string, ChatType>();
 let globalKey: string | undefined = undefined;
 
 const useChats = (
@@ -20,28 +20,21 @@ const useChats = (
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [offset, setOffset] = useState<number>(0);
     const isOnline = useAppSelector((state) => state.app.isOnline);
-    const { chats: sliceChats } = useAppSelector((state) => state.chats);
-
-    useEffect(() => {
-        Array.from(rawChats.chats.values()).forEach((chat) => localRawChats.delete(chat.id));
-        const newArray = [...Array.from(localRawChats.values())].reverse();
-        setChats(newArray);
-    }, [sliceChats]);
 
     const setToEnd = (payload: ChatType[]) => {
         if (!payload.length) return;
 
-        const newMap = new Map<number, ChatType>();
+        const newMap = new Map<string, ChatType>();
 
         [...payload].reverse().forEach((chat) => newMap.set(chat.id, chat));
 
-        localRawChats = new Map<number, ChatType>([...newMap, ...localRawChats]);
+        localRawChats = new Map<string, ChatType>([...newMap, ...localRawChats]);
         const newArray = [...Array.from(localRawChats.values())].reverse();
         setChats(newArray);
     };
 
     const removeAll = () => {
-        localRawChats = new Map<number, ChatType>();
+        localRawChats = new Map<string, ChatType>();
         setChats([]);
     };
 

@@ -5,9 +5,10 @@ import { Envs } from '../../../../common/config/envs/envs.ts';
 import { useUpdateChat } from '../../../store/app/hooks/use-update-chat.hook.ts';
 import { useAppAction } from '../../../store';
 import rawApp from '../../../store/app/app.raw.ts';
+import rawChats from '../../../store/chats/chats.raw.ts';
 
 export const useSharedWorker = () => {
-    const { setSocketId, setIsListening, updateReadChat } = useAppAction();
+    const { setSocketId, setIsListening, updateReadChat, setSearchChat, removeChat } = useAppAction();
     const setToBegin = useUpdateChat();
 
     useEffect(() => {
@@ -32,14 +33,20 @@ export const useSharedWorker = () => {
                     break;
                 case EventsEnum.CREATE_MESSAGE:
                     if (!data.success) break;
+                    if (!rawChats.chats.get(data.data.chat.id)) {
+                        setSearchChat({ ...data.data.chat, message: data.data });
+                        break;
+                    }
                     setToBegin({ ...data.data.chat, message: data.data });
-
                     audioSupport.pause();
                     audioSupport.currentTime = 0;
                     audioSupport.play();
                     break;
                 case EventsEnum.READ_MESSAGE:
                     updateReadChat(data);
+                    break;
+                case EventsEnum.REMOVE_CHAT:
+                    removeChat(data);
                     break;
                 case EventsEnum.CLOSE_SOCKET:
                     setSocketId(undefined);
