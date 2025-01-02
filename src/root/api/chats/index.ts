@@ -7,10 +7,9 @@ export const getChats = async (
     title?: string,
     limit?: number,
     offset?: number,
-    notFavoriteChatIds?: number[],
-    favoriteChatIds?: number[],
+    notFavoriteChatIds?: string[],
 ): Promise<IData<ChatType[]>> => {
-    return Api<ChatType[]>('/chats', { params: { title, limit, offset, notFavoriteChatIds, favoriteChatIds } });
+    return Api<ChatType[]>('/chats', { params: { title, limit, offset, notFavoriteChatIds } });
     // const response = await Api<EncryptChatItemType[]>('/chats', { params: { search, limit, offset } });
     //
     // if (!response.success || !response.data?.length) return { ...response, data: [] };
@@ -51,6 +50,10 @@ export const createMessage = (body: CreateMessageType) => {
     return Api('/messages', { body, method: 'POST' });
 };
 
-export const listenChats = (favoriteChatIds: number[]) => {
+export const listenChats = (favoriteChatIds: string[]) => {
     return Api('/chats/join', { method: 'POST', body: { favoriteChatIds } });
+};
+
+export const leaveChats = (favoriteChatIds: string[]) => {
+    return Api('/chats/leave', { method: 'POST', body: { favoriteChatIds } });
 };

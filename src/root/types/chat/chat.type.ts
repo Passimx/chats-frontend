@@ -2,7 +2,7 @@ import { ChatEnum } from './chat.enum.ts';
 import { MessageType } from './message.type.ts';
 
 type ChatItemType = {
-    id: number;
+    id: string;
     title: string;
     type: ChatEnum.IS_OPEN;
     createdAt: Date;

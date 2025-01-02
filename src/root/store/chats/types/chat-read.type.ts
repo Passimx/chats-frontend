@@ -1,1 +1,1 @@
-export type ChatReadType = { chatId: number; number: number };
+export type ChatReadType = { chatId: string; number: number };

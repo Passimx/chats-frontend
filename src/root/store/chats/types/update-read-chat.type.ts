@@ -1,4 +1,4 @@
 export type UpdateReadChatType = {
-    chatId: number;
+    chatId: string;
     number: number;
 } | null;

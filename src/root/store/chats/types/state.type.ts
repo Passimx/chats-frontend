@@ -5,4 +5,5 @@ export type StateType = {
     chats: ChatType[];
     updatedChats: ChatType[];
     chatsRead?: ChatReadType[];
+    searchChat?: ChatType;
 };

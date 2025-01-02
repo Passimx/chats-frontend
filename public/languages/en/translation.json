@@ -9,7 +9,9 @@
   "create_private_chat": "Private chat",
   "back": "Back",
   "global_search": "GLOBAL SEARCH",
-  "add_chat": "Add chat",
+  "add_chat": "add chat",
+  "copy_link": "Copy link",
+  "leave_chat": "Exit chat",
 
   "description_open_chat": "The main idea of an open chat is the ability to create a communication channel accessible to everyone, which can be linked to the domain name of the site, a link to a profile from social media. networks or by other keywords. This type of chat is the best solution for communicating with the general public.",
   "description_shared_chat": "Shared chat allows a certain circle of people to communicate, which the whole world can watch. This type of chat is the best solution for broadcasting messages to the world.",

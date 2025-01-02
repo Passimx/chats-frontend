@@ -4,9 +4,8 @@ import ChatsRaw from '../../../store/chats/chats.raw.ts';
 import { listenChats } from '../../../api/chats';
 
 export const useListenAndUpdateChats = () => {
-    const { socketId } = useAppSelector((state) => state.app);
-    const { isListening } = useAppSelector((state) => state.app);
-
+    const { socketId, isListening } = useAppSelector((state) => state.app);
+    const { chats } = useAppSelector((state) => state.chats);
     const { setIsListening } = useAppAction();
 
     useEffect(() => {
@@ -18,5 +17,5 @@ export const useListenAndUpdateChats = () => {
 
         // todo
         // добавить логику на обновление информации чатов
-    }, [socketId]);
+    }, [socketId, chats]);
 };
