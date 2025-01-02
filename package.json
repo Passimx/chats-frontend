@@ -11,7 +11,7 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "deploy": "npm run build && rsync -avz -e 'ssh' ./dist root@45.80.70.97:/home/app/client && ssh root@45.80.70.97 'cd /home/app/client && ./deploy.sh'",
+    "deploy": "npm run build && rsync -avz -e 'ssh' ./dist root@79.132.142.89:/root/passim && ssh root@79.132.142.89 'cd /root/passim && ./deploy.sh'",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -20,6 +20,7 @@
     "moment": "^2.30.1",
     "react": "^18.2.0",
     "react-dom": "^18.3.1",
+    "react-helmet": "^6.1.0",
     "react-hook-form": "^7.53.0",
     "react-i18next": "^15.0.1",
     "react-icons": "^5.2.1",
@@ -33,6 +34,7 @@
     "@types/md5": "^2.3.5",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.3.0",
+    "@types/react-helmet": "^6.1.11",
     "@types/react-redux": "^7.1.33",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
@@ -46,12 +48,14 @@
     "lint-staged": "^15.2.7",
     "prettier": "3.3.2",
     "typescript": "^5.2.2",
-    "vite": "^5.4.10"
+    "vite": "^5.4.10",
+    "vite-plugin-pwa": "^0.21.1"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
       "eslint --fix",
       "prettier --write"
     ],
-    "*.--write": "prettier --write"  }
+    "*.--write": "prettier --write"
+  }
 }

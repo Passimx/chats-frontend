@@ -6,7 +6,8 @@ export const useIndexDbHook = () => {
     const { setToEnd, setIsLoadedChatsFromIndexDb } = useAppAction();
 
     useEffect(() => {
-        const openRequest = indexedDB.open('store', 1);
+        const openRequest = indexedDB?.open('store', 1);
+        if (!openRequest) return;
         openRequest.onsuccess = () => {
             const IndexDb = openRequest.result;
             rawChats.indexDb = IndexDb;

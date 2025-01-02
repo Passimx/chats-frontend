@@ -10,7 +10,8 @@ const AppSlice = createSlice({
     initialState,
     reducers: {
         postMessage(_state, { payload }: PayloadAction<EventDataType>) {
-            rawApp?.port?.postMessage(payload.data);
+            if (!rawApp?.port) return;
+            rawApp.port.postMessage(payload.data);
         },
 
         setPage(

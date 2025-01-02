@@ -34,7 +34,7 @@ html{
 }
 
 #chat{
-    background-image: url('/public/background.png');
+    background-image: url('/public/assets/images/background.png');
     background-position: top right;
     background-size: 510px auto;
     background-repeat: repeat;

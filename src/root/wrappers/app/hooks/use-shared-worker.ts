@@ -6,13 +6,22 @@ import { useUpdateChat } from '../../../store/app/hooks/use-update-chat.hook.ts'
 import { useAppAction } from '../../../store';
 import rawApp from '../../../store/app/app.raw.ts';
 import rawChats from '../../../store/chats/chats.raw.ts';
+import { useNavigate } from 'react-router-dom';
 
+let sharedWorker: SharedWorker;
 export const useSharedWorker = () => {
     const { setSocketId, setIsListening, updateReadChat, setChatOnPage, removeChat } = useAppAction();
     const setToBegin = useUpdateChat();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const sharedWorker = new SharedWorker('worker.js');
+        try {
+            if (!sharedWorker) sharedWorker = new SharedWorker('worker.js');
+        } catch (e) {
+            console.log(e);
+        }
+
+        if (!sharedWorker) return;
         sharedWorker.port.start();
 
         rawApp.port = sharedWorker.port;
@@ -31,48 +40,46 @@ export const useSharedWorker = () => {
                     break;
                 case EventsEnum.CREATE_CHAT:
                     if (!data.success) break;
-                    setToBegin({ ...data.data, messages: [data.data.message], readMessage: 1 });
+                    setToBegin({
+                        ...data.data,
+                        messages: [data.data.message],
+                        readMessage: 1,
+                    });
+                    navigate(`/${data.data.id}`);
                     break;
                 case EventsEnum.CREATE_MESSAGE:
-                    // todo
-                    // уменьшить код
                     if (!data.success) break;
 
                     setChatOnPage({ ...data.data.chat, message: data.data });
 
-                    if (!rawChats.chats.get(data.data.chat.id)) break;
-
-                    if (data.data.number === rawChats.chats.get(data.data.chat.id)!.messages[0].number + 1)
-                        setToBegin({
-                            ...data.data.chat,
-                            countMessages: data.data.number,
-                            message: data.data,
-                            messages: [
-                                data.data,
-                                ...rawChats.chats.get(data.data.chat.id)!.messages.slice(0, Envs.messages.limit - 1),
-                            ],
-                            readMessage: rawChats.chats.get(data.data.chat.id)!.readMessage,
-                        });
-                    else
-                        setToBegin({
-                            ...data.data.chat,
-                            countMessages: data.data.number,
-                            message: data.data,
-                            messages: [
-                                ...rawChats.chats.get(data.data.chat.id)!.messages.slice(0, Envs.messages.limit - 1),
-                            ],
-                            readMessage: rawChats.chats.get(data.data.chat.id)!.readMessage,
-                        });
-
                     audioSupport.pause();
                     audioSupport.currentTime = 0;
                     audioSupport.play();
+
+                    if (!rawChats.chats.get(data.data.chat.id)) break;
+
+                    setToBegin({
+                        ...data.data.chat,
+                        countMessages: data.data.number,
+                        message: data.data,
+                        messages: [
+                            ...(data.data.number === rawChats.chats.get(data.data.chat.id)!.messages[0].number + 1
+                                ? [data.data]
+                                : []),
+                            ...rawChats.chats.get(data.data.chat.id)!.messages.slice(0, Envs.messages.limit - 1),
+                        ],
+                        readMessage: rawChats.chats.get(data.data.chat.id)!.readMessage,
+                    });
+
                     break;
                 case EventsEnum.READ_MESSAGE:
                     updateReadChat(data);
                     break;
                 case EventsEnum.REMOVE_CHAT:
                     removeChat(data);
+                    break;
+                case EventsEnum.UPDATE_BADGE:
+                    if (navigator.setAppBadge) navigator.setAppBadge(data);
                     break;
                 case EventsEnum.CLOSE_SOCKET:
                     setSocketId(undefined);

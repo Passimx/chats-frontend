@@ -5,6 +5,7 @@ export enum EventsEnum {
     CREATE_MESSAGE = 'create_message',
     READ_MESSAGE = 'read_message',
     REMOVE_CHAT = 'remove_chat',
+    UPDATE_BADGE = 'update_badge',
     CLOSE_SOCKET = 'close_socket',
     ERROR = 'error',
 }
