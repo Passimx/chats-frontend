@@ -13,7 +13,6 @@ const useChats = (
     input: string | undefined,
     changeIsLoading: (value: boolean) => void,
 ): [ChatType[], boolean, () => void] => {
-    const limit = Envs.chats.limit;
     const notFavoriteChatIds = Array.from(rawChats.chats.keys());
     const key = useDebounced(input, 300);
     const [chats, setChats] = useState<ChatType[]>([]);
@@ -39,7 +38,7 @@ const useChats = (
     };
 
     const scrollBottom = () => {
-        setOffset(offset + limit);
+        setOffset(offset + Envs.chats.limit);
     };
 
     useEffect(() => {
@@ -53,7 +52,7 @@ const useChats = (
         if (!isOnline) return;
         if (!offset) return;
 
-        getChats(key, limit, offset, notFavoriteChatIds).then(({ success, data }) => {
+        getChats(key, offset, notFavoriteChatIds).then(({ success, data }) => {
             if (key !== globalKey) return;
             setIsLoading(false);
 
@@ -69,7 +68,7 @@ const useChats = (
         setOffset(0);
         removeAll();
 
-        getChats(key, limit, 0, notFavoriteChatIds).then(({ success, data }) => {
+        getChats(key, 0, notFavoriteChatIds).then(({ success, data }) => {
             if (key !== globalKey) return;
             setIsLoading(false);
 
