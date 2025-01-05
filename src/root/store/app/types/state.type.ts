@@ -6,4 +6,5 @@ export type StateType = {
     page?: JSX.Element;
     socketId?: string;
     isListening?: boolean;
+    isLoadedChatsFromIndexDb?: boolean;
 };

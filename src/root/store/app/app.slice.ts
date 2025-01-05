@@ -35,6 +35,10 @@ const AppSlice = createSlice({
         setIsListening(state, { payload }: PayloadAction<boolean>) {
             state.isListening = payload;
         },
+
+        setIsLoadedChatsFromIndexDb(state, { payload }: PayloadAction<boolean>) {
+            state.isLoadedChatsFromIndexDb = payload;
+        },
     },
 });
 

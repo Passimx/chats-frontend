@@ -3,49 +3,12 @@ import { ChatType } from '../../types/chat/chat.type.ts';
 import { StateType } from './types/state.type.ts';
 import rawChats from './chats.raw.ts';
 import { UpdateReadChatType } from './types/update-read-chat.type.ts';
+import { deleteChatIndexDb, updateChatAtIndexDb, updateReadChat } from './index-db/hooks.ts';
 
 const initialState: StateType = {
     chats: [],
     updatedChats: [],
-};
-
-const updateChatAtIndexDb = (payload: ChatType) => {
-    const IndexDb = rawChats.indexDb;
-
-    if (!IndexDb) return;
-    const dateNow = new Date(payload.message.createdAt).getTime();
-    const chatsKeys = IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys');
-
-    const request = chatsKeys.get(payload.id);
-
-    request.onsuccess = () => {
-        if (request.result) IndexDb.transaction('chats', 'readwrite').objectStore('chats').delete(request.result);
-        IndexDb.transaction('chats', 'readwrite').objectStore('chats').add(payload, dateNow);
-        IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys').delete(payload.id).onsuccess = () =>
-            IndexDb?.transaction('chats-keys', 'readwrite').objectStore('chats-keys').add(dateNow, payload.id);
-    };
-};
-
-const deleteChatIndexDb = (id: string) => {
-    const IndexDb = rawChats.indexDb;
-    if (!IndexDb) return;
-
-    const chatsKeys = IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys');
-    const request = chatsKeys.get(id);
-    request.onsuccess = () => {
-        if (request.result) IndexDb.transaction('chats', 'readwrite').objectStore('chats').delete(request.result);
-        IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys').delete(id);
-        IndexDb.transaction('chats-read', 'readwrite').objectStore('chats-read').delete(id);
-    };
-};
-
-const updateReadChat = (chatId: string, number: number) => {
-    const IndexDb = rawChats.indexDb;
-    rawChats.chatsRead.set(chatId, number);
-    if (!IndexDb) return;
-
-    IndexDb.transaction('chats-read', 'readwrite').objectStore('chats-read').delete(chatId);
-    IndexDb.transaction('chats-read', 'readwrite').objectStore('chats-read').add(number, chatId);
+    chatsRead: [],
 };
 
 const ChatsSlice = createSlice({
@@ -66,10 +29,7 @@ const ChatsSlice = createSlice({
         },
 
         updateReadChat(state, { payload }: PayloadAction<UpdateReadChatType>) {
-            if (!state.chatsRead) state.chatsRead = [];
-            if (!payload) return;
             const { chatId, number } = payload;
-
             updateReadChat(chatId, number);
             state.chatsRead.push({ chatId, number });
         },
@@ -96,8 +56,8 @@ const ChatsSlice = createSlice({
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
         },
 
-        setSearchChat(state, { payload }: PayloadAction<ChatType | null>) {
-            state.searchChat = payload ?? undefined;
+        setChatOnPage(state, { payload }: PayloadAction<ChatType | null>) {
+            state.chatOnPage = payload ?? undefined;
         },
 
         removeChat(state, { payload }: PayloadAction<string>) {

@@ -8,7 +8,7 @@ import rawApp from '../../../store/app/app.raw.ts';
 import rawChats from '../../../store/chats/chats.raw.ts';
 
 export const useSharedWorker = () => {
-    const { setSocketId, setIsListening, updateReadChat, setSearchChat, removeChat } = useAppAction();
+    const { setSocketId, setIsListening, updateReadChat, setChatOnPage, removeChat } = useAppAction();
     const setToBegin = useUpdateChat();
 
     useEffect(() => {
@@ -33,10 +33,11 @@ export const useSharedWorker = () => {
                     break;
                 case EventsEnum.CREATE_MESSAGE:
                     if (!data.success) break;
-                    if (!rawChats.chats.get(data.data.chat.id)) {
-                        setSearchChat({ ...data.data.chat, message: data.data });
-                        break;
-                    }
+
+                    setChatOnPage({ ...data.data.chat, message: data.data });
+
+                    if (!rawChats.chats.get(data.data.chat.id)) break;
+
                     setToBegin({ ...data.data.chat, message: data.data });
                     audioSupport.pause();
                     audioSupport.currentTime = 0;

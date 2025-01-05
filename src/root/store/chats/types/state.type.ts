@@ -4,6 +4,6 @@ import { ChatReadType } from './chat-read.type.ts';
 export type StateType = {
     chats: ChatType[];
     updatedChats: ChatType[];
-    chatsRead?: ChatReadType[];
-    searchChat?: ChatType;
+    chatsRead: ChatReadType[];
+    chatOnPage?: ChatType;
 };

@@ -2,14 +2,15 @@ import { Api, IData } from '../index.ts';
 import { CreateChatType } from '../../types/chat/create-chat.type.ts';
 import { CreateMessageType } from '../../types/chat/create-message.type.ts';
 import { ChatType } from '../../types/chat/chat.type.ts';
+import { MessageType } from '../../types/chat/message.type.ts';
+import { Envs } from '../../../common/config/envs/envs.ts';
 
 export const getChats = async (
     title?: string,
-    limit?: number,
     offset?: number,
     notFavoriteChatIds?: string[],
 ): Promise<IData<ChatType[]>> => {
-    return Api<ChatType[]>('/chats', { params: { title, limit, offset, notFavoriteChatIds } });
+    return Api<ChatType[]>('/chats', { params: { title, limit: Envs.chats.limit, offset, notFavoriteChatIds } });
     // const response = await Api<EncryptChatItemType[]>('/chats', { params: { search, limit, offset } });
     //
     // if (!response.success || !response.data?.length) return { ...response, data: [] };
@@ -56,4 +57,8 @@ export const listenChats = (favoriteChatIds: string[]) => {
 
 export const leaveChats = (favoriteChatIds: string[]) => {
     return Api('/chats/leave', { method: 'POST', body: { favoriteChatIds } });
+};
+
+export const getMessages = (chatId: string) => {
+    return Api<MessageType[]>('/messages', { params: { chatId, limit: Envs.messages.limit } });
 };

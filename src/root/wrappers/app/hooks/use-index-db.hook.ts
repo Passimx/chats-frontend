@@ -3,7 +3,7 @@ import { useAppAction } from '../../../store';
 import rawChats from '../../../store/chats/chats.raw.ts';
 
 export const useIndexDbHook = () => {
-    const { setToEnd, updateReadChat } = useAppAction();
+    const { setToEnd, updateReadChat, setIsLoadedChatsFromIndexDb } = useAppAction();
 
     useEffect(() => {
         const openRequest = indexedDB.open('store', 1);
@@ -19,11 +19,10 @@ export const useIndexDbHook = () => {
                 request2.onsuccess = () => {
                     const request3 = IndexDb.transaction('chats-read', 'readonly').objectStore('chats-read').getAll();
                     request3.onsuccess = () => {
-                        if (!request2.result.length) return updateReadChat(null);
-
                         request2.result.forEach((key, index) =>
-                            updateReadChat({ chatId: key as number, number: request3.result[index] }),
+                            updateReadChat({ chatId: key as string, number: request3.result[index] }),
                         );
+                        setIsLoadedChatsFromIndexDb(true);
                     };
                 };
             };
@@ -34,6 +33,7 @@ export const useIndexDbHook = () => {
             if (!db.objectStoreNames.contains('chats')) db.createObjectStore('chats');
             if (!db.objectStoreNames.contains('chats-keys')) db.createObjectStore('chats-keys');
             if (!db.objectStoreNames.contains('chats-read')) db.createObjectStore('chats-read');
+            if (!db.objectStoreNames.contains('messages')) db.createObjectStore('messages');
         };
     }, []);
 };

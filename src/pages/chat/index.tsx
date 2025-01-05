@@ -19,6 +19,7 @@ import useVisibility from '../../common/hooks/use-visibility.ts';
 import { MdExitToApp } from 'react-icons/md';
 import { leaveChats } from '../../root/api/chats';
 import { useNavigate } from 'react-router-dom';
+import { saveMessages } from '../../root/store/chats/index-db/hooks.ts';
 
 const Chat: FC = () => {
     const [chat] = useGetChat();
@@ -36,13 +37,13 @@ const Chat: FC = () => {
 
     const addChat = () => {
         if (!chat) return;
+        saveMessages(chat.id, messages);
         postMessage({ data: { event: EventsEnum.CREATE_CHAT, data: { success: true, data: chat } } });
     };
 
     const back = (e: MouseEvent<unknown>) => {
         e.stopPropagation();
         document.documentElement.style.setProperty('--menu-margin', '0px');
-        navigate('/');
     };
 
     const readMessageFunc = (number: number) => {
@@ -60,6 +61,7 @@ const Chat: FC = () => {
         postMessage({
             data: { event: EventsEnum.REMOVE_CHAT, data: id },
         });
+        navigate('/');
         back(e);
     };
 
