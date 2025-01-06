@@ -22,3 +22,5 @@ type ChatItemType = {
 //     // countIsNotReadMessages: number;
 // };
 export type ChatType = ChatItemType;
+
+export type ChatItemIndexDb = ChatType & { messages: MessageType[]; readMessage: number };

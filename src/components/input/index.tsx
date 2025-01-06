@@ -14,7 +14,7 @@ const Input: FC<Partial<PropsType>> = ({ placeholder, register, value = '' }) =>
     const fieldName = useMemo(() => {
         return register?.name as keyof FormType;
     }, []);
-    // const error = 'asd';
+
     const error = useMemo(() => {
         return errors[fieldName]?.message;
     }, [errors[fieldName]]);

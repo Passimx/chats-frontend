@@ -26,19 +26,44 @@ export const useSharedWorker = () => {
                     setSocketId(data);
                     Envs.socketId = data;
                     break;
+                case EventsEnum.ADD_CHAT:
+                    setToBegin(data);
+                    break;
                 case EventsEnum.CREATE_CHAT:
                     if (!data.success) break;
-                    setToBegin(data.data);
-                    updateReadChat({ chatId: data.data.id, number: data.data.countMessages });
+                    setToBegin({ ...data.data, messages: [data.data.message], readMessage: 1 });
                     break;
                 case EventsEnum.CREATE_MESSAGE:
+                    // todo
+                    // уменьшить код
                     if (!data.success) break;
 
                     setChatOnPage({ ...data.data.chat, message: data.data });
 
                     if (!rawChats.chats.get(data.data.chat.id)) break;
 
-                    setToBegin({ ...data.data.chat, message: data.data });
+                    if (data.data.number === rawChats.chats.get(data.data.chat.id)!.messages[0].number + 1)
+                        setToBegin({
+                            ...data.data.chat,
+                            countMessages: data.data.number,
+                            message: data.data,
+                            messages: [
+                                data.data,
+                                ...rawChats.chats.get(data.data.chat.id)!.messages.slice(0, Envs.messages.limit - 1),
+                            ],
+                            readMessage: rawChats.chats.get(data.data.chat.id)!.readMessage,
+                        });
+                    else
+                        setToBegin({
+                            ...data.data.chat,
+                            countMessages: data.data.number,
+                            message: data.data,
+                            messages: [
+                                ...rawChats.chats.get(data.data.chat.id)!.messages.slice(0, Envs.messages.limit - 1),
+                            ],
+                            readMessage: rawChats.chats.get(data.data.chat.id)!.readMessage,
+                        });
+
                     audioSupport.pause();
                     audioSupport.currentTime = 0;
                     audioSupport.play();
