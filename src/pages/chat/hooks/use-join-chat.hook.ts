@@ -9,7 +9,7 @@ export const useJoinChat = (chat: ChatType | null) => {
 
     useEffect(() => {
         if (!chat) return;
-        if (!rawChats.chats.get(chat.id)) listenChats([chat.id]);
+        if (!rawChats.chats.get(chat.id)) listenChats([{ chatId: chat.id, lastMessage: chat.countMessages }]);
 
         return () => {
             if (!rawChats.chats.get(chat.id)) leaveChats([chat.id]);

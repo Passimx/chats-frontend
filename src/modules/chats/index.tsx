@@ -12,7 +12,7 @@ import rawChats from '../../root/store/chats/chats.raw.ts';
 import { ChatType } from '../../root/types/chat/chat.type.ts';
 
 const Chats: FC = () => {
-    const { socketId } = useAppSelector((state) => state.app);
+    const { isListening } = useAppSelector((state) => state.app);
     const [input, setInput] = useState<string | undefined>(undefined);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const page = useAppSelector((state) => state.app.page);
@@ -31,7 +31,7 @@ const Chats: FC = () => {
     return (
         <div id={styles.background}>
             <div id={styles.main}>
-                <Search isLoading={isLoading || !socketId} onChange={setInput} />
+                <Search isLoading={isLoading || !isListening} onChange={setInput} />
                 <div id={styles.chats}>
                     <Loading isLoading={isLoading} loadingComponent={<LoadingChats />}>
                         {updatedChats.filter(filterFunc).map((chat) => (

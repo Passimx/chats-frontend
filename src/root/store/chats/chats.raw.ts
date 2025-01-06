@@ -1,10 +1,9 @@
-import { ChatType } from '../../types/chat/chat.type.ts';
+import { ChatItemIndexDb } from '../../types/chat/chat.type.ts';
 import { RawChatType } from './types/raw-chat.type.ts';
 
 const rawChats: RawChatType = {
-    chats: new Map<string, ChatType>(),
-    updatedChats: new Map<string, ChatType>(),
-    chatsRead: new Map<string, number>(),
+    chats: new Map<string, ChatItemIndexDb>(),
+    updatedChats: new Map<string, ChatItemIndexDb>(),
     indexDb: undefined,
 };
 
