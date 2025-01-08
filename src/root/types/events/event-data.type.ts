@@ -1,12 +1,17 @@
 import { EventsEnum } from './events.enum.ts';
 import { IData } from '../../api';
-import { ChatType } from '../chat/chat.type.ts';
+import { ChatItemIndexDb, ChatType } from '../chat/chat.type.ts';
 import { MessageType } from '../chat/message.type.ts';
 import { UpdateReadChatType } from '../../store/chats/types/update-read-chat.type.ts';
 
 type GetSocketId = {
     readonly event: EventsEnum.GET_SOCKET_ID;
     readonly data: string | undefined;
+};
+
+type AddChat = {
+    readonly event: EventsEnum.ADD_CHAT;
+    readonly data: ChatItemIndexDb;
 };
 
 type CreateChat = {
@@ -39,7 +44,7 @@ type Error = {
     readonly data: string;
 };
 
-type DataType = GetSocketId | CreateChat | CreateMessage | ReadMessage | RemoveChat | CloseSocket | Error;
+type DataType = GetSocketId | AddChat | CreateChat | CreateMessage | ReadMessage | RemoveChat | CloseSocket | Error;
 
 export type EventDataType = {
     data: DataType;

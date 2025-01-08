@@ -1,5 +1,5 @@
 import { useAppAction, useAppSelector } from '../../index.ts';
-import { ChatType } from '../../../types/chat/chat.type.ts';
+import { ChatItemIndexDb, ChatType } from '../../../types/chat/chat.type.ts';
 import { useEffect } from 'react';
 
 let globChats: ChatType[] = [];
@@ -13,7 +13,7 @@ export const useUpdateChat = () => {
         globChats = chats;
     }, [chats]);
 
-    return (chat: ChatType) => {
+    return (chat: ChatItemIndexDb) => {
         if (globChats[0]?.id === chat.id) return update(chat);
 
         addUpdatedChat(chat);

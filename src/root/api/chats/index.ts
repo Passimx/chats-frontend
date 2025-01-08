@@ -4,6 +4,7 @@ import { CreateMessageType } from '../../types/chat/create-message.type.ts';
 import { ChatType } from '../../types/chat/chat.type.ts';
 import { MessageType } from '../../types/chat/message.type.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
+import { ChatListenRequestType } from '../../types/chat/chat-listen-request.type.ts';
 
 export const getChats = async (
     title?: string,
@@ -51,8 +52,8 @@ export const createMessage = (body: CreateMessageType) => {
     return Api('/messages', { body, method: 'POST' });
 };
 
-export const listenChats = (favoriteChatIds: string[]) => {
-    return Api('/chats/join', { method: 'POST', body: { favoriteChatIds } });
+export const listenChats = (chats: ChatListenRequestType[]) => {
+    return Api<ChatType[]>('/chats/join', { method: 'POST', body: { chats } });
 };
 
 export const leaveChats = (favoriteChatIds: string[]) => {

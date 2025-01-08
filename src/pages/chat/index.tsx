@@ -19,7 +19,6 @@ import useVisibility from '../../common/hooks/use-visibility.ts';
 import { MdExitToApp } from 'react-icons/md';
 import { leaveChats } from '../../root/api/chats';
 import { useNavigate } from 'react-router-dom';
-import { saveMessages } from '../../root/store/chats/index-db/hooks.ts';
 
 const Chat: FC = () => {
     const [chat] = useGetChat();
@@ -36,9 +35,12 @@ const Chat: FC = () => {
     useEffect(() => {}, [chats]);
 
     const addChat = () => {
-        if (!chat) return;
-        saveMessages(chat.id, messages);
-        postMessage({ data: { event: EventsEnum.CREATE_CHAT, data: { success: true, data: chat } } });
+        postMessage({
+            data: {
+                event: EventsEnum.ADD_CHAT,
+                data: { ...chat!, messages: messages, readMessage: chat!.countMessages },
+            },
+        });
     };
 
     const back = (e: MouseEvent<unknown>) => {
@@ -48,7 +50,7 @@ const Chat: FC = () => {
 
     const readMessageFunc = (number: number) => {
         if (!chat?.id) return;
-        const num = rawChats.chatsRead.get(chat.id);
+        const num = rawChats.chats.get(chat.id)?.readMessage;
         if (num && number > num)
             readMessage(() =>
                 postMessage({ data: { event: EventsEnum.READ_MESSAGE, data: { chatId: chat.id, number } } }),
@@ -64,7 +66,6 @@ const Chat: FC = () => {
         navigate('/');
         back(e);
     };
-
     if (!chat) return <></>;
 
     return (
@@ -117,21 +118,18 @@ const Chat: FC = () => {
             <div id={styles.messages_main_block}>
                 <div id={styles.messages_block}>
                     <div id={styles.messages}>
-                        {messages.map(
-                            ({ id, message, type, createdAt, number }) =>
-                                message && (
-                                    <Message
-                                        key={id}
-                                        chatId={chat.id}
-                                        title={chat.title}
-                                        number={number}
-                                        message={message}
-                                        type={type}
-                                        createdAt={new Date(createdAt)}
-                                        readMessage={readMessageFunc}
-                                    />
-                                ),
-                        )}
+                        {messages.map(({ id, message, type, createdAt, number }) => (
+                            <Message
+                                key={id}
+                                chatId={chat.id}
+                                title={chat.title}
+                                number={number}
+                                message={message}
+                                type={type}
+                                createdAt={new Date(createdAt)}
+                                readMessage={readMessageFunc}
+                            />
+                        ))}
                         <div></div>
                     </div>
                 </div>

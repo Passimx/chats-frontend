@@ -37,7 +37,6 @@ export const useEnterHook = (): [() => Promise<void>, (event: FormEvent<HTMLDivE
         setIsShowPlaceholder(true);
 
         globalChatId = String(id);
-        // inf
         // 300 - время анимации, иначе быстро отрабатывает анимация
         setTimeout(() => element.focus(), 300);
     }, [id]);

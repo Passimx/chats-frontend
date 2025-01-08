@@ -8,7 +8,7 @@ import { useAppSelector } from '../../../root/store';
 import rawChats from '../../../root/store/chats/chats.raw.ts';
 
 export const useMessage = (chat: ChatType): (string | undefined)[] => {
-    const { chatsRead } = useAppSelector((state) => state.chats);
+    const { chatOnPage } = useAppSelector((state) => state.chats);
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
     const { t } = useTranslation();
     const [message, setMessage] = useState<string>();
@@ -40,7 +40,7 @@ export const useMessage = (chat: ChatType): (string | undefined)[] => {
         if (!isLoadedChatsFromIndexDb) return;
 
         let count = chat.countMessages;
-        const number = rawChats.chatsRead.get(chat.id);
+        const number = rawChats.chats.get(chat.id)?.readMessage;
         if (number) {
             count = chat.countMessages - number;
             if (count === 0) return setCountMessages(undefined);
@@ -57,7 +57,7 @@ export const useMessage = (chat: ChatType): (string | undefined)[] => {
 
     useEffect(() => {
         changeCountMessages();
-    }, [chatsRead, chat]);
+    }, [chatOnPage, chat]);
 
     return [message, countMessages, time];
 };
