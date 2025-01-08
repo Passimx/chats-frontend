@@ -12,6 +12,8 @@ export const useListenAndUpdateChats = () => {
     const { socketId, isListening } = useAppSelector((state) => state.app);
 
     useEffect(() => {
+        if (!socketId) setIsListening(false);
+
         if (!socketId || !isLoadedChatsFromIndexDb || isListening) return;
 
         const chatsListen: ChatListenRequestType[] = [];

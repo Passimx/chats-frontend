@@ -19,6 +19,7 @@ import useVisibility from '../../common/hooks/use-visibility.ts';
 import { MdExitToApp } from 'react-icons/md';
 import { leaveChats } from '../../root/api/chats';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 const Chat: FC = () => {
     const [chat] = useGetChat();
@@ -70,6 +71,9 @@ const Chat: FC = () => {
 
     return (
         <div id={styles.background}>
+            <Helmet>
+                <title>{chat.title}</title>
+            </Helmet>
             <div id={styles.main}>
                 <div id={styles.header}>
                     <IoArrowBackCircleOutline onClick={back} id={styles.back_icon} />

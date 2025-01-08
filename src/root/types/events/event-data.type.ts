@@ -34,6 +34,11 @@ type RemoveChat = {
     readonly data: string;
 };
 
+type UpdateBadge = {
+    readonly event: EventsEnum.UPDATE_BADGE;
+    readonly data: number;
+};
+
 type CloseSocket = {
     readonly event: EventsEnum.CLOSE_SOCKET;
     readonly data: unknown;
@@ -44,7 +49,16 @@ type Error = {
     readonly data: string;
 };
 
-type DataType = GetSocketId | AddChat | CreateChat | CreateMessage | ReadMessage | RemoveChat | CloseSocket | Error;
+type DataType =
+    | GetSocketId
+    | AddChat
+    | CreateChat
+    | CreateMessage
+    | ReadMessage
+    | RemoveChat
+    | UpdateBadge
+    | CloseSocket
+    | Error;
 
 export type EventDataType = {
     data: DataType;

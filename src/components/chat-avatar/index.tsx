@@ -1,5 +1,5 @@
 import styles from './index.module.css';
-import logo from '/logo2.png';
+import logo from '/assets/images/icon512_rounded.png';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { AiOutlineGlobal } from 'react-icons/ai';
 import { LiaEyeSolid } from 'react-icons/lia';

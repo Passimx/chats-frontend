@@ -4,7 +4,7 @@
 }
 
 .question_block{
-    background-image: url('/question.png');
+    background-image: url('/public/assets/images/question.png');
     background-position: top right;
     background-size: 200px auto;
     background-repeat: repeat;

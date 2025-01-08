@@ -6,7 +6,12 @@ export const updateChatAtIndexDb = (payload: ChatItemIndexDb) =>
         const IndexDb = rawChats.indexDb;
 
         if (!IndexDb) return;
-        const dateNow = new Date(payload.message.createdAt).getTime();
+
+        // добавленный чат должен быть в верзу списка чатов
+        let dateNow: number;
+        if (rawChats.chats.get(payload.id)) dateNow = new Date(payload.message.createdAt).getTime();
+        else dateNow = new Date().getTime();
+
         const request1 = IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys').get(payload.id);
 
         request1.onsuccess = () => {

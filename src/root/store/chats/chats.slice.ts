@@ -15,16 +15,16 @@ const ChatsSlice = createSlice({
     initialState,
     reducers: {
         update(state, { payload }: PayloadAction<ChatItemIndexDb>) {
+            updateChatAtIndexDb(payload);
             rawChats.chats.set(payload.id, payload);
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
-            updateChatAtIndexDb(payload);
         },
 
         setToBegin(state, { payload }: PayloadAction<ChatItemIndexDb>) {
+            updateChatAtIndexDb(payload);
             rawChats.chats.delete(payload.id);
             rawChats.chats.set(payload.id, payload);
             state.chats = Array.from(rawChats.chats.values()).reverse();
-            updateChatAtIndexDb(payload);
         },
 
         updateReadChat(state, { payload }: PayloadAction<UpdateReadChatType>) {
@@ -33,12 +33,12 @@ const ChatsSlice = createSlice({
 
             if (!chat) return;
             const updatedChat: ChatItemIndexDb = { ...chat, readMessage: number };
+            updateReadChat(updatedChat);
 
             rawChats.chats.set(chatId, updatedChat);
 
             state.chats = Array.from(rawChats.chats.values()).reverse();
             state.chatOnPage = updatedChat;
-            updateReadChat(updatedChat);
         },
 
         addUpdatedChat(state, { payload }: PayloadAction<ChatItemIndexDb>) {

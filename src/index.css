@@ -14,7 +14,9 @@
 
 html,body, #root{
     height: 100dvh;
+    width: 100vw;
     overflow: hidden;
+    position: fixed;
     background-position: top right;
     background-size: 510px auto;
     background-repeat: repeat;
