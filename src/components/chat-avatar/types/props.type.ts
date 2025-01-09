@@ -1,5 +1,8 @@
-import { ChatEnum } from '../../../root/types/chat/chat.enum.ts';
+import { IconEnum } from './icon.enum.ts';
 
 export type PropsType = {
-    type: ChatEnum;
+    iconType: IconEnum;
+    onlineCount: string;
+    recordCount: string;
+    isChange?: boolean;
 };

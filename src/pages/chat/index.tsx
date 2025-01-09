@@ -19,7 +19,11 @@ import useVisibility from '../../common/hooks/use-visibility.ts';
 import { MdExitToApp } from 'react-icons/md';
 import { leaveChats } from '../../root/api/chats';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { IconEnum } from '../../components/chat-avatar/types/icon.enum.ts';
+import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
+import { AiOutlineGlobal } from 'react-icons/ai';
+import { LiaEyeSolid } from 'react-icons/lia';
+import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
 
 const Chat: FC = () => {
     const [chat] = useGetChat();
@@ -71,19 +75,25 @@ const Chat: FC = () => {
 
     return (
         <div id={styles.background}>
-            <Helmet>
-                <title>{chat.title}</title>
-            </Helmet>
             <div id={styles.main}>
                 <div id={styles.header}>
                     <IoArrowBackCircleOutline onClick={back} id={styles.back_icon} />
                     <div id={styles.chat_inf}>
-                        <ChatAvatar type={chat.type} />
+                        <ChatAvatar onlineCount={'323'} recordCount={'1K'} iconType={IconEnum.ONLINE} isChange={true} />
                         <div id={styles.title}>{chat.title}</div>
-                        <div id={styles.icon_block}>
-                            <div>
-                                <div id={styles.count_online}>30K</div>
-                            </div>
+                        <div className={styles.icon}>
+                            {chat.type === ChatEnum.IS_OPEN && (
+                                <AiOutlineGlobal className={styles.type_icon} color="green" />
+                            )}
+                            {chat.type === ChatEnum.IS_SHARED && (
+                                <LiaEyeSolid className={styles.look_svg} color="green" />
+                            )}
+                            {chat.type === ChatEnum.IS_PUBLIC && (
+                                <RxLockOpen1 className={styles.look_svg} color="green" />
+                            )}
+                            {chat.type === ChatEnum.IS_PRIVATE && (
+                                <RxLockClosed className={styles.look_svg} color="red" />
+                            )}
                         </div>
                         <div id={styles.chat_menu_button} onClick={() => setIsVisible(true)}>
                             <CiMenuKebab id={styles.menu_icon} />

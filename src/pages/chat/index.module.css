@@ -46,25 +46,6 @@
     gap: 10px;
 }
 
-#icon_block{
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 5px;
-}
-
-#count_online{
-    font-weight: 700;
-    display: grid;
-    justify-items: center;
-    height: 30px;
-    align-items: center;
-    user-select: none;
-    padding: 0 5px 0 5px;
-    border-radius: 0.4cm;
-    min-width: calc(0.8cm - 10px);
-    background-color: green;
-}
-
 #title{
     overflow: hidden;
     text-overflow: ellipsis;
@@ -76,6 +57,15 @@
     line-clamp: 2;
     font-weight: 600;
     font-size: 18px;
+}
+
+.icon{
+    display: grid;
+    align-items: center;
+}
+
+.type_icon{
+    font-size: 24px;
 }
 
 #title::first-letter {

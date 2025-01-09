@@ -17,18 +17,9 @@ const manifest: Partial<ManifestOptions> | false = {
     orientation: 'any',
     display: 'standalone',
     lang: 'ru-RU',
-    name: 'Passim DAO',
+    name: 'Passim Team',
     short_name: 'Passim',
     start_url: '/',
-    share_target: {
-        action: '/shared-content-receiver/',
-        method: 'GET',
-        params: {
-            title: 'name',
-            text: 'description',
-            url: 'link',
-        },
-    },
 };
 
 const vitePWA = VitePWA({

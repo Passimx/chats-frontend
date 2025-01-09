@@ -30,22 +30,24 @@
     padding-left: 5px;
     padding-right: 15px;
     display: grid;
-    grid-template-rows: 17px 33px;
+    grid-template-rows: 50px;
     color:white;
 }
 
-
-.chat_block{
+.title_block{
+    overflow: hidden;
+    align-content: center;
     display: grid;
-    align-items: center;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr;
     gap: 5px;
 }
 
-.title_block{
-    display: grid;
-    grid-template-columns: auto;
-    gap: 8px;
+.look{
+    align-content: center;
+}
+
+.look_svg{
+    font-size: 18px;
 }
 
 .title{
@@ -53,47 +55,9 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     font-weight: 300;
+    font-size: 18px;
 }
 
 .title::first-letter {
     text-transform: uppercase;
-}
-
-.count_online_block{
-    display: grid;
-    grid-template-columns: auto auto auto;
-
-}
-
-.icon_block{
-    display: grid;
-    grid-template-columns: auto auto;
-    gap: 5px;
-}
-
-.icon{
-    font-size: 30px;
-    color:white;
-}
-
-.count_online, .count_max{
-    font-weight: 700;
-    display: grid;
-    justify-items: center;
-    align-items: center;
-    user-select: none;
-    padding: 0 5px 0 5px;
-    border-radius: 0.4cm;
-    min-width: calc(0.8cm - 10px);
-}
-
-.count_max{
-    background-color: goldenrod;
-    color: black;
-
-}
-
-.count_online{
-    background-color: green;
-    color: white;
 }

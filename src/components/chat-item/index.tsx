@@ -4,9 +4,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ChatAvatar from '../chat-avatar';
 import { ChatType } from '../../root/types/chat/chat.type.ts';
 import { useMessage } from './hooks/use-message.hook.ts';
+import { IconEnum } from '../chat-avatar/types/icon.enum.ts';
 
 const ChatItem: FC<{ chat: ChatType; isNew?: boolean }> = ({ chat, isNew = false }) => {
-    const [message, countMessages, time] = useMessage(chat);
+    const [message, time, countMessages] = useMessage(chat);
     const navigate = useNavigate();
     const { id } = useParams();
     const elementId = `chat-${chat.id}`;
@@ -27,7 +28,7 @@ const ChatItem: FC<{ chat: ChatType; isNew?: boolean }> = ({ chat, isNew = false
                 navigate(`${chat.id}`, { state: chat });
             }}
         >
-            <ChatAvatar type={chat.type} />
+            <ChatAvatar onlineCount={'932'} recordCount={'3032'} iconType={IconEnum.ONLINE} />
             <div className={styles.main_inf}>
                 <div className={styles.title_block}>
                     <div className={styles.title}>{chat.title}</div>

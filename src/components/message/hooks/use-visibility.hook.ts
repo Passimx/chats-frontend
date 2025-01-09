@@ -13,7 +13,7 @@ export const useVisibility = (props: PropsType): [MutableRefObject<null>, string
     const time = moment(createdAt).format('LT');
 
     const visibleMessage = useMemo(() => {
-        return type == MessageTypeEnum.IS_SYSTEM ? `${t(message)} «${title}»` : `${number}) ${message}`;
+        return type == MessageTypeEnum.IS_SYSTEM ? `${t(message)} «${title}»` : message;
     }, []);
 
     useEffect(() => {

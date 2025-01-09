@@ -7,11 +7,17 @@ import rawChats from '../../../root/store/chats/chats.raw.ts';
 
 const useGetChat = (): [ChatType | null] => {
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
+    const { chatOnPage } = useAppSelector((state) => state.chats);
     const [chat, setChat] = useState<ChatType | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const { state }: { state: ChatType | undefined } = useLocation();
     const navigate = useNavigate();
     const { id } = useParams();
+
+    useEffect(() => {
+        if (!chatOnPage) return;
+        if (chatOnPage.id === chat?.id) setChat(chatOnPage);
+    }, [chatOnPage]);
 
     useEffect(() => {
         if (!isLoadedChatsFromIndexDb) return;
@@ -45,6 +51,9 @@ const useGetChat = (): [ChatType | null] => {
         }
 
         if (chat && !isLoading) {
+            const keywords = chat.title.split(' ').join(',');
+            document.title = chat.title;
+            document.querySelector('meta[name="keywords"]')?.setAttribute('content', keywords);
             document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
         }
     }, [isLoading, chat]);
