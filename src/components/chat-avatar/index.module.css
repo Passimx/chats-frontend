@@ -1,17 +1,44 @@
 .background{
     height: 50px;
     width: 50px;
+    cursor: pointer;
+    transform-style: preserve-3d;
 }
 
-.icon_avatar{
+.cube{
+    transform-style: preserve-3d;
+}
+
+.icon_number{
     border-radius: 50%;
-    width: 50px;
+    width: 36px;
+    height: 36px;
+    border: 2px solid white;
     user-select: none;
     pointer-events: none;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    padding: 5px;
+    position: absolute;
+    color: white;
+    line-clamp: 1;
+    display: -moz-box;
+    -moz-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    font-weight: 400;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    backface-visibility: hidden;
 }
 
 /*noinspection CssInvalidPropertyValue*/
-.icon_public_or_private_chat{
+.front {
+    background-color: white;
+    color: black;
     -webkit-mask-image: radial-gradient(
             circle at calc(40px) calc(10px),
             transparent 10px,
@@ -19,18 +46,93 @@
     );
 }
 
+/*noinspection CssInvalidPropertyValue*/
+.back {
+    transform: rotateY(180deg);
+    color: white;
+    -webkit-mask-image: radial-gradient(
+            circle at calc(10px) calc(10px),
+            transparent 10px,
+            #000 0
+    );
+}
+
 .look{
+    display: grid;
     align-items: center;
     justify-content: center;
-    display: grid;
-    width: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
-    aspect-ratio: 1/1;
     margin-left: auto;
     position: relative;
-    top: -53px; left: 0px;
+    top: 0;
+    left: 0;
+    border: 1px solid white;
 }
 
 .look_svg{
     font-size: 15px;
+    margin-left: 1px;
+    position: absolute;
+}
+
+.from_online_to_record{
+    animation: .3s linear forwards from_online_to_record;
+    transform-style: preserve-3d;
+}
+
+.from_record_to_online{
+    animation: .3s linear forwards from_record_to_online;
+    transform-style: preserve-3d;
+}
+
+@keyframes from_online_to_record {
+    from{
+        transform: rotateY(0deg);
+    }
+
+    to {
+        transform: rotateY(-180deg);
+    }
+}
+
+@keyframes from_record_to_online {
+    from{
+        transform: rotateY(-180deg);
+    }
+
+    to {
+        transform: rotateY(0deg);
+    }
+}
+
+
+.show_slowly{
+    animation: show_slowly .3s linear forwards;
+}
+
+.hide_slowly{
+    animation: hide_slowly .3s linear forwards;
+}
+
+@keyframes show_slowly{
+    from {
+        visibility: hidden;
+        opacity: 0;
+    }
+    to {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+@keyframes hide_slowly{
+    from {
+        visibility: visible;
+        opacity: 1;
+    }
+    to {
+        visibility: hidden;
+        opacity: 0;
+    }
 }

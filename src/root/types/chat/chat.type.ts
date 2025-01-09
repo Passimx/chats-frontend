@@ -4,7 +4,7 @@ import { MessageType } from './message.type.ts';
 type ChatItemType = {
     id: string;
     title: string;
-    type: ChatEnum.IS_OPEN;
+    type: ChatEnum;
     createdAt: Date;
     countMessages: number;
     message: MessageType;

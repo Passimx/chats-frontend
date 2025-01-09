@@ -46,8 +46,8 @@ export const useMessage = (chat: ChatType): (string | undefined)[] => {
             if (count === 0) return setCountMessages(undefined);
         }
 
-        setCountMessages(count.toString());
-        if (count >= 1000) setCountMessages(`${Math.floor(count / 1000)}К`);
+        if (count < 1000) setCountMessages(count.toString());
+        else if (count < 1000000) setCountMessages(`${Math.floor(count / 1000)}К`);
         else if (count >= 1000000) setCountMessages(`${Math.floor(count / 1000000)}М`);
     };
 
@@ -59,5 +59,5 @@ export const useMessage = (chat: ChatType): (string | undefined)[] => {
         changeCountMessages();
     }, [chatOnPage, chat]);
 
-    return [message, countMessages, time];
+    return [message, time, countMessages];
 };

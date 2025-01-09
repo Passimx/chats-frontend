@@ -56,8 +56,8 @@ export const listenChats = (chats: ChatListenRequestType[]) => {
     return Api<ChatType[]>('/chats/join', { method: 'POST', body: { chats } });
 };
 
-export const leaveChats = (favoriteChatIds: string[]) => {
-    return Api('/chats/leave', { method: 'POST', body: { favoriteChatIds } });
+export const leaveChats = (chatIds: string[]) => {
+    return Api('/chats/leave', { method: 'POST', body: { chatIds } });
 };
 
 export const getMessages = (chatId: string) => {
