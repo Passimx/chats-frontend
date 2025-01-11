@@ -121,7 +121,7 @@
 }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
-    _::-webkit-full-page-media, _:future, :root , .placeholder_text {
+    .placeholder_text {
         margin-top: 10px;
     }
 }

@@ -42,12 +42,3 @@ html{
     overflow-y: scroll;
     height: calc(100% - 40px - 16px);
 }
-
-#chats::-webkit-scrollbar {
-    width: 8px;
-    background: none;
-}
-#chats::-webkit-scrollbar-thumb {
-    background-color: white;
-    border-radius: 4px;
-}

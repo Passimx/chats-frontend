@@ -40,6 +40,11 @@ const AppSlice = createSlice({
         setIsLoadedChatsFromIndexDb(state, { payload }: PayloadAction<boolean>) {
             state.isLoadedChatsFromIndexDb = payload;
         },
+
+        setIsPhone(state) {
+            const toMatch = [/Android/i, /webOS/i, /iPhone/i, /iPad/i, /iPod/i, /BlackBerry/i, /Windows Phone/i];
+            state.isPhone = toMatch.some((toMatchItem) => navigator.userAgent.match(toMatchItem));
+        },
     },
 });
 

@@ -4,9 +4,34 @@ import { StateType } from './types/state.type.ts';
 import rawChats from './chats.raw.ts';
 import { UpdateReadChatType } from './types/update-read-chat.type.ts';
 import { deleteChatIndexDb, updateChatAtIndexDb, updateReadChat } from './index-db/hooks.ts';
+import { ChatEnum } from '../../types/chat/chat.enum.ts';
+import { MessageType } from '../../types/chat/message.type.ts';
+import { MessageTypeEnum } from '../../types/chat/message-type.enum.ts';
+
+const message: MessageType = {
+    id: 'fdsf',
+    message: 'Тестовое ссобщения для проверки качества сообщения в тестовой сборке',
+    chatId: 'sdf',
+    createdAt: new Date(),
+    number: 3,
+    type: MessageTypeEnum.IS_USER,
+    chat: {} as ChatItemIndexDb,
+    parentMessageId: 'sdf',
+};
+
+const chat: ChatItemIndexDb = {
+    createdAt: new Date(),
+    id: 'sdf',
+    countMessages: 33,
+    readMessage: 3,
+    title: 'Test',
+    type: ChatEnum.IS_OPEN,
+    messages: [message],
+    message,
+};
 
 const initialState: StateType = {
-    chats: [],
+    chats: [chat],
     updatedChats: [],
 };
 

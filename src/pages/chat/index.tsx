@@ -100,6 +100,14 @@ const Chat: FC = () => {
                         </div>
                     </div>
                 </div>
+                {!rawChats.chats.get(chat.id) && (
+                    <div className={styles.add_chat_block} onClick={addChat}>
+                        <IoIosAddCircleOutline id={styles.new_chat_icon} />
+                        {t('add_chat')}
+                    </div>
+                )}
+            </div>
+            <div id={styles.messages_main_block}>
                 <div
                     id={styles.chat_menu}
                     className={visibility(styles.show_slowly, styles.hide_slowly, isVisible)}
@@ -122,14 +130,6 @@ const Chat: FC = () => {
                         </div>
                     )}
                 </div>
-                {!rawChats.chats.get(chat.id) && (
-                    <div className={styles.add_chat_block} onClick={addChat}>
-                        <IoIosAddCircleOutline id={styles.new_chat_icon} />
-                        {t('add_chat')}
-                    </div>
-                )}
-            </div>
-            <div id={styles.messages_main_block}>
                 <div id={styles.messages_block}>
                     <div id={styles.messages}>
                         {messages.map(({ id, message, type, createdAt, number }) => (

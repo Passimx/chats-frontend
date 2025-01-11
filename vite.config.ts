@@ -19,7 +19,11 @@ const manifest: Partial<ManifestOptions> | false = {
     lang: 'ru-RU',
     name: 'Passim Team',
     short_name: 'Passim',
+    description: 'open platform for messaging',
     start_url: '/',
+    edge_side_panel: {
+        preferred_width: 480,
+    },
 };
 
 const vitePWA = VitePWA({

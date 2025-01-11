@@ -3,12 +3,14 @@ import styles from '../index.module.css';
 import { useParams } from 'react-router-dom';
 import styles2 from '../../../pages/chat/index.module.css';
 import { createMessage } from '../../../root/api/chats';
+import { useAppSelector } from '../../../root/store';
 
 let globalChatId: string;
 
 export const useEnterHook = (): [() => Promise<void>, (event: FormEvent<HTMLDivElement>) => void, boolean] => {
-    const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
     const { id } = useParams();
+    const { isPhone } = useAppSelector((state) => state.app);
+    const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
 
     const onInput = (event: FormEvent<HTMLDivElement>) => {
         const isEmpty = ['', '\n'].includes(event.currentTarget.innerText);
@@ -45,11 +47,11 @@ export const useEnterHook = (): [() => Promise<void>, (event: FormEvent<HTMLDivE
         const element = document.getElementById(styles.new_message)!;
 
         element.addEventListener('keypress', (event) => {
-            if (event.code === 'Enter' && !event.shiftKey) event.preventDefault();
+            if (event.code === 'Enter' && !isPhone && !event.shiftKey) event.preventDefault();
         });
 
         element.addEventListener('keyup', (event) => {
-            if (event.code === 'Enter' && !event.shiftKey) sendMessage();
+            if (event.code === 'Enter' && !isPhone && !event.shiftKey) sendMessage();
         });
     }, []);
 

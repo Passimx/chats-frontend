@@ -7,12 +7,14 @@ import { useOnline } from './hooks/use-online.ts';
 import { useParams } from 'react-router-dom';
 import { useIndexDbHook } from './hooks/use-index-db.hook.ts';
 import { useListenAndUpdateChats } from './hooks/use-listen-and-update-chats.hook.ts';
+import { useIsPhone } from './hooks/use-is-phone.hook.ts';
 
 const AppWrapper: FC<{ children: any }> = ({ children }) => {
     useListenAndUpdateChats();
     useSharedWorker();
     useIndexDbHook();
     useOnline();
+    useIsPhone();
 
     const isLoaded = useTranslation();
     const { id } = useParams();
