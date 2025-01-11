@@ -2,11 +2,11 @@ import { FC, useEffect } from 'react';
 import styles from './index.module.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChatAvatar from '../chat-avatar';
-import { ChatType } from '../../root/types/chat/chat.type.ts';
 import { useMessage } from './hooks/use-message.hook.ts';
 import { IconEnum } from '../chat-avatar/types/icon.enum.ts';
+import { PropsType } from './types/props.type.ts';
 
-const ChatItem: FC<{ chat: ChatType; isNew?: boolean }> = ({ chat, isNew = false }) => {
+const ChatItem: FC<PropsType> = ({ chat, isNew = false }) => {
     const [message, time, countMessages] = useMessage(chat);
     const navigate = useNavigate();
     const { id } = useParams();

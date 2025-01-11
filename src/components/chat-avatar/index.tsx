@@ -6,8 +6,11 @@ import useVisibility from '../../common/hooks/use-visibility.ts';
 import { IconEnum } from './types/icon.enum.ts';
 import { FaUsers } from 'react-icons/fa';
 import { HiTrendingUp } from 'react-icons/hi';
+import { useAppSelector } from '../../root/store';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 const ChatAvatar: FC<PropsType> = ({ onlineCount, recordCount, iconType, isChange = false }) => {
+    const { isListening } = useAppSelector((state) => state.app);
     const setClass = useVisibility;
     const [isShow, setIsShow] = useState<boolean>();
 
@@ -18,7 +21,9 @@ const ChatAvatar: FC<PropsType> = ({ onlineCount, recordCount, iconType, isChang
             style={{ transform: iconType === IconEnum.RECORD ? 'rotateY(-180deg)' : 'rotateY(0deg)' }}
         >
             <div className={styles.cube}>
-                <div className={`${styles.icon_number} ${styles.front}`}>{onlineCount}</div>
+                <div className={`${styles.icon_number} ${styles.front}`}>
+                    {isListening ? onlineCount : <AiOutlineLoading3Quarters className={styles.loading_logo} />}
+                </div>
                 <div className={`${styles.icon_number} ${styles.back}`}>{recordCount}</div>
                 <div className={styles.look}>
                     <FaUsers

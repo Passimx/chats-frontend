@@ -136,3 +136,19 @@
         opacity: 0;
     }
 }
+
+.loading_logo{
+    color: black;
+    font-size: 24px;
+    opacity: 0.6;
+    animation: rotate_search .6s linear infinite;
+}
+
+@keyframes rotate_search {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

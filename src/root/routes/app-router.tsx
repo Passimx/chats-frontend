@@ -2,6 +2,7 @@ import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 import { FC } from 'react';
 import AppWrapper from '../wrappers/app';
 import Chat from '../../pages/chat';
+import { Redirect } from '../../pages/redirect';
 
 const router = createBrowserRouter([
     {
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '*',
-                element: <></>,
+                element: <Redirect />,
             },
         ],
     },

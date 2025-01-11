@@ -44,6 +44,7 @@ const useChats = (
     useEffect(() => {
         setIsLoading(!!input?.length);
         if (input === key && isOnline) return setIsLoading(false);
+        if (!input?.length) removeAll();
         globalKey = input;
     }, [input, isOnline]);
 

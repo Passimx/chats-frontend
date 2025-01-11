@@ -1,12 +1,10 @@
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import styles from './index.module.css';
 import styles2 from '../../components/chat-item/index.module.css';
 import Search from '../search';
 import { useAppSelector } from '../../root/store';
 import BackButton from '../../components/back-button';
 import { SearchGlobalChats } from '../search-global-chats';
-import LoadingChats from '../../components/loading-chats';
-import Loading from '../../components/loading';
 import ChatItem from '../../components/chat-item';
 import rawChats from '../../root/store/chats/chats.raw.ts';
 import { ChatType } from '../../root/types/chat/chat.type.ts';
@@ -28,26 +26,24 @@ const Chats: FC = () => {
         );
     };
 
+    const filteredChats = useMemo(() => chats.filter(filterFunc), [input, chats, isLoading]);
+
     return (
         <div id={styles.background}>
             <div id={styles.main}>
                 <Search isLoading={isLoading || !isListening} onChange={setInput} />
                 <div id={styles.chats}>
-                    <Loading isLoading={isLoading} loadingComponent={<LoadingChats />}>
-                        {updatedChats.filter(filterFunc).map((chat) => (
-                            <ChatItem key={chat.id} chat={chat} isNew={true} />
-                        ))}
-                        {chats
-                            .filter(filterFunc)
-                            .map((chat, index) =>
-                                rawChats.updatedChats.get(chat.id) ? (
-                                    <div key={index} className={`${styles2.chat_item} ${styles2.hide_chat}`}></div>
-                                ) : (
-                                    <ChatItem key={chat.id} chat={chat} />
-                                ),
-                            )}
-                        <SearchGlobalChats input={input} changeIsLoading={setIsLoading} />
-                    </Loading>
+                    {updatedChats.filter(filterFunc).map((chat) => (
+                        <ChatItem key={chat.id} chat={chat} isNew={true} />
+                    ))}
+                    {filteredChats.map((chat, index) =>
+                        rawChats.updatedChats.get(chat.id) ? (
+                            <div key={index} className={`${styles2.chat_item} ${styles2.hide_chat}`}></div>
+                        ) : (
+                            <ChatItem key={chat.id} chat={chat} />
+                        ),
+                    )}
+                    <SearchGlobalChats input={input} changeIsLoading={setIsLoading} />
                 </div>
             </div>
             <div id={styles.page_block}>

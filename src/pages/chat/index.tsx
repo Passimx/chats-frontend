@@ -87,6 +87,8 @@ const Chat: FC = () => {
                             )}
                             {chat.type === ChatEnum.IS_SHARED && (
                                 <LiaEyeSolid className={styles.look_svg} color="green" />
+                                // <IoIosMicrophone className={styles.look_svg} color="green" />
+                                // <RiUserVoiceFill className={styles.look_svg} color="green" />
                             )}
                             {chat.type === ChatEnum.IS_PUBLIC && (
                                 <RxLockOpen1 className={styles.look_svg} color="green" />
