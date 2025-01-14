@@ -57,6 +57,20 @@
     );
 }
 
+#logos_block{
+    width: 24px;
+    height: 24px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.no_wifi_logo{
+    font-size: 16px;
+    color: black;
+    opacity: 0.6;
+}
+
 .look{
     display: grid;
     align-items: center;
@@ -142,6 +156,7 @@
     font-size: 24px;
     opacity: 0.6;
     animation: rotate_search .6s linear infinite;
+    position: absolute;
 }
 
 @keyframes rotate_search {

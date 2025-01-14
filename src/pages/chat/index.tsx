@@ -68,9 +68,14 @@ const Chat: FC = () => {
         postMessage({
             data: { event: EventsEnum.REMOVE_CHAT, data: id },
         });
+
+        document.title = '';
+        document.querySelector('meta[name="keywords"]')?.setAttribute('content', '');
+
         navigate('/');
         back(e);
     };
+
     if (!chat) return <></>;
 
     return (

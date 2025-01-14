@@ -4,8 +4,8 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { ManifestOptions, VitePWA } from 'vite-plugin-pwa';
 
 const manifest: Partial<ManifestOptions> | false = {
-    theme_color: '#000000',
-    background_color: '#a1cff7',
+    theme_color: '#062846',
+    background_color: '#062846',
     icons: [
         { purpose: 'maskable', sizes: '512x512', src: '/assets/images/icon512_maskable.png', type: 'image/png' },
         { purpose: 'any', sizes: '512x512', src: '/assets/images/icon512_rounded.png', type: 'image/png' },
@@ -17,7 +17,7 @@ const manifest: Partial<ManifestOptions> | false = {
     orientation: 'any',
     display: 'standalone',
     lang: 'ru-RU',
-    name: 'Passim Team',
+    name: 'Passim',
     short_name: 'Passim',
     description: 'open platform for messaging',
     start_url: '/',

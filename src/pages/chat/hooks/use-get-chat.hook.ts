@@ -50,9 +50,10 @@ const useGetChat = (): [ChatType | null] => {
             navigate('/');
         }
 
-        if (chat && !isLoading) {
-            const keywords = chat.title.split(' ').join(',');
-            document.title = chat.title;
+        if (!isLoading) {
+            const title = chat?.title ?? '';
+            const keywords = title.split(' ').join(',');
+            document.title = title;
             document.querySelector('meta[name="keywords"]')?.setAttribute('content', keywords);
             document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
         }

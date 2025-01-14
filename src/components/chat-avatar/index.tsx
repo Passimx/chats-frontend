@@ -8,9 +8,10 @@ import { FaUsers } from 'react-icons/fa';
 import { HiTrendingUp } from 'react-icons/hi';
 import { useAppSelector } from '../../root/store';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { RiWifiOffLine } from 'react-icons/ri';
 
 const ChatAvatar: FC<PropsType> = ({ onlineCount, recordCount, iconType, isChange = false }) => {
-    const { isListening } = useAppSelector((state) => state.app);
+    const { isListening, isOnline } = useAppSelector((state) => state.app);
     const setClass = useVisibility;
     const [isShow, setIsShow] = useState<boolean>();
 
@@ -22,7 +23,16 @@ const ChatAvatar: FC<PropsType> = ({ onlineCount, recordCount, iconType, isChang
         >
             <div className={styles.cube}>
                 <div className={`${styles.icon_number} ${styles.front}`}>
-                    {isListening ? onlineCount : <AiOutlineLoading3Quarters className={styles.loading_logo} />}
+                    {isListening ? (
+                        onlineCount
+                    ) : (
+                        <div id={styles.logos_block}>
+                            <AiOutlineLoading3Quarters className={styles.loading_logo} />
+                            {isChange && !isOnline && (
+                                <RiWifiOffLine className={`${styles.logo} ${styles.no_wifi_logo}`} />
+                            )}
+                        </div>
+                    )}
                 </div>
                 <div className={`${styles.icon_number} ${styles.back}`}>{recordCount}</div>
                 <div className={styles.look}>
