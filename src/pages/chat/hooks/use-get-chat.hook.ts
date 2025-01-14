@@ -4,6 +4,7 @@ import { getChatById } from '../../../root/api/chats';
 import { ChatType } from '../../../root/types/chat/chat.type.ts';
 import { useAppSelector } from '../../../root/store';
 import rawChats from '../../../root/store/chats/chats.raw.ts';
+import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 
 const useGetChat = (): [ChatType | null] => {
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
@@ -46,15 +47,13 @@ const useGetChat = (): [ChatType | null] => {
 
     useEffect(() => {
         if (!chat && !isLoading) {
+            changeHead();
             document.documentElement.style.setProperty('--menu-margin', '0px');
-            navigate('/');
+            return navigate('/');
         }
 
         if (!isLoading) {
-            const title = chat?.title ?? '';
-            const keywords = title.split(' ').join(',');
-            document.title = title;
-            document.querySelector('meta[name="keywords"]')?.setAttribute('content', keywords);
+            changeHead(chat?.title);
             document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
         }
     }, [isLoading, chat]);

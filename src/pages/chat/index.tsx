@@ -24,6 +24,7 @@ import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { AiOutlineGlobal } from 'react-icons/ai';
 import { LiaEyeSolid } from 'react-icons/lia';
 import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
+import { changeHead } from '../../common/hooks/change-head-inf.hook.ts';
 
 const Chat: FC = () => {
     const [chat] = useGetChat();
@@ -69,8 +70,7 @@ const Chat: FC = () => {
             data: { event: EventsEnum.REMOVE_CHAT, data: id },
         });
 
-        document.title = '';
-        document.querySelector('meta[name="keywords"]')?.setAttribute('content', '');
+        changeHead();
 
         navigate('/');
         back(e);

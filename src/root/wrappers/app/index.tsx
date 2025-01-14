@@ -9,8 +9,10 @@ import { useIndexDbHook } from './hooks/use-index-db.hook.ts';
 import { useListenAndUpdateChats } from './hooks/use-listen-and-update-chats.hook.ts';
 import { useIsPhone } from './hooks/use-is-phone.hook.ts';
 import { PropsType } from './types/props.type.ts';
+import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
+    changeHead();
     useListenAndUpdateChats();
     useSharedWorker();
     useIndexDbHook();
