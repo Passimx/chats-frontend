@@ -106,6 +106,9 @@
 }
 
 .placeholder_text{
+    display: grid;
+    align-items: center;
+    height: 40px;
     opacity: 0.5;
     position: absolute;
     pointer-events: none;
@@ -120,11 +123,11 @@
     transition: opacity 200ms ease-out, transform 200ms ease-out;
 }
 
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
-    .placeholder_text {
-        margin-top: 10px;
-    }
-}
+/*@media screen and (-webkit-min-device-pixel-ratio: 0) {*/
+/*    .placeholder_text {*/
+/*        margin-top: 0px;*/
+/*    }*/
+/*}*/
 
 .show_slowly{
     animation: show_slowly 0.2s linear forwards;

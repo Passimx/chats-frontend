@@ -3,16 +3,24 @@ import { EventDataType } from '../../../types/events/event-data.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
 import { useUpdateChat } from '../../../store/app/hooks/use-update-chat.hook.ts';
-import { useAppAction } from '../../../store';
+import { useAppAction, useAppSelector } from '../../../store';
 import rawApp from '../../../store/app/app.raw.ts';
 import rawChats from '../../../store/chats/chats.raw.ts';
 import { useNavigate } from 'react-router-dom';
+import { ChatType } from '../../../types/chat/chat.type.ts';
+
+let globalChatOnPage: ChatType | undefined;
 
 export const useSharedWorker = () => {
     let sharedWorker: SharedWorker;
-    const { setSocketId, setIsListening, updateReadChat, setChatOnPage, removeChat } = useAppAction();
+    const { setSocketId, updateOnline, setIsListening, updateReadChat, setChatOnPage, removeChat } = useAppAction();
+    const { chatOnPage } = useAppSelector((state) => state.chats);
     const setToBegin = useUpdateChat();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (chatOnPage) globalChatOnPage = chatOnPage;
+    }, [chatOnPage?.id]);
 
     useEffect(() => {
         try {
@@ -51,7 +59,8 @@ export const useSharedWorker = () => {
                 case EventsEnum.CREATE_MESSAGE:
                     if (!data.success) break;
 
-                    setChatOnPage({ ...data.data.chat, message: data.data });
+                    if (globalChatOnPage?.id === data.data.chatId)
+                        setChatOnPage({ ...data.data.chat, message: data.data });
 
                     audioSupport.pause();
                     audioSupport.currentTime = 0;
@@ -81,6 +90,12 @@ export const useSharedWorker = () => {
                     break;
                 case EventsEnum.UPDATE_BADGE:
                     if (navigator.setAppBadge) navigator.setAppBadge(data);
+                    break;
+                case EventsEnum.UPDATE_CHAT_ONLINE:
+                    console.log(data.data);
+                    if (!data.success) return;
+                    updateOnline(data.data);
+                    setIsListening(true);
                     break;
                 case EventsEnum.CLOSE_SOCKET:
                     setSocketId(undefined);

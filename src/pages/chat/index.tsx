@@ -1,6 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import { FC, MouseEvent, useEffect } from 'react';
+import { FC, MouseEvent } from 'react';
 import ChatAvatar from '../../components/chat-avatar';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import InputMessage from '../../components/input-message';
@@ -27,24 +27,22 @@ import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
 import { changeHead } from '../../common/hooks/change-head-inf.hook.ts';
 
 const Chat: FC = () => {
-    const [chat] = useGetChat();
-    useJoinChat(chat);
+    const { chatOnPage } = useAppSelector((state) => state.chats);
+    useGetChat();
+    useJoinChat(chatOnPage);
     const visibility = useVisibility;
     const navigate = useNavigate();
     const messages = useGetMessages();
     const readMessage = useDebouncedFunction(1000);
     const { t } = useTranslation();
     const { postMessage } = useAppAction();
-    const { chats } = useAppSelector((state) => state.chats);
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
-
-    useEffect(() => {}, [chats]);
 
     const addChat = () => {
         postMessage({
             data: {
                 event: EventsEnum.ADD_CHAT,
-                data: { ...chat!, messages: messages, readMessage: chat!.countMessages },
+                data: { ...chatOnPage!, messages: messages, readMessage: chatOnPage!.countMessages },
             },
         });
     };
@@ -55,16 +53,16 @@ const Chat: FC = () => {
     };
 
     const readMessageFunc = (number: number) => {
-        if (!chat?.id) return;
-        const num = rawChats.chats.get(chat.id)?.readMessage;
+        if (!chatOnPage?.id) return;
+        const num = rawChats.chats.get(chatOnPage.id)?.readMessage;
         if (num && number > num)
             readMessage(() =>
-                postMessage({ data: { event: EventsEnum.READ_MESSAGE, data: { chatId: chat.id, number } } }),
+                postMessage({ data: { event: EventsEnum.READ_MESSAGE, data: { chatId: chatOnPage.id, number } } }),
             );
     };
 
     const leave = (e: MouseEvent<unknown>) => {
-        const id = chat!.id;
+        const id = chatOnPage!.id;
         leaveChats([id]);
         postMessage({
             data: { event: EventsEnum.REMOVE_CHAT, data: id },
@@ -76,7 +74,7 @@ const Chat: FC = () => {
         back(e);
     };
 
-    if (!chat) return <></>;
+    if (!chatOnPage) return <></>;
 
     return (
         <div id={styles.background}>
@@ -84,21 +82,26 @@ const Chat: FC = () => {
                 <div id={styles.header}>
                     <IoArrowBackCircleOutline onClick={back} id={styles.back_icon} />
                     <div id={styles.chat_inf}>
-                        <ChatAvatar onlineCount={'323'} recordCount={'1K'} iconType={IconEnum.ONLINE} isChange={true} />
-                        <div id={styles.title}>{chat.title}</div>
+                        <ChatAvatar
+                            onlineCount={rawChats.chatsOnline.get(chatOnPage.id)}
+                            recordCount={'1K'}
+                            iconType={IconEnum.ONLINE}
+                            isChange={true}
+                        />
+                        <div id={styles.title}>{chatOnPage.title}</div>
                         <div className={styles.icon}>
-                            {chat.type === ChatEnum.IS_OPEN && (
+                            {chatOnPage.type === ChatEnum.IS_OPEN && (
                                 <AiOutlineGlobal className={styles.type_icon} color="green" />
                             )}
-                            {chat.type === ChatEnum.IS_SHARED && (
+                            {chatOnPage.type === ChatEnum.IS_SHARED && (
                                 <LiaEyeSolid className={styles.look_svg} color="green" />
                                 // <IoIosMicrophone className={styles.look_svg} color="green" />
                                 // <RiUserVoiceFill className={styles.look_svg} color="green" />
                             )}
-                            {chat.type === ChatEnum.IS_PUBLIC && (
+                            {chatOnPage.type === ChatEnum.IS_PUBLIC && (
                                 <RxLockOpen1 className={styles.look_svg} color="green" />
                             )}
-                            {chat.type === ChatEnum.IS_PRIVATE && (
+                            {chatOnPage.type === ChatEnum.IS_PRIVATE && (
                                 <RxLockClosed className={styles.look_svg} color="red" />
                             )}
                         </div>
@@ -107,7 +110,7 @@ const Chat: FC = () => {
                         </div>
                     </div>
                 </div>
-                {!rawChats.chats.get(chat.id) && (
+                {!rawChats.chats.get(chatOnPage.id) && (
                     <div className={styles.add_chat_block} onClick={addChat}>
                         <IoIosAddCircleOutline id={styles.new_chat_icon} />
                         {t('add_chat')}
@@ -130,7 +133,7 @@ const Chat: FC = () => {
                         <IoCopyOutline className={styles.chat_menu_item_icon} />
                         <div>{t('copy_link')}</div>
                     </div>
-                    {rawChats.chats.get(chat.id) && (
+                    {rawChats.chats.get(chatOnPage.id) && (
                         <div className={styles.chat_menu_item} onClick={leave}>
                             <MdExitToApp className={`${styles.chat_menu_item_icon} ${styles.rotate}`} />
                             <div>{t('leave_chat')}</div>
@@ -142,8 +145,8 @@ const Chat: FC = () => {
                         {messages.map(({ id, message, type, createdAt, number }) => (
                             <Message
                                 key={id}
-                                chatId={chat.id}
-                                title={chat.title}
+                                chatId={chatOnPage.id}
+                                title={chatOnPage.title}
                                 number={number}
                                 message={message}
                                 type={type}

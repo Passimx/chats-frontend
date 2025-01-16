@@ -5,6 +5,7 @@ import ChatAvatar from '../chat-avatar';
 import { useMessage } from './hooks/use-message.hook.ts';
 import { IconEnum } from '../chat-avatar/types/icon.enum.ts';
 import { PropsType } from './types/props.type.ts';
+import rawChats from '../../root/store/chats/chats.raw.ts';
 
 const ChatItem: FC<PropsType> = ({ chat, isNew = false }) => {
     const [message, time, countMessages] = useMessage(chat);
@@ -28,7 +29,11 @@ const ChatItem: FC<PropsType> = ({ chat, isNew = false }) => {
                 navigate(`${chat.id}`, { state: chat });
             }}
         >
-            <ChatAvatar onlineCount={'932'} recordCount={'3032'} iconType={IconEnum.ONLINE} />
+            <ChatAvatar
+                onlineCount={rawChats.chatsOnline.get(chat.id)}
+                recordCount={'3032'}
+                iconType={IconEnum.ONLINE}
+            />
             <div className={styles.main_inf}>
                 <div className={styles.title_block}>
                     <div className={styles.title}>{chat.title}</div>

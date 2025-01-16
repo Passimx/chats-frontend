@@ -23,7 +23,7 @@ const ChatAvatar: FC<PropsType> = ({ onlineCount, recordCount, iconType, isChang
         >
             <div className={styles.cube}>
                 <div className={`${styles.icon_number} ${styles.front}`}>
-                    {isListening ? (
+                    {isListening && onlineCount ? (
                         onlineCount
                     ) : (
                         <div id={styles.logos_block}>

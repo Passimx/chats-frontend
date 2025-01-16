@@ -2,7 +2,7 @@ import { IconEnum } from './icon.enum.ts';
 
 export type PropsType = {
     iconType: IconEnum;
-    onlineCount: string;
+    onlineCount?: string;
     recordCount: string;
     isChange?: boolean;
 };

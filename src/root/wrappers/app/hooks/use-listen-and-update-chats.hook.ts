@@ -7,25 +7,18 @@ import { updateChatAtIndexDb } from '../../../store/chats/index-db/hooks.ts';
 
 export const useListenAndUpdateChats = () => {
     const { setIsListening, setToBegin } = useAppAction();
-    const { chats } = useAppSelector((state) => state.chats);
-    const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
-    const { socketId, isListening } = useAppSelector((state) => state.app);
+    const { socketId, isLoadedChatsFromIndexDb, isListening } = useAppSelector((state) => state.app);
 
     useEffect(() => {
         if (!socketId) setIsListening(false);
-
         if (!socketId || !isLoadedChatsFromIndexDb || isListening) return;
+        if (!rawChats.chats.size) return;
 
         const chatsListen: ChatListenRequestType[] = [];
-
         rawChats.chats.forEach((chat, chatId) => chatsListen.push({ chatId, lastMessage: chat.message.number }));
 
         listenChats(chatsListen)
             .then(async ({ success, data }) => {
-                // todo
-                // перенести строку ниже в место, где будет приходить количество онлайн в каждом чате
-                setIsListening(true);
-
                 const indexDb = rawChats.indexDb;
                 if (!indexDb) return;
                 if (!success) return;
@@ -42,9 +35,8 @@ export const useListenAndUpdateChats = () => {
 
                 request.onsuccess = () => {
                     request.result.forEach((c) => setToBegin(c));
-                    setIsListening(true);
                 };
             })
             .catch(() => setIsListening(false));
-    }, [socketId, chats, isLoadedChatsFromIndexDb]);
+    }, [socketId, isLoadedChatsFromIndexDb]);
 };

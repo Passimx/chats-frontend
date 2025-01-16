@@ -6,6 +6,7 @@ export enum EventsEnum {
     READ_MESSAGE = 'read_message',
     REMOVE_CHAT = 'remove_chat',
     UPDATE_BADGE = 'update_badge',
+    UPDATE_CHAT_ONLINE = 'chat_count_online',
     CLOSE_SOCKET = 'close_socket',
     ERROR = 'error',
 }
