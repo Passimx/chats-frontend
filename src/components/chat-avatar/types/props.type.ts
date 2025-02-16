@@ -3,6 +3,6 @@ import { IconEnum } from './icon.enum.ts';
 export type PropsType = {
     iconType: IconEnum;
     onlineCount?: string;
-    recordCount: string;
+    maxUsersOnline: number;
     isChange?: boolean;
 };

@@ -1,3 +1,8 @@
-import { ChatType } from '../../../root/types/chat/chat.type.ts';
+import { ChatItemIndexDb } from '../../../root/types/chat/chat.type.ts';
 
-export type PropsType = { chat: ChatType; isNew?: boolean };
+export type PropsType = {
+    chat: ChatItemIndexDb;
+    isChatOnPage: boolean;
+    redirect: (url: string, state: object) => void;
+    isNew?: boolean;
+};

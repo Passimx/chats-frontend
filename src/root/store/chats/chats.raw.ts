@@ -5,7 +5,6 @@ const rawChats: RawChatType = {
     chats: new Map<string, ChatItemIndexDb>(),
     updatedChats: new Map<string, ChatItemIndexDb>(),
     indexDb: undefined,
-    chatsOnline: new Map<string, string>(),
 };
 
 export default rawChats;

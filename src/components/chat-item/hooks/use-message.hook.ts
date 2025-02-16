@@ -1,14 +1,12 @@
-import { ChatType } from '../../../root/types/chat/chat.type.ts';
+import { ChatItemIndexDb } from '../../../root/types/chat/chat.type.ts';
 import { ChatEnum } from '../../../root/types/chat/chat.enum.ts';
 import { MessageTypeEnum } from '../../../root/types/chat/message-type.enum.ts';
 import { useEffect, useState } from 'react';
 import moment from 'moment/min/moment-with-locales';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../../../root/store';
-import rawChats from '../../../root/store/chats/chats.raw.ts';
 
-export const useMessage = (chat: ChatType): (string | undefined)[] => {
-    const { chatOnPage } = useAppSelector((state) => state.chats);
+export const useMessage = (chat: ChatItemIndexDb): (string | undefined)[] => {
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
     const { t } = useTranslation();
     const [message, setMessage] = useState<string>();
@@ -39,16 +37,14 @@ export const useMessage = (chat: ChatType): (string | undefined)[] => {
     const changeCountMessages = () => {
         if (!isLoadedChatsFromIndexDb) return;
 
-        let count = chat.countMessages;
-        const number = rawChats.chats.get(chat.id)?.readMessage;
-        if (number) {
-            count = chat.countMessages - number;
-            if (count === 0) return setCountMessages(undefined);
-        }
+        const count = chat.countMessages;
+        const number = chat.readMessage;
+        const difference = count - number;
 
-        if (count < 1000) setCountMessages(count.toString());
-        else if (count < 1000000) setCountMessages(`${Math.floor(count / 1000)}К`);
-        else if (count >= 1000000) setCountMessages(`${Math.floor(count / 1000000)}М`);
+        if (!difference) setCountMessages(undefined);
+        else if (difference < 1000) setCountMessages(difference.toString());
+        else if (difference < 1000000) setCountMessages(`${Math.floor(difference / 1000)}К`);
+        else if (difference >= 1000000) setCountMessages(`${Math.floor(difference / 1000000)}М`);
     };
 
     useEffect(() => {
@@ -57,7 +53,7 @@ export const useMessage = (chat: ChatType): (string | undefined)[] => {
 
     useEffect(() => {
         changeCountMessages();
-    }, [chatOnPage, chat]);
+    }, [chat]);
 
     return [message, time, countMessages];
 };

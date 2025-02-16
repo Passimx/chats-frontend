@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import styles from './index.module.css';
 import Chats from '../../../modules/chats';
 import { useSharedWorker } from './hooks/use-shared-worker.ts';
@@ -12,7 +12,6 @@ import { PropsType } from './types/props.type.ts';
 import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
-    changeHead();
     useListenAndUpdateChats();
     useSharedWorker();
     useIndexDbHook();
@@ -21,6 +20,8 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
 
     const isLoaded = useTranslation();
     const { id } = useParams();
+
+    useEffect(changeHead, []);
 
     const hideMenu = () => {
         if (!id) return;

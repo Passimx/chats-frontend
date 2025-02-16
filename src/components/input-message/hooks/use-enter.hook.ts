@@ -27,8 +27,10 @@ export const useEnterHook = (): [() => Promise<void>, (event: FormEvent<HTMLDivE
         element.innerText = '';
         setIsShowPlaceholder(true);
 
-        const divElement = document.getElementById(styles2.messages)!;
-        divElement.scrollTop = 0;
+        // hide
+        document.getElementById(styles2.messages)!;
+        // const divElement = document.getElementById(styles2.messages)!;
+        // divElement.scrollTop = 0;
 
         await createMessage({ message, chatId: globalChatId });
     };

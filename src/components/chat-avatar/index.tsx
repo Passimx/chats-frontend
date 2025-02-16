@@ -10,7 +10,7 @@ import { useAppSelector } from '../../root/store';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { RiWifiOffLine } from 'react-icons/ri';
 
-const ChatAvatar: FC<PropsType> = ({ onlineCount, recordCount, iconType, isChange = false }) => {
+const ChatAvatar: FC<PropsType> = ({ onlineCount, maxUsersOnline, iconType, isChange = false }) => {
     const { isListening, isOnline } = useAppSelector((state) => state.app);
     const setClass = useVisibility;
     const [isShow, setIsShow] = useState<boolean>();
@@ -34,10 +34,10 @@ const ChatAvatar: FC<PropsType> = ({ onlineCount, recordCount, iconType, isChang
                         </div>
                     )}
                 </div>
-                <div className={`${styles.icon_number} ${styles.back}`}>{recordCount}</div>
+                <div className={`${styles.icon_number} ${styles.back}`}>{maxUsersOnline}</div>
                 <div className={styles.look}>
                     <FaUsers
-                        className={`${styles.look_svg} ${isShow !== undefined && setClass(styles.hide_slowly, styles.show_slowly, isShow)}`}
+                        className={`${styles.look_svg_green} ${styles.look_svg} ${isShow !== undefined && setClass(styles.hide_slowly, styles.show_slowly, isShow)}`}
                         style={{
                             color: 'green',
                             visibility: isShow === undefined && iconType === IconEnum.ONLINE ? 'visible' : 'hidden',

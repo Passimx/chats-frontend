@@ -1,13 +1,14 @@
 #write_message{
     display: grid;
     justify-content: center;
-    padding: 8px 0 8px 0;
-    grid-template-columns: 1fr;
+    grid-template-columns:  576px;
+    padding-bottom: 8px;
 
-    @media(width > 600px){
-        grid-template-columns:  584px;
+    @media(width < 600px) {
+        padding-right: 16px;
+        background-color: white;
+        grid-template-columns: 1fr;
     }
-
 }
 
 #message_inputs{

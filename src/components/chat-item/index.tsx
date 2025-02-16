@@ -1,17 +1,13 @@
-import { FC, useEffect } from 'react';
+import { FC, memo, useEffect } from 'react';
 import styles from './index.module.css';
-import { useNavigate, useParams } from 'react-router-dom';
 import ChatAvatar from '../chat-avatar';
 import { useMessage } from './hooks/use-message.hook.ts';
 import { IconEnum } from '../chat-avatar/types/icon.enum.ts';
 import { PropsType } from './types/props.type.ts';
-import rawChats from '../../root/store/chats/chats.raw.ts';
 
-const ChatItem: FC<PropsType> = ({ chat, isNew = false }) => {
-    const [message, time, countMessages] = useMessage(chat);
-    const navigate = useNavigate();
-    const { id } = useParams();
+const ChatItem: FC<PropsType> = ({ chat, isNew = false, isChatOnPage, redirect }) => {
     const elementId = `chat-${chat.id}`;
+    const [message, time, countMessages] = useMessage(chat);
 
     useEffect(() => {
         const element = document.getElementById(elementId)!;
@@ -23,17 +19,10 @@ const ChatItem: FC<PropsType> = ({ chat, isNew = false }) => {
     return (
         <div
             id={elementId}
-            className={`${styles.chat_item} ${id === `${chat.id}` && styles.selected_chat} ${isNew && styles.new_message}`}
-            onClick={() => {
-                document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
-                navigate(`${chat.id}`, { state: chat });
-            }}
+            className={`${styles.chat_item} ${isChatOnPage && styles.selected_chat} ${isNew && styles.new_message}`}
+            onClick={() => redirect(chat.id, chat)}
         >
-            <ChatAvatar
-                onlineCount={rawChats.chatsOnline.get(chat.id)}
-                recordCount={'3032'}
-                iconType={IconEnum.ONLINE}
-            />
+            <ChatAvatar onlineCount={chat.online} maxUsersOnline={chat.maxUsersOnline} iconType={IconEnum.ONLINE} />
             <div className={styles.main_inf}>
                 <div className={styles.title_block}>
                     <div className={styles.title}>{chat.title}</div>
@@ -48,4 +37,4 @@ const ChatItem: FC<PropsType> = ({ chat, isNew = false }) => {
     );
 };
 
-export default ChatItem;
+export default memo(ChatItem);

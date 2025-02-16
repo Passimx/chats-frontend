@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import styles from './index.module.css';
 import { PropsType } from './types/props.type.ts';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
@@ -19,7 +19,9 @@ const Message: FC<PropsType> = (props) => {
         <>
             <div ref={observerTarget} id={`message${number}`} className={`${styles.background}`}>
                 <div>
-                    <pre>{visibleMessage}</pre>
+                    <pre>
+                        {number}) {visibleMessage}
+                    </pre>
                 </div>
                 <div className={styles.left_div2}>{time}</div>
             </div>
@@ -27,4 +29,4 @@ const Message: FC<PropsType> = (props) => {
     );
 };
 
-export default Message;
+export default memo(Message);

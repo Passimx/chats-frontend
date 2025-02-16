@@ -1,6 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import { FC, MouseEvent } from 'react';
+import { FC, memo, MouseEvent, useCallback } from 'react';
 import ChatAvatar from '../../components/chat-avatar';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import InputMessage from '../../components/input-message';
@@ -10,7 +10,6 @@ import rawChats from '../../root/store/chats/chats.raw.ts';
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { useAppAction, useAppSelector } from '../../root/store';
-import { useDebouncedFunction } from '../../common/hooks/use-debounced-function.ts.ts';
 import { useGetMessages } from './hooks/use-get-messages.hook.ts';
 import { useJoinChat } from './hooks/use-join-chat.hook.ts';
 import { CiMenuKebab } from 'react-icons/ci';
@@ -33,46 +32,48 @@ const Chat: FC = () => {
     const visibility = useVisibility;
     const navigate = useNavigate();
     const messages = useGetMessages();
-    const readMessage = useDebouncedFunction(1000);
     const { t } = useTranslation();
     const { postMessage } = useAppAction();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
 
-    const addChat = () => {
+    const addChat = useCallback(() => {
         postMessage({
             data: {
                 event: EventsEnum.ADD_CHAT,
                 data: { ...chatOnPage!, messages: messages, readMessage: chatOnPage!.countMessages },
             },
         });
-    };
+    }, [chatOnPage, messages]);
 
-    const back = (e: MouseEvent<unknown>) => {
+    const back = useCallback((e: MouseEvent<unknown>) => {
         e.stopPropagation();
         document.documentElement.style.setProperty('--menu-margin', '0px');
-    };
+    }, []);
 
-    const readMessageFunc = (number: number) => {
-        if (!chatOnPage?.id) return;
-        const num = rawChats.chats.get(chatOnPage.id)?.readMessage;
-        if (num && number > num)
-            readMessage(() =>
-                postMessage({ data: { event: EventsEnum.READ_MESSAGE, data: { chatId: chatOnPage.id, number } } }),
-            );
-    };
+    const readMessageFunc = useCallback(
+        (chatId: string, number: number) => {
+            const num = rawChats.chats.get(chatId)?.readMessage;
+            if (num && number > num)
+                postMessage({ data: { event: EventsEnum.READ_MESSAGE, data: { chatId, number } } });
+        },
+        [chatOnPage],
+    );
 
-    const leave = (e: MouseEvent<unknown>) => {
-        const id = chatOnPage!.id;
-        leaveChats([id]);
-        postMessage({
-            data: { event: EventsEnum.REMOVE_CHAT, data: id },
-        });
+    const leave = useCallback(
+        (e: MouseEvent<unknown>) => {
+            const id = chatOnPage!.id;
+            leaveChats([id]);
+            postMessage({
+                data: { event: EventsEnum.REMOVE_CHAT, data: id },
+            });
 
-        changeHead();
+            changeHead();
 
-        navigate('/');
-        back(e);
-    };
+            navigate('/');
+            back(e);
+        },
+        [chatOnPage?.id],
+    );
 
     if (!chatOnPage) return <></>;
 
@@ -83,8 +84,8 @@ const Chat: FC = () => {
                     <IoArrowBackCircleOutline onClick={back} id={styles.back_icon} />
                     <div id={styles.chat_inf}>
                         <ChatAvatar
-                            onlineCount={rawChats.chatsOnline.get(chatOnPage.id)}
-                            recordCount={'1K'}
+                            onlineCount={chatOnPage.online}
+                            maxUsersOnline={chatOnPage.maxUsersOnline}
                             iconType={IconEnum.ONLINE}
                             isChange={true}
                         />
@@ -142,10 +143,10 @@ const Chat: FC = () => {
                 </div>
                 <div id={styles.messages_block}>
                     <div id={styles.messages}>
-                        {messages.map(({ id, message, type, createdAt, number }) => (
+                        {messages.map(({ id, message, type, createdAt, number, chatId }) => (
                             <Message
                                 key={id}
-                                chatId={chatOnPage.id}
+                                chatId={chatId}
                                 title={chatOnPage.title}
                                 number={number}
                                 message={message}
@@ -157,10 +158,10 @@ const Chat: FC = () => {
                         <div></div>
                     </div>
                 </div>
-                <InputMessage />
             </div>
+            <InputMessage />
         </div>
     );
 };
 
-export default Chat;
+export default memo(Chat);

@@ -8,7 +8,6 @@ import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { AiOutlineGlobal } from 'react-icons/ai';
 import { LiaEyeSolid } from 'react-icons/lia';
 import { PropsType } from './types/props.type.ts';
-import rawChats from '../../root/store/chats/chats.raw.ts';
 
 const ChatItem: FC<PropsType> = ({ chat }) => {
     const navigate = useNavigate();
@@ -31,11 +30,7 @@ const ChatItem: FC<PropsType> = ({ chat }) => {
                 navigate(`${chat.id}`, { state: chat });
             }}
         >
-            <ChatAvatar
-                onlineCount={rawChats.chatsOnline.get(chat.id)}
-                recordCount={'14K'}
-                iconType={IconEnum.RECORD}
-            />
+            <ChatAvatar onlineCount={undefined} maxUsersOnline={chat.maxUsersOnline} iconType={IconEnum.RECORD} />
             <div className={styles.main_inf}>
                 <div className={styles.title_block}>
                     <div className={styles.title}>{chat.title}</div>
