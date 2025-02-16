@@ -10,7 +10,7 @@ import rawChats from '../../root/store/chats/chats.raw.ts';
 import { ChatType } from '../../root/types/chat/chat.type.ts';
 import { useNavigate } from 'react-router-dom';
 
-const Chats: FC = () => {
+const Chats: FC = memo(() => {
     const navigate = useNavigate();
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const [input, setInput] = useState<string | undefined>(undefined);
@@ -72,5 +72,5 @@ const Chats: FC = () => {
             </div>
         </div>
     );
-};
-export default memo(Chats);
+});
+export default Chats;

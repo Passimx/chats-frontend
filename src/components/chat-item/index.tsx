@@ -5,7 +5,7 @@ import { useMessage } from './hooks/use-message.hook.ts';
 import { IconEnum } from '../chat-avatar/types/icon.enum.ts';
 import { PropsType } from './types/props.type.ts';
 
-const ChatItem: FC<PropsType> = ({ chat, isNew = false, isChatOnPage, redirect }) => {
+const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redirect }) => {
     const elementId = `chat-${chat.id}`;
     const [message, time, countMessages] = useMessage(chat);
 
@@ -35,6 +35,5 @@ const ChatItem: FC<PropsType> = ({ chat, isNew = false, isChatOnPage, redirect }
             </div>
         </div>
     );
-};
-
-export default memo(ChatItem);
+});
+export default ChatItem;

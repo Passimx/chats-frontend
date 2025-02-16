@@ -4,7 +4,7 @@ import { PropsType } from './types/props.type.ts';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { useVisibility } from './hooks/use-visibility.hook.ts';
 
-const Message: FC<PropsType> = (props) => {
+const Message: FC<PropsType> = memo((props) => {
     const { number, type } = props;
     const [observerTarget, visibleMessage, time] = useVisibility(props);
 
@@ -27,6 +27,6 @@ const Message: FC<PropsType> = (props) => {
             </div>
         </>
     );
-};
+});
 
-export default memo(Message);
+export default Message;

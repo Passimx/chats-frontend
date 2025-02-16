@@ -25,7 +25,7 @@ import { LiaEyeSolid } from 'react-icons/lia';
 import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
 import { changeHead } from '../../common/hooks/change-head-inf.hook.ts';
 
-const Chat: FC = () => {
+const Chat: FC = memo(() => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
     useGetChat();
     useJoinChat(chatOnPage);
@@ -162,6 +162,6 @@ const Chat: FC = () => {
             <InputMessage />
         </div>
     );
-};
+});
 
-export default memo(Chat);
+export default Chat;
