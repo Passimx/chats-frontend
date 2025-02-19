@@ -111,7 +111,7 @@ const Chat: FC = memo(() => {
                         </div>
                     </div>
                 </div>
-                {!rawChats.chats.get(chatOnPage.id) && (
+                {!rawChats.chats.get(chatOnPage.id) && !rawChats.updatedChats.get(chatOnPage.id) && (
                     <div className={styles.add_chat_block} onClick={addChat}>
                         <IoIosAddCircleOutline id={styles.new_chat_icon} />
                         {t('add_chat')}
@@ -119,6 +119,8 @@ const Chat: FC = memo(() => {
                 )}
             </div>
             <div id={styles.messages_main_block}>
+                {/*todo*/}
+                {/*вынести меню чата в отдельный компонент как эмлдзи*/}
                 <div
                     id={styles.chat_menu}
                     className={visibility(styles.show_slowly, styles.hide_slowly, isVisible)}

@@ -7,7 +7,12 @@ import { useAppSelector } from '../../../root/store';
 
 let globalChatId: string;
 
-export const useEnterHook = (): [() => Promise<void>, (event: FormEvent<HTMLDivElement>) => void, boolean] => {
+export const useEnterHook = (): [
+    () => Promise<void>,
+    (event: FormEvent<HTMLDivElement>) => void,
+    (value: string) => void,
+    boolean,
+] => {
     const { id } = useParams();
     const { isPhone } = useAppSelector((state) => state.app);
     const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
@@ -29,6 +34,7 @@ export const useEnterHook = (): [() => Promise<void>, (event: FormEvent<HTMLDivE
 
         // hide
         document.getElementById(styles2.messages)!;
+        // todo
         // const divElement = document.getElementById(styles2.messages)!;
         // divElement.scrollTop = 0;
 
@@ -57,5 +63,9 @@ export const useEnterHook = (): [() => Promise<void>, (event: FormEvent<HTMLDivE
         });
     }, []);
 
-    return [sendMessage, onInput, isShowPlaceholder];
+    const setEmoji = (value: string) => {
+        console.log(value);
+    };
+
+    return [sendMessage, onInput, setEmoji, isShowPlaceholder];
 };

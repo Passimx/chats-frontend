@@ -21,8 +21,13 @@ const AppSlice = createSlice({
             state.isOpenPage = isOpenPage !== undefined ? isOpenPage : !!page;
             if (page !== undefined) state.page = page ?? undefined;
 
-            if (page) document.documentElement.style.cssText = '--main-margin-left: -100%;--scale-value: 0.6;';
-            else document.documentElement.style.cssText = '--main-margin-left: 0px;--scale-value: 1;';
+            if (page) {
+                document.documentElement.style.setProperty('--main-margin-left', '-100%');
+                document.documentElement.style.setProperty('--scale-value', '0.6');
+            } else {
+                document.documentElement.style.setProperty('--main-margin-left', '0px');
+                document.documentElement.style.setProperty('--scale-value', '1');
+            }
         },
 
         setOnline(state, { payload }: PayloadAction<boolean>) {

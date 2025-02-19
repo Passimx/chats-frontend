@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import styles from './index.module.css';
 import { PropsType } from './types/props.type.ts';
 import { useTranslation } from 'react-i18next';
@@ -11,9 +11,10 @@ import { createChat } from '../../root/api/chats';
 import useSetPageHook from '../../root/store/app/hooks/use-set-page.hook.ts';
 
 const CreateChat: FC<PropsType> = ({ title: titleChatType, icon }) => {
+    const { t } = useTranslation();
     const methods = useForm<FormType>();
     const { handleSubmit, register } = methods;
-    const { t } = useTranslation();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const regex = useMemo(
         () => /^(?![-. ])(?!.*[.-]{2})[A-Za-zА-Яа-яЁё\d]*(?:[ .-][A-Za-zА-Яа-яЁё\d]+)*[A-Za-zА-Яа-яЁё\d]$/,
@@ -22,6 +23,8 @@ const CreateChat: FC<PropsType> = ({ title: titleChatType, icon }) => {
     const setPage = useSetPageHook();
 
     const onSubmit = async (data: FormType) => {
+        if (isLoading) return;
+        setIsLoading(true);
         await createChat(data).finally(() => setPage(null));
     };
 

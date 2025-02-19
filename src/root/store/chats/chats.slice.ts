@@ -7,28 +7,6 @@ import { deleteChatIndexDb, updateReadChat } from './index-db/hooks.ts';
 import { ChatUpdateOnline } from '../../types/chat/chat-update-online.type.ts';
 import { MessageType } from '../../types/chat/message.type.ts';
 
-// const message: MessageType = {
-//     id: 'fdsf',
-//     message: 'Тестовое ссобщения для проверки качества сообщения в тестовой сборке',
-//     chatId: 'sdf',
-//     createdAt: new Date(),
-//     number: 3,
-//     type: MessageTypeEnum.IS_USER,
-//     chat: {} as ChatItemIndexDb,
-//     parentMessageId: 'sdf',
-// };
-//
-// const chat: ChatItemIndexDb = {
-//     createdAt: new Date(),
-//     id: 'sdf',
-//     countMessages: 33,
-//     readMessage: 3,
-//     title: 'Test',
-//     type: ChatEnum.IS_OPEN,
-//     messages: [message],
-//     message,
-// };
-
 const initialState: StateType = {
     chats: [],
     updatedChats: [],
