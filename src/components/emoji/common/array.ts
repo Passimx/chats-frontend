@@ -115,8 +115,6 @@ export const emojiList = {
         '🙈',
         '🙉',
         '🙊',
-    ],
-    emoji_fillings: [
         '💋',
         '💌',
         '💘',
@@ -550,8 +548,6 @@ export const emojiList = {
         '🦂',
         '🦟',
         '🦠',
-    ],
-    emoji_nature: [
         '💐',
         '🌸',
         '💮',

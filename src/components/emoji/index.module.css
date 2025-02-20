@@ -18,10 +18,12 @@
 
 }
 
-.emoji_rows{
+#emoji_rows{
     overflow: auto;
     overflow-x: hidden;
     overflow-y: scroll;
+    display: grid;
+    gap: 24px;
 }
 
 .emoji_row{
@@ -35,9 +37,9 @@
 }
 
 .emoji_list{
-    display: grid; /* Используем CSS Grid */
-    grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); /* Автоматически заполняем ряды, элементы минимум 100px шириной */
-    gap: 8px; /* Расстояние между элементами */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+    gap: 8px;
 }
 
 .emoji_list_item{
@@ -51,8 +53,38 @@
     cursor: pointer;
 }
 
+.emoji_icons{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(calc((100% - 8px * 8) / 9), 1fr));
+    gap: 8px;
+}
+
+.emoji_icon{
+    color: #b9dbf9;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    height: 32px;
+    border-radius: 5px;
+}
+
+.active {
+    background-color: #0e5ea4;
+}
+
 .emoji_list_item:hover{
-    background-color: #0a4375;
+    @media(width > 600px){
+        background-color:#0e5ea4;
+    }
+}
+.emoji_list_item:active{
+        background-color: #0e5ea4;
+}
+
+.emoji_icon:hover{
+    @media(width > 600px){
+        background-color: #0e5ea4;
+    }
 }
 
 .show_slowly{

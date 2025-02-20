@@ -5,7 +5,7 @@
     padding-bottom: 8px;
 
     @media(width < 600px) {
-        padding-right: 16px;
+        padding-right: 12px;
         background-color: white;
         grid-template-columns: 1fr;
     }
@@ -130,12 +130,6 @@
     max-width: 100%;
     transition: opacity 200ms ease-out, transform 200ms ease-out;
 }
-
-/*@media screen and (-webkit-min-device-pixel-ratio: 0) {*/
-/*    .placeholder_text {*/
-/*        margin-top: 0px;*/
-/*    }*/
-/*}*/
 
 .show_slowly{
     animation: show_slowly 0.2s linear forwards;
