@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useState } from 'react';
 import styles from '../index.module.css';
 import { useParams } from 'react-router-dom';
 import styles2 from '../../../pages/chat/index.module.css';
@@ -10,7 +10,7 @@ let globalChatId: string;
 export const useEnterHook = (): [
     () => Promise<void>,
     (event: FormEvent<HTMLDivElement>) => void,
-    (value: string) => void,
+    (emoji: string) => void,
     boolean,
 ] => {
     const { id } = useParams();
@@ -63,9 +63,38 @@ export const useEnterHook = (): [
         });
     }, []);
 
-    const setEmoji = (value: string) => {
-        console.log(value);
-    };
+    const setEmoji = useCallback((emoji: string) => {
+        const chatInput = document.getElementById(styles.new_message)!;
+        setIsShowPlaceholder(false);
+        const selection = window.getSelection()!;
+        let range = null;
+
+        // Проверяем, есть ли уже выделение (фокус внутри div)
+        if (selection.rangeCount > 0 && chatInput.contains(selection.anchorNode)) {
+            range = selection.getRangeAt(0);
+        } else {
+            // Если курсор не внутри div, создаём новый range в КОНЦЕ div
+            chatInput.focus();
+            range = document.createRange();
+            range.selectNodeContents(chatInput);
+            range.collapse(false); // false делает курсор в конец
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        // Вставляем эмодзи в то место, где курсор
+        const textNode = document.createTextNode(emoji);
+        range.deleteContents();
+        range.insertNode(textNode);
+
+        // Перемещаем курсор за эмодзи, чтобы печатать дальше
+        range.setStartAfter(textNode);
+        range.setEndAfter(textNode);
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        chatInput.focus(); // Поддерживаем фокус на div
+    }, []);
 
     return [sendMessage, onInput, setEmoji, isShowPlaceholder];
 };

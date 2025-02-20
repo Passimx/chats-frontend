@@ -13,9 +13,14 @@
     display: grid;
     gap: 16px;
 
+    left: 8px;
+    right: 8px;
     height: 400px;
-    width: 400px;
 
+    @media(width > 592px){
+        left: calc(50% - 288px);
+        right: calc(50% - 288px);
+    }
 }
 
 #emoji_rows{
@@ -33,6 +38,10 @@
 
 .emoji_name{
     font-size: 0.5cm;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px;
+    align-items: center;
     color: #b9dbf9;
 }
 
@@ -53,10 +62,29 @@
     cursor: pointer;
 }
 
+.emoji_icons_background{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+}
+
 .emoji_icons{
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(calc((100% - 8px * 8) / 9), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+
+    @media(width > 400px){
+        grid-template-columns: repeat(auto-fill, minmax(calc((100% - 8px * 7) / 8), 1fr));
+    }
     gap: 8px;
+}
+
+.delete_button{
+    align-items: center;
+    justify-content: center;
+    display: grid;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 25px;
 }
 
 .emoji_icon{
@@ -64,8 +92,9 @@
     display: grid;
     justify-content: center;
     align-items: center;
-    height: 32px;
+    padding: 8px;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .active {
@@ -77,7 +106,7 @@
         background-color:#0e5ea4;
     }
 }
-.emoji_list_item:active{
+.emoji_list_item:active, .delete_button:active{
         background-color: #0e5ea4;
 }
 

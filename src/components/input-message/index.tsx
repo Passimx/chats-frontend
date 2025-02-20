@@ -18,7 +18,13 @@ const InputMessage: FC = () => {
                 <div id={styles.text_block}>
                     <div
                         className={`${styles.button_block} ${isVisibleEmoji && styles.button_block_active}`}
-                        onClick={() => setIsVisibleEmoji(true)}
+                        onClick={(event) => {
+                            event.preventDefault();
+                            setIsVisibleEmoji(true);
+                        }}
+                        onMouseDown={(event) => {
+                            event.preventDefault();
+                        }}
                     >
                         <div className={styles.button_emoji_background}>
                             <BsEmojiSmile className={styles.button_emoji} />

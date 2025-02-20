@@ -891,7 +891,7 @@ export const emojiList = {
         '💧',
         '🌊',
     ],
-    emoji_events: [
+    emoji_objects: [
         '🎃',
         '🎄',
         '🎆',
@@ -968,8 +968,6 @@ export const emojiList = {
         '🎨',
         '🧵',
         '🧶',
-    ],
-    emoji_objects: [
         '👓',
         '🕶',
         '🥽',

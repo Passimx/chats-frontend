@@ -1,5 +1,5 @@
 import styles from './index.module.css';
-import { FC, useCallback, useEffect } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 import useVisibility from '../../common/hooks/use-visibility.ts';
 import useClickOutside from '../../common/hooks/use-click-outside.ts';
 import { PropsType } from './props.type.ts';
@@ -10,7 +10,6 @@ import { GoPeople } from 'react-icons/go';
 import { LuDog } from 'react-icons/lu';
 import { IoAirplaneOutline, IoFastFoodOutline, IoFlagOutline } from 'react-icons/io5';
 import { AiOutlineBulb } from 'react-icons/ai';
-import { CiBasketball } from 'react-icons/ci';
 
 const Emoji: FC<PropsType> = ({ isVisibleOutside, setIsVisibleOutside, setEmoji }) => {
     const iconSize = 24;
@@ -37,10 +36,7 @@ const Emoji: FC<PropsType> = ({ isVisibleOutside, setIsVisibleOutside, setEmoji 
             document.querySelectorAll('section').forEach((section, index) => {
                 const rect = section.getBoundingClientRect();
 
-                // todo
-                // добавить условие для нижнего края, инаяе при клике ломается
-                if (rect.top < element.offsetHeight + 330) {
-                    // if (rect.top < element.offsetHeight + 330 && rect.bottom > 5) {
+                if (rect.top < 544) {
                     if (activeTab === index) return;
                     activeTab = index;
                     const activeLink = sections[index];
@@ -51,6 +47,19 @@ const Emoji: FC<PropsType> = ({ isVisibleOutside, setIsVisibleOutside, setEmoji 
         });
     }, []);
 
+    const icons = useMemo(
+        () => [
+            <HiOutlineFaceSmile size={iconSize} />,
+            <GoPeople size={iconSize} />,
+            <LuDog size={iconSize} />,
+            <IoFastFoodOutline size={iconSize} />,
+            <IoAirplaneOutline size={iconSize} />,
+            <AiOutlineBulb size={iconSize} />,
+            <HiOutlineNoSymbol size={iconSize} />,
+            <IoFlagOutline size={iconSize} />,
+        ],
+        [],
+    );
     const focusEmojiRow = useCallback((id: string) => {
         const element = document.getElementById(id);
         if (!element) return;
@@ -67,11 +76,19 @@ const Emoji: FC<PropsType> = ({ isVisibleOutside, setIsVisibleOutside, setEmoji 
                 {Object.entries(emojiList).map(([key, array], index) => (
                     <section id={key} key={key} className={styles.emoji_row}>
                         <div id={`section${index}`} className={styles.emoji_name}>
+                            {icons[index]}
                             {t(key)}
                         </div>
                         <div className={styles.emoji_list}>
-                            {array.map((emoji) => (
-                                <div key={emoji} onClick={() => setEmoji(emoji)} className={styles.emoji_list_item}>
+                            {array.map((emoji, index) => (
+                                <div
+                                    key={index}
+                                    onClick={(event) => {
+                                        event.preventDefault();
+                                        setEmoji(emoji);
+                                    }}
+                                    className={styles.emoji_list_item}
+                                >
                                     {emoji}
                                 </div>
                             ))}
@@ -79,36 +96,17 @@ const Emoji: FC<PropsType> = ({ isVisibleOutside, setIsVisibleOutside, setEmoji 
                     </section>
                 ))}
             </div>
-            <div className={styles.emoji_icons}>
-                <div
-                    className={`${styles.emoji_icon} ${styles.active}`}
-                    onClick={() => focusEmojiRow(Object.keys(emojiList)[0])}
-                >
-                    <HiOutlineFaceSmile size={iconSize} />
-                </div>
-                <div className={styles.emoji_icon} onClick={() => focusEmojiRow(Object.keys(emojiList)[1])}>
-                    <GoPeople size={iconSize} />
-                </div>
-                <div className={styles.emoji_icon} onClick={() => focusEmojiRow(Object.keys(emojiList)[2])}>
-                    <LuDog size={iconSize} />
-                </div>
-                <div className={styles.emoji_icon} onClick={() => focusEmojiRow(Object.keys(emojiList)[3])}>
-                    <IoFastFoodOutline size={iconSize} />
-                </div>
-                <div className={styles.emoji_icon} onClick={() => focusEmojiRow(Object.keys(emojiList)[4])}>
-                    <IoAirplaneOutline size={iconSize} />
-                </div>
-                <div className={styles.emoji_icon} onClick={() => focusEmojiRow(Object.keys(emojiList)[5])}>
-                    <CiBasketball size={iconSize} />
-                </div>
-                <div className={styles.emoji_icon} onClick={() => focusEmojiRow(Object.keys(emojiList)[6])}>
-                    <AiOutlineBulb size={iconSize} />
-                </div>
-                <div className={styles.emoji_icon} onClick={() => focusEmojiRow(Object.keys(emojiList)[7])}>
-                    <HiOutlineNoSymbol size={iconSize} />
-                </div>
-                <div className={styles.emoji_icon} onClick={() => focusEmojiRow(Object.keys(emojiList)[8])}>
-                    <IoFlagOutline size={iconSize} />
+            <div className={styles.emoji_icons_background}>
+                <div className={styles.emoji_icons}>
+                    {icons.map((icons, index) => (
+                        <div
+                            key={index}
+                            className={styles.emoji_icon}
+                            onClick={() => focusEmojiRow(Object.keys(emojiList)[index])}
+                        >
+                            {icons}
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
