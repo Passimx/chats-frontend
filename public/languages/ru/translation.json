@@ -1,9 +1,9 @@
 {
   "search": "Поиск",
   "search_chats": "Поиск чатов",
-  "page_not_found": "Страница не найдена",
   "chats_enter_message": "Сообщение",
   "create_open_chat": "Открытый чат",
+  "no_chats": "Чаты не найдены",
   "create_shared_chat": "Трансляционный чат",
   "create_public_chat": "Публичный чат",
   "create_private_chat": "Закрытый чат",
@@ -67,5 +67,15 @@
   "invalid_title_chat": "Неверный формат названия.",
 
   "chat_is_create": "Создан чат",
-  "avatar_is_create": "Добавлена фотография чата"
+  "avatar_is_create": "Добавлена фотография чата",
+
+  "emoji_emotions": "Эмоции",
+  "emoji_people": "Люди",
+  "emoji_animals": "Животные",
+  "emoji_food": "Еда и напитки",
+  "emoji_places": "Места и путешествия",
+  "emoji_objects": "Объекты и вещи",
+  "emoji_symbols": "Символы",
+  "emoji_flags": "Флаги и страны"
+
 }

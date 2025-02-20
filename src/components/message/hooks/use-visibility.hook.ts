@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment/min/moment-with-locales';
 
 export const useVisibility = (props: PropsType): [MutableRefObject<null>, string, string] => {
-    const { number, message, title, type, createdAt, readMessage } = props;
+    const { number, message, title, type, createdAt, chatId, readMessage } = props;
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const observerTarget = useRef(null);
     const { t } = useTranslation();
@@ -17,17 +17,14 @@ export const useVisibility = (props: PropsType): [MutableRefObject<null>, string
     }, []);
 
     useEffect(() => {
-        // todo
-        // такой подход резко открывает чат...
-        // сделать сохранение позиции скролла и обновление списка соощбений как в виртуальном списке
-        // const num = rawChats.chatsRead.get(chatId);
-        // if (number === num) document.querySelector(`#message${num}`)?.scrollIntoView({ behavior: 'instant' });
-    }, []);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver((entries) => entries[0].isIntersecting && readMessage(number), {
-            threshold: 1,
-        });
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && chatOnPage) readMessage(chatId, number);
+            },
+            {
+                threshold: 1,
+            },
+        );
 
         if (observerTarget.current) observer.observe(observerTarget.current);
 

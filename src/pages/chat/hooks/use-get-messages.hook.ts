@@ -3,30 +3,32 @@ import { useEffect, useState } from 'react';
 import rawChats from '../../../root/store/chats/chats.raw.ts';
 import { getMessages } from '../../../root/api/chats';
 import { useAppSelector } from '../../../root/store';
-import { useParams } from 'react-router-dom';
 
 export const useGetMessages = (): MessageType[] => {
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const [messages, setMessages] = useState<MessageType[]>([]);
-    const { id } = useParams();
 
     useEffect(() => {
-        if (chatOnPage && chatOnPage.id === id && chatOnPage.message.number === messages[0]?.number + 1)
+        if (chatOnPage && chatOnPage.message.number === messages[0]?.number + 1)
             setMessages([chatOnPage.message, ...messages]);
-    }, [chatOnPage]);
+        // todo
+        // такой подход резко открывает чат...
+        // сделать сохранение позиции скролла и обновление списка соощбений как в виртуальном списке
+        // const num = rawChats.chatsRead.get(chatId);
+        // if (number === num) document.querySelector(`#message${num}`)?.scrollIntoView({ behavior: 'instant' });
+    }, [chatOnPage?.message]);
 
     useEffect(() => {
-        if (!id) return;
+        if (!chatOnPage?.id) return;
         if (!isLoadedChatsFromIndexDb) return;
 
-        if (rawChats.chats.get(id)) setMessages(rawChats.chats.get(id)!.messages);
-        else {
-            getMessages(id).then(({ success, data }) => {
+        if (rawChats.chats.get(chatOnPage.id)) setMessages(rawChats.chats.get(chatOnPage.id)!.messages);
+        else
+            getMessages(chatOnPage.id).then(({ success, data }) => {
                 if (success) setMessages(data);
             });
-        }
-    }, [id, isLoadedChatsFromIndexDb]);
+    }, [chatOnPage?.id, isLoadedChatsFromIndexDb]);
 
     return messages;
 };

@@ -1,6 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import { FC, MouseEvent, useEffect } from 'react';
+import { FC, memo, MouseEvent, useCallback } from 'react';
 import ChatAvatar from '../../components/chat-avatar';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import InputMessage from '../../components/input-message';
@@ -10,7 +10,6 @@ import rawChats from '../../root/store/chats/chats.raw.ts';
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { useAppAction, useAppSelector } from '../../root/store';
-import { useDebouncedFunction } from '../../common/hooks/use-debounced-function.ts.ts';
 import { useGetMessages } from './hooks/use-get-messages.hook.ts';
 import { useJoinChat } from './hooks/use-join-chat.hook.ts';
 import { CiMenuKebab } from 'react-icons/ci';
@@ -24,54 +23,59 @@ import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { AiOutlineGlobal } from 'react-icons/ai';
 import { LiaEyeSolid } from 'react-icons/lia';
 import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
+import { changeHead } from '../../common/hooks/change-head-inf.hook.ts';
 
-const Chat: FC = () => {
-    const [chat] = useGetChat();
-    useJoinChat(chat);
+const Chat: FC = memo(() => {
+    const { chatOnPage } = useAppSelector((state) => state.chats);
+    useGetChat();
+    useJoinChat(chatOnPage);
     const visibility = useVisibility;
     const navigate = useNavigate();
     const messages = useGetMessages();
-    const readMessage = useDebouncedFunction(1000);
     const { t } = useTranslation();
     const { postMessage } = useAppAction();
-    const { chats } = useAppSelector((state) => state.chats);
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
 
-    useEffect(() => {}, [chats]);
-
-    const addChat = () => {
+    const addChat = useCallback(() => {
         postMessage({
             data: {
                 event: EventsEnum.ADD_CHAT,
-                data: { ...chat!, messages: messages, readMessage: chat!.countMessages },
+                data: { ...chatOnPage!, messages: messages, readMessage: chatOnPage!.countMessages },
             },
         });
-    };
+    }, [chatOnPage, messages]);
 
-    const back = (e: MouseEvent<unknown>) => {
+    const back = useCallback((e: MouseEvent<unknown>) => {
         e.stopPropagation();
         document.documentElement.style.setProperty('--menu-margin', '0px');
-    };
+    }, []);
 
-    const readMessageFunc = (number: number) => {
-        if (!chat?.id) return;
-        const num = rawChats.chats.get(chat.id)?.readMessage;
-        if (num && number > num)
-            readMessage(() =>
-                postMessage({ data: { event: EventsEnum.READ_MESSAGE, data: { chatId: chat.id, number } } }),
-            );
-    };
+    const readMessageFunc = useCallback(
+        (chatId: string, number: number) => {
+            const num = rawChats.chats.get(chatId)?.readMessage;
+            if (num && number > num)
+                postMessage({ data: { event: EventsEnum.READ_MESSAGE, data: { chatId, number } } });
+        },
+        [chatOnPage],
+    );
 
-    const leave = (e: MouseEvent<unknown>) => {
-        const id = chat!.id;
-        leaveChats([id]);
-        postMessage({
-            data: { event: EventsEnum.REMOVE_CHAT, data: id },
-        });
-        navigate('/');
-        back(e);
-    };
-    if (!chat) return <></>;
+    const leave = useCallback(
+        (e: MouseEvent<unknown>) => {
+            const id = chatOnPage!.id;
+            leaveChats([id]);
+            postMessage({
+                data: { event: EventsEnum.REMOVE_CHAT, data: id },
+            });
+
+            changeHead();
+
+            navigate('/');
+            back(e);
+        },
+        [chatOnPage?.id],
+    );
+
+    if (!chatOnPage) return <></>;
 
     return (
         <div id={styles.background}>
@@ -79,19 +83,26 @@ const Chat: FC = () => {
                 <div id={styles.header}>
                     <IoArrowBackCircleOutline onClick={back} id={styles.back_icon} />
                     <div id={styles.chat_inf}>
-                        <ChatAvatar onlineCount={'323'} recordCount={'1K'} iconType={IconEnum.ONLINE} isChange={true} />
-                        <div id={styles.title}>{chat.title}</div>
+                        <ChatAvatar
+                            onlineCount={chatOnPage.online}
+                            maxUsersOnline={chatOnPage.maxUsersOnline}
+                            iconType={IconEnum.ONLINE}
+                            isChange={true}
+                        />
+                        <div id={styles.title}>{chatOnPage.title}</div>
                         <div className={styles.icon}>
-                            {chat.type === ChatEnum.IS_OPEN && (
+                            {chatOnPage.type === ChatEnum.IS_OPEN && (
                                 <AiOutlineGlobal className={styles.type_icon} color="green" />
                             )}
-                            {chat.type === ChatEnum.IS_SHARED && (
+                            {chatOnPage.type === ChatEnum.IS_SHARED && (
                                 <LiaEyeSolid className={styles.look_svg} color="green" />
+                                // <IoIosMicrophone className={styles.look_svg} color="green" />
+                                // <RiUserVoiceFill className={styles.look_svg} color="green" />
                             )}
-                            {chat.type === ChatEnum.IS_PUBLIC && (
+                            {chatOnPage.type === ChatEnum.IS_PUBLIC && (
                                 <RxLockOpen1 className={styles.look_svg} color="green" />
                             )}
-                            {chat.type === ChatEnum.IS_PRIVATE && (
+                            {chatOnPage.type === ChatEnum.IS_PRIVATE && (
                                 <RxLockClosed className={styles.look_svg} color="red" />
                             )}
                         </div>
@@ -100,6 +111,16 @@ const Chat: FC = () => {
                         </div>
                     </div>
                 </div>
+                {!rawChats.chats.get(chatOnPage.id) && !rawChats.updatedChats.get(chatOnPage.id) && (
+                    <div className={styles.add_chat_block} onClick={addChat}>
+                        <IoIosAddCircleOutline id={styles.new_chat_icon} />
+                        {t('add_chat')}
+                    </div>
+                )}
+            </div>
+            <div id={styles.messages_main_block}>
+                {/*todo*/}
+                {/*вынести меню чата в отдельный компонент как эмлдзи*/}
                 <div
                     id={styles.chat_menu}
                     className={visibility(styles.show_slowly, styles.hide_slowly, isVisible)}
@@ -115,28 +136,20 @@ const Chat: FC = () => {
                         <IoCopyOutline className={styles.chat_menu_item_icon} />
                         <div>{t('copy_link')}</div>
                     </div>
-                    {rawChats.chats.get(chat.id) && (
+                    {rawChats.chats.get(chatOnPage.id) && (
                         <div className={styles.chat_menu_item} onClick={leave}>
                             <MdExitToApp className={`${styles.chat_menu_item_icon} ${styles.rotate}`} />
                             <div>{t('leave_chat')}</div>
                         </div>
                     )}
                 </div>
-                {!rawChats.chats.get(chat.id) && (
-                    <div className={styles.add_chat_block} onClick={addChat}>
-                        <IoIosAddCircleOutline id={styles.new_chat_icon} />
-                        {t('add_chat')}
-                    </div>
-                )}
-            </div>
-            <div id={styles.messages_main_block}>
                 <div id={styles.messages_block}>
                     <div id={styles.messages}>
-                        {messages.map(({ id, message, type, createdAt, number }) => (
+                        {messages.map(({ id, message, type, createdAt, number, chatId }) => (
                             <Message
                                 key={id}
-                                chatId={chat.id}
-                                title={chat.title}
+                                chatId={chatId}
+                                title={chatOnPage.title}
                                 number={number}
                                 message={message}
                                 type={type}
@@ -147,10 +160,10 @@ const Chat: FC = () => {
                         <div></div>
                     </div>
                 </div>
-                <InputMessage />
             </div>
+            <InputMessage />
         </div>
     );
-};
+});
 
 export default Chat;

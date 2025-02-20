@@ -1,9 +1,0 @@
-#background{
-    height: 100%;
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    font-size: 50px;
-    color: white;
-    background-color: var(--menu-color);;
-}

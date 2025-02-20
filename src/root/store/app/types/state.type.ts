@@ -7,4 +7,5 @@ export type StateType = {
     socketId?: string;
     isListening?: boolean;
     isLoadedChatsFromIndexDb?: boolean;
+    isPhone?: boolean;
 };

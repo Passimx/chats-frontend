@@ -7,6 +7,7 @@ type ChatItemType = {
     type: ChatEnum;
     createdAt: Date;
     countMessages: number;
+    maxUsersOnline: number;
     message: MessageType;
 };
 
@@ -23,4 +24,4 @@ type ChatItemType = {
 // };
 export type ChatType = ChatItemType;
 
-export type ChatItemIndexDb = ChatType & { messages: MessageType[]; readMessage: number };
+export type ChatItemIndexDb = ChatType & { messages: MessageType[]; readMessage: number; online?: string };

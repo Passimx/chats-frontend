@@ -2,14 +2,14 @@ import { FC, useEffect } from 'react';
 import styles from './index.module.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChatAvatar from '../chat-avatar';
-import { ChatType } from '../../root/types/chat/chat.type.ts';
 import { IconEnum } from '../chat-avatar/types/icon.enum.ts';
 import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { AiOutlineGlobal } from 'react-icons/ai';
 import { LiaEyeSolid } from 'react-icons/lia';
+import { PropsType } from './types/props.type.ts';
 
-const ChatItem: FC<{ chat: ChatType }> = ({ chat }) => {
+const ChatItem: FC<PropsType> = ({ chat }) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const elementId = `chat-${chat.id}`;
@@ -30,7 +30,7 @@ const ChatItem: FC<{ chat: ChatType }> = ({ chat }) => {
                 navigate(`${chat.id}`, { state: chat });
             }}
         >
-            <ChatAvatar onlineCount={'13K'} recordCount={'14K'} iconType={IconEnum.RECORD} />
+            <ChatAvatar onlineCount={undefined} maxUsersOnline={chat.maxUsersOnline} iconType={IconEnum.RECORD} />
             <div className={styles.main_inf}>
                 <div className={styles.title_block}>
                     <div className={styles.title}>{chat.title}</div>

@@ -85,7 +85,6 @@
 }
 
 #messages_main_block{
-    padding: 0 8px 0 8px;
     display: grid;
     justify-content: center;
     grid-template-rows: 1fr auto;
@@ -94,6 +93,7 @@
 }
 
 #messages_block{
+    padding-bottom: 8px;
     overflow: hidden;
     display: grid;
     width: 100%;
@@ -105,9 +105,14 @@
     display: flex;
     flex-direction: column-reverse;
     gap:10px;
-    padding-left: calc(50% - 292px);
+    padding-left: calc(50% - 288px);
     scroll-behavior: smooth;
-    padding-right: calc(50% - 292px);
+    padding-right: calc(50% - 288px);
+
+    @media(width < 592px) {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
 }
 
 .add_chat_block{

@@ -10,7 +10,7 @@ const Loading: FC<PropsType> = ({ children, isLoading, loadingComponent }) => {
     }, [isLoading]);
 
     return (
-        <div id={styles.background}>
+        <div>
             <div
                 id={styles.loading}
                 className={`${!isLoading && isInit && styles.hide} ${!isInit && styles.is_not_init}`}

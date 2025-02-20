@@ -8,15 +8,16 @@ import rawApp from '../../../store/app/app.raw.ts';
 import rawChats from '../../../store/chats/chats.raw.ts';
 import { useNavigate } from 'react-router-dom';
 
-let sharedWorker: SharedWorker;
 export const useSharedWorker = () => {
-    const { setSocketId, setIsListening, updateReadChat, setChatOnPage, removeChat } = useAppAction();
+    let sharedWorker: SharedWorker;
+    const { setSocketId, updateOnline, setIsListening, updateReadChat, createMessage, removeChat } = useAppAction();
     const setToBegin = useUpdateChat();
     const navigate = useNavigate();
 
     useEffect(() => {
         try {
-            if (!sharedWorker) sharedWorker = new SharedWorker('worker.js');
+            if (!rawApp.port) sharedWorker = new SharedWorker('worker.js');
+            else return;
         } catch (e) {
             console.log(e);
         }
@@ -50,26 +51,12 @@ export const useSharedWorker = () => {
                 case EventsEnum.CREATE_MESSAGE:
                     if (!data.success) break;
 
-                    setChatOnPage({ ...data.data.chat, message: data.data });
-
                     audioSupport.pause();
                     audioSupport.currentTime = 0;
                     audioSupport.play();
 
-                    if (!rawChats.chats.get(data.data.chat.id)) break;
-
-                    setToBegin({
-                        ...data.data.chat,
-                        countMessages: data.data.number,
-                        message: data.data,
-                        messages: [
-                            ...(data.data.number === rawChats.chats.get(data.data.chat.id)!.messages[0].number + 1
-                                ? [data.data]
-                                : []),
-                            ...rawChats.chats.get(data.data.chat.id)!.messages.slice(0, Envs.messages.limit - 1),
-                        ],
-                        readMessage: rawChats.chats.get(data.data.chat.id)!.readMessage,
-                    });
+                    createMessage(data.data);
+                    if (rawChats.chats.get(data.data.chatId)) setToBegin(rawChats.chats.get(data.data.chatId)!);
 
                     break;
                 case EventsEnum.READ_MESSAGE:
@@ -80,6 +67,11 @@ export const useSharedWorker = () => {
                     break;
                 case EventsEnum.UPDATE_BADGE:
                     if (navigator.setAppBadge) navigator.setAppBadge(data);
+                    break;
+                case EventsEnum.UPDATE_CHAT_ONLINE:
+                    if (!data.success) break;
+                    updateOnline(data.data);
+                    setIsListening(true);
                     break;
                 case EventsEnum.CLOSE_SOCKET:
                     setSocketId(undefined);

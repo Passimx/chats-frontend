@@ -3,6 +3,7 @@ import { IData } from '../../api';
 import { ChatItemIndexDb, ChatType } from '../chat/chat.type.ts';
 import { MessageType } from '../chat/message.type.ts';
 import { UpdateReadChatType } from '../../store/chats/types/update-read-chat.type.ts';
+import { ChatUpdateOnline } from '../chat/chat-update-online.type.ts';
 
 type GetSocketId = {
     readonly event: EventsEnum.GET_SOCKET_ID;
@@ -39,6 +40,11 @@ type UpdateBadge = {
     readonly data: number;
 };
 
+type UpdateChatOnline = {
+    readonly event: EventsEnum.UPDATE_CHAT_ONLINE;
+    readonly data: IData<ChatUpdateOnline[]>;
+};
+
 type CloseSocket = {
     readonly event: EventsEnum.CLOSE_SOCKET;
     readonly data: unknown;
@@ -57,6 +63,7 @@ type DataType =
     | ReadMessage
     | RemoveChat
     | UpdateBadge
+    | UpdateChatOnline
     | CloseSocket
     | Error;
 

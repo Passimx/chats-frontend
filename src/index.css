@@ -12,10 +12,21 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+*::-webkit-scrollbar {
+    width: 8px;
+    background: none;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 4px;
+}
+
 html,body, #root{
     height: 100dvh;
     width: 100vw;
     overflow: hidden;
+    background-color: var(--menu-color);
     position: fixed;
     background-position: top right;
     background-size: 510px auto;

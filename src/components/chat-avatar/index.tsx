@@ -6,8 +6,12 @@ import useVisibility from '../../common/hooks/use-visibility.ts';
 import { IconEnum } from './types/icon.enum.ts';
 import { FaUsers } from 'react-icons/fa';
 import { HiTrendingUp } from 'react-icons/hi';
+import { useAppSelector } from '../../root/store';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { RiWifiOffLine } from 'react-icons/ri';
 
-const ChatAvatar: FC<PropsType> = ({ onlineCount, recordCount, iconType, isChange = false }) => {
+const ChatAvatar: FC<PropsType> = ({ onlineCount, maxUsersOnline, iconType, isChange = false }) => {
+    const { isListening, isOnline } = useAppSelector((state) => state.app);
     const setClass = useVisibility;
     const [isShow, setIsShow] = useState<boolean>();
 
@@ -18,11 +22,22 @@ const ChatAvatar: FC<PropsType> = ({ onlineCount, recordCount, iconType, isChang
             style={{ transform: iconType === IconEnum.RECORD ? 'rotateY(-180deg)' : 'rotateY(0deg)' }}
         >
             <div className={styles.cube}>
-                <div className={`${styles.icon_number} ${styles.front}`}>{onlineCount}</div>
-                <div className={`${styles.icon_number} ${styles.back}`}>{recordCount}</div>
+                <div className={`${styles.icon_number} ${styles.front}`}>
+                    {isListening && onlineCount ? (
+                        onlineCount
+                    ) : (
+                        <div id={styles.logos_block}>
+                            <AiOutlineLoading3Quarters className={styles.loading_logo} />
+                            {isChange && !isOnline && (
+                                <RiWifiOffLine className={`${styles.logo} ${styles.no_wifi_logo}`} />
+                            )}
+                        </div>
+                    )}
+                </div>
+                <div className={`${styles.icon_number} ${styles.back}`}>{maxUsersOnline}</div>
                 <div className={styles.look}>
                     <FaUsers
-                        className={`${styles.look_svg} ${isShow !== undefined && setClass(styles.hide_slowly, styles.show_slowly, isShow)}`}
+                        className={`${styles.look_svg_green} ${styles.look_svg} ${isShow !== undefined && setClass(styles.hide_slowly, styles.show_slowly, isShow)}`}
                         style={{
                             color: 'green',
                             visibility: isShow === undefined && iconType === IconEnum.ONLINE ? 'visible' : 'hidden',

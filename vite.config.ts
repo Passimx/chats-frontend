@@ -4,11 +4,15 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { ManifestOptions, VitePWA } from 'vite-plugin-pwa';
 
 const manifest: Partial<ManifestOptions> | false = {
-    theme_color: '#000000',
-    background_color: '#a1cff7',
+    theme_color: '#062846',
+    background_color: '#062846',
     icons: [
-        { purpose: 'maskable', sizes: '512x512', src: '/assets/images/icon512_maskable.png', type: 'image/png' },
-        { purpose: 'any', sizes: '512x512', src: '/assets/images/icon512_rounded.png', type: 'image/png' },
+        { sizes: '1024x1024', src: '/assets/icons/1024.png', type: 'image/png', purpose: 'any' },
+        { sizes: '512x512', src: '/assets/icons/512.png', type: 'image/png', purpose: 'any' },
+        // { sizes: '512x512', src: '/assets/icons/512-maskable.png', type: 'image/png', purpose: 'maskable' },
+        { sizes: '256x256', src: '/assets/icons/256.png', type: 'image/png', purpose: 'any' },
+        { sizes: '192x192', src: '/assets/icons/192.png', type: 'image/png', purpose: 'any' },
+        // { sizes: '192x192', src: '/assets/icons/192-maskable.png', type: 'image/png', purpose: 'maskable' },
     ],
     screenshots: [
         { src: '/assets/images/desktop.png', type: 'image/png', sizes: '3024x1642', form_factor: 'wide' },
@@ -17,9 +21,13 @@ const manifest: Partial<ManifestOptions> | false = {
     orientation: 'any',
     display: 'standalone',
     lang: 'ru-RU',
-    name: 'Passim Team',
+    name: 'Passim',
     short_name: 'Passim',
+    description: 'open platform for messaging',
     start_url: '/',
+    edge_side_panel: {
+        preferred_width: 480,
+    },
 };
 
 const vitePWA = VitePWA({
@@ -36,4 +44,15 @@ export default defineConfig({
     server: {
         port: 3006,
     },
+    // build: {
+    //     rollupOptions: {
+    //         output: {
+    //             manualChunks(id) {
+    //                 if (id.includes('node_modules')) {
+    //                     return id.toString().split('node_modules/')[1].split('/')[0].toString();
+    //                 }
+    //             },
+    //         },
+    //     },
+    // },
 });

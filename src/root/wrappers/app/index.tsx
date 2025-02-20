@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import styles from './index.module.css';
 import Chats from '../../../modules/chats';
 import { useSharedWorker } from './hooks/use-shared-worker.ts';
@@ -7,15 +7,21 @@ import { useOnline } from './hooks/use-online.ts';
 import { useParams } from 'react-router-dom';
 import { useIndexDbHook } from './hooks/use-index-db.hook.ts';
 import { useListenAndUpdateChats } from './hooks/use-listen-and-update-chats.hook.ts';
+import { useIsPhone } from './hooks/use-is-phone.hook.ts';
+import { PropsType } from './types/props.type.ts';
+import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 
-const AppWrapper: FC<{ children: any }> = ({ children }) => {
+const AppWrapper: FC<PropsType> = ({ children }) => {
     useListenAndUpdateChats();
     useSharedWorker();
     useIndexDbHook();
     useOnline();
+    useIsPhone();
 
     const isLoaded = useTranslation();
     const { id } = useParams();
+
+    useEffect(changeHead, []);
 
     const hideMenu = () => {
         if (!id) return;

@@ -4,8 +4,11 @@ import styles from './styles.module.css';
 import { MdOutlineCancel } from 'react-icons/md';
 import { IoSearch } from 'react-icons/io5';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { useAppSelector } from '../../root/store';
+import { RiWifiOffLine } from 'react-icons/ri';
 
 const SearchInput: FC<PropsType> = ({ onChange, placeholder, className, value = '', register, isLoading }) => {
+    const { isListening, isOnline } = useAppSelector((state) => state.app);
     const [ownValue, setOwnValue] = useState<string>(value);
     const [isTexted, setIsTexted] = useState<boolean>(false);
 
@@ -23,8 +26,11 @@ const SearchInput: FC<PropsType> = ({ onChange, placeholder, className, value = 
     return (
         <div id={styles.background}>
             <div id={styles.search_logos}>
-                {isLoading ? (
-                    <AiOutlineLoading3Quarters id={styles.loading_logo} className={styles.logo} />
+                {isLoading || !isListening ? (
+                    <div id={styles.logos_block}>
+                        <AiOutlineLoading3Quarters id={styles.loading_logo} className={styles.logo} />
+                        {!isOnline && <RiWifiOffLine className={`${styles.logo} ${styles.no_wifi_logo}`} />}
+                    </div>
                 ) : (
                     <IoSearch id={isTexted ? styles.search_logo : ''} className={styles.logo} />
                 )}

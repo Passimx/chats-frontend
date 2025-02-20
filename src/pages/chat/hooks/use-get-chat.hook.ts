@@ -2,22 +2,18 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getChatById } from '../../../root/api/chats';
 import { ChatType } from '../../../root/types/chat/chat.type.ts';
-import { useAppSelector } from '../../../root/store';
+import { useAppAction, useAppSelector } from '../../../root/store';
 import rawChats from '../../../root/store/chats/chats.raw.ts';
+import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 
-const useGetChat = (): [ChatType | null] => {
+const useGetChat = (): void => {
+    const { setChatOnPage } = useAppAction();
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
     const { chatOnPage } = useAppSelector((state) => state.chats);
-    const [chat, setChat] = useState<ChatType | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const { state }: { state: ChatType | undefined } = useLocation();
     const navigate = useNavigate();
     const { id } = useParams();
-
-    useEffect(() => {
-        if (!chatOnPage) return;
-        if (chatOnPage.id === chat?.id) setChat(chatOnPage);
-    }, [chatOnPage]);
 
     useEffect(() => {
         if (!isLoadedChatsFromIndexDb) return;
@@ -26,39 +22,38 @@ const useGetChat = (): [ChatType | null] => {
             // чтобы при обновлении страницы обнулялся state и делался запрос на сервер
             window.history.replaceState({}, '');
             setIsLoading(false);
-            return setChat(state);
+            setChatOnPage(state);
+            return;
         }
 
         if (rawChats.chats.get(id!)) {
             const chat = rawChats.chats.get(id!)!;
             setIsLoading(false);
-            return setChat(chat);
+            setChatOnPage(chat);
+            return;
         }
 
         setIsLoading(true);
         getChatById(id!).then((result) => {
             setIsLoading(false);
 
-            if (result.success && result.data) setChat(result.data);
-            else setChat(null);
+            if (result.success && result.data) setChatOnPage(result.data);
+            else setChatOnPage(null);
         });
     }, [id, isLoadedChatsFromIndexDb]);
 
     useEffect(() => {
-        if (!chat && !isLoading) {
+        if (!chatOnPage && !isLoading) {
+            changeHead();
             document.documentElement.style.setProperty('--menu-margin', '0px');
-            navigate('/');
+            return navigate('/');
         }
 
-        if (chat && !isLoading) {
-            const keywords = chat.title.split(' ').join(',');
-            document.title = chat.title;
-            document.querySelector('meta[name="keywords"]')?.setAttribute('content', keywords);
+        if (!isLoading) {
+            changeHead(chatOnPage?.title);
             document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
         }
-    }, [isLoading, chat]);
-
-    return [chat];
+    }, [isLoading, chatOnPage]);
 };
 
 export default useGetChat;

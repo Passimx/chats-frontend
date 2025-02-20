@@ -58,6 +58,7 @@
 
 #loading_logo{
     animation: rotate .4s linear infinite;
+    position: absolute;
 }
 
 .logo{
@@ -65,6 +66,18 @@
     font-size: 24px;
     cursor: pointer;
     opacity: 0.6;
+}
+
+#logos_block{
+    width: 24px;
+    height: 24px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.no_wifi_logo{
+    font-size: 16px;
 }
 
 @keyframes rotate_search {

@@ -1,8 +1,9 @@
 import { FC, useEffect } from 'react';
 import { useAppSelector } from '../../store';
 import { useNavigate } from 'react-router-dom';
+import { PropsType } from './types/props.type.ts';
 
-const AuthWrapper: FC<{ children: any; url: string }> = ({ children, url }) => {
+const AuthWrapper: FC<PropsType> = ({ children, url }) => {
     const { authToken } = useAppSelector((state) => state.user);
     const navigate = useNavigate();
 

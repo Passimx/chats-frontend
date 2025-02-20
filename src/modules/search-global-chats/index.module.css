@@ -21,10 +21,41 @@ html{
 }
 
 .nav_chats{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    font-size: 150px;
+    align-items: center;
     color: white;
     padding: 10px;
     user-select: none;
     background-color: #0c518d;
-    border-bottom: 2px solid var(--menu-color);;
-    border-top: 2px solid var(--menu-color);;
+    border-bottom: 2px solid var(--menu-color);
+    border-top: 2px solid var(--menu-color);
+}
+
+#search_logo{
+    animation: rotate_search .2s linear forwards;
+}
+
+#loading_logo{
+    animation: rotate .4s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotate_search {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }

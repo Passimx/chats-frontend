@@ -3,7 +3,9 @@ import { ChatItemIndexDb, ChatType } from '../../types/chat/chat.type.ts';
 import { StateType } from './types/state.type.ts';
 import rawChats from './chats.raw.ts';
 import { UpdateReadChatType } from './types/update-read-chat.type.ts';
-import { deleteChatIndexDb, updateChatAtIndexDb, updateReadChat } from './index-db/hooks.ts';
+import { deleteChatIndexDb, updateReadChat } from './index-db/hooks.ts';
+import { ChatUpdateOnline } from '../../types/chat/chat-update-online.type.ts';
+import { MessageType } from '../../types/chat/message.type.ts';
 
 const initialState: StateType = {
     chats: [],
@@ -15,13 +17,42 @@ const ChatsSlice = createSlice({
     initialState,
     reducers: {
         update(state, { payload }: PayloadAction<ChatItemIndexDb>) {
-            updateChatAtIndexDb(payload);
             rawChats.chats.set(payload.id, payload);
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
         },
 
+        updateOnline(state, { payload }: PayloadAction<ChatUpdateOnline[]>) {
+            payload.forEach(({ name, onlineUsers }) => {
+                if (state.chatOnPage?.id === name) state.chatOnPage.online = onlineUsers;
+
+                const chat = rawChats.chats.get(name);
+                if (!chat) return;
+
+                rawChats.chats.set(name, { ...chat, online: onlineUsers });
+            });
+            state.chats = [...Array.from(rawChats.chats.values())].reverse();
+        },
+
+        createMessage(state, { payload }: PayloadAction<MessageType>) {
+            const chatFromState = rawChats.chats.get(payload.chatId);
+            if (chatFromState) {
+                let messages = chatFromState.messages;
+                if (chatFromState?.messages[0]?.number === payload.number - 1) messages = [payload, ...messages];
+
+                const updatedChat: ChatItemIndexDb = {
+                    ...chatFromState,
+                    message: payload,
+                    countMessages: payload.number,
+                    messages,
+                };
+                rawChats.chats.set(updatedChat.id, updatedChat);
+                state.chats = [...Array.from(rawChats.chats.values())].reverse();
+            }
+
+            if (payload.chatId === state.chatOnPage?.id) state.chatOnPage.message = payload;
+        },
+
         setToBegin(state, { payload }: PayloadAction<ChatItemIndexDb>) {
-            updateChatAtIndexDb(payload);
             rawChats.chats.delete(payload.id);
             rawChats.chats.set(payload.id, payload);
             state.chats = Array.from(rawChats.chats.values()).reverse();
@@ -29,16 +60,15 @@ const ChatsSlice = createSlice({
 
         updateReadChat(state, { payload }: PayloadAction<UpdateReadChatType>) {
             const { chatId, number } = payload;
-            const chat = rawChats.chats.get(chatId);
+            const chat = rawChats.chats.get(chatId) ?? rawChats.updatedChats.get(chatId);
 
             if (!chat) return;
             const updatedChat: ChatItemIndexDb = { ...chat, readMessage: number };
-            updateReadChat(updatedChat);
 
             rawChats.chats.set(chatId, updatedChat);
-
             state.chats = Array.from(rawChats.chats.values()).reverse();
-            state.chatOnPage = updatedChat;
+            if (chatId === state.chatOnPage?.id) state.chatOnPage = updatedChat;
+            updateReadChat(updatedChat);
         },
 
         addUpdatedChat(state, { payload }: PayloadAction<ChatItemIndexDb>) {

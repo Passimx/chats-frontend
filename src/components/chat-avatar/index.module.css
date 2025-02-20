@@ -57,6 +57,20 @@
     );
 }
 
+#logos_block{
+    width: 24px;
+    height: 24px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.no_wifi_logo{
+    font-size: 16px;
+    color: black;
+    opacity: 0.6;
+}
+
 .look{
     display: grid;
     align-items: center;
@@ -69,6 +83,7 @@
     top: 0;
     left: 0;
     border: 1px solid white;
+    box-shadow: -1px 1px 1px black;
 }
 
 .look_svg{
@@ -117,22 +132,61 @@
 }
 
 @keyframes show_slowly{
-    from {
+    0% {
         visibility: hidden;
         opacity: 0;
     }
-    to {
+
+    49.9%{
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    50%{
+        visibility: visible;
+        opacity: 1;
+    }
+
+    100% {
         visibility: visible;
         opacity: 1;
     }
 }
 @keyframes hide_slowly{
-    from {
+    0% {
         visibility: visible;
         opacity: 1;
     }
-    to {
+
+    49.9%{
+        visibility: visible;
+        opacity: 1;
+    }
+
+    50%{
         visibility: hidden;
         opacity: 0;
+    }
+
+    100% {
+        visibility: hidden;
+        opacity: 0;
+    }
+}
+
+.loading_logo{
+    color: black;
+    font-size: 24px;
+    opacity: 0.6;
+    animation: rotate_search .6s linear infinite;
+    position: absolute;
+}
+
+@keyframes rotate_search {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }

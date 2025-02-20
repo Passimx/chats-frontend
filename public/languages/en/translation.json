@@ -1,9 +1,9 @@
 {
   "search": "Search",
   "search_chats": "Search chats",
-  "page_not_found": "Page not found",
   "chats_enter_message": "Message",
   "create_open_chat": "Open chat",
+  "no_chats": "No chats found",
   "create_shared_chat": "Shared chat",
   "create_public_chat": "Public chat",
   "create_private_chat": "Private chat",
@@ -67,5 +67,14 @@
   "invalid_title_chat": "Invalid title text format.",
 
   "chat_is_create": "Chat was created",
-  "avatar_is_create": "Chat photo added"
+  "avatar_is_create": "Chat photo added",
+
+  "emoji_emotions": "Emotions",
+  "emoji_people": "People",
+  "emoji_animals": "Animals",
+  "emoji_food": "Food and drinks",
+  "emoji_places": "Places and travelling",
+  "emoji_objects": "Objects",
+  "emoji_symbols": "Symbols",
+  "emoji_flags": "Flags and countries"
 }

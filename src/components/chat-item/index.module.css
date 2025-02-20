@@ -9,11 +9,16 @@
     padding-right: 8px;
 }
 
+.chat_item:active {
+    @media(width <= 600px){
+        background-color: #0c518d;
+        border-radius: 10px;
+    }
+}
 .selected_chat{
-    background-color: #0c518d;
-    border-radius: 10px;
-
     @media(width > 600px){
+        background-color: #0c518d;
+        border-radius: 10px;
         transition: background .3s ease;
     }
 }

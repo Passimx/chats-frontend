@@ -1,0 +1,146 @@
+#background{
+    background-color: var(--menu-color);
+    position: absolute;
+    bottom:72px;
+    user-select: none;
+    visibility: hidden;
+    padding: 16px;
+    line-height: 50px;
+    font-size: 28px;
+    z-index: 10;
+    border-radius: 10px;
+    box-shadow: 0 0 5px 0.5px black;
+    display: grid;
+    gap: 16px;
+
+    left: 8px;
+    right: 8px;
+    height: 400px;
+
+    @media(width > 592px){
+        left: calc(50% - 288px);
+        right: calc(50% - 288px);
+    }
+}
+
+#emoji_rows{
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    display: grid;
+    gap: 24px;
+}
+
+.emoji_row{
+    display: grid;
+    gap: 8px;
+}
+
+.emoji_name{
+    font-size: 0.5cm;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px;
+    align-items: center;
+    color: #b9dbf9;
+}
+
+.emoji_list{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+    gap: 8px;
+}
+
+.emoji_list_item{
+    height: 32px;
+    width: 32px;
+    border-radius: 8px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7cm;
+    cursor: pointer;
+}
+
+.emoji_icons_background{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+}
+
+.emoji_icons{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+
+    @media(width > 400px){
+        grid-template-columns: repeat(auto-fill, minmax(calc((100% - 8px * 7) / 8), 1fr));
+    }
+    gap: 8px;
+}
+
+.delete_button{
+    align-items: center;
+    justify-content: center;
+    display: grid;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 25px;
+}
+
+.emoji_icon{
+    color: #b9dbf9;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.active {
+    background-color: #0e5ea4;
+}
+
+.emoji_list_item:hover{
+    @media(width > 600px){
+        background-color:#0e5ea4;
+    }
+}
+.emoji_list_item:active, .delete_button:active{
+        background-color: #0e5ea4;
+}
+
+.emoji_icon:hover{
+    @media(width > 600px){
+        background-color: #0e5ea4;
+    }
+}
+
+.show_slowly{
+    animation: show_slowly .2s linear forwards;
+}
+
+.hide_slowly{
+    animation: hide_slowly .2s linear forwards;
+}
+
+@keyframes show_slowly{
+    from {
+        visibility: hidden;
+        opacity: 0;
+    }
+    to {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+@keyframes hide_slowly{
+    from {
+        visibility: visible;
+        opacity: 1;
+    }
+    to {
+        visibility: hidden;
+        opacity: 0;
+    }
+}

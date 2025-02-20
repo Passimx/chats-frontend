@@ -1,0 +1,11 @@
+#background{
+    min-height: 100px;
+    line-height: 50px;
+    height: 100%;
+    display: grid;
+    text-align: center;
+    align-items: center;
+    font-size: 40px;
+    color: white;
+    background-color: var(--menu-color);
+}
