@@ -22,12 +22,3 @@ jobs:
       IMAGE_NAME: ${{ vars.IMAGE_NAME }}
     secrets:
       DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-
-  deploy:
-    needs: release
-    uses: Passimx/ci-cd-workflows/.github/workflows/deploy.yml@main
-    secrets:
-      SSH_USER: ${{ secrets.SSH_USER }}
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      DEPLOY_SCRIPT: "cd /home"
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
