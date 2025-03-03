@@ -1,5 +1,5 @@
 'use strict';
-const host = 'ws://localhost:7022';
+const host = 'wss://api.tons-chat.ru/ws';
 const ports = [];
 let socketId;
 
