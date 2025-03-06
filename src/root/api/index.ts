@@ -30,7 +30,7 @@ export async function Api<T>(url: string, { headers, body, method, params }: req
         'Access-Control-Allow-METHODS': 'GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH',
     };
 
-    if (Envs.socketId?.length) mainHeaders['socket_id'] = Envs.socketId;
+    if (Envs.socketId?.length) mainHeaders['x-socket-id'] = Envs.socketId;
 
     try {
         const result = await fetch(`${Envs.chatsServiceUrl}${url}${query}`, {
