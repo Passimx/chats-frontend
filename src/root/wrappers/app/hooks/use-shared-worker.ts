@@ -17,7 +17,7 @@ export const useSharedWorker = () => {
             return;
         }
 
-        navigator.serviceWorker.register('/worker.js');
+        navigator.serviceWorker.register('/worker.js', { scope: 'service-worker' });
 
         navigator.serviceWorker.ready.then(() => {
             navigator.serviceWorker.controller?.postMessage({
