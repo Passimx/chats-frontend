@@ -1,4 +1,4 @@
-let host;
+let host = 'wss://api.tons-chat.ru/ws';
 let socket;
 let socketId;
 let isConnected = false;
