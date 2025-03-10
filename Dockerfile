@@ -9,15 +9,13 @@ WORKDIR /app
 COPY ./package.json package-lock.json ./
 RUN npm ci
 
-# Переменная окружения для Vite
-ARG VITE_CHATS_SERVICE_URL
-ENV VITE_CHATS_SERVICE_URL=${VITE_CHATS_SERVICE_URL}
-
 # Stage 3: build + delete dev dependencies
 FROM base as build
 WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
+ARG VITE_CHATS_SERVICE_URL
+ENV VITE_CHATS_SERVICE_URL=${VITE_CHATS_SERVICE_URL}
 RUN npm run build
 RUN npm config set ignore-scripts true
 RUN npm prune --omit=dev
