@@ -11,7 +11,7 @@ RUN npm ci
 
 # Переменная окружения для Vite
 ARG VITE_CHATS_SERVICE_URL
-ENV VITE_CHATS_SERVICE_URL=$VITE_CHATS_SERVICE_URL
+ENV VITE_CHATS_SERVICE_URL=${VITE_CHATS_SERVICE_URL}
 
 # Stage 3: build + delete dev dependencies
 FROM base as build
