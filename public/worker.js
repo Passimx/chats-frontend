@@ -2,7 +2,7 @@ let host = 'wss://api.tons-chat.ru/ws';
 let socket;
 let socketId;
 let isConnected = false;
-const socketIntervalConnection = 1000;
+const socketIntervalConnection = 10000;
 
 const connect = () => {
     if (socket) socket?.close();
