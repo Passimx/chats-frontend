@@ -29,7 +29,6 @@ export const useSharedWorker = () => {
 
             // Обработка сообщений от SharedWorker
             const audioSupport: any = document.getElementById('myAudio');
-
             navigator.serviceWorker.addEventListener('message', (ev: MessageEvent) => {
                 const { event, data } = ev.data;
 
