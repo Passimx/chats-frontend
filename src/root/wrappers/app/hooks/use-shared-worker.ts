@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
-// import { EventDataType } from '../../../types/events/event-data.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
 import { useUpdateChat } from '../../../store/app/hooks/use-update-chat.hook.ts';
 import { useAppAction } from '../../../store';
-// import rawApp from '../../../store/app/app.raw.ts';
 import rawChats from '../../../store/chats/chats.raw.ts';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,7 +17,7 @@ export const useSharedWorker = () => {
             return;
         }
 
-        // navigator.serviceWorker.register('/worker.js');
+        navigator.serviceWorker.register('/worker.js');
 
         navigator.serviceWorker.ready.then(() => {
             navigator.serviceWorker.controller?.postMessage({
