@@ -11,6 +11,9 @@ RUN npm ci
 
 # Stage 3: build + delete dev dependencies
 FROM base as build
+ARG VITE_CHATS_SERVICE_URL
+ENV VITE_CHATS_SERVICE_URL=${VITE_CHATS_SERVICE_URL}
+RUN echo "${VITE_CHATS_SERVICE_URL}"
 WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules

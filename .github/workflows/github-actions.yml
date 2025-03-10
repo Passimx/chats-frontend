@@ -11,6 +11,7 @@ jobs:
     with:
       ORGANIZATION_NAME: ${{ vars.ORGANIZATION_NAME }}
       IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+      VITE_CHATS_SERVICE_URL: ${{ vars.VITE_CHATS_SERVICE_URL }}
     secrets:
       DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 

@@ -4,4 +4,4 @@ services:
     image: passimx/chats-frontend
     restart: unless-stopped
     ports:
-      - 2223:2223
+      - 3006:2223
