@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import rawChats from '../../root/store/chats/chats.raw.ts';
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
-import { useAppAction, useAppSelector } from '../../root/store';
+import { useAppSelector } from '../../root/store';
 import { useGetMessages } from './hooks/use-get-messages.hook.ts';
 import { useJoinChat } from './hooks/use-join-chat.hook.ts';
 import { CiMenuKebab } from 'react-icons/ci';
@@ -24,6 +24,7 @@ import { AiOutlineGlobal } from 'react-icons/ai';
 import { LiaEyeSolid } from 'react-icons/lia';
 import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
 import { changeHead } from '../../common/hooks/change-head-inf.hook.ts';
+import { useNotificationAction } from '../../root/wrappers/app/hooks/use-shared-worker.ts';
 
 const Chat: FC = memo(() => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
@@ -33,7 +34,9 @@ const Chat: FC = memo(() => {
     const navigate = useNavigate();
     const messages = useGetMessages();
     const { t } = useTranslation();
-    const { postMessage } = useAppAction();
+    // todo
+    // const { postMessage } = useAppAction();
+    const postMessage = useNotificationAction();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
 
     const addChat = useCallback(() => {

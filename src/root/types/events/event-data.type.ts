@@ -47,7 +47,7 @@ type UpdateChatOnline = {
 
 type CloseSocket = {
     readonly event: EventsEnum.CLOSE_SOCKET;
-    readonly data: unknown;
+    readonly data?: unknown;
 };
 
 type Error = {

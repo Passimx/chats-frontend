@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { StateType } from './types/state.type.ts';
-import { EventDataType } from '../../types/events/event-data.type.ts';
 
 const initialState: StateType = { isOpenPage: false, isOnline: navigator.onLine };
 
@@ -8,10 +7,10 @@ const AppSlice = createSlice({
     name: 'app',
     initialState,
     reducers: {
-        postMessage(_state, { payload }: PayloadAction<EventDataType>) {
-            if (!navigator.serviceWorker) return;
-            navigator.serviceWorker.controller?.postMessage({ event: 'SEND_MESSAGE', payload: payload.data });
-        },
+        // postMessage(_state, { payload }: PayloadAction<EventDataType>) {
+        //     if (!navigator.serviceWorker) return;
+        //     navigator.serviceWorker.controller?.postMessage({ event: 'SEND_MESSAGE', payload: payload.data });
+        // },
 
         setPage(
             state,
