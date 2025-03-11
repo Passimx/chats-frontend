@@ -15,7 +15,9 @@ WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
 ARG VITE_CHATS_SERVICE_URL
+ARG VITE_NOTIFICATIONS_SERVICE_URL
 ENV VITE_CHATS_SERVICE_URL=${VITE_CHATS_SERVICE_URL}
+ENV VITE_NOTIFICATIONS_SERVICE_URL=${VITE_NOTIFICATIONS_SERVICE_URL}
 RUN npm run build
 RUN npm config set ignore-scripts true
 RUN npm prune --omit=dev

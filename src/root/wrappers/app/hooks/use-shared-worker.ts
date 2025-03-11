@@ -75,7 +75,7 @@ export const useSharedWorker = () => {
     const sendMessage = useNotificationAction();
 
     useEffect(() => {
-        const socket = new WebSocket('wss://api.tons-chat.ru/ws');
+        const socket = new WebSocket(Envs.notificationsServiceUrl);
 
         socket.addEventListener('message', (event) => {
             const data = JSON.parse(event.data);
