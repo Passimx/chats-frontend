@@ -14,6 +14,7 @@ export const useNotificationAction = () => {
     const audioSupport: any = document.getElementById('myAudio');
 
     return (dataEvent: DataType) => {
+        console.log(dataEvent);
         const { event, data } = dataEvent;
 
         switch (event) {
@@ -56,7 +57,6 @@ export const useNotificationAction = () => {
             case EventsEnum.UPDATE_CHAT_ONLINE:
                 if (!data.success) break;
                 updateOnline(data.data);
-                setIsListening(true);
                 break;
             case EventsEnum.CLOSE_SOCKET:
                 setSocketId(undefined);
@@ -72,33 +72,53 @@ export const useNotificationAction = () => {
 };
 
 // const BC_CHANNEL = new BroadcastChannel('chat_channel');
-const SOCKET_INTERVAL_CONNECTION = 1000;
-let SOCKET: WebSocket;
+// const SOCKET_INTERVAL_CONNECTION = 1000;
+// const SOCKET: WebSocket | null = null;
 
 export const useSharedWorker = () => {
     const sendMessage = useNotificationAction();
 
     const runConnection = useCallback(() => {
-        if (SOCKET) SOCKET?.close();
-        const newSocket = new WebSocket(Envs.notificationsServiceUrl);
-
-        newSocket.addEventListener('message', (event) => {
-            const data = JSON.parse(event.data);
-            sendMessage({ ...data, payload: data.data });
-        });
-
-        newSocket.addEventListener('close', () => {
-            sendMessage({ event: EventsEnum.CLOSE_SOCKET });
-            sendMessage({ event: EventsEnum.ERROR, data: 'Cannot connect to notifications service.' });
-            setTimeout(runConnection, SOCKET_INTERVAL_CONNECTION);
-            // BC_CHANNEL.postMessage({ type: 'NEW_MESSAGE', data }); // 🔥 Рассылаем другим вкладкам
-        });
-
-        SOCKET = newSocket;
+        // if (SOCKET) return;
+        // SOCKET = new WebSocket(Envs.notificationsServiceUrl);
+        //
+        // SOCKET.addEventListener('message', (event) => {
+        //     const data = JSON.parse(event.data);
+        //     sendMessage({ ...data, payload: data.data });
+        // });
+        //
+        // SOCKET.addEventListener('close', () => {
+        //     SOCKET?.close();
+        //     SOCKET = null;
+        //         sendMessage({ event: EventsEnum.CLOSE_SOCKET });
+        //         sendMessage({ event: EventsEnum.ERROR, data: 'Cannot connect to notifications service.' });
+        //         runConnection();
+        //         // BC_CHANNEL.postMessage({ type: 'NEW_MESSAGE', data }); // 🔥 Рассылаем другим вкладкам
+        // });
+        //
+        // setTimeout(runConnection, SOCKET_INTERVAL_CONNECTION);
     }, []);
 
     useEffect(() => {
         runConnection();
+
+        if (!navigator.serviceWorker) {
+            console.log('Service Workers не поддерживаются');
+            return;
+        }
+
+        navigator.serviceWorker.register('/worker.js');
+
+        navigator.serviceWorker.ready.then(() => {
+            navigator.serviceWorker.controller?.postMessage({
+                event: 'CONNECT',
+                payload: Envs.notificationsServiceUrl,
+            });
+
+            navigator.serviceWorker.addEventListener('message', (ev: MessageEvent<DataType>) => {
+                sendMessage(ev.data);
+            });
+        });
     }, []);
 
     // useEffect(() => {
@@ -155,7 +175,6 @@ export const useSharedWorker = () => {
 //             return;
 //         }
 //
-//         navigator.serviceWorker.register('/worker.js', { scope: 'service-worker' });
 //
 //         navigator.serviceWorker.ready.then(() => {
 //             navigator.serviceWorker.controller?.postMessage({

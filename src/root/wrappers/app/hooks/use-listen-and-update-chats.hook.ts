@@ -43,6 +43,7 @@ export const useListenAndUpdateChats = () => {
                     setToBegin(updatedChat);
                     updateChatAtIndexDb(updatedChat);
                 });
+                setIsListening(true);
             })
             .catch(() => setIsListening(false));
     }, [socketId, isLoadedChatsFromIndexDb]);
