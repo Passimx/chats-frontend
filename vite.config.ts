@@ -34,6 +34,7 @@ const vitePWA = VitePWA({
     //     globPatterns: ['**/*.{html,css,js,ico,png,svg,}'],
     // },
     manifest,
+    filename: 'worker.js',
 });
 
 // https://vitejs.dev/config/

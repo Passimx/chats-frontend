@@ -107,19 +107,14 @@ export const useSharedWorker = () => {
             return;
         }
 
-        navigator.serviceWorker.register('/worker.js');
-        console.log(1);
-
+        // navigator.serviceWorker.register('/worker.js');
         navigator.serviceWorker.ready.then(() => {
             navigator.serviceWorker.controller?.postMessage({
                 event: 'CONNECT',
                 payload: Envs.notificationsServiceUrl,
             });
 
-            console.log(2);
-
             navigator.serviceWorker.addEventListener('message', (ev: MessageEvent<DataType>) => {
-                console.log(3);
                 sendMessage(ev.data);
             });
         });
