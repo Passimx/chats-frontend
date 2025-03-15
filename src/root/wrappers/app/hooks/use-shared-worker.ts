@@ -1,11 +1,11 @@
 import { useUpdateChat } from '../../../store/app/hooks/use-update-chat.hook.ts';
 import { useNavigate } from 'react-router-dom';
 import { useAppAction } from '../../../store';
-import { EventDataType } from '../../../types/events/event-data.type.ts';
+import { DataType } from '../../../types/events/event-data.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
 import rawChats from '../../../store/chats/chats.raw.ts';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 export const useNotificationAction = () => {
     const { setSocketId, updateOnline, setIsListening, updateReadChat, createMessage, removeChat } = useAppAction();
@@ -13,7 +13,7 @@ export const useNotificationAction = () => {
     const navigate = useNavigate();
     const audioSupport: any = document.getElementById('myAudio');
 
-    return ({ data: dataEvent }: EventDataType) => {
+    return (dataEvent: DataType) => {
         const { event, data } = dataEvent;
 
         switch (event) {
@@ -71,23 +71,79 @@ export const useNotificationAction = () => {
     };
 };
 
+// const BC_CHANNEL = new BroadcastChannel('chat_channel');
+const SOCKET_INTERVAL_CONNECTION = 1000;
+let SOCKET: WebSocket;
+
 export const useSharedWorker = () => {
     const sendMessage = useNotificationAction();
 
-    useEffect(() => {
-        const socket = new WebSocket(Envs.notificationsServiceUrl);
+    const runConnection = useCallback(() => {
+        if (SOCKET) SOCKET?.close();
+        const newSocket = new WebSocket(Envs.notificationsServiceUrl);
 
-        socket.addEventListener('message', (event) => {
+        newSocket.addEventListener('message', (event) => {
             const data = JSON.parse(event.data);
-            sendMessage({ data: data });
+            sendMessage({ ...data, payload: data.data });
         });
 
-        socket.addEventListener('close', () => {
-            sendMessage({ data: { event: EventsEnum.CLOSE_SOCKET } });
-            sendMessage({ data: { event: EventsEnum.ERROR, data: 'Cannot connect to notifications service.' } });
+        newSocket.addEventListener('close', () => {
+            sendMessage({ event: EventsEnum.CLOSE_SOCKET });
+            sendMessage({ event: EventsEnum.ERROR, data: 'Cannot connect to notifications service.' });
+            setTimeout(runConnection, SOCKET_INTERVAL_CONNECTION);
+            // BC_CHANNEL.postMessage({ type: 'NEW_MESSAGE', data }); // 🔥 Рассылаем другим вкладкам
         });
+
+        SOCKET = newSocket;
     }, []);
+
+    useEffect(() => {
+        runConnection();
+    }, []);
+
+    // useEffect(() => {
+    //     BC_CHANNEL.onmessage = (event) => {
+    //         if (event.data.type === 'NEW_MESSAGE') {
+    //             sendMessage(event.data); // Сообщение приходит в не-основные вкладки
+    //         }
+    //     };
+    // }, []);
 };
+
+// const sendMessage = useNotificationAction();
+// const BC_CHANNEL = new BroadcastChannel('chat_channel');
+// const MAIN_TAB_KEY = 'main_tab';
+// const LAST_ACTIVE_KEY = 'main_tab_last_active';
+// BC_CHANNEL.onmessage = sendMessage;
+//
+// const checkMainTab = () => {
+//     const mainTabId = localStorage.getItem(MAIN_TAB_KEY);
+//     const lastActive = Number(localStorage.getItem(LAST_ACTIVE_KEY)) || 0;
+//     const now = Date.now();
+//
+//     if (!mainTabId || now - lastActive > 7000) {
+//         localStorage.setItem(MAIN_TAB_KEY, String(now));
+//         localStorage.setItem(LAST_ACTIVE_KEY, String(now));
+//         setIsMainTab(true);
+//     } else {
+//         setIsMainTab(false);
+//     }
+// };
+//
+// useEffect(() => {
+//     const socket = new WebSocket(Envs.notificationsServiceUrl);
+//
+//     socket.addEventListener('message', (event) => {
+//         const data = JSON.parse(event.data);
+//         BC_CHANNEL.postMessage(data);
+//         // sendMessage({ data: data });
+//     });
+//
+//     // socket.addEventListener('close', () => {
+//     //     sendMessage({ data: { event: EventsEnum.CLOSE_SOCKET } });
+//     //     sendMessage({ data: { event: EventsEnum.ERROR, data: 'Cannot connect to notifications service.' } });
+//     // });
+// }, []);
 // export const useSharedWorker = () => {
 //     const { setSocketId, updateOnline, setIsListening, updateReadChat, createMessage, removeChat } = useAppAction();
 //     const setToBegin = useUpdateChat();

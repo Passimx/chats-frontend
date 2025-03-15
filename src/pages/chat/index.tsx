@@ -41,10 +41,8 @@ const Chat: FC = memo(() => {
 
     const addChat = useCallback(() => {
         postMessage({
-            data: {
-                event: EventsEnum.ADD_CHAT,
-                data: { ...chatOnPage!, messages: messages, readMessage: chatOnPage!.countMessages },
-            },
+            event: EventsEnum.ADD_CHAT,
+            data: { ...chatOnPage!, messages: messages, readMessage: chatOnPage!.countMessages },
         });
     }, [chatOnPage, messages]);
 
@@ -56,8 +54,7 @@ const Chat: FC = memo(() => {
     const readMessageFunc = useCallback(
         (chatId: string, number: number) => {
             const num = rawChats.chats.get(chatId)?.readMessage;
-            if (num && number > num)
-                postMessage({ data: { event: EventsEnum.READ_MESSAGE, data: { chatId, number } } });
+            if (num && number > num) postMessage({ event: EventsEnum.READ_MESSAGE, data: { chatId, number } });
         },
         [chatOnPage],
     );
@@ -66,9 +63,7 @@ const Chat: FC = memo(() => {
         (e: MouseEvent<unknown>) => {
             const id = chatOnPage!.id;
             leaveChats([id]);
-            postMessage({
-                data: { event: EventsEnum.REMOVE_CHAT, data: id },
-            });
+            postMessage({ event: EventsEnum.REMOVE_CHAT, data: id });
 
             changeHead();
 
