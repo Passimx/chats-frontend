@@ -6,14 +6,17 @@ const socketIntervalConnection = 1000;
 const connect = () => {
     if (socket) return;
     socket = new WebSocket(host);
+    sendMessage(5);
 
     socket.addEventListener('message', (event) => {
         const data = JSON.parse(event.data);
         if (data.event === 'get_socket_id') socketId = data.data;
         sendMessage({ ...data, payload: data.data });
+        sendMessage(6);
     });
 
     socket.addEventListener('close', () => {
+        sendMessage(7);
         socket?.close();
         socketId = undefined;
         socket = null;
@@ -30,6 +33,7 @@ const sendMessage = (payload) => {
 };
 
 self.addEventListener('message', (event) => {
+    sendMessage(4);
     const { event: eventType, payload } = event.data;
 
     if (eventType === 'CONNECT') {
@@ -47,7 +51,7 @@ self.addEventListener('message', (event) => {
 
     if (!socket && host) connect();
 });
-//
+
 // // const host = 'ws://api.tons-chat.ru/ws';
 // // let socket;
 // // let isConnected = false;

@@ -14,7 +14,7 @@ export const useNotificationAction = () => {
     const audioSupport: any = document.getElementById('myAudio');
 
     return (dataEvent: DataType) => {
-        console.log(dataEvent);
+        alert(JSON.stringify(dataEvent));
         const { event, data } = dataEvent;
 
         switch (event) {
@@ -108,6 +108,7 @@ export const useSharedWorker = () => {
         }
 
         navigator.serviceWorker.register('/worker.js');
+        console.log(1);
 
         navigator.serviceWorker.ready.then(() => {
             navigator.serviceWorker.controller?.postMessage({
@@ -115,7 +116,10 @@ export const useSharedWorker = () => {
                 payload: Envs.notificationsServiceUrl,
             });
 
+            console.log(2);
+
             navigator.serviceWorker.addEventListener('message', (ev: MessageEvent<DataType>) => {
+                console.log(3);
                 sendMessage(ev.data);
             });
         });
