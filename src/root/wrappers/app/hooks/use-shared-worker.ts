@@ -107,7 +107,7 @@ export const useSharedWorker = () => {
             return;
         }
 
-        // navigator.serviceWorker.register('/worker.js');
+        navigator.serviceWorker.register('/worker.js');
         navigator.serviceWorker.ready.then(() => {
             navigator.serviceWorker.controller?.postMessage({
                 event: 'CONNECT',
