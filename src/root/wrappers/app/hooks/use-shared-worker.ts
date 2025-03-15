@@ -108,6 +108,7 @@ export const useSharedWorker = () => {
         }
 
         navigator.serviceWorker.ready.then(() => {
+            console.log(12);
             navigator.serviceWorker.controller?.postMessage({
                 event: 'CONNECT',
                 payload: Envs.notificationsServiceUrl,
