@@ -30,6 +30,7 @@ const manifest: Partial<ManifestOptions> | false = {
 
 const vitePWA = VitePWA({
     registerType: 'autoUpdate',
+    injectRegister: false,
     // workbox: {
     //     globPatterns: ['**/*.{html,css,js,ico,png,svg,}'],
     // },
