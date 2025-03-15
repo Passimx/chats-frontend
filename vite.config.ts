@@ -29,13 +29,13 @@ const manifest: Partial<ManifestOptions> | false = {
 };
 
 const vitePWA = VitePWA({
-    registerType: 'autoUpdate',
-    injectRegister: false,
+    // registerType: 'autoUpdate',
+    injectRegister: 'auto',
     // workbox: {
     //     globPatterns: ['**/*.{html,css,js,ico,png,svg,}'],
     // },
     manifest,
-    filename: 'worker.js',
+    // filename: 'worker.js',
 });
 
 // https://vitejs.dev/config/
