@@ -3,20 +3,23 @@ let socket;
 let socketId;
 const socketIntervalConnection = 1000;
 
+self.addEventListener('install', () => self.skipWaiting());
+
+self.addEventListener('activate', (event) => {
+    event.waitUntil(self.clients.claim());
+});
+
 const connect = () => {
     if (socket) return;
     socket = new WebSocket(host);
-    sendMessage(5);
 
     socket.addEventListener('message', (event) => {
         const data = JSON.parse(event.data);
         if (data.event === 'get_socket_id') socketId = data.data;
         sendMessage({ ...data, payload: data.data });
-        sendMessage(6);
     });
 
     socket.addEventListener('close', () => {
-        sendMessage(7);
         socket?.close();
         socketId = undefined;
         socket = null;
@@ -33,7 +36,6 @@ const sendMessage = (payload) => {
 };
 
 self.addEventListener('message', (event) => {
-    sendMessage(4);
     const { event: eventType, payload } = event.data;
 
     if (eventType === 'CONNECT') {
@@ -51,52 +53,3 @@ self.addEventListener('message', (event) => {
 
     if (!socket && host) connect();
 });
-
-// // const host = 'ws://api.tons-chat.ru/ws';
-// // let socket;
-// // let isConnected = false;
-//
-// self.addEventListener('install', () => self.skipWaiting());
-//
-// // self.addEventListener('activate', () => {
-// //     console.log('✅ Service Worker активирован');
-// // });
-// //
-// // self.addEventListener('message', (event) => {
-// //     const { event: eventType } = event.data;
-// //
-// //     if (eventType === 'CONNECT') {
-// //         console.log('🔌 Подключение к WebSocket…');
-// //         connectWebSocket();
-// //     } else if (eventType === 'DISCONNECT') {
-// //         socket?.close();
-// //     }
-// // });
-// //
-// // const connectWebSocket = () => {
-// //     if (isConnected) return;
-// //     socket = new WebSocket(host);
-// //
-// //     socket.onopen = () => {
-// //         isConnected = true;
-// //         console.log('✅ WebSocket подключен');
-// //     };
-// //
-// //     socket.onmessage = (event) => {
-// //         console.log(event);
-// //         const data = JSON.parse(event.data);
-// //         if (data.event === 'get_socket_id') {
-// //             sendMessageAllClients('GET_SOCKET_ID', data.data);
-// //         } else {
-// //             sendMessageAllClients(data.event, data);
-// //         }
-// //     };
-// //
-// //     socket.onclose = () => {
-// //         isConnected = false;
-// //         sendMessageAllClients('CLOSE_SOCKET');
-// //         setTimeout(connectWebSocket, 3000); // 🔄 Автопереподключение
-// //     };
-// // };
-//
-// // 🔹 Рассылаем сообщение всем вкладкам?
