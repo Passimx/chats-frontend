@@ -103,7 +103,6 @@ export const useSharedWorker = () => {
 
         if (!navigator.serviceWorker) {
             alert('Service Workers не поддерживаются');
-            console.log('Service Workers не поддерживаются');
             return;
         }
 
