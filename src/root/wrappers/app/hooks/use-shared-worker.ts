@@ -11,7 +11,7 @@ export const useSharedWorker = () => {
     const sendMessage = useAppEvents();
 
     const runConnection = useCallback(() => {
-        if (SOCKET?.readyState !== WebSocket.OPEN) return;
+        if (SOCKET?.readyState === WebSocket.OPEN) return;
 
         SOCKET = new WebSocket(Envs.notificationsServiceUrl);
         SOCKET.addEventListener('message', (event) => {
@@ -56,7 +56,7 @@ export const useSharedWorker = () => {
     };
 
     useEffect(() => {
-        if (!navigator.serviceWorker) runConnection();
+        if (navigator.serviceWorker) runConnection();
         else runServiceWorker();
 
         document.addEventListener('visibilitychange', () => {
