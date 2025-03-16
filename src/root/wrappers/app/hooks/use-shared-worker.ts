@@ -1,4 +1,3 @@
-import { DataType } from '../../../types/events/event-data.type.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
 import { useCallback, useEffect } from 'react';
 import { useAppEvents } from './use-app-events.hook.ts';
@@ -30,40 +29,42 @@ export const useSharedWorker = () => {
         setTimeout(runConnection, SOCKET_INTERVAL_CONNECTION);
     }, []);
 
-    const reconnectSW = () =>
-        navigator.serviceWorker.controller?.postMessage({
-            event: 'RE_CONNECT',
-            payload: Envs.notificationsServiceUrl,
-        });
+    // const reconnectSW = () =>
+    //     navigator.serviceWorker.controller?.postMessage({
+    //         event: 'RE_CONNECT',
+    //         payload: Envs.notificationsServiceUrl,
+    //     });
 
-    const runServiceWorker = () => {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/worker.js', { scope: '/' });
-        });
-
-        const connectWs = () =>
-            navigator.serviceWorker.controller?.postMessage({
-                event: 'CONNECT',
-                payload: Envs.notificationsServiceUrl,
-            });
-
-        navigator.serviceWorker.ready.then(() => {
-            connectWs();
-            navigator.serviceWorker.addEventListener('message', (ev: MessageEvent<DataType>) => {
-                sendMessage(ev.data);
-            });
-        });
-    };
+    // const runServiceWorker = () => {
+    //     window.addEventListener('load', () => {
+    //         navigator.serviceWorker.register('/worker.js', { scope: '/' });
+    //     });
+    //
+    //     const connectWs = () =>
+    //         navigator.serviceWorker.controller?.postMessage({
+    //             event: 'CONNECT',
+    //             payload: Envs.notificationsServiceUrl,
+    //         });
+    //
+    //     navigator.serviceWorker.ready.then(() => {
+    //         connectWs();
+    //         navigator.serviceWorker.addEventListener('message', (ev: MessageEvent<DataType>) => {
+    //             sendMessage(ev.data);
+    //         });
+    //     });
+    // };
 
     useEffect(() => {
-        if (!navigator.serviceWorker) runConnection();
-        else runServiceWorker();
+        runConnection();
+        // if (!navigator.serviceWorker) runConnection();
+        // else runServiceWorker();
 
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') {
-                if (!navigator.serviceWorker) runConnection();
-                if (navigator.serviceWorker) reconnectSW();
-            }
+            runConnection();
+            // if (document.visibilityState === 'visible') {
+            //     if (!navigator.serviceWorker) runConnection();
+            //     if (navigator.serviceWorker) reconnectSW();
+            // }
         });
     }, []);
 };
