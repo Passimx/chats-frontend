@@ -1,5 +1,5 @@
 const socketIntervalConnection = 1000;
-let host;
+let host = 'wss://api.tons-chat.ru/ws';
 let socket;
 let socketId;
 
