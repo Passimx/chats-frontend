@@ -5,10 +5,10 @@ import './index.css';
 //
 // registerSW({ immediate: true });
 
-navigator.serviceWorker.getRegistrations().then((registrations) => {
-    for (const registration of registrations) {
-        registration.unregister();
-    }
-});
+// navigator.serviceWorker.getRegistrations().then((registrations) => {
+//     for (const registration of registrations) {
+//         registration.unregister();
+//     }
+// });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
