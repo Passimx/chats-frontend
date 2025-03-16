@@ -30,11 +30,13 @@ const manifest: Partial<ManifestOptions> | false = {
 
 const vitePWA = VitePWA({
     registerType: 'autoUpdate',
-    injectRegister: false,
+    injectRegister: false, // 🔥 Убирает `<script src="/registerSW.js">`
+    filename: 'worker.js', // ✅ Явно указываем worker.js
+    selfDestroying: true, // 🔥 Убирает sw.js, если он не нужен
+    manifest,
     // workbox: {
     //     globPatterns: ['**/*.{html,css,js,ico,png,svg,}'],
     // },
-    manifest,
 });
 
 // https://vitejs.dev/config/
