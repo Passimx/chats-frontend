@@ -1,6 +1,5 @@
 const socketIntervalConnection = 1000;
-const pingInterval = 1000 * 30;
-let host = 'wss://api.tons-chat.ru/ws';
+let host;
 let socket;
 let socketId;
 
@@ -10,16 +9,11 @@ self.addEventListener('activate', (event) => {
     event.waitUntil(self.clients.claim());
 });
 
-const sendPing = () => {
-    // ping web socket
-    if (!socket || socket.readyState !== WebSocket.OPEN) return;
-    socket.send(JSON.stringify({ event: 'ping' }));
-
-    // ping tabs
-    self.clients.matchAll().then((clients) => {
-        clients.forEach((client) => client.postMessage({ type: 'KEEP_ALIVE' }));
-    });
-};
+// const sendPing = () => {
+//     // ping web socket
+//     if (!socket || socket.readyState !== WebSocket.OPEN) return;
+//     socket.send(JSON.stringify({ event: 'ping' }));
+// };
 
 const connect = () => {
     if (socket) return;
@@ -47,11 +41,16 @@ const sendMessage = (payload) => {
     });
 };
 
-// Отправляем `PING` каждые 30 секунд
-setInterval(sendPing, pingInterval);
-
 self.addEventListener('message', (event) => {
     const { event: eventType, payload } = event.data;
+
+    if (eventType === 'RE_CONNECT') {
+        if (socket?.readyState === WebSocket.OPEN) return;
+        socket?.close();
+        socket = null;
+        socketId = undefined;
+        connect();
+    }
 
     if (eventType === 'CONNECT') {
         if (!host && payload) host = payload;
