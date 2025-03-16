@@ -56,7 +56,7 @@ export const useSharedWorker = () => {
     };
 
     useEffect(() => {
-        if (navigator.serviceWorker) runConnection();
+        if (!navigator.serviceWorker) runConnection();
         else runServiceWorker();
 
         document.addEventListener('visibilitychange', () => {
