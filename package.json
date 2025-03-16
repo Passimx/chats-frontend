@@ -1,5 +1,5 @@
 {
-  "name": "passim",
+  "name": "passimx",
   "description": "Open platform for messaging",
   "private": true,
   "version": "0.0.1",
@@ -11,7 +11,6 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "deploy": "npm run build && rsync -avz -e 'ssh' ./dist root@79.132.142.89:/root/passim && ssh root@79.132.142.89 'cd /root/passim && ./deploy.sh'",
     "prepare": "husky install"
   },
   "dependencies": {
