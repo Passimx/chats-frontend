@@ -24,7 +24,7 @@ import { AiOutlineGlobal } from 'react-icons/ai';
 import { LiaEyeSolid } from 'react-icons/lia';
 import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
 import { changeHead } from '../../common/hooks/change-head-inf.hook.ts';
-import { useNotificationAction } from '../../root/wrappers/app/hooks/use-shared-worker.ts';
+import { useAppEvents } from '../../root/wrappers/app/hooks/use-app-events.hook.ts';
 
 const Chat: FC = memo(() => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
@@ -34,9 +34,7 @@ const Chat: FC = memo(() => {
     const navigate = useNavigate();
     const messages = useGetMessages();
     const { t } = useTranslation();
-    // todo
-    // const { postMessage } = useAppAction();
-    const postMessage = useNotificationAction();
+    const postMessage = useAppEvents();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
 
     const addChat = useCallback(() => {
