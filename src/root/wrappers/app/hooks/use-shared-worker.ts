@@ -106,6 +106,12 @@ export const useSharedWorker = () => {
             return;
         }
 
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/worker.js', { scope: '/' });
+            });
+        }
+
         navigator.serviceWorker.ready.then(() => {
             navigator.serviceWorker.controller?.postMessage({
                 event: 'CONNECT',
