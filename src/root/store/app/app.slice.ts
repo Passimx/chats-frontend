@@ -7,11 +7,6 @@ const AppSlice = createSlice({
     name: 'app',
     initialState,
     reducers: {
-        // postMessage(_state, { payload }: PayloadAction<EventDataType>) {
-        //     if (!navigator.serviceWorker) return;
-        //     navigator.serviceWorker.controller?.postMessage({ event: 'SEND_MESSAGE', payload: payload.data });
-        // },
-
         setPage(
             state,
             { payload: { page, isOpenPage } }: PayloadAction<{ page?: JSX.Element | null; isOpenPage?: boolean }>,
@@ -47,6 +42,10 @@ const AppSlice = createSlice({
         setIsPhone(state) {
             const toMatch = [/Android/i, /webOS/i, /iPhone/i, /iPad/i, /iPod/i, /BlackBerry/i, /Windows Phone/i];
             state.isPhone = toMatch.some((toMatchItem) => navigator.userAgent.match(toMatchItem));
+        },
+
+        setIsSystemChat(state, { payload }: PayloadAction<boolean>) {
+            state.isSystemChat = payload;
         },
     },
 });

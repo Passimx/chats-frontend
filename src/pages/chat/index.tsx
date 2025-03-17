@@ -132,7 +132,7 @@ const Chat: FC = memo(() => {
                         <IoCopyOutline className={styles.chat_menu_item_icon} />
                         <div>{t('copy_link')}</div>
                     </div>
-                    {rawChats.chats.get(chatOnPage.id) && (
+                    {rawChats.chats.get(chatOnPage.id) && chatOnPage?.type !== ChatEnum.IS_SYSTEM && (
                         <div className={styles.chat_menu_item} onClick={leave}>
                             <MdExitToApp className={`${styles.chat_menu_item_icon} ${styles.rotate}`} />
                             <div>{t('leave_chat')}</div>
@@ -157,7 +157,7 @@ const Chat: FC = memo(() => {
                     </div>
                 </div>
             </div>
-            <InputMessage />
+            {chatOnPage?.type !== ChatEnum.IS_SYSTEM && <InputMessage />}
         </div>
     );
 });

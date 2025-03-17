@@ -63,3 +63,7 @@ export const leaveChats = (chatIds: string[]) => {
 export const getMessages = (chatId: string) => {
     return Api<MessageType[]>('/messages', { params: { chatId, limit: Envs.messages.limit } });
 };
+
+export const getSystemChat = (): Promise<IData<ChatType>> => {
+    return Api<ChatType>('/chats/chat-system');
+};
