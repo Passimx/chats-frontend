@@ -27,7 +27,7 @@ export const useMessage = (chat: ChatItemIndexDb): (string | undefined)[] => {
     const changeMessage = () => {
         if (chat.type === ChatEnum.IS_OPEN) {
             const message = chat.message;
-            const visibleMessage = message.type === MessageTypeEnum.IS_SYSTEM ? t('chat_is_create') : message.message;
+            const visibleMessage = message.type === MessageTypeEnum.IS_SYSTEM ? t(message.message) : message.message;
 
             setMessage(visibleMessage);
             updateTime(message.createdAt);
