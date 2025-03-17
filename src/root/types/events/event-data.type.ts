@@ -55,7 +55,7 @@ type Error = {
     readonly data: string;
 };
 
-type DataType =
+export type DataType =
     | GetSocketId
     | AddChat
     | CreateChat
@@ -66,7 +66,3 @@ type DataType =
     | UpdateChatOnline
     | CloseSocket
     | Error;
-
-export type EventDataType = {
-    data: DataType;
-};

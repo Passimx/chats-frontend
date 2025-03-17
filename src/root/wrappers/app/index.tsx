@@ -10,6 +10,7 @@ import { useListenAndUpdateChats } from './hooks/use-listen-and-update-chats.hoo
 import { useIsPhone } from './hooks/use-is-phone.hook.ts';
 import { PropsType } from './types/props.type.ts';
 import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
+import { useCheckSystemChat } from './hooks/use-check-system-chat.hook.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     useListenAndUpdateChats();
@@ -17,6 +18,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useIndexDbHook();
     useOnline();
     useIsPhone();
+    useCheckSystemChat();
 
     const isLoaded = useTranslation();
     const { id } = useParams();

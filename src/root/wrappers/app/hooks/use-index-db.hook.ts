@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useAppAction } from '../../../store';
 import rawChats from '../../../store/chats/chats.raw.ts';
+import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 
 export const useIndexDbHook = () => {
-    const { setToEnd, setIsLoadedChatsFromIndexDb } = useAppAction();
+    const { setToEnd, setIsLoadedChatsFromIndexDb, setIsSystemChat } = useAppAction();
 
     useEffect(() => {
         const openRequest = indexedDB?.open('store', 1);
@@ -16,6 +17,10 @@ export const useIndexDbHook = () => {
             request.onsuccess = () => {
                 setToEnd([...request.result].reverse());
                 setIsLoadedChatsFromIndexDb(true);
+
+                const systemChat = request.result.find((chat) => chat.type === ChatEnum.IS_SYSTEM);
+                if (systemChat) setIsSystemChat(true);
+                else setIsSystemChat(false);
             };
         };
 

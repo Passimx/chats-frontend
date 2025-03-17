@@ -1,4 +1,4 @@
-export const changeHead = (title: string = 'Passim', description?: string) => {
+export const changeHead = (title: string = 'PassimX', description?: string) => {
     document.querySelector('meta[property="og:url"]')?.setAttribute('content', window.location.href);
     document.querySelector('meta[property="al:web:url"]')?.setAttribute('content', window.location.href);
     document.querySelector('meta[name="twitter:url"]')?.setAttribute('content', window.location.href);

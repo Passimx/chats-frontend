@@ -8,4 +8,5 @@ export type StateType = {
     isListening?: boolean;
     isLoadedChatsFromIndexDb?: boolean;
     isPhone?: boolean;
+    isSystemChat?: boolean;
 };
