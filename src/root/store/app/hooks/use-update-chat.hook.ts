@@ -2,7 +2,7 @@ import { useAppAction, useAppSelector } from '../../index.ts';
 import { ChatItemIndexDb, ChatType } from '../../../types/chat/chat.type.ts';
 import { useEffect } from 'react';
 import { updateChatAtIndexDb } from '../../chats/index-db/hooks.ts';
-import rawChats from '../../chats/chats.raw.ts';
+import { getRawChat } from '../../chats/chats.raw.ts';
 
 let globChats: ChatType[] = [];
 
@@ -25,7 +25,7 @@ export const useUpdateChat = () => {
         addUpdatedChat(chat);
 
         setTimeout(() => {
-            chat = (rawChats.chats.get(chat.id) ?? rawChats.updatedChats.get(chat.id))!;
+            chat = getRawChat(chat.id)!;
             setToBegin(chat);
             removeUpdatedChats(chat);
         }, time);

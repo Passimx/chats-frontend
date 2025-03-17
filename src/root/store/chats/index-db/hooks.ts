@@ -1,5 +1,5 @@
 import { ChatItemIndexDb } from '../../../types/chat/chat.type.ts';
-import rawChats from '../chats.raw.ts';
+import rawChats, { getRawChat } from '../chats.raw.ts';
 
 export const updateChatAtIndexDb = (chat: ChatItemIndexDb) =>
     new Promise<void>((resolve) => {
@@ -10,7 +10,7 @@ export const updateChatAtIndexDb = (chat: ChatItemIndexDb) =>
         if (!IndexDb) return;
 
         // добавленный чат должен быть в верху списка чатов
-        const chatIsAdded = !!(rawChats.chats.get(payload.id) ?? rawChats.updatedChats.get(payload.id));
+        const chatIsAdded = !!getRawChat(payload.id);
         const dateNow = new Date(chatIsAdded ? payload.message.createdAt : Date.now()).getTime();
 
         const request1 = IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys').get(payload.id);

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ChatItemIndexDb, ChatType } from '../../types/chat/chat.type.ts';
 import { StateType } from './types/state.type.ts';
-import rawChats from './chats.raw.ts';
+import rawChats, { getRawChat } from './chats.raw.ts';
 import { UpdateReadChatType } from './types/update-read-chat.type.ts';
 import { deleteChatIndexDb, updateReadChat } from './index-db/hooks.ts';
 import { ChatUpdateOnline } from '../../types/chat/chat-update-online.type.ts';
@@ -25,7 +25,7 @@ const ChatsSlice = createSlice({
             payload.forEach(({ name, onlineUsers }) => {
                 if (state.chatOnPage?.id === name) state.chatOnPage.online = onlineUsers;
 
-                const chat = rawChats.chats.get(name);
+                const chat = getRawChat(name);
                 if (!chat) return;
 
                 rawChats.chats.set(name, { ...chat, online: onlineUsers });
@@ -34,7 +34,7 @@ const ChatsSlice = createSlice({
         },
 
         createMessage(state, { payload }: PayloadAction<MessageType>) {
-            const chatFromState = rawChats.chats.get(payload.chatId);
+            const chatFromState = getRawChat(payload.chatId);
             if (chatFromState) {
                 let messages = chatFromState.messages;
                 if (chatFromState?.messages[0]?.number === payload.number - 1) messages = [payload, ...messages];
@@ -60,7 +60,7 @@ const ChatsSlice = createSlice({
 
         updateReadChat(state, { payload }: PayloadAction<UpdateReadChatType>) {
             const { chatId, number } = payload;
-            const chat = rawChats.chats.get(chatId) ?? rawChats.updatedChats.get(chatId);
+            const chat = getRawChat(chatId);
 
             if (!chat) return;
             const updatedChat: ChatItemIndexDb = { ...chat, readMessage: number };
@@ -99,7 +99,7 @@ const ChatsSlice = createSlice({
         },
 
         removeChat(state, { payload }: PayloadAction<string>) {
-            const chat = rawChats.chats.get(payload);
+            const chat = getRawChat(payload);
             if (!chat) return;
             deleteChatIndexDb(payload);
 

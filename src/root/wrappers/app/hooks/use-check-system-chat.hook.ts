@@ -6,7 +6,7 @@ import { EventsEnum } from '../../../types/events/events.enum.ts';
 
 export const useCheckSystemChat = () => {
     const postMessage = useAppEvents();
-    const { isSystemChat } = useAppSelector((state) => state.app);
+    const { isSystemChat, isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
 
     const setSystemChat = async () => {
         const response = await getSystemChat();
@@ -19,7 +19,7 @@ export const useCheckSystemChat = () => {
     };
 
     useEffect(() => {
-        if (isSystemChat) return;
+        if (isSystemChat || !isLoadedChatsFromIndexDb) return;
         setSystemChat();
-    }, [isSystemChat]);
+    }, [isSystemChat, isLoadedChatsFromIndexDb]);
 };
