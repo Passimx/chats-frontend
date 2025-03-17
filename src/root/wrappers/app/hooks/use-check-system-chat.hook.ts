@@ -19,7 +19,7 @@ export const useCheckSystemChat = () => {
     };
 
     useEffect(() => {
-        if (!isLoadedChatsFromIndexDb) return;
+        if (isLoadedChatsFromIndexDb) return;
         setSystemChat();
     }, [isLoadedChatsFromIndexDb]);
 };
