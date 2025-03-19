@@ -78,5 +78,5 @@
   "emoji_symbols": "Symbols",
   "emoji_flags": "Flags & Countries",
 
-  "system_message_hello": "Hello! This is the Anonymous Messenger PassimX.\nWe have created this space where you can freely express your thoughts and ideas without worrying about your anonymity. Just write a message and press \"Send\"!\n\n📝 Some useful tips:\n- Connect with people from all over the world!\n- Remember, there are no rules here, only respect for your conversation partners!\n- All messages are anonymous, so you can be yourself!\n\n🔗 Feedback link:\n- https://github.com/orgs/Passimx/discussions"
+  "message_hello": "Hello! This is the Anonymous Messenger PassimX.\nWe have created this space where you can freely express your thoughts and ideas without worrying about your anonymity. Just write a message and press \"Send\"!\n\n📝 Some useful tips:\n- Connect with people from all over the world!\n- Remember, there are no rules here, only respect for your conversation partners!\n- All messages are anonymous, so you can be yourself!\n\n🔗 Feedback link:\n- https://github.com/orgs/Passimx/discussions"
 }
