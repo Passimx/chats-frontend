@@ -36,7 +36,7 @@ const Chats: FC = memo(() => {
     }, []);
 
     return (
-        <div id={styles.background}>
+        <div>
             <div id={styles.main}>
                 <Search isLoading={isLoading} onChange={setInput} />
                 <div id={styles.chats}>

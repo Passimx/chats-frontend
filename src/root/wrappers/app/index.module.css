@@ -31,6 +31,8 @@ html{
     height: 100%;
     position: absolute;
     width: var(--menu-width);
+    display: grid;
+    grid-template-rows: 1fr auto;
 }
 
 #chat{

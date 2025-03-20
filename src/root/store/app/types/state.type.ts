@@ -9,4 +9,5 @@ export type StateType = {
     isLoadedChatsFromIndexDb?: boolean;
     isPhone?: boolean;
     isSystemChat?: boolean;
+    lang: string;
 };

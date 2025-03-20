@@ -4,10 +4,6 @@ html{
     --menu-color: #062846;
 }
 
-#background{
-    height: 100%;
-}
-
 #main{
     background-color: var(--menu-color);
     transform: scale(var(--scale-value));

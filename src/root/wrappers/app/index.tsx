@@ -11,6 +11,7 @@ import { useIsPhone } from './hooks/use-is-phone.hook.ts';
 import { PropsType } from './types/props.type.ts';
 import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 import { useCheckSystemChat } from './hooks/use-check-system-chat.hook.ts';
+import { Menu } from '../../../components/menu';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     useListenAndUpdateChats();
@@ -35,6 +36,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
             <div id={styles.background}>
                 <div id={styles.menu}>
                     <Chats />
+                    <Menu />
                 </div>
                 <div id={styles.chat} onClick={hideMenu}>
                     {children}

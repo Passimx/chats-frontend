@@ -1,7 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { StateType } from './types/state.type.ts';
 
-const initialState: StateType = { isOpenPage: false, isOnline: navigator.onLine };
+const initialState: StateType = {
+    lang: localStorage.getItem('lang') ?? navigator.language.slice(0, 2).toLowerCase(),
+    isOpenPage: false,
+    isOnline: navigator.onLine,
+};
 
 const AppSlice = createSlice({
     name: 'app',
@@ -46,6 +50,11 @@ const AppSlice = createSlice({
 
         setIsSystemChat(state, { payload }: PayloadAction<boolean>) {
             state.isSystemChat = payload;
+        },
+
+        setLang(state, { payload }: PayloadAction<string>) {
+            state.lang = payload;
+            localStorage.setItem('lang', payload);
         },
     },
 });

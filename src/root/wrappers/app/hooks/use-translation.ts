@@ -8,6 +8,7 @@ import CH from '../../../../../public/languages/ch/translation.json';
 import EN from '../../../../../public/languages/en/translation.json';
 import ES from '../../../../../public/languages/es/translation.json';
 import RU from '../../../../../public/languages/ru/translation.json';
+import { useAppSelector } from '../../../store';
 
 const resources = {
     ar: {
@@ -29,21 +30,21 @@ const resources = {
 
 export const useTranslation = () => {
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
+    const { lang } = useAppSelector((state) => state.app);
 
     useEffect(() => {
-        const lang = navigator.language.slice(0, 2).toLowerCase() ?? 'en';
-
-        i18n.use(initReactI18next).init({
-            resources,
-            lng: lang,
-            fallbackLng: lang,
-            interpolation: {
-                escapeValue: false,
-            },
-        });
         moment.locale(lang);
-        setIsLoaded(true);
-    }, []);
+        i18n.use(initReactI18next)
+            .init({
+                resources,
+                lng: lang,
+                fallbackLng: lang,
+                interpolation: {
+                    escapeValue: false,
+                },
+            })
+            .then(() => setIsLoaded(true));
+    }, [lang]);
 
     return isLoaded;
 };

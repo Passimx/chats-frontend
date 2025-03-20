@@ -1,0 +1,17 @@
+#delete_chats{
+    padding: 8px;
+    display: grid;
+    background-color: #0a4375;
+    grid-template-columns: repeat(auto-fill, minmax(calc(100% / 3), 1fr));
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.menu_item{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+}
