@@ -3,7 +3,6 @@ import styles from './index.module.css';
 import styles2 from '../../components/chat-item/index.module.css';
 import Search from '../search';
 import { useAppSelector } from '../../root/store';
-import BackButton from '../../components/back-button';
 import { SearchGlobalChats } from '../search-global-chats';
 import ChatItem from '../../components/chat-item';
 import rawChats from '../../root/store/chats/chats.raw.ts';
@@ -65,9 +64,6 @@ const Chats: FC = memo(() => {
                 </div>
             </div>
             <div id={styles.page_block}>
-                <div id={styles.page_button}>
-                    <BackButton />
-                </div>
                 <div id={styles.page}>{page}</div>
             </div>
         </div>
