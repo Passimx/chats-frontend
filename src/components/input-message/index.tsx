@@ -46,7 +46,7 @@ const InputMessage: FC = () => {
                         ></div>
                     </div>
                 </div>
-                <div className={styles.button_block}>
+                <div>
                     <div className={styles.button_background} onClick={sendMessage}>
                         <BsFillArrowUpCircleFill className={`${styles.button}`} />
                     </div>
