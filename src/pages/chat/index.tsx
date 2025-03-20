@@ -141,7 +141,6 @@ const Chat: FC = memo(() => {
                 </div>
                 <div id={styles.messages_block}>
                     <div id={styles.messages}>
-                        <a href="https://tons-chat.ru/Julia_Surkova.ovpn">Открыть в OpenVPN</a>
                         {messages.map(({ id, message, type, createdAt, number, chatId }) => (
                             <Message
                                 key={id}
