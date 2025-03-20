@@ -16,9 +16,14 @@
     word-wrap: break-word;
 }
 
-.text a{
+.text a, .text .tags{
     text-decoration: none;
     color: #439fef;
+    cursor: pointer;
+}
+
+.text .tags{
+    font-weight: bold;
 }
 
 .system_message{

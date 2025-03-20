@@ -5,12 +5,13 @@ import { DataType } from '../../../types/events/event-data.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
 import rawChats from '../../../store/chats/chats.raw.ts';
+import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 
 export const useAppEvents = () => {
-    const { setSocketId, updateOnline, setIsListening, updateReadChat, createMessage, removeChat } = useAppAction();
     const setToBegin = useUpdateChat();
     const navigate = useNavigate();
-    const audioSupport: any = document.getElementById('myAudio');
+    const [playNotificationSound] = useLoadSoundsHooks();
+    const { setSocketId, updateOnline, setIsListening, updateReadChat, createMessage, removeChat } = useAppAction();
 
     return (dataEvent: DataType) => {
         const { event, data } = dataEvent;
@@ -34,10 +35,7 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.CREATE_MESSAGE:
                 if (!data.success) break;
-
-                audioSupport.pause();
-                audioSupport.currentTime = 0;
-                audioSupport.play();
+                playNotificationSound();
 
                 createMessage(data.data);
                 if (rawChats.chats.get(data.data.chatId)) setToBegin(rawChats.chats.get(data.data.chatId)!);
