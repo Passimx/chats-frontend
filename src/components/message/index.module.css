@@ -16,6 +16,11 @@
     word-wrap: break-word;
 }
 
+.text a{
+    text-decoration: none;
+    color: #439fef;
+}
+
 .system_message{
     background: rgb(6, 40, 70, 0.5);
     user-select: none;
