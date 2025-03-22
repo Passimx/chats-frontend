@@ -11,9 +11,22 @@ export const getChats = async (
     offset?: number,
     notFavoriteChatIds?: string[],
 ): Promise<IData<ChatType[]>> => {
-    return Api<ChatType[]>('/chats', { params: { title, limit: Envs.chats.limit, offset, notFavoriteChatIds } });
-    // const response = await Api<EncryptChatItemType[]>('/chats', { params: { search, limit, offset } });
-    //
+    function extractTags(text: string) {
+        const matches = text.match(/#(\w+)/g); // Находим слова с `#`
+        return matches ? matches.map((tag) => tag.slice(1)) : []; // Убираем `#`
+    }
+
+    function removeTags(text?: string) {
+        if (!text?.length) return undefined;
+        return text.replace(/#\w+/g, '').trim(); // Удаляем теги и пробелы
+    }
+
+    const tags = title?.length ? extractTags(title) : undefined;
+    const titleWithoutTags = removeTags(title);
+
+    return Api<ChatType[]>('/chats', {
+        params: { title: titleWithoutTags, limit: Envs.chats.limit, offset, notFavoriteChatIds, tags },
+    });
     // if (!response.success || !response.data?.length) return { ...response, data: [] };
     //
     // const getChat = async ({ lastMessage, encryptAesKey, ...data }: EncryptChatItemType): Promise<ChatItemType> => {
