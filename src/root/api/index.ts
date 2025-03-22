@@ -22,6 +22,8 @@ export async function Api<T>(url: string, { headers, body, method, params }: req
             if (value) query += `${key}=${value}&`;
         }
 
+    if (query[query.length - 1] === '&') query = query.slice(0, -1);
+
     const mainHeaders: any = {
         Connection: 'keep-alive',
         'Access-Control-Allow-Origin': '*',
