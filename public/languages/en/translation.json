@@ -1,7 +1,10 @@
 {
+  "language": "Language",
+  "language_native": "English",
   "search": "Search",
   "search_chats": "Search chats",
-  "chats_enter_message": "Message",
+  "chats_enter_message": "Message...",
+  "chats_message_unavailable": "Message sending is unavailable",
   "create_open_chat": "Open chat",
   "no_chats": "No chats found",
   "create_shared_chat": "Broadcast chat",

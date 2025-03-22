@@ -16,7 +16,7 @@ export const useVisibility = (props: PropsType): [MutableRefObject<null>, string
         if (type == MessageTypeEnum.IS_CREATED_CHAT) return `${t(message)} «${title}»`;
         if (type === MessageTypeEnum.IS_SYSTEM) return t(message);
         return message;
-    }, []);
+    }, [t]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(

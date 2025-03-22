@@ -2,13 +2,11 @@ import { memo, useCallback } from 'react';
 import styles from './index.module.css';
 import { MdDeleteOutline } from 'react-icons/md';
 import { GrLanguage } from 'react-icons/gr';
-import { useNavigate } from 'react-router-dom';
 import { GoMail } from 'react-icons/go';
 import useSetPageHook from '../../root/store/app/hooks/use-set-page.hook.ts';
 import { ChangeLanguage } from '../change-language';
 
 export const Menu = memo(() => {
-    const navigate = useNavigate();
     const setPage = useSetPageHook();
 
     const deleteAllChats = useCallback(() => {
@@ -27,7 +25,6 @@ export const Menu = memo(() => {
                 className={styles.menu_item}
                 onClick={() => {
                     setPage(null);
-                    navigate('/');
                 }}
             >
                 <GoMail size={30} />
