@@ -10,18 +10,18 @@ import ES from '../../../../../public/languages/es/translation.json';
 import RU from '../../../../../public/languages/ru/translation.json';
 import { useAppSelector } from '../../../store';
 
-const resources = {
-    ar: {
-        translation: AR,
+export const resources = {
+    en: {
+        translation: EN,
     },
     ch: {
         translation: CH,
     },
-    en: {
-        translation: EN,
-    },
     es: {
         translation: ES,
+    },
+    ar: {
+        translation: AR,
     },
     ru: {
         translation: RU,

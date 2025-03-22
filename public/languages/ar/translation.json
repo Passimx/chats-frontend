@@ -1,7 +1,10 @@
 {
+  "language": "لغة",
+  "language_native": "العربية",
   "search": "بحث",
   "search_chats": "بحث عن الدردشات",
-  "chats_enter_message": "رسالة",
+  "chats_enter_message": "...رسالة",
+  "chats_message_unavailable": "إرسال الرسائل غير متاح",
   "create_open_chat": "دردشة مفتوحة",
   "no_chats": "لم يتم العثور على دردشات",
   "create_shared_chat": "دردشة البث",

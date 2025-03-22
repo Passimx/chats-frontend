@@ -1,21 +1,24 @@
-import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import styles from '../index.module.css';
-import { useParams } from 'react-router-dom';
 import styles2 from '../../../pages/chat/index.module.css';
 import { createMessage } from '../../../root/api/chats';
 import { useAppSelector } from '../../../root/store';
+import { ChatEnum } from '../../../root/types/chat/chat.enum.ts';
+import { useTranslation } from 'react-i18next';
+import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
 
 let globalChatId: string;
 
-export const useEnterHook = (): [
-    () => Promise<void>,
-    (event: FormEvent<HTMLDivElement>) => void,
-    (emoji: string) => void,
-    boolean,
-] => {
-    const { id } = useParams();
+export const useEnterHook = (): UseEnterHookType => {
+    const { t } = useTranslation();
     const { isPhone } = useAppSelector((state) => state.app);
+    const { chatOnPage } = useAppSelector((state) => state.chats);
     const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
+
+    const placeholder = useMemo((): string => {
+        const text = chatOnPage?.type === ChatEnum.IS_SYSTEM ? 'chats_message_unavailable' : 'chats_enter_message';
+        return t(text);
+    }, [chatOnPage?.type]);
 
     const onInput = (event: FormEvent<HTMLDivElement>) => {
         const isEmpty = ['', '\n'].includes(event.currentTarget.innerText);
@@ -46,10 +49,10 @@ export const useEnterHook = (): [
         element.innerText = '';
         setIsShowPlaceholder(true);
 
-        globalChatId = String(id);
+        globalChatId = String(chatOnPage?.id);
         // 300 - время анимации, иначе быстро отрабатывает анимация
         setTimeout(() => element.focus(), 300);
-    }, [id]);
+    }, [chatOnPage?.id]);
 
     useEffect(() => {
         const element = document.getElementById(styles.new_message)!;
@@ -96,5 +99,5 @@ export const useEnterHook = (): [
         chatInput.focus(); // Поддерживаем фокус на div
     }, []);
 
-    return [sendMessage, onInput, setEmoji, isShowPlaceholder];
+    return [sendMessage, onInput, setEmoji, placeholder, isShowPlaceholder];
 };

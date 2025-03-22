@@ -157,7 +157,7 @@ const Chat: FC = memo(() => {
                     </div>
                 </div>
             </div>
-            {chatOnPage?.type !== ChatEnum.IS_SYSTEM && <InputMessage />}
+            <InputMessage />
         </div>
     );
 });

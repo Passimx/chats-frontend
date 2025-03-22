@@ -1,7 +1,10 @@
 {
+  "language": "Язык",
+  "language_native": "Русский",
   "search": "Поиск",
   "search_chats": "Поиск чатов",
-  "chats_enter_message": "Сообщение",
+  "chats_enter_message": "Сообщение...",
+  "chats_message_unavailable": "Отправка сообщений недоступна",
   "create_open_chat": "Открытый чат",
   "no_chats": "Чаты не найдены",
   "create_shared_chat": "Трансляционный чат",

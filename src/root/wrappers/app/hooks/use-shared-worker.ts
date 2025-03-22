@@ -5,11 +5,14 @@ import { EventsEnum } from '../../../types/events/events.enum.ts';
 
 const SOCKET_INTERVAL_CONNECTION = 1000;
 let SOCKET: WebSocket | null = null;
+let handler: number | null = null;
 
 export const useSharedWorker = () => {
     const sendMessage = useAppEvents();
 
     const runConnection = useCallback(() => {
+        if (handler) clearTimeout(handler);
+
         if (SOCKET?.readyState === WebSocket.OPEN) return;
 
         SOCKET = new WebSocket(Envs.notificationsServiceUrl);
@@ -23,10 +26,8 @@ export const useSharedWorker = () => {
             SOCKET = null;
             sendMessage({ event: EventsEnum.CLOSE_SOCKET });
             sendMessage({ event: EventsEnum.ERROR, data: 'Cannot connect to notifications service.' });
-            runConnection();
+            handler = setTimeout(runConnection, SOCKET_INTERVAL_CONNECTION);
         });
-
-        setTimeout(runConnection, SOCKET_INTERVAL_CONNECTION);
     }, []);
 
     // const reconnectSW = () =>
@@ -60,7 +61,7 @@ export const useSharedWorker = () => {
         // else runServiceWorker();
 
         document.addEventListener('visibilitychange', () => {
-            runConnection();
+            if (!handler && SOCKET?.readyState !== WebSocket.OPEN) runConnection();
             // if (document.visibilityState === 'visible') {
             //     if (!navigator.serviceWorker) runConnection();
             //     if (navigator.serviceWorker) reconnectSW();

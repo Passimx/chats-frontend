@@ -1,8 +1,11 @@
 {
+  "language": "Idioma",
+  "language_native": "Español",
   "search": "Buscar",
   "search_chats": "Buscar chats",
-  "chats_enter_message": "Mensaje",
+  "chats_enter_message": "Mensaje...",
   "create_open_chat": "Chat abierto",
+  "chats_message_unavailable": "Message sending is unavailable",
   "no_chats": "No se encontraron chats",
   "create_shared_chat": "Chat de transmisión",
   "create_public_chat": "Chat público",

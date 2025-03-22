@@ -30,6 +30,8 @@ export const useAppEvents = () => {
                     ...data.data,
                     messages: [data.data.message],
                     readMessage: 1,
+                    online: '1',
+                    maxUsersOnline: 1,
                 });
                 navigate(`/${data.data.id}`);
                 break;

@@ -1,15 +1,20 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import styles from './index.module.css';
 import { BsEmojiSmile, BsFillArrowUpCircleFill } from 'react-icons/bs';
-import { useTranslation } from 'react-i18next';
 import useVisibility from '../../common/hooks/use-visibility.ts';
 import { useEnterHook } from './hooks/use-enter.hook.ts';
 import Emoji from '../emoji';
+import { useAppSelector } from '../../root/store';
+import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 
 const InputMessage: FC = () => {
-    const { t } = useTranslation();
-    const [sendMessage, onInput, setEmoji, isShowPlaceholder] = useEnterHook();
+    const [sendMessage, onInput, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
+    const { chatOnPage } = useAppSelector((state) => state.chats);
+
+    useEffect(() => {
+        if (isVisibleEmoji) setIsVisibleEmoji(false);
+    }, [chatOnPage?.id]);
 
     return (
         <div id={styles.write_message}>
@@ -20,7 +25,7 @@ const InputMessage: FC = () => {
                         className={`${styles.button_block} ${isVisibleEmoji && styles.button_block_active}`}
                         onClick={(event) => {
                             event.preventDefault();
-                            setIsVisibleEmoji(true);
+                            if (chatOnPage?.type !== ChatEnum.IS_SYSTEM) setIsVisibleEmoji(true);
                         }}
                         onMouseDown={(event) => {
                             event.preventDefault();
@@ -35,12 +40,11 @@ const InputMessage: FC = () => {
                             className={`${styles.placeholder_text} ${useVisibility(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)}`}
                             dir="auto"
                         >
-                            {t('chats_enter_message')}...
+                            {placeholder}
                         </div>
                         <div
                             id={styles.new_message}
-                            contentEditable="true"
-                            role="textbox"
+                            contentEditable={chatOnPage?.type !== ChatEnum.IS_SYSTEM}
                             dir="auto"
                             onInput={onInput}
                         ></div>
