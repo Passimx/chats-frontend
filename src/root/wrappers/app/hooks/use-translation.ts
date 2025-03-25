@@ -14,7 +14,7 @@ export const resources = {
     en: {
         translation: EN,
     },
-    ch: {
+    zh_cn: {
         translation: CH,
     },
     es: {

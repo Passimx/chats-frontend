@@ -1,6 +1,6 @@
 import { Api, IData } from '../index.ts';
 import { CreateChatType } from '../../types/chat/create-chat.type.ts';
-import { CreateMessageType } from '../../types/chat/create-message.type.ts';
+import { CreateMessageType } from '../../types/messages/create-message.type.ts';
 import { ChatType } from '../../types/chat/chat.type.ts';
 import { MessageType } from '../../types/chat/message.type.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
