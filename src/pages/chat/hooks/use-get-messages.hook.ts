@@ -1,8 +1,8 @@
 import { MessageType } from '../../../root/types/chat/message.type.ts';
 import { useEffect, useState } from 'react';
 import rawChats from '../../../root/store/chats/chats.raw.ts';
-import { getMessages } from '../../../root/api/chats';
 import { useAppSelector } from '../../../root/store';
+import { getMessages } from '../../../root/api/messages';
 
 export const useGetMessages = (): MessageType[] => {
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);

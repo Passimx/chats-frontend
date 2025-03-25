@@ -1,13 +1,10 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import styles from '../index.module.css';
-import styles2 from '../../../pages/chat/index.module.css';
-import { createMessage } from '../../../root/api/chats';
 import { useAppSelector } from '../../../root/store';
 import { ChatEnum } from '../../../root/types/chat/chat.enum.ts';
 import { useTranslation } from 'react-i18next';
 import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
-
-let globalChatId: string;
+import { createMessage } from '../../../root/api/messages';
 
 export const useEnterHook = (): UseEnterHookType => {
     const { t } = useTranslation();
@@ -18,38 +15,36 @@ export const useEnterHook = (): UseEnterHookType => {
     const placeholder = useMemo((): string => {
         const text = chatOnPage?.type === ChatEnum.IS_SYSTEM ? 'chats_message_unavailable' : 'chats_enter_message';
         return t(text);
-    }, [chatOnPage?.type]);
+    }, [chatOnPage?.type, t]);
 
-    const onInput = (event: FormEvent<HTMLDivElement>) => {
+    const onInput = useCallback((event: FormEvent<HTMLDivElement>) => {
         const isEmpty = ['', '\n'].includes(event.currentTarget.innerText);
         if (isEmpty) event.currentTarget.innerText = '';
         setIsShowPlaceholder(isEmpty);
-    };
+    }, []);
 
-    const sendMessage = async (): Promise<void> => {
+    const sendMessage = useCallback(async () => {
+        if (!chatOnPage?.id) return;
         const element = document.getElementById(styles.new_message)!;
 
-        const message = element.innerText.replace(/^\n+|\n+$/g, '').trim();
-        if (!message.length) return;
+        const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
+        if (!text.length) return;
 
         element.innerText = '';
         setIsShowPlaceholder(true);
 
-        // hide
-        document.getElementById(styles2.messages)!;
         // todo
         // const divElement = document.getElementById(styles2.messages)!;
         // divElement.scrollTop = 0;
 
-        await createMessage({ message, chatId: globalChatId });
-    };
+        await createMessage({ message: text, chatId: chatOnPage.id });
+    }, [chatOnPage?.id]);
 
     useEffect(() => {
         const element = document.getElementById(styles.new_message)!;
         element.innerText = '';
         setIsShowPlaceholder(true);
 
-        globalChatId = String(chatOnPage?.id);
         // 300 - время анимации, иначе быстро отрабатывает анимация
         setTimeout(() => element.focus(), 300);
     }, [chatOnPage?.id]);

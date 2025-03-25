@@ -6,14 +6,14 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment/min/moment-with-locales';
 
 export const useVisibility = (props: PropsType): [MutableRefObject<null>, string, string] => {
-    const { number, message, title, type, createdAt, chatId, readMessage } = props;
+    const { number, message, type, createdAt, chatId, readMessage } = props;
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const observerTarget = useRef(null);
     const { t } = useTranslation();
     const time = moment(createdAt).format('LT');
 
     const visibleMessage = useMemo(() => {
-        if (type == MessageTypeEnum.IS_CREATED_CHAT) return `${t(message)} «${title}»`;
+        if (type == MessageTypeEnum.IS_CREATED_CHAT) return `${t(message)} «${chatOnPage?.title}»`;
         if (type === MessageTypeEnum.IS_SYSTEM) return t(message);
         return message;
     }, [t]);

@@ -1,8 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { StateType } from './types/state.type.ts';
+import { resources } from '../../wrappers/app/hooks/use-translation.ts';
+
+const browserLang = navigator.language.slice(0, 2).toLowerCase();
+const langs = Object.keys(resources);
+const lang = localStorage.getItem('lang') ?? langs.find((lang) => lang === browserLang) ?? 'en';
 
 const initialState: StateType = {
-    lang: localStorage.getItem('lang') ?? navigator.language.slice(0, 2).toLowerCase(),
+    lang,
     isOpenPage: false,
     isOnline: navigator.onLine,
 };

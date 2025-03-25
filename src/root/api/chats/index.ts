@@ -1,8 +1,6 @@
 import { Api, IData } from '../index.ts';
 import { CreateChatType } from '../../types/chat/create-chat.type.ts';
-import { CreateMessageType } from '../../types/chat/create-message.type.ts';
 import { ChatType } from '../../types/chat/chat.type.ts';
-import { MessageType } from '../../types/chat/message.type.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import { ChatListenRequestType } from '../../types/chat/chat-listen-request.type.ts';
 
@@ -61,20 +59,12 @@ export const getChatById = async (id: string): Promise<IData<ChatType>> => {
     return Api<ChatType>(`/chats/${id}`);
 };
 
-export const createMessage = (body: CreateMessageType) => {
-    return Api('/messages', { body, method: 'POST' });
-};
-
 export const listenChats = (chats: ChatListenRequestType[]) => {
     return Api<ChatType[]>('/chats/join', { method: 'POST', body: { chats } });
 };
 
 export const leaveChats = (chatIds: string[]) => {
     return Api('/chats/leave', { method: 'POST', body: { chatIds } });
-};
-
-export const getMessages = (chatId: string) => {
-    return Api<MessageType[]>('/messages', { params: { chatId, limit: Envs.messages.limit } });
 };
 
 export const getSystemChat = (): Promise<IData<ChatType>> => {
