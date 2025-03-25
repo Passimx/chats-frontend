@@ -3,15 +3,11 @@ import styles from './index.module.css';
 import { PropsType } from './types/props.type.ts';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { useVisibility } from './hooks/use-visibility.hook.ts';
-
-// todo
-// сделать распарсинг
+import { RenderMessage } from '../render-message';
 
 const Message: FC<PropsType> = memo((props) => {
     const { number, type } = props;
     const [observerTarget, visibleMessage, time] = useVisibility(props);
-
-    // const parts = parseMessage(visibleMessage);
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
@@ -23,10 +19,7 @@ const Message: FC<PropsType> = memo((props) => {
     return (
         <>
             <div ref={observerTarget} id={`message${number}`} className={`${styles.background}`}>
-                <div>
-                    {/*<RenderMessage message={message} />*/}
-                    <pre className={styles.text}>{visibleMessage}</pre>
-                </div>
+                <RenderMessage message={visibleMessage} />
                 <div className={styles.left_div2}>{time}</div>
             </div>
         </>

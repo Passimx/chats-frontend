@@ -1,11 +1,10 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import styles from '../index.module.css';
-import { createMessage } from '../../../root/api/chats';
 import { useAppSelector } from '../../../root/store';
 import { ChatEnum } from '../../../root/types/chat/chat.enum.ts';
 import { useTranslation } from 'react-i18next';
 import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
-import { parseMessage } from '../common/parse-message.ts';
+import { createMessage } from '../../../root/api/messages';
 
 export const useEnterHook = (): UseEnterHookType => {
     const { t } = useTranslation();
@@ -38,8 +37,7 @@ export const useEnterHook = (): UseEnterHookType => {
         // const divElement = document.getElementById(styles2.messages)!;
         // divElement.scrollTop = 0;
 
-        const message = parseMessage(text);
-        await createMessage({ message, chatId: chatOnPage.id });
+        await createMessage({ message: text, chatId: chatOnPage.id });
     }, [chatOnPage?.id]);
 
     useEffect(() => {
