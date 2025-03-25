@@ -141,17 +141,8 @@ const Chat: FC = memo(() => {
                 </div>
                 <div id={styles.messages_block}>
                     <div id={styles.messages}>
-                        {messages.map(({ id, message, type, createdAt, number, chatId }) => (
-                            <Message
-                                key={id}
-                                chatId={chatId}
-                                title={chatOnPage.title}
-                                number={number}
-                                message={message}
-                                type={type}
-                                createdAt={new Date(createdAt)}
-                                readMessage={readMessageFunc}
-                            />
+                        {messages.map((message) => (
+                            <Message key={message.id} {...message} readMessage={readMessageFunc} />
                         ))}
                         <div></div>
                     </div>
