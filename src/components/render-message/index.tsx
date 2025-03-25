@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 export const RenderMessage: FC<PropsType> = ({ message }) => {
     const { t } = useTranslation();
-    const parts = useMemo(() => parseMessage(message), [t]);
+    const parts = useMemo(() => parseMessage(message), [t, message]);
 
     return (
         <pre className={styles.text}>
