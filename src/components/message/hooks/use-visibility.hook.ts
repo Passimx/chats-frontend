@@ -13,9 +13,11 @@ export const useVisibility = (props: PropsType): [MutableRefObject<null>, string
     const time = moment(createdAt).format('LT');
 
     const visibleMessage = useMemo(() => {
-        if (type == MessageTypeEnum.IS_CREATED_CHAT) return `${t(message)} «${chatOnPage?.title}»`;
-        if (type === MessageTypeEnum.IS_SYSTEM) return t(message);
-        return message;
+        // if (type == MessageTypeEnum.IS_CREATED_CHAT) return `${t(message)} «${chatOnPage?.title}»`;
+        // if (type === MessageTypeEnum.IS_SYSTEM) return t(message);
+        // return message;
+        console.log(type, MessageTypeEnum);
+        return t(message);
     }, [t]);
 
     useEffect(() => {
