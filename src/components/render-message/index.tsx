@@ -1,13 +1,11 @@
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import { PartTypeEnum } from '../../root/types/messages/part-type.enum.ts';
 import { PropsType } from './types/props.type.ts';
 import styles from '../message/index.module.css';
 import { parseMessage } from '../input-message/common/parse-message.ts';
-import { useTranslation } from 'react-i18next';
 
 export const RenderMessage: FC<PropsType> = ({ message }) => {
-    const { t } = useTranslation();
-    const parts = useMemo(() => parseMessage(message), [t, message]);
+    const parts = parseMessage(message);
 
     return (
         <pre className={styles.text}>
