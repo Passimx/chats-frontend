@@ -9,6 +9,8 @@ const Message: FC<PropsType> = memo((props) => {
     const { number, type } = props;
     const [observerTarget, visibleMessage, time] = useVisibility(props);
 
+    console.log(visibleMessage);
+
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
             <div ref={observerTarget} id={`message${number}`} className={styles.system_background}>
