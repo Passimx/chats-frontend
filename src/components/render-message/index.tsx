@@ -7,8 +7,6 @@ import { parseMessage } from '../input-message/common/parse-message.ts';
 export const RenderMessage: FC<PropsType> = ({ message }) => {
     const parts = parseMessage(message);
 
-    console.log([message]);
-
     return (
         <pre className={styles.text}>
             {parts.map((part, index) => {
