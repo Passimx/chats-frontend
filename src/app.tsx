@@ -5,16 +5,15 @@ import { Provider } from 'react-redux';
 
 const App: FC = () => {
     useEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        console.log(window?.Telegram?.WebApp);
+        window?.Telegram?.WebApp.expand();
     }, []);
 
-    return (
-        <Provider store={store}>
-            <AppRouter />
-        </Provider>
-    );
+    if (window.Telegram.WebApp?.initDataUnsafe?.user)
+        return (
+            <Provider store={store}>
+                <AppRouter />
+            </Provider>
+        );
 };
 
 export default App;
