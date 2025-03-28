@@ -6,7 +6,7 @@ import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import InputMessage from '../../components/input-message';
 import Message from '../../components/message';
 import { useTranslation } from 'react-i18next';
-import rawChats from '../../root/store/chats/chats.raw.ts';
+import { getRawChat } from '../../root/store/chats/chats.raw.ts';
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { useAppSelector } from '../../root/store';
@@ -36,6 +36,7 @@ const Chat: FC = memo(() => {
     const { t } = useTranslation();
     const postMessage = useAppEvents();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
+    const { chats } = useAppSelector((state) => state.chats);
 
     const addChat = useCallback(() => {
         postMessage({
@@ -51,10 +52,11 @@ const Chat: FC = memo(() => {
 
     const readMessageFunc = useCallback(
         (chatId: string, number: number) => {
-            const num = rawChats.chats.get(chatId)?.readMessage;
-            if (num && number > num) postMessage({ event: EventsEnum.READ_MESSAGE, data: { chatId, number } });
+            const num = getRawChat(chatId)?.readMessage;
+            if (num !== undefined && number > num)
+                postMessage({ event: EventsEnum.READ_MESSAGE, data: { chatId, number } });
         },
-        [chatOnPage],
+        [chatOnPage?.id, chats],
     );
 
     const leave = useCallback(
@@ -107,7 +109,7 @@ const Chat: FC = memo(() => {
                         </div>
                     </div>
                 </div>
-                {!rawChats.chats.get(chatOnPage.id) && !rawChats.updatedChats.get(chatOnPage.id) && (
+                {!getRawChat(chatOnPage.id) && (
                     <div className={styles.add_chat_block} onClick={addChat}>
                         <IoIosAddCircleOutline id={styles.new_chat_icon} />
                         {t('add_chat')}
@@ -132,7 +134,7 @@ const Chat: FC = memo(() => {
                         <IoCopyOutline className={styles.chat_menu_item_icon} />
                         <div>{t('copy_link')}</div>
                     </div>
-                    {rawChats.chats.get(chatOnPage.id) && chatOnPage?.type !== ChatEnum.IS_SYSTEM && (
+                    {getRawChat(chatOnPage.id) && chatOnPage?.type !== ChatEnum.IS_SYSTEM && (
                         <div className={styles.chat_menu_item} onClick={leave}>
                             <MdExitToApp className={`${styles.chat_menu_item_icon} ${styles.rotate}`} />
                             <div>{t('leave_chat')}</div>

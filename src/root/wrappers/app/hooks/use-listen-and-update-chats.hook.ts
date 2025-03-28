@@ -2,7 +2,7 @@ import { useAppAction, useAppSelector } from '../../../store';
 import { useCallback, useEffect } from 'react';
 import { listenChats } from '../../../api/chats';
 import { ChatListenRequestType } from '../../../types/chat/chat-listen-request.type.ts';
-import rawChats from '../../../store/chats/chats.raw.ts';
+import rawChats, { getRawChat, getRawChats } from '../../../store/chats/chats.raw.ts';
 import { ChatItemIndexDb, ChatType } from '../../../types/chat/chat.type.ts';
 import { updateChatAtIndexDb } from '../../../store/chats/index-db/hooks.ts';
 
@@ -21,13 +21,13 @@ export const useListenAndUpdateChats = () => {
     useEffect(() => {
         if (!socketId) setIsListening(false);
         if (!socketId || !isLoadedChatsFromIndexDb || isListening) return;
-        if (!rawChats.chats.size) {
+        if (!getRawChats().length) {
             setIsListening(true);
             return;
         }
 
         const chatsListen: ChatListenRequestType[] = [];
-        rawChats.chats.forEach((chat, chatId) => chatsListen.push({ chatId, lastMessage: chat.countMessages }));
+        getRawChats().forEach((chat) => chatsListen.push({ chatId: chat.id, lastMessage: chat.countMessages }));
 
         listenChats(chatsListen)
             .then(({ success, data }) => {
@@ -36,7 +36,7 @@ export const useListenAndUpdateChats = () => {
                 if (!success) return;
 
                 data.sort(compareFn).map((chat) => {
-                    const chatFromRaw = rawChats.chats.get(chat.id);
+                    const chatFromRaw = getRawChat(chat.id);
                     if (!chatFromRaw) return;
                     const updatedChat: ChatItemIndexDb = { ...chatFromRaw, ...chat };
 

@@ -1,9 +1,10 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 let cachedAudioBuffer: AudioBuffer | null = null; // Кешируем звук
 
 export const useLoadSoundsHooks = (): [() => Promise<void>] => {
-    const audioContext = new window.AudioContext();
+    const audioContext = useMemo(() => new window.AudioContext(), []);
+
     const loadNotificationSound = useCallback(async () => {
         if (cachedAudioBuffer) return;
 
