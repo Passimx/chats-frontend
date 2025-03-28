@@ -1,64 +1,60 @@
-const CACHE_NAME = 'site-cache';
-const URLS_TO_CACHE = [
-    '/', // Главная страница
-    '/index.html',
-    '/style.css',
-    '/app.js',
-];
+const CACHE_NAME = 'site-cache-v1';
 
-// Установка Service Worker и начальное кэширование
-self.addEventListener('install', (event) => {
-    console.log('[SW] Installing Service Worker...');
+// Расширения файлов, которые мы хотим кэшировать
+const CACHE_FILE_EXTENSIONS = ['.html', '.js', '.css'];
 
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            console.log('[SW] Precaching App Shell');
-            return cache.addAll(URLS_TO_CACHE);
-        }),
-    );
+self.addEventListener('install', () => {
+    console.log('[SW] Install');
+    self.skipWaiting(); // сразу активировать SW без ожидания загрузки страницы
 });
 
-// Активация: очистка старых кэшей
 self.addEventListener('activate', (event) => {
-    console.log('[SW] Activating Service Worker...');
+    console.log('[SW] Activate');
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
+        caches.keys().then((cacheNames) =>
+            Promise.all(
                 cacheNames.map((name) => {
                     if (name !== CACHE_NAME) {
                         console.log('[SW] Deleting old cache:', name);
                         return caches.delete(name);
                     }
                 }),
-            );
-        }),
+            ),
+        ),
     );
-    return self.clients.claim();
+    self.clients.claim(); // взять под контроль существующие вкладки
 });
 
-// Обработка запросов — стратегия stale-while-revalidate
 self.addEventListener('fetch', (event) => {
+    const { request } = event;
+
     // Только GET-запросы
-    if (event.request.method !== 'GET') return;
+    if (request.method !== 'GET') return;
+
+    const url = new URL(request.url);
+    const pathname = url.pathname;
+
+    // Проверка: содержит ли путь нужное расширение?
+    const shouldCache = CACHE_FILE_EXTENSIONS.some((ext) => pathname.endsWith(ext));
+
+    if (!shouldCache) return; // не кешируем другие типы запросов (например, изображения)
 
     event.respondWith(
-        caches.match(event.request).then((cachedResponse) => {
-            const fetchPromise = fetch(event.request)
+        caches.match(request).then((cachedResponse) => {
+            const fetchPromise = fetch(request)
                 .then((networkResponse) => {
-                    // Проверим, что это нормальный ответ и положим его в кэш
+                    // Если получен валидный ответ — сохранить в кэш
                     if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
                         caches.open(CACHE_NAME).then((cache) => {
-                            cache.put(event.request, networkResponse.clone());
+                            cache.put(request, networkResponse.clone());
                         });
 
-                        // Дополнительно: можно отправить сообщение клиенту
-                        // о том, что ресурс обновился
-
+                        // (необязательно) отправить сообщение на клиент
                         self.clients.matchAll().then((clients) => {
                             clients.forEach((client) => {
                                 client.postMessage({
                                     type: 'CACHE_UPDATED',
-                                    url: event.request.url,
+                                    url: request.url,
                                 });
                             });
                         });
@@ -67,11 +63,11 @@ self.addEventListener('fetch', (event) => {
                     return networkResponse;
                 })
                 .catch(() => {
-                    // В случае ошибки (например, нет интернета)
+                    // Возвращаем кэш, если fetch не удался (оффлайн)
                     return cachedResponse;
                 });
 
-            // Возвращаем кэш сразу, а обновление запрашиваем в фоне
+            // Если есть кэш — отдать его сразу, и обновить в фоне
             return cachedResponse || fetchPromise;
         }),
     );
