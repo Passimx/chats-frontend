@@ -17,6 +17,10 @@ self.addEventListener('fetch', function (event) {
     // дальше можно обрабатывать css/js/img...
 });
 
+self.addEventListener('activate', (event) => {
+    event.waitUntil(self.clients.claim()); // ⚡ Новый SW моментально управляет страницей
+});
+
 // const CACHE_NAME = 'site-cache-v1';
 //
 // // Расширения файлов, которые мы хотим кэшировать
