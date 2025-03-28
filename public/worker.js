@@ -1,24 +1,54 @@
 const CACHE_NAME = 'site-cache';
 
 self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.addAll(['/', '/index.html', '/style.css', '/app.js'])),
-    );
+    event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(['/', '/index.html'])));
     self.skipWaiting();
 });
 
 self.addEventListener('fetch', function (event) {
-    if (event.request.mode === 'navigate') {
+    const request = event.request;
+    if (request.mode === 'navigate') {
         // запрос за HTML-документом
-        event.respondWith(fetch(event.request).catch(() => caches.match('/index.html')));
+        event.respondWith(fetch(request).catch(() => caches.match('/index.html')));
         return;
     }
+    const url = new URL(request.url);
 
-    // дальше можно обрабатывать css/js/img...
+    if (url.pathname.startsWith('/assets/')) {
+        event.respondWith(
+            caches.match(request).then((cachedResponse) => {
+                const fetchPromise = fetch(request)
+                    .then((networkResponse) => {
+                        if (networkResponse.status === 200) {
+                            caches.open(CACHE_NAME).then((cache) => {
+                                cache.put(request, networkResponse.clone());
+                            });
+                        }
+                        return networkResponse;
+                    })
+                    .catch(() => cachedResponse); // если оффлайн — вернуть кэш, если он есть
+
+                return cachedResponse || fetchPromise;
+            }),
+        );
+    }
 });
 
 self.addEventListener('activate', (event) => {
-    event.waitUntil(self.clients.claim()); // ⚡ Новый SW моментально управляет страницей
+    event.waitUntil(
+        caches
+            .keys()
+            .then((cacheNames) => {
+                return Promise.all(
+                    cacheNames.map((name) => {
+                        if (name !== CACHE_NAME) {
+                            return caches.delete(name);
+                        }
+                    }),
+                );
+            })
+            .then(() => self.clients.claim()), // ⚡ Новый SW моментально управляет страницей
+    );
 });
 
 // const CACHE_NAME = 'site-cache-v1';
