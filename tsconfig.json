@@ -23,6 +23,8 @@
             "vite-plugin-pwa/client"
         ]
     },
-    "include": ["src"],
+    "include": ["src",
+        "src/modules/telegram/types/telegram.d.ts"
+    ],
     "references": [{ "path": "./tsconfig.node.json" }]
 }

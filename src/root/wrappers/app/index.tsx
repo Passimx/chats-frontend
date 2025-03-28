@@ -12,6 +12,7 @@ import { PropsType } from './types/props.type.ts';
 import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 import { useCheckSystemChat } from './hooks/use-check-system-chat.hook.ts';
 import { Menu } from '../../../components/menu';
+import { useTelegram } from '../../../modules/telegram';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     useListenAndUpdateChats();
@@ -20,6 +21,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useOnline();
     useIsPhone();
     useCheckSystemChat();
+    useTelegram();
 
     const isLoaded = useTranslation();
     const { id } = useParams();
