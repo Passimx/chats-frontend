@@ -16,6 +16,7 @@ self.addEventListener('fetch', function (event) {
     }
     const url = new URL(request.url);
 
+    console.log(0);
     if (url.pathname.includes('/assets/')) {
         console.log(1);
         event.respondWith(
