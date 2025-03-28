@@ -9,29 +9,32 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('fetch', function (event) {
     const request = event.request;
+
     if (request.mode === 'navigate') {
-        // запрос за HTML-документом
         event.respondWith(fetch(request).catch(() => caches.match('/index.html')));
         return;
     }
+
     const url = new URL(request.url);
 
-    console.log(0);
     if (url.pathname.includes('/assets/')) {
-        console.log(1);
         event.respondWith(
             caches.match(request).then((cachedResponse) => {
                 const fetchPromise = fetch(request)
                     .then((networkResponse) => {
-                        console.log(networkResponse.status);
-                        if (networkResponse.status === 200) {
+                        console.log('[SW] response status:', networkResponse.status);
+
+                        if (networkResponse && networkResponse.status === 200) {
+                            const responseClone = networkResponse.clone(); // 🛠 клон ДО использования
+
                             caches.open(CACHE_NAME).then((cache) => {
-                                cache.put(request, networkResponse.clone());
+                                cache.put(request, responseClone);
                             });
                         }
+
                         return networkResponse;
                     })
-                    .catch(() => cachedResponse); // если оффлайн — вернуть кэш, если он есть
+                    .catch(() => cachedResponse); // оффлайн — вернуть кэш, если есть
 
                 return cachedResponse || fetchPromise;
             }),
