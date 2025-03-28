@@ -17,6 +17,11 @@ self.addEventListener('fetch', function (event) {
 
     const url = new URL(request.url);
 
+    if (url.pathname === '/manifest.webmanifest') {
+        event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+        return;
+    }
+
     if (url.pathname.includes('/assets/')) {
         event.respondWith(
             caches.match(request).then((cachedResponse) => {
