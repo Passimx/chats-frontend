@@ -1,4 +1,4 @@
-const CACHE_NAME = 'site-cache-v2';
+const CACHE_NAME = 'site-cache-v3';
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
@@ -17,10 +17,12 @@ self.addEventListener('fetch', function (event) {
     const url = new URL(request.url);
 
     if (url.pathname.includes('/assets/')) {
+        console.log(1);
         event.respondWith(
             caches.match(request).then((cachedResponse) => {
                 const fetchPromise = fetch(request)
                     .then((networkResponse) => {
+                        console.log(networkResponse.status);
                         if (networkResponse.status === 200) {
                             caches.open(CACHE_NAME).then((cache) => {
                                 cache.put(request, networkResponse.clone());
