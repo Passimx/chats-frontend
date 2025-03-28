@@ -14,7 +14,7 @@ self.addEventListener('fetch', function (event) {
     }
     const url = new URL(request.url);
 
-    if (url.pathname.startsWith('/assets/')) {
+    if (url.pathname.includes('/assets/')) {
         event.respondWith(
             caches.match(request).then((cachedResponse) => {
                 const fetchPromise = fetch(request)
