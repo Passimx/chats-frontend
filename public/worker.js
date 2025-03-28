@@ -1,11 +1,16 @@
 const CACHE_NAME = 'site-cache-v1';
 
 // Расширения файлов, которые мы хотим кэшировать
-const CACHE_FILE_EXTENSIONS = ['.html', '.js', '.css'];
+const CACHE_FILE_EXTENSIONS = ['.js', '.css'];
 
-self.addEventListener('install', () => {
+self.addEventListener('install', (event) => {
     console.log('[SW] Install');
     self.skipWaiting(); // сразу активировать SW без ожидания загрузки страницы
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll(['/', '/index.html', '/manifest.webmanifest']);
+        }),
+    );
 });
 
 self.addEventListener('activate', (event) => {
