@@ -1,7 +1,7 @@
 const CACHE_NAME = 'site-cache-v1';
 
 // Расширения файлов, которые мы хотим кэшировать
-const CACHE_FILE_EXTENSIONS = ['.html', '.js', '.css'];
+const CACHE_FILE_EXTENSIONS = ['.html', '.js', '.css', '.webmanifest'];
 
 self.addEventListener('install', () => {
     console.log('[SW] Install');
