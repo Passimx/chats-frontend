@@ -1,7 +1,9 @@
-const CACHE_NAME = 'site-cache-v1';
+const CACHE_NAME = 'site-cache-v2';
 
 self.addEventListener('install', (event) => {
-    event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(['/', '/index.html'])));
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(['/', '/index.html', '/manifest.webmanifest'])),
+    );
     self.skipWaiting();
 });
 
@@ -9,7 +11,7 @@ self.addEventListener('fetch', function (event) {
     const request = event.request;
     if (request.mode === 'navigate') {
         // запрос за HTML-документом
-        event.respondWith(fetch(request).catch(() => caches.match('/index.html', '/manifest.webmanifest')));
+        event.respondWith(fetch(request).catch(() => caches.match('/index.html')));
         return;
     }
     const url = new URL(request.url);
