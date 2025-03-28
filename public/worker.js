@@ -9,7 +9,7 @@ self.addEventListener('fetch', function (event) {
     const request = event.request;
     if (request.mode === 'navigate') {
         // запрос за HTML-документом
-        event.respondWith(fetch(request).catch(() => caches.match('/index.html')));
+        event.respondWith(fetch(request).catch(() => caches.match('/index.html', '/manifest.webmanifest')));
         return;
     }
     const url = new URL(request.url);
