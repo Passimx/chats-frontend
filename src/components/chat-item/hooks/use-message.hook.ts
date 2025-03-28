@@ -45,7 +45,7 @@ export const useMessage = (chat: ChatItemIndexDb): (string | undefined)[] => {
         else if (difference < 1000) setCountMessages(difference.toString());
         else if (difference < 1000000) setCountMessages(`${Math.floor(difference / 1000)}К`);
         else if (difference >= 1000000) setCountMessages(`${Math.floor(difference / 1000000)}М`);
-    }, []);
+    }, [chat]);
 
     useEffect(() => {
         changeMessage();
