@@ -1,69 +1,78 @@
-const socketIntervalConnection = 1000;
-let host = 'wss://api.tons-chat.ru/ws';
-let socket;
-let socketId;
+const CACHE_NAME = 'site-cache';
+const URLS_TO_CACHE = [
+    '/', // Главная страница
+    '/index.html',
+    '/style.css',
+    '/app.js',
+];
 
-self.addEventListener('install', () => self.skipWaiting());
+// Установка Service Worker и начальное кэширование
+self.addEventListener('install', (event) => {
+    console.log('[SW] Installing Service Worker...');
 
-self.addEventListener('activate', (event) => {
-    event.waitUntil(self.clients.claim());
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            console.log('[SW] Precaching App Shell');
+            return cache.addAll(URLS_TO_CACHE);
+        }),
+    );
 });
 
-// const sendPing = () => {
-//     // ping web socket
-//     if (!socket || socket.readyState !== WebSocket.OPEN) return;
-//     socket.send(JSON.stringify({ event: 'ping' }));
-// };
+// Активация: очистка старых кэшей
+self.addEventListener('activate', (event) => {
+    console.log('[SW] Activating Service Worker...');
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((name) => {
+                    if (name !== CACHE_NAME) {
+                        console.log('[SW] Deleting old cache:', name);
+                        return caches.delete(name);
+                    }
+                }),
+            );
+        }),
+    );
+    return self.clients.claim();
+});
 
-const connect = () => {
-    if (socket) return;
-    socket = new WebSocket(host);
+// Обработка запросов — стратегия stale-while-revalidate
+self.addEventListener('fetch', (event) => {
+    // Только GET-запросы
+    if (event.request.method !== 'GET') return;
 
-    socket.addEventListener('message', (event) => {
-        const data = JSON.parse(event.data);
-        if (data.event === 'get_socket_id') socketId = data.data;
-        sendMessage({ ...data, payload: data.data });
-    });
+    event.respondWith(
+        caches.match(event.request).then((cachedResponse) => {
+            const fetchPromise = fetch(event.request)
+                .then((networkResponse) => {
+                    // Проверим, что это нормальный ответ и положим его в кэш
+                    if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+                        caches.open(CACHE_NAME).then((cache) => {
+                            cache.put(event.request, networkResponse.clone());
+                        });
 
-    socket.addEventListener('close', () => {
-        socket?.close();
-        socketId = undefined;
-        socket = null;
-        sendMessage({ event: 'close_socket' });
-        sendMessage({ event: 'error', data: 'Cannot connect to notifications service.' });
-        setTimeout(connect, socketIntervalConnection);
-    });
-};
+                        // Дополнительно: можно отправить сообщение клиенту
+                        // о том, что ресурс обновился
 
-const sendMessage = (payload) => {
-    self.clients.matchAll().then((clients) => {
-        clients.forEach((client) => client.postMessage(payload));
-    });
-};
+                        self.clients.matchAll().then((clients) => {
+                            clients.forEach((client) => {
+                                client.postMessage({
+                                    type: 'CACHE_UPDATED',
+                                    url: event.request.url,
+                                });
+                            });
+                        });
+                    }
 
-self.addEventListener('message', (event) => {
-    const { event: eventType, payload } = event.data;
+                    return networkResponse;
+                })
+                .catch(() => {
+                    // В случае ошибки (например, нет интернета)
+                    return cachedResponse;
+                });
 
-    if (eventType === 'RE_CONNECT') {
-        if (socket?.readyState === WebSocket.OPEN) return;
-        socket?.close();
-        socket = null;
-        socketId = undefined;
-        connect();
-    }
-
-    if (eventType === 'CONNECT') {
-        if (!host && payload) host = payload;
-        if (socketId)
-            event.source?.postMessage({
-                event: 'get_socket_id',
-                data: socketId,
-            });
-    }
-
-    if (eventType === 'SEND_MESSAGE') {
-        sendMessage(payload);
-    }
-
-    if (!socket && host) connect();
+            // Возвращаем кэш сразу, а обновление запрашиваем в фоне
+            return cachedResponse || fetchPromise;
+        }),
+    );
 });

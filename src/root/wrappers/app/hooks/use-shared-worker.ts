@@ -60,6 +60,22 @@ export const useSharedWorker = () => {
         // if (!navigator.serviceWorker) runConnection();
         // else runServiceWorker();
 
+        if (navigator.serviceWorker) {
+            navigator.serviceWorker.register('/worker.js', { scope: '/' });
+            navigator.serviceWorker.ready.then((registration) => {
+                return (registration as any).sync.register('syncdata');
+            });
+        }
+
+        navigator.serviceWorker.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'CACHE_UPDATED') {
+                console.log('Ресурс обновлён:', event.data.url);
+
+                // Перезагрузка страницы по желанию:
+                // location.reload();
+            }
+        });
+
         document.addEventListener('visibilitychange', () => {
             if (!handler && SOCKET?.readyState !== WebSocket.OPEN) runConnection();
             // if (document.visibilityState === 'visible') {
