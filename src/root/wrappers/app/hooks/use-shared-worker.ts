@@ -1,87 +1,48 @@
-import { Envs } from '../../../../common/config/envs/envs.ts';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAppEvents } from './use-app-events.hook.ts';
-import { EventsEnum } from '../../../types/events/events.enum.ts';
-
-const SOCKET_INTERVAL_CONNECTION = 1000;
-let SOCKET: WebSocket | null = null;
-let handler: number | null = null;
+import { rawApp } from '../../../store/app/app.raw.ts';
 
 export const useSharedWorker = () => {
     const sendMessage = useAppEvents();
 
-    const runConnection = useCallback(() => {
-        if (handler) clearTimeout(handler);
+    useEffect(() => {
+        const channel = new BroadcastChannel('ws-channel');
+        const instanceId = crypto.randomUUID();
 
-        if (SOCKET?.readyState === WebSocket.OPEN) return;
+        channel.postMessage({ event: 'ping', data: instanceId });
 
-        SOCKET = new WebSocket(Envs.notificationsServiceUrl);
-        SOCKET.addEventListener('message', (event) => {
-            const data = JSON.parse(event.data);
+        const claimTimeout = setTimeout(() => {
+            becomeOwner();
+        }, 500);
+
+        channel.onmessage = ({ data }: MessageEvent<any>) => {
+            switch (data.event) {
+                case 'pong':
+                    clearTimeout(claimTimeout);
+                    console.log('[INFO] Владение уже занято. Подключаемся как слушатель.');
+                    channel.postMessage({ event: 'get_socket' });
+                    break;
+            }
+
             sendMessage(data);
-        });
+        };
 
-        SOCKET.addEventListener('close', () => {
-            SOCKET?.close();
-            SOCKET = null;
-            sendMessage({ event: EventsEnum.CLOSE_SOCKET });
-            sendMessage({ event: EventsEnum.ERROR, data: 'Cannot connect to notifications service.' });
-            handler = setTimeout(runConnection, SOCKET_INTERVAL_CONNECTION);
-        });
+        function becomeOwner() {
+            const iframe = document.createElement('iframe');
+            iframe.src = 'iframe.html';
+            iframe.style.display = 'none';
+            rawApp.isMainTab = true;
+            document.body.appendChild(iframe);
+            console.log('[OWNER] Становимся владельцем, создаём iframe');
+        }
     }, []);
 
-    // const reconnectSW = () =>
-    //     navigator.serviceWorker.controller?.postMessage({
-    //         event: 'RE_CONNECT',
-    //         payload: Envs.notificationsServiceUrl,
-    //     });
-
-    // const runServiceWorker = () => {
-    //     window.addEventListener('load', () => {
-    //         navigator.serviceWorker.register('/worker.js', { scope: '/' });
-    //     });
-    //
-    //     const connectWs = () =>
-    //         navigator.serviceWorker.controller?.postMessage({
-    //             event: 'CONNECT',
-    //             payload: Envs.notificationsServiceUrl,
-    //         });
-    //
-    //     navigator.serviceWorker.ready.then(() => {
-    //         connectWs();
-    //         navigator.serviceWorker.addEventListener('message', (ev: MessageEvent<DataType>) => {
-    //             sendMessage(ev.data);
-    //         });
-    //     });
-    // };
-
     useEffect(() => {
-        runConnection();
-        // if (!navigator.serviceWorker) runConnection();
-        // else runServiceWorker();
-
         if (navigator.serviceWorker) {
             navigator.serviceWorker.register('/worker.js', { scope: '/' });
             navigator.serviceWorker.ready.then((registration) => {
                 return (registration as any).sync.register('syncdata');
             });
         }
-
-        navigator.serviceWorker.addEventListener('message', (event) => {
-            if (event.data && event.data.type === 'CACHE_UPDATED') {
-                console.log('Ресурс обновлён:', event.data.url);
-
-                // Перезагрузка страницы по желанию:
-                // location.reload();
-            }
-        });
-
-        document.addEventListener('visibilitychange', () => {
-            if (!handler && SOCKET?.readyState !== WebSocket.OPEN) runConnection();
-            // if (document.visibilityState === 'visible') {
-            //     if (!navigator.serviceWorker) runConnection();
-            //     if (navigator.serviceWorker) reconnectSW();
-            // }
-        });
     }, []);
 };

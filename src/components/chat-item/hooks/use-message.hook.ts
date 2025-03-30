@@ -32,7 +32,7 @@ export const useMessage = (chat: ChatItemIndexDb): (string | undefined)[] => {
 
         setMessage(visibleMessage);
         updateTime(message.createdAt);
-    }, []);
+    }, [chat]);
 
     const changeCountMessages = useCallback(() => {
         if (!isLoadedChatsFromIndexDb) return;

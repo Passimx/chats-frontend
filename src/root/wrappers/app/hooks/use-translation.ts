@@ -8,7 +8,7 @@ import CH from '../../../../../public/languages/ch/translation.json';
 import EN from '../../../../../public/languages/en/translation.json';
 import ES from '../../../../../public/languages/es/translation.json';
 import RU from '../../../../../public/languages/ru/translation.json';
-import { useAppSelector } from '../../../store';
+import { useAppAction, useAppSelector } from '../../../store';
 
 export const resources = {
     en: {
@@ -30,9 +30,20 @@ export const resources = {
 
 export const useTranslation = () => {
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
+    const { setLang } = useAppAction();
     const { lang } = useAppSelector((state) => state.app);
 
     useEffect(() => {
+        if (!lang) {
+            const browserLang = navigator.language.slice(0, 2).toLowerCase();
+            const langs = Object.keys(resources);
+            const lang = localStorage.getItem('lang') ?? langs.find((lang) => lang === browserLang) ?? 'en';
+            if (!localStorage.getItem('lang')) localStorage.setItem('lang', lang);
+            setLang(lang);
+
+            return;
+        }
+
         moment.locale(lang);
         i18n.use(initReactI18next)
             .init({
