@@ -39,9 +39,9 @@ export const useBroadcastChannel = () => {
 
     useEffect(() => {
         if (navigator.serviceWorker) {
-            navigator.serviceWorker.register('/worker.js', { scope: '/' });
-            navigator.serviceWorker.ready.then((registration) => {
-                return (registration as any).sync.register('syncdata');
+            navigator.serviceWorker?.register('/worker.js', { scope: '/' });
+            navigator.serviceWorker?.ready?.then((registration) => {
+                return (registration as any)?.sync?.register('syncdata');
             });
         }
     }, []);
