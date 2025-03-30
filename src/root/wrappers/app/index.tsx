@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import styles from './index.module.css';
 import Chats from '../../../modules/chats';
-import { useSharedWorker } from './hooks/use-shared-worker.ts';
+import { useBroadcastChannel } from './hooks/use-broadcast-channel.ts';
 import { useTranslation } from './hooks/use-translation.ts';
 import { useOnline } from './hooks/use-online.ts';
 import { useParams } from 'react-router-dom';
@@ -16,7 +16,7 @@ import { useTelegram } from '../../../modules/telegram';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     useListenAndUpdateChats();
-    useSharedWorker();
+    useBroadcastChannel();
     useIndexDbHook();
     useOnline();
     useIsPhone();

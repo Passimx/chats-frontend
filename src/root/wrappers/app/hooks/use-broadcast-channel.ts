@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useAppEvents } from './use-app-events.hook.ts';
 import { rawApp } from '../../../store/app/app.raw.ts';
 
-export const useSharedWorker = () => {
+export const useBroadcastChannel = () => {
     const sendMessage = useAppEvents();
 
     useEffect(() => {
