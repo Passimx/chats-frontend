@@ -1,10 +1,11 @@
+import { Envs } from './common/config/envs/envs.ts';
 const channel = new BroadcastChannel('ws-channel');
 
-let socketId;
-let ws;
+let socketId: string;
+let ws: WebSocket;
 
 function connect() {
-    ws = new WebSocket('ws://api.tons-chat.ru/ws');
+    ws = new WebSocket(Envs.notificationsServiceUrl);
 
     ws.onmessage = (event) => {
         const payload = JSON.parse(event.data);

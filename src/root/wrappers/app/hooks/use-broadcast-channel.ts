@@ -16,7 +16,6 @@ export const useBroadcastChannel = () => {
         }, 500);
 
         channel.onmessage = ({ data }: MessageEvent<any>) => {
-            alert(JSON.stringify(data));
             switch (data.event) {
                 case 'pong':
                     clearTimeout(claimTimeout);
