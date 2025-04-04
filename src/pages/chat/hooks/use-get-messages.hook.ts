@@ -1,6 +1,6 @@
 import { MessageType } from '../../../root/types/chat/message.type.ts';
 import { useEffect, useState } from 'react';
-import rawChats from '../../../root/store/chats/chats.raw.ts';
+import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { useAppSelector } from '../../../root/store';
 import { getMessages } from '../../../root/api/messages';
 
@@ -10,7 +10,7 @@ export const useGetMessages = (): MessageType[] => {
     const [messages, setMessages] = useState<MessageType[]>([]);
 
     useEffect(() => {
-        if (chatOnPage && chatOnPage.message.number === messages[0]?.number + 1)
+        if (chatOnPage && chatOnPage.message.number === messages[0]?.number + 1 && messages[0].chatId === chatOnPage.id)
             setMessages([chatOnPage.message, ...messages]);
         // todo
         // такой подход резко открывает чат...
@@ -23,7 +23,9 @@ export const useGetMessages = (): MessageType[] => {
         if (!chatOnPage?.id) return;
         if (!isLoadedChatsFromIndexDb) return;
 
-        if (rawChats.chats.get(chatOnPage.id)) setMessages(rawChats.chats.get(chatOnPage.id)!.messages);
+        const chat = getRawChat(chatOnPage.id);
+
+        if (chat) setMessages(chat.messages);
         else
             getMessages(chatOnPage.id).then(({ success, data }) => {
                 if (success) setMessages(data);

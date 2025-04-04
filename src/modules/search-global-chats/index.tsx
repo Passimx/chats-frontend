@@ -4,7 +4,7 @@ import styles from './index.module.css';
 import VisibilityAction from '../../components/visibility-action';
 import { useTranslation } from 'react-i18next';
 import styles2 from '../../components/chat-item/index.module.css';
-import rawChats from '../../root/store/chats/chats.raw.ts';
+import rawChats, { getRawChat } from '../../root/store/chats/chats.raw.ts';
 import SearchChatItem from '../../components/search-chat-item';
 import { PropsType } from './types/props.type.ts';
 import BigText from '../../components/big-text';
@@ -34,7 +34,7 @@ export const SearchGlobalChats: FC<PropsType> = ({ input, changeIsLoading }) => 
                         rawChats.updatedChats.get(chat.id) ? (
                             <div key={index} className={`${styles2.chat_item} ${styles2.hide_chat}`}></div>
                         ) : (
-                            !rawChats.chats.get(chat.id) && <SearchChatItem key={chat.id} chat={chat} />
+                            !getRawChat(chat.id) && <SearchChatItem key={chat.id} chat={chat} />
                         ),
                     )
                 ) : (

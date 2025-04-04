@@ -1,69 +1,63 @@
-const socketIntervalConnection = 1000;
-let host = 'wss://api.tons-chat.ru/ws';
-let socket;
-let socketId;
+const CACHE_NAME = 'site-cache-v1';
 
-self.addEventListener('install', () => self.skipWaiting());
-
-self.addEventListener('activate', (event) => {
-    event.waitUntil(self.clients.claim());
+self.addEventListener('install', (event) => {
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(['/', '/index.html', '/manifest.webmanifest'])),
+    );
+    self.skipWaiting();
 });
 
-// const sendPing = () => {
-//     // ping web socket
-//     if (!socket || socket.readyState !== WebSocket.OPEN) return;
-//     socket.send(JSON.stringify({ event: 'ping' }));
-// };
+self.addEventListener('fetch', function (event) {
+    const request = event.request;
 
-const connect = () => {
-    if (socket) return;
-    socket = new WebSocket(host);
-
-    socket.addEventListener('message', (event) => {
-        const data = JSON.parse(event.data);
-        if (data.event === 'get_socket_id') socketId = data.data;
-        sendMessage({ ...data, payload: data.data });
-    });
-
-    socket.addEventListener('close', () => {
-        socket?.close();
-        socketId = undefined;
-        socket = null;
-        sendMessage({ event: 'close_socket' });
-        sendMessage({ event: 'error', data: 'Cannot connect to notifications service.' });
-        setTimeout(connect, socketIntervalConnection);
-    });
-};
-
-const sendMessage = (payload) => {
-    self.clients.matchAll().then((clients) => {
-        clients.forEach((client) => client.postMessage(payload));
-    });
-};
-
-self.addEventListener('message', (event) => {
-    const { event: eventType, payload } = event.data;
-
-    if (eventType === 'RE_CONNECT') {
-        if (socket?.readyState === WebSocket.OPEN) return;
-        socket?.close();
-        socket = null;
-        socketId = undefined;
-        connect();
+    if (request.mode === 'navigate') {
+        event.respondWith(fetch(request).catch(() => caches.match('/index.html')));
+        return;
     }
 
-    if (eventType === 'CONNECT') {
-        if (!host && payload) host = payload;
-        if (socketId)
-            event.source?.postMessage({
-                event: 'get_socket_id',
-                data: socketId,
-            });
+    const url = new URL(request.url);
+
+    if (url.pathname === '/manifest.webmanifest') {
+        event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+        return;
     }
 
-    if (eventType === 'SEND_MESSAGE') {
-        sendMessage(payload);
-    }
+    if (url.pathname.includes('/assets/')) {
+        event.respondWith(
+            caches.match(request).then((cachedResponse) => {
+                const fetchPromise = fetch(request)
+                    .then((networkResponse) => {
+                        if (networkResponse && networkResponse.status === 200) {
+                            const responseClone = networkResponse.clone(); // 🛠 клон ДО использования
 
-    if (!socket && host) connect();
+                            caches.open(CACHE_NAME).then((cache) => {
+                                cache.put(request, responseClone);
+                            });
+                        }
+
+                        return networkResponse;
+                    })
+                    .catch(() => cachedResponse); // оффлайн — вернуть кэш, если есть
+
+                return cachedResponse || fetchPromise;
+            }),
+        );
+    }
+});
+
+self.addEventListener('activate', (event) => {
+    event.waitUntil(
+        caches
+            .keys()
+            .then((cacheNames) => {
+                return Promise.all(
+                    cacheNames.map((name) => {
+                        if (name !== CACHE_NAME) {
+                            return caches.delete(name);
+                        }
+                    }),
+                );
+            })
+            .then(() => self.clients.claim()), // ⚡ Новый SW моментально управляет страницей
+    );
 });

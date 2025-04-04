@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { getChatById } from '../../../root/api/chats';
 import { ChatType } from '../../../root/types/chat/chat.type.ts';
 import { useAppAction, useAppSelector } from '../../../root/store';
-import rawChats from '../../../root/store/chats/chats.raw.ts';
+import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 
 const useGetChat = (): void => {
@@ -26,8 +26,8 @@ const useGetChat = (): void => {
             return;
         }
 
-        if (rawChats.chats.get(id!)) {
-            const chat = rawChats.chats.get(id!)!;
+        if (getRawChat(id!)) {
+            const chat = getRawChat(id!)!;
             setIsLoading(false);
             setChatOnPage(chat);
             return;
@@ -53,7 +53,7 @@ const useGetChat = (): void => {
             changeHead(chatOnPage?.title);
             document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
         }
-    }, [isLoading, chatOnPage]);
+    }, [isLoading, chatOnPage?.id]);
 };
 
 export default useGetChat;

@@ -1,13 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { StateType } from './types/state.type.ts';
-import { resources } from '../../wrappers/app/hooks/use-translation.ts';
 
-const browserLang = navigator.language.slice(0, 2).toLowerCase();
-const langs = Object.keys(resources);
-const lang = localStorage.getItem('lang') ?? langs.find((lang) => lang === browserLang) ?? 'en';
+const channel = new BroadcastChannel('ws-channel');
 
 const initialState: StateType = {
-    lang,
     isOpenPage: false,
     isOnline: navigator.onLine,
 };
@@ -30,6 +26,10 @@ const AppSlice = createSlice({
                 document.documentElement.style.setProperty('--main-margin-left', '0px');
                 document.documentElement.style.setProperty('--scale-value', '1');
             }
+        },
+
+        postMessageToBroadCastChannel(_state, { payload }: PayloadAction<unknown>) {
+            channel.postMessage(payload);
         },
 
         setOnline(state, { payload }: PayloadAction<boolean>) {

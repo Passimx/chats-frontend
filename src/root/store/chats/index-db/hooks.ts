@@ -1,15 +1,18 @@
 import { ChatItemIndexDb } from '../../../types/chat/chat.type.ts';
 import rawChats, { getRawChat } from '../chats.raw.ts';
+import { rawApp } from '../../app/app.raw.ts';
 
 export const updateChatAtIndexDb = (chat: ChatItemIndexDb) =>
     new Promise<void>((resolve) => {
-        const payload = Object.assign({}, chat);
-        delete payload.online;
         const IndexDb = rawChats.indexDb;
-
         if (!IndexDb) return;
 
-        // добавленный чат должен быть в верху списка чатов
+        // только главная вкладка может делать операции с IndexDb
+        if (!rawApp.isMainTab) return;
+
+        const payload = Object.assign({}, chat);
+        delete payload.online;
+
         const chatIsAdded = !!getRawChat(payload.id);
         const dateNow = new Date(chatIsAdded ? payload.message.createdAt : Date.now()).getTime();
 
@@ -32,6 +35,9 @@ export const deleteChatIndexDb = (id: string) => {
     const IndexDb = rawChats.indexDb;
     if (!IndexDb) return;
 
+    // только главная вкладка может делать операции с IndexDb
+    if (!rawApp.isMainTab) return;
+
     const chatsKeys = IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys');
     const request = chatsKeys.get(id);
 
@@ -44,11 +50,14 @@ export const deleteChatIndexDb = (id: string) => {
 };
 
 export const updateReadChat = (chat: ChatItemIndexDb) => {
-    const payload = Object.assign({}, chat);
-    delete payload.online;
-
     const IndexDb = rawChats.indexDb;
     if (!IndexDb) return;
+
+    // только главная вкладка может делать операции с IndexDb
+    if (!rawApp.isMainTab) return;
+
+    const payload = Object.assign({}, chat);
+    delete payload.online;
 
     const request = IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys').get(payload.id);
 

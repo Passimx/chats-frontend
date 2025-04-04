@@ -4,7 +4,7 @@ import { useAppSelector } from '../../../root/store';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import useDebounced from '../../../common/hooks/use-debounced.ts';
 import { ChatType } from '../../../root/types/chat/chat.type.ts';
-import rawChats from '../../../root/store/chats/chats.raw.ts';
+import { getRawChats } from '../../../root/store/chats/chats.raw.ts';
 
 let localRawChats = new Map<string, ChatType>();
 let globalKey: string | undefined = undefined;
@@ -13,11 +13,10 @@ const useChats = (
     input: string | undefined,
     changeIsLoading: (value: boolean) => void,
 ): [ChatType[], boolean, () => void] => {
-    const notFavoriteChatIds = Array.from(rawChats.chats.keys());
     const key = useDebounced(input, 300);
+    const [offset, setOffset] = useState<number>(0);
     const [chats, setChats] = useState<ChatType[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [offset, setOffset] = useState<number>(0);
     const isOnline = useAppSelector((state) => state.app.isOnline);
 
     const setToEnd = (payload: ChatType[]) => {
@@ -52,6 +51,7 @@ const useChats = (
         if (chats.length < offset) return;
         if (!isOnline) return;
         if (!offset) return;
+        const notFavoriteChatIds = getRawChats().map((chat) => chat.id);
 
         getChats(key, offset, notFavoriteChatIds).then(({ success, data }) => {
             if (key !== globalKey) return;
@@ -68,6 +68,7 @@ const useChats = (
         if (!isOnline) return;
         setOffset(0);
         removeAll();
+        const notFavoriteChatIds = getRawChats().map((chat) => chat.id);
 
         getChats(key, 0, notFavoriteChatIds).then(({ success, data }) => {
             if (key !== globalKey) return;

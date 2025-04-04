@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { DataType } from '../../../types/events/event-data.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
-import rawChats from '../../../store/chats/chats.raw.ts';
+import { getRawChat } from '../../../store/chats/chats.raw.ts';
 import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 
 export const useAppEvents = () => {
@@ -40,7 +40,7 @@ export const useAppEvents = () => {
                 playNotificationSound();
 
                 createMessage(data.data);
-                if (rawChats.chats.get(data.data.chatId)) setToBegin(rawChats.chats.get(data.data.chatId)!);
+                if (getRawChat(data.data.chatId)) setToBegin(getRawChat(data.data.chatId)!);
 
                 break;
             case EventsEnum.READ_MESSAGE:
