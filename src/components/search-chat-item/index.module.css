@@ -32,6 +32,8 @@
     display: grid;
     grid-template-rows: 50px;
     color:white;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
 }
 
 .title_block{
@@ -40,6 +42,23 @@
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 5px;
+}
+
+.count_message_block{
+    display: grid;
+    align-items: center;
+}
+
+.count_message{
+    padding: 0 5px 0 5px;
+    height: 0.8cm;
+    border-radius: 0.4cm;
+    min-width: calc(0.8cm - 10px);
+    background-color: #0098EA;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    user-select: none;
 }
 
 .look{
