@@ -8,19 +8,27 @@ export const useBroadcastChannel = () => {
     useEffect(() => {
         const channel = new BroadcastChannel('ws-channel');
         const instanceId = crypto.randomUUID();
+        let claimTimeout: number;
 
-        channel.postMessage({ event: 'ping', data: instanceId });
+        const pingMainTab = () => {
+            if (rawApp.isMainTab) return;
+            channel.postMessage({ event: 'ping', data: instanceId });
 
-        const claimTimeout = setTimeout(() => {
-            becomeOwner();
-        }, 500);
+            claimTimeout = setTimeout(() => {
+                becomeOwner();
+            }, 500);
+
+            setTimeout(pingMainTab, 1000);
+        };
+
+        pingMainTab();
 
         channel.onmessage = ({ data }: MessageEvent<any>) => {
             switch (data.event) {
                 case 'pong':
                     clearTimeout(claimTimeout);
+                    if (rawApp.isMainTab) break;
                     console.log('[INFO] Владение уже занято. Подключаемся как слушатель.');
-                    channel.postMessage({ event: 'get_socket' });
                     break;
             }
 
