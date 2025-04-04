@@ -52,14 +52,22 @@ export const useEnterHook = (): UseEnterHookType => {
     useEffect(() => {
         const element = document.getElementById(styles.new_message)!;
 
-        element.addEventListener('keypress', (event) => {
+        const preventDefault = (event: KeyboardEvent) => {
             if (event.code === 'Enter' && !isPhone && !event.shiftKey) event.preventDefault();
-        });
+        };
 
-        element.addEventListener('keyup', (event) => {
+        const send = (event: KeyboardEvent) => {
             if (event.code === 'Enter' && !isPhone && !event.shiftKey) sendMessage();
-        });
-    }, []);
+        };
+
+        element.addEventListener('keypress', preventDefault);
+        element.addEventListener('keyup', send);
+
+        return () => {
+            element.removeEventListener('keypress', preventDefault);
+            element.removeEventListener('keyup', send);
+        };
+    }, [chatOnPage?.id, isPhone]);
 
     const setEmoji = useCallback((emoji: string) => {
         const chatInput = document.getElementById(styles.new_message)!;
