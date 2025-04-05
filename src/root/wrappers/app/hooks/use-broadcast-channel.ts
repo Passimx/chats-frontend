@@ -8,7 +8,7 @@ export const useBroadcastChannel = () => {
     useEffect(() => {
         const channel = new BroadcastChannel('ws-channel');
         const instanceId = crypto.randomUUID();
-        let claimTimeout: number;
+        let claimTimeout: any;
 
         const pingMainTab = () => {
             if (rawApp.isMainTab) return;
@@ -30,9 +30,10 @@ export const useBroadcastChannel = () => {
                     if (rawApp.isMainTab) break;
                     console.log('[INFO] Владение уже занято. Подключаемся как слушатель.');
                     break;
+                default:
+                    sendMessage(data);
+                    break;
             }
-
-            sendMessage(data);
         };
 
         function becomeOwner() {

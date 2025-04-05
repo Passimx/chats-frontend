@@ -26,10 +26,12 @@ export const useGetMessages = (): MessageType[] => {
         const chat = getRawChat(chatOnPage.id);
 
         if (chat) setMessages(chat.messages);
-        else
+        else {
+            setMessages([]);
             getMessages(chatOnPage.id).then(({ success, data }) => {
                 if (success) setMessages(data);
             });
+        }
     }, [chatOnPage?.id, isLoadedChatsFromIndexDb]);
 
     return messages;

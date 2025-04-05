@@ -4,7 +4,7 @@ import { listenChats } from '../../../api/chats';
 import { ChatListenRequestType } from '../../../types/chat/chat-listen-request.type.ts';
 import rawChats, { getRawChat, getRawChats } from '../../../store/chats/chats.raw.ts';
 import { ChatItemIndexDb, ChatType } from '../../../types/chat/chat.type.ts';
-import { updateChatAtIndexDb } from '../../../store/chats/index-db/hooks.ts';
+import { upsertChatIndexDb } from '../../../store/chats/index-db/hooks.ts';
 
 export const useListenAndUpdateChats = () => {
     const { setIsListening, setToBegin } = useAppAction();
@@ -41,7 +41,7 @@ export const useListenAndUpdateChats = () => {
                     const updatedChat: ChatItemIndexDb = { ...chatFromRaw, ...chat };
 
                     setToBegin(updatedChat);
-                    updateChatAtIndexDb(updatedChat);
+                    upsertChatIndexDb(updatedChat);
                 });
                 setIsListening(true);
             })

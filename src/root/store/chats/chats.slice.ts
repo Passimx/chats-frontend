@@ -3,7 +3,7 @@ import { ChatItemIndexDb, ChatType } from '../../types/chat/chat.type.ts';
 import { StateType } from './types/state.type.ts';
 import rawChats, { deleteChat, getRawChat, updateRawChat } from './chats.raw.ts';
 import { UpdateReadChatType } from './types/update-read-chat.type.ts';
-import { deleteChatIndexDb, updateReadChat } from './index-db/hooks.ts';
+import { deleteChatIndexDb, upsertChatIndexDb, updateChatIndexDb } from './index-db/hooks.ts';
 import { ChatUpdateOnline } from '../../types/chat/chat-update-online.type.ts';
 import { MessageType } from '../../types/chat/message.type.ts';
 
@@ -17,9 +17,17 @@ const ChatsSlice = createSlice({
     initialState,
     reducers: {
         update(state, { payload }: PayloadAction<ChatItemIndexDb>) {
+            updateChatIndexDb(payload);
             updateRawChat(payload);
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
+        },
+
+        addUpdatedChat(state, { payload }: PayloadAction<ChatItemIndexDb>) {
+            upsertChatIndexDb(payload);
+            rawChats.updatedChats.delete(payload.id);
+            rawChats.updatedChats.set(payload.id, payload);
+            state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
         },
 
         updateOnline(state, { payload }: PayloadAction<ChatUpdateOnline[]>) {
@@ -71,13 +79,7 @@ const ChatsSlice = createSlice({
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
             if (chatId === state.chatOnPage?.id) state.chatOnPage = updatedChat;
-            updateReadChat(updatedChat);
-        },
-
-        addUpdatedChat(state, { payload }: PayloadAction<ChatItemIndexDb>) {
-            rawChats.updatedChats.delete(payload.id);
-            rawChats.updatedChats.set(payload.id, payload);
-            state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
+            updateChatIndexDb(updatedChat);
         },
 
         removeUpdatedChats(state, { payload }: PayloadAction<ChatType>) {

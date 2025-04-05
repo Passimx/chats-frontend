@@ -2,7 +2,7 @@ import { ChatItemIndexDb } from '../../../types/chat/chat.type.ts';
 import rawChats, { getRawChat } from '../chats.raw.ts';
 import { rawApp } from '../../app/app.raw.ts';
 
-export const updateChatAtIndexDb = (chat: ChatItemIndexDb) =>
+export const upsertChatIndexDb = (chat: ChatItemIndexDb) =>
     new Promise<void>((resolve) => {
         const IndexDb = rawChats.indexDb;
         if (!IndexDb) return;
@@ -49,7 +49,7 @@ export const deleteChatIndexDb = (id: string) => {
     };
 };
 
-export const updateReadChat = (chat: ChatItemIndexDb) => {
+export const updateChatIndexDb = (chat: ChatItemIndexDb) => {
     const IndexDb = rawChats.indexDb;
     if (!IndexDb) return;
 
