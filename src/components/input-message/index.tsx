@@ -6,6 +6,7 @@ import { useEnterHook } from './hooks/use-enter.hook.ts';
 import Emoji from '../emoji';
 import { useAppSelector } from '../../root/store';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
+import styles2 from '../../pages/chat/index.module.css';
 
 const InputMessage: FC = () => {
     const [sendMessage, onInput, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
@@ -15,6 +16,28 @@ const InputMessage: FC = () => {
     useEffect(() => {
         if (isVisibleEmoji) setIsVisibleEmoji(false);
     }, [chatOnPage?.id]);
+
+    const handleBlur = () => {
+        // Через 100–200 мс DOM успеет восстановиться после закрытия клавиатуры
+        setTimeout(() => {
+            const el = document.getElementById(styles2.messages);
+            if (!el) return;
+
+            const current = el.scrollTop;
+
+            // ✨ "встряхнуть" scroll на мобильных браузерах:
+            el.scrollTop = current - 1;
+
+            // затем вернуть обратно
+            requestAnimationFrame(() => {
+                el.scrollTop = el.scrollHeight;
+            });
+
+            el.style.display = 'none';
+            void el.offsetHeight; // принудительный reflow
+            el.style.display = '';
+        }, 200);
+    };
 
     return (
         <div id={styles.write_message}>
@@ -47,6 +70,7 @@ const InputMessage: FC = () => {
                             contentEditable={chatOnPage?.type !== ChatEnum.IS_SYSTEM}
                             dir="auto"
                             onInput={onInput}
+                            onBlur={handleBlur}
                         ></div>
                     </div>
                 </div>
