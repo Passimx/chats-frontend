@@ -117,7 +117,7 @@ const Chat: FC = memo(() => {
             </div>
             <div id={styles.messages_main_block}>
                 {/*todo*/}
-                {/*вынести меню чата в отдельный компонент как эмлдзи*/}
+                {/*вынести меню чата в отдельный компонент как эмодзи*/}
                 <div
                     id={styles.chat_menu}
                     className={visibility(styles.show_slowly, styles.hide_slowly, isVisible)}

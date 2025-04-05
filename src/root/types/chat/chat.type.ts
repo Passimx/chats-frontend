@@ -24,4 +24,9 @@ type ChatItemType = {
 // };
 export type ChatType = ChatItemType;
 
-export type ChatItemIndexDb = ChatType & { messages: MessageType[]; readMessage: number; online?: string };
+export type ChatItemIndexDb = ChatType & {
+    messages: MessageType[];
+    readMessage: number;
+    online?: string;
+    inputMessage?: string;
+};
