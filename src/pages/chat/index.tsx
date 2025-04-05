@@ -1,6 +1,7 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import { FC, memo, MouseEvent, useCallback } from 'react';
+import styles2 from '../../components/input-message/index.module.css';
+import { FC, memo, MouseEvent, useCallback, useEffect } from 'react';
 import ChatAvatar from '../../components/chat-avatar';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import InputMessage from '../../components/input-message';
@@ -71,6 +72,23 @@ const Chat: FC = memo(() => {
         },
         [chatOnPage?.id],
     );
+
+    useEffect(() => {
+        const inputEl = document.getElementById(styles2.new_message_block);
+        const chatEl = document.getElementById(styles.messages); // контейнер скролла
+
+        const handleBlur = () => {
+            setTimeout(() => {
+                chatEl?.scrollTo({ top: chatEl.scrollHeight, behavior: 'auto' });
+            }, 100); // немного подождать, чтобы клавиатура точно закрылась
+        };
+
+        inputEl?.addEventListener('blur', handleBlur);
+
+        return () => {
+            inputEl?.removeEventListener('blur', handleBlur);
+        };
+    }, []);
 
     if (!chatOnPage) return <></>;
 
