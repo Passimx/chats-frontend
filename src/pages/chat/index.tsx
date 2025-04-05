@@ -90,6 +90,19 @@ const Chat: FC = memo(() => {
         };
     }, []);
 
+    useEffect(() => {
+        const chatEl = document.getElementById(styles.messages);
+
+        const handleResize = () => {
+            setTimeout(() => {
+                chatEl?.scrollTo({ top: chatEl.scrollHeight, behavior: 'auto' });
+            }, 50);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     if (!chatOnPage) return <></>;
 
     return (
