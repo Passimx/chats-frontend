@@ -21,21 +21,28 @@ const InputMessage: FC = () => {
         // Через 100–200 мс DOM успеет восстановиться после закрытия клавиатуры
         setTimeout(() => {
             const el = document.getElementById(styles2.messages);
-            if (!el) return;
+            const el2 = document.getElementById(styles2.messages_block);
+            if (!el || !el2) return;
 
-            const current = el.scrollTop;
+            const current1 = el.scrollTop;
+            const current2 = el2.scrollTop;
 
             // ✨ "встряхнуть" scroll на мобильных браузерах:
-            el.scrollTop = current - 1;
+            el.scrollTop = current1 - 1;
+            el2.scrollTop = current2 - 1;
 
             // затем вернуть обратно
             requestAnimationFrame(() => {
                 el.scrollTop = el.scrollHeight;
+                el2.scrollTop = el2.scrollHeight;
             });
 
             el.style.display = 'none';
+            el2.style.display = 'none';
             void el.offsetHeight; // принудительный reflow
+            void el2.offsetHeight; // принудительный reflow
             el.style.display = '';
+            el2.style.display = '';
         }, 200);
     };
 
