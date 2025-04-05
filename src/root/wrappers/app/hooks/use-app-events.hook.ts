@@ -33,7 +33,7 @@ export const useAppEvents = () => {
                     online: '1',
                     maxUsersOnline: 1,
                 });
-                navigate(`/${data.data.id}`);
+                navigate(`/${data.data.id}`, { replace: true });
                 break;
             case EventsEnum.CREATE_MESSAGE:
                 if (!data.success) break;

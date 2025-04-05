@@ -66,7 +66,7 @@ const Chat: FC = memo(() => {
 
             changeHead();
 
-            navigate('/');
+            navigate('/', { replace: true });
             back(e);
         },
         [chatOnPage?.id],

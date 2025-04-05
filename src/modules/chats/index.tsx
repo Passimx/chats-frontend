@@ -31,7 +31,7 @@ const Chats: FC = memo(() => {
 
     const redirect = useCallback((url: string, state: object) => {
         document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
-        navigate(url, state);
+        navigate(url, { state, replace: true });
     }, []);
 
     return (

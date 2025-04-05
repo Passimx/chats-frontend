@@ -8,7 +8,7 @@ const AuthWrapper: FC<PropsType> = ({ children, url }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!authToken) navigate(`/${url}`);
+        if (!authToken) navigate(`/${url}`, { replace: true });
     }, []);
 
     if (authToken) return children;

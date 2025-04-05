@@ -46,7 +46,7 @@ const useGetChat = (): void => {
         if (!chatOnPage && !isLoading) {
             changeHead();
             document.documentElement.style.setProperty('--menu-margin', '0px');
-            return navigate('/');
+            return navigate('/', { replace: true });
         }
 
         if (!isLoading) {

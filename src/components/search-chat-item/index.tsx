@@ -23,7 +23,7 @@ const ChatItem: FC<PropsType> = ({ chat }) => {
             className={`${styles.chat_item} ${id === `${chat.id}` && styles.selected_chat}`}
             onClick={() => {
                 document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
-                navigate(`${chat.id}`, { state: chat });
+                navigate(`${chat.id}`, { state: chat, replace: true });
             }}
         >
             <ChatAvatar onlineCount={undefined} maxUsersOnline={chat.maxUsersOnline} iconType={IconEnum.RECORD} />
