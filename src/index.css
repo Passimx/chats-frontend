@@ -31,4 +31,8 @@ html,body, #root{
     background-position: top right;
     background-size: 510px auto;
     background-repeat: repeat;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
