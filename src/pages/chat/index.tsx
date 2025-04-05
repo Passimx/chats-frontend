@@ -1,7 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import styles2 from '../../components/input-message/index.module.css';
-import { FC, memo, MouseEvent, useCallback, useEffect } from 'react';
+import { FC, memo, MouseEvent, useCallback, useEffect, useState } from 'react';
 import ChatAvatar from '../../components/chat-avatar';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import InputMessage from '../../components/input-message';
@@ -37,6 +36,7 @@ const Chat: FC = memo(() => {
     const { postMessageToBroadCastChannel } = useAppAction();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const { chats } = useAppSelector((state) => state.chats);
+    const [height, setHeight] = useState(window.innerHeight);
 
     const addChat = useCallback(() => {
         postMessageToBroadCastChannel({
@@ -74,33 +74,12 @@ const Chat: FC = memo(() => {
     );
 
     useEffect(() => {
-        const inputEl = document.getElementById(styles2.new_message_block);
-        const chatEl = document.getElementById(styles.messages); // контейнер скролла
+        const anchor = document.getElementById(styles.messages);
+        anchor?.scrollIntoView({ behavior: 'auto' });
 
-        const handleBlur = () => {
-            setTimeout(() => {
-                chatEl?.scrollTo({ top: chatEl.scrollHeight, behavior: 'auto' });
-            }, 100); // немного подождать, чтобы клавиатура точно закрылась
-        };
-
-        inputEl?.addEventListener('blur', handleBlur);
-
-        return () => {
-            inputEl?.removeEventListener('blur', handleBlur);
-        };
-    }, []);
-
-    useEffect(() => {
-        const chatEl = document.getElementById(styles.messages);
-
-        const handleResize = () => {
-            setTimeout(() => {
-                chatEl?.scrollTo({ top: chatEl.scrollHeight, behavior: 'auto' });
-            }, 50);
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        const updateHeight = () => setHeight(window.innerHeight);
+        window.addEventListener('resize', updateHeight);
+        return () => window.removeEventListener('resize', updateHeight);
     }, []);
 
     if (!chatOnPage) return <></>;
@@ -171,7 +150,7 @@ const Chat: FC = memo(() => {
                         </div>
                     )}
                 </div>
-                <div id={styles.messages_block}>
+                <div id={styles.messages_block} style={{ height: `${height}px`, overflow: 'hidden' }}>
                     <div id={styles.messages}>
                         {messages.map((message) => (
                             <Message key={message.id} {...message} readMessage={readMessageFunc} />
