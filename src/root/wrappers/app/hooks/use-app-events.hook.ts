@@ -1,15 +1,15 @@
 import { useAppAction } from '../../../store';
 import { useUpdateChat } from '../../../store/app/hooks/use-update-chat.hook.ts';
-import { useNavigate } from 'react-router-dom';
 import { DataType } from '../../../types/events/event-data.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
 import { getRawChat } from '../../../store/chats/chats.raw.ts';
 import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
+import { useCustomNavigate } from '../../../../common/hooks/use-custom-navigate.hook.ts';
 
 export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
-    const navigate = useNavigate();
+    const navigate = useCustomNavigate();
     const [playNotificationSound] = useLoadSoundsHooks();
     const { setSocketId, updateOnline, setIsListening, updateReadChat, createMessage, removeChat } = useAppAction();
 
@@ -33,7 +33,7 @@ export const useAppEvents = () => {
                     online: '1',
                     maxUsersOnline: 1,
                 });
-                navigate(`/${data.data.id}`, { replace: true });
+                navigate(`/${data.data.id}`);
                 break;
             case EventsEnum.CREATE_MESSAGE:
                 if (!data.success) break;

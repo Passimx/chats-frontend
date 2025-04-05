@@ -1,10 +1,10 @@
 import { FC, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 
 export const Redirect: FC = () => {
-    const navigate = useNavigate();
+    const navigate = useCustomNavigate();
 
-    useEffect(() => navigate('/', { replace: true }), []);
+    useEffect(() => navigate('/'), []);
 
     return <></>;
 };

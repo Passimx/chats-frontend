@@ -1,12 +1,13 @@
 import { FC, useEffect } from 'react';
 import styles from './index.module.css';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ChatAvatar from '../chat-avatar';
 import { IconEnum } from '../chat-avatar/types/icon.enum.ts';
 import { PropsType } from './types/props.type.ts';
+import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 
 const ChatItem: FC<PropsType> = ({ chat }) => {
-    const navigate = useNavigate();
+    const navigate = useCustomNavigate();
     const { id } = useParams();
     const elementId = `chat-${chat.id}`;
 
@@ -23,7 +24,7 @@ const ChatItem: FC<PropsType> = ({ chat }) => {
             className={`${styles.chat_item} ${id === `${chat.id}` && styles.selected_chat}`}
             onClick={() => {
                 document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
-                navigate(`${chat.id}`, { state: chat, replace: true });
+                navigate(`${chat.id}`, { state: chat });
             }}
         >
             <ChatAvatar onlineCount={undefined} maxUsersOnline={chat.maxUsersOnline} iconType={IconEnum.RECORD} />

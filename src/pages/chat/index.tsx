@@ -17,20 +17,20 @@ import useClickOutside from '../../common/hooks/use-click-outside.ts';
 import useVisibility from '../../common/hooks/use-visibility.ts';
 import { MdExitToApp } from 'react-icons/md';
 import { leaveChats } from '../../root/api/chats';
-import { useNavigate } from 'react-router-dom';
 import { IconEnum } from '../../components/chat-avatar/types/icon.enum.ts';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { AiOutlineGlobal } from 'react-icons/ai';
 import { LiaEyeSolid } from 'react-icons/lia';
 import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
 import { changeHead } from '../../common/hooks/change-head-inf.hook.ts';
+import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 
 const Chat: FC = memo(() => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
     useGetChat();
     useJoinChat(chatOnPage);
     const visibility = useVisibility;
-    const navigate = useNavigate();
+    const navigate = useCustomNavigate();
     const messages = useGetMessages();
     const { t } = useTranslation();
     const { postMessageToBroadCastChannel } = useAppAction();
@@ -66,7 +66,7 @@ const Chat: FC = memo(() => {
 
             changeHead();
 
-            navigate('/', { replace: true });
+            navigate('/');
             back(e);
         },
         [chatOnPage?.id],
