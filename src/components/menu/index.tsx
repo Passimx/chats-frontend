@@ -17,7 +17,7 @@ export const Menu = memo(() => {
     }, []);
 
     return (
-        <div id={styles.delete_chats}>
+        <div id={styles.menu}>
             <div className={styles.menu_item} onClick={deleteAllChats}>
                 <MdDeleteOutline size={30} />
             </div>
