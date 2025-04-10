@@ -8,7 +8,7 @@ import { upsertChatIndexDb } from '../../../store/chats/index-db/hooks.ts';
 
 export const useListenAndUpdateChats = () => {
     const { setIsListening, setToBegin } = useAppAction();
-    const { socketId, isLoadedChatsFromIndexDb, isListening } = useAppSelector((state) => state.app);
+    const { socketId, isLoadedChatsFromIndexDb, isListening, isOnline } = useAppSelector((state) => state.app);
 
     const compareFn = useCallback((chat1: ChatType, chat2: ChatType) => {
         const firstDate = new Date(chat1.message.createdAt).getTime();
@@ -20,7 +20,7 @@ export const useListenAndUpdateChats = () => {
 
     useEffect(() => {
         if (!socketId) setIsListening(false);
-        if (!socketId || !isLoadedChatsFromIndexDb || isListening) return;
+        if (!socketId || !isLoadedChatsFromIndexDb || isListening || !isOnline) return;
         if (!getRawChats().length) {
             setIsListening(true);
             return;
@@ -46,5 +46,5 @@ export const useListenAndUpdateChats = () => {
                 setIsListening(true);
             })
             .catch(() => setIsListening(false));
-    }, [socketId, isLoadedChatsFromIndexDb]);
+    }, [socketId, isLoadedChatsFromIndexDb, isListening, isOnline]);
 };
