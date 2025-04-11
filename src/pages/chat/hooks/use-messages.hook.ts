@@ -48,8 +48,9 @@ export const useMessages = (): R => {
             if (number === messages[messages.length - 1].number && number !== 1) {
                 if (topMessage === number) return;
                 topMessage = number;
+                const lastMessages = messages.slice(-Envs.messages.limit);
 
-                setMessages((prevState) => prevState.slice(-Envs.messages.limit));
+                setMessages(lastMessages);
 
                 const response = await getMessages(
                     chatOnPage.id,
@@ -58,7 +59,8 @@ export const useMessages = (): R => {
                 );
 
                 if (!response.success) return;
-                setMessages((prevState) => [...prevState.slice(-Envs.messages.limit), ...response.data]);
+                const data = [...lastMessages, ...response.data];
+                setMessages(data);
             }
 
             /** дозагрузка новых сообщений */

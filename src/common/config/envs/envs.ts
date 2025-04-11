@@ -19,6 +19,6 @@ export const Envs: EnvsType = {
         limit: 250,
     },
     messages: {
-        limit: 50,
+        limit: 250,
     },
 };
