@@ -84,11 +84,6 @@ export const useMessages = (): R => {
                         requestAnimationFrame(() => {
                             const diff = scrollHeight - el.scrollHeight;
                             el.scrollTo({ behavior: 'instant', top: diff });
-
-                            requestAnimationFrame(() => {
-                                const diff = scrollHeight - el.scrollHeight;
-                                el.scrollTo({ behavior: 'instant', top: diff });
-                            });
                         });
                     });
                 });
