@@ -6,9 +6,11 @@ import { Provider } from 'react-redux';
 const App: FC = () => {
     useEffect(() => {
         // Установка бейджа (например, после получения пуша или проверки непрочитанных)
-        if ('setAppBadge' in navigator && window.matchMedia('(display-mode: standalone)').matches) {
+        if ('setAppBadge' in navigator) {
             navigator.setAppBadge(7);
         }
+
+        alert(window.matchMedia('(display-mode: standalone)').matches);
     }, []);
 
     return (
