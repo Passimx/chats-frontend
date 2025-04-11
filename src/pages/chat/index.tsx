@@ -27,8 +27,8 @@ const Chat: FC = memo(() => {
     useGetChat();
     useJoinChat(chatOnPage);
     const visibility = useVisibility;
-    const [messages, readMessage] = useMessages();
     const { t } = useTranslation();
+    const [messages, readMessage] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const [addChat, leave, back] = useMethods(messages);
 

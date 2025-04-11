@@ -22,7 +22,7 @@ export const useMessages = (): R => {
             setMessages([chatOnPage.message, ...messages]);
     }, [chatOnPage?.message]);
 
-    // загрузка первых сообщений
+    /** загрузка первых сообщений */
     useEffect(() => {
         if (!chatOnPage?.id) return;
         if (!isLoadedChatsFromIndexDb) return;
@@ -40,39 +40,47 @@ export const useMessages = (): R => {
         }
     }, [chatOnPage?.id, isLoadedChatsFromIndexDb]);
 
-    // todo
-    // добавить сохранение
     const loadMessages = useCallback(
         async (number: number) => {
             if (!chatOnPage || !messages.length) return;
 
-            // дозагрузка старых сообщений
+            /** дозагрузка старых сообщений */
             if (number === messages[messages.length - 1].number && number !== 1) {
                 if (topMessage === number) return;
                 topMessage = number;
+                const lastMessages = messages.slice(-Envs.messages.limit);
+
+                setMessages(lastMessages);
+
                 const response = await getMessages(
                     chatOnPage.id,
                     Envs.messages.limit,
                     chatOnPage.countMessages - number + 1,
                 );
 
-                if (response.success) setMessages([...messages, ...response.data]);
+                if (!response.success) return;
+                const data = [...lastMessages, ...response.data];
+                setMessages(data);
             }
 
-            // дозагрузка новых сообщений
-            if (number === messages[0].number && number !== chatOnPage.countMessages) {
+            /** дозагрузка новых сообщений */
+            if (number === messages[0].number && number < chatOnPage.countMessages) {
                 if (bottomMessage === number) return;
                 bottomMessage = number;
+                const el = document.getElementById(styles.messages)!;
+                const lastMessages = messages.slice(0, Envs.messages.limit);
                 const difference = chatOnPage.countMessages - number;
                 const limit = difference > Envs.messages.limit ? Envs.messages.limit : difference;
                 const offset =
                     difference > Envs.messages.limit ? chatOnPage.countMessages - number - Envs.messages.limit : 0;
 
-                const response = await getMessages(chatOnPage.id, limit, offset);
-                const el = document.getElementById(styles.messages)!;
-                const scrollHeight = el.scrollHeight;
-                if (response.success) setMessages([...response.data, ...messages]);
+                setMessages(lastMessages);
 
+                const response = await getMessages(chatOnPage.id, limit, offset);
+                const scrollHeight = el.scrollHeight;
+                if (!response.success) return;
+                const data = [...response.data, ...lastMessages];
+                setMessages(data);
                 requestAnimationFrame(() => {
                     const diff = scrollHeight - el.scrollHeight;
                     el.scrollTo({ behavior: 'instant', top: diff });
@@ -84,14 +92,14 @@ export const useMessages = (): R => {
                 });
             }
         },
-        [chatOnPage?.id, messages.length],
+        [chatOnPage, messages],
     );
 
     const readMessage = useCallback(
         (chatId: string, number: number) => {
             if (!chatOnPage || chatId !== chatOnPage.id || !messages.length) return;
 
-            // дозагрузка сообщений
+            /** загрузка сообщений */
             loadMessages(number);
 
             const num = getRawChat(chatId)?.readMessage;
