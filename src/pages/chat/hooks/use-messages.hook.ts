@@ -13,7 +13,7 @@ let bottomMessage: number | undefined;
 
 export const useMessages = (): R => {
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
-    const { postMessageToBroadCastChannel } = useAppAction();
+    const { postMessageToBroadCastChannel, update } = useAppAction();
     const { chatOnPage, chats } = useAppSelector((state) => state.chats);
     const [messages, setMessages] = useState<MessageType[]>([]);
 
@@ -31,8 +31,19 @@ export const useMessages = (): R => {
         bottomMessage = undefined;
         const chat = getRawChat(chatOnPage.id);
 
-        if (chat) setMessages(chat.messages);
-        else {
+        if (chat) {
+            const el = document.getElementById(styles.messages)!;
+            setMessages(chat.messages);
+
+            /** установка скрола */
+            requestAnimationFrame(() => {
+                if (chat.scrollTop !== undefined) el.scrollTo({ behavior: 'instant', top: chat.scrollTop });
+
+                requestAnimationFrame(() => {
+                    if (chat.scrollTop !== undefined) el.scrollTo({ behavior: 'instant', top: chat.scrollTop });
+                });
+            });
+        } else {
             setMessages([]);
             getMessages(chatOnPage.id).then(({ success, data }) => {
                 if (success) setMessages(data);
@@ -40,6 +51,31 @@ export const useMessages = (): R => {
         }
     }, [chatOnPage?.id, isLoadedChatsFromIndexDb]);
 
+    /** сохранение скрола вместе с сообщениями*/
+    useEffect(() => {
+        if (!chatOnPage?.id || chatOnPage?.id !== messages[0]?.chatId) return;
+        const chat = getRawChat(chatOnPage.id);
+        if (!chat) return;
+        const el = document.getElementById(styles.messages)!;
+        let scrollTimeout: NodeJS.Timeout;
+
+        const scroll = () => {
+            clearTimeout(scrollTimeout);
+
+            scrollTimeout = setTimeout(() => {
+                const scrollTop = el.scrollTop;
+                update({ ...chat, messages, scrollTop });
+            }, 150);
+        };
+
+        el.addEventListener('scroll', scroll);
+        return () => {
+            clearTimeout(scrollTimeout);
+            el.removeEventListener('scroll', scroll);
+        };
+    }, [chatOnPage?.id, messages]);
+
+    /** загрузка сообщений */
     const loadMessages = useCallback(
         async (number: number) => {
             if (!chatOnPage || !messages.length) return;
