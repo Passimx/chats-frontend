@@ -1,9 +1,10 @@
 import { useAppAction } from '../../../store';
 
 export const useOnline = () => {
-    const { setOnline } = useAppAction();
+    const { setOnline, setIsListening } = useAppAction();
 
     const updateOnlineStatus = () => {
+        if (!navigator.onLine) setIsListening(false);
         setOnline(navigator.onLine);
     };
 

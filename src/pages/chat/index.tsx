@@ -1,6 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import { FC, memo, MouseEvent, useCallback } from 'react';
+import { FC, memo } from 'react';
 import ChatAvatar from '../../components/chat-avatar';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import InputMessage from '../../components/input-message';
@@ -8,69 +8,29 @@ import Message from '../../components/message';
 import { useTranslation } from 'react-i18next';
 import { getRawChat } from '../../root/store/chats/chats.raw.ts';
 import { IoIosAddCircleOutline } from 'react-icons/io';
-import { EventsEnum } from '../../root/types/events/events.enum.ts';
-import { useAppAction, useAppSelector } from '../../root/store';
-import { useGetMessages } from './hooks/use-get-messages.hook.ts';
+import { useAppSelector } from '../../root/store';
+import { useMessages } from './hooks/use-messages.hook.ts';
 import { useJoinChat } from './hooks/use-join-chat.hook.ts';
 import { CiMenuKebab } from 'react-icons/ci';
 import useClickOutside from '../../common/hooks/use-click-outside.ts';
 import useVisibility from '../../common/hooks/use-visibility.ts';
 import { MdExitToApp } from 'react-icons/md';
-import { leaveChats } from '../../root/api/chats';
-import { useNavigate } from 'react-router-dom';
 import { IconEnum } from '../../components/chat-avatar/types/icon.enum.ts';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { AiOutlineGlobal } from 'react-icons/ai';
 import { LiaEyeSolid } from 'react-icons/lia';
 import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
-import { changeHead } from '../../common/hooks/change-head-inf.hook.ts';
+import { useMethods } from './hooks/use-methods.hooks.ts';
 
 const Chat: FC = memo(() => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
     useGetChat();
     useJoinChat(chatOnPage);
     const visibility = useVisibility;
-    const navigate = useNavigate();
-    const messages = useGetMessages();
     const { t } = useTranslation();
-    const { postMessageToBroadCastChannel } = useAppAction();
+    const [messages, readMessage] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
-    const { chats } = useAppSelector((state) => state.chats);
-
-    const addChat = useCallback(() => {
-        postMessageToBroadCastChannel({
-            event: EventsEnum.ADD_CHAT,
-            data: { ...chatOnPage!, messages: messages, readMessage: chatOnPage!.countMessages },
-        });
-    }, [chatOnPage, messages]);
-
-    const back = useCallback((e: MouseEvent<unknown>) => {
-        e.stopPropagation();
-        document.documentElement.style.setProperty('--menu-margin', '0px');
-    }, []);
-
-    const readMessageFunc = useCallback(
-        (chatId: string, number: number) => {
-            const num = getRawChat(chatId)?.readMessage;
-            if (num !== undefined && number > num)
-                postMessageToBroadCastChannel({ event: EventsEnum.READ_MESSAGE, data: { chatId, number } });
-        },
-        [chatOnPage?.id, chats],
-    );
-
-    const leave = useCallback(
-        (e: MouseEvent<unknown>) => {
-            const id = chatOnPage!.id;
-            leaveChats([id]);
-            postMessageToBroadCastChannel({ event: EventsEnum.REMOVE_CHAT, data: id });
-
-            changeHead();
-
-            navigate('/');
-            back(e);
-        },
-        [chatOnPage?.id],
-    );
+    const [addChat, leave, back] = useMethods(messages);
 
     if (!chatOnPage) return <></>;
 
@@ -142,8 +102,9 @@ const Chat: FC = memo(() => {
                 </div>
                 <div id={styles.messages_block}>
                     <div id={styles.messages}>
+                        {/*<div></div>*/}
                         {messages.map((message) => (
-                            <Message key={message.id} {...message} readMessage={readMessageFunc} />
+                            <Message key={message.id} {...message} readMessage={readMessage} />
                         ))}
                         <div></div>
                     </div>

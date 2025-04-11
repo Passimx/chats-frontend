@@ -7,10 +7,10 @@ import { SearchGlobalChats } from '../search-global-chats';
 import ChatItem from '../../components/chat-item';
 import rawChats from '../../root/store/chats/chats.raw.ts';
 import { ChatType } from '../../root/types/chat/chat.type.ts';
-import { useNavigate } from 'react-router-dom';
+import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 
 const Chats: FC = memo(() => {
-    const navigate = useNavigate();
+    const navigate = useCustomNavigate();
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const [input, setInput] = useState<string | undefined>(undefined);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -31,7 +31,7 @@ const Chats: FC = memo(() => {
 
     const redirect = useCallback((url: string, state: object) => {
         document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
-        navigate(url, state);
+        navigate(url, { state });
     }, []);
 
     return (

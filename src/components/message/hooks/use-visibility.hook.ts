@@ -33,7 +33,7 @@ export const useVisibility = (props: PropsType): [MutableRefObject<null>, string
         return () => {
             if (observerTarget.current) observer.unobserve(observerTarget.current);
         };
-    }, [chatOnPage]);
+    }, [chatOnPage, readMessage]);
 
     return [observerTarget, visibleMessage, time];
 };

@@ -15,12 +15,19 @@ import { Menu } from '../../../components/menu';
 import { useTelegram } from '../../../modules/telegram';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
+    // updating chat information
     useListenAndUpdateChats();
+    // add broadcast channel and iframe with Websocket connection
     useBroadcastChannel();
+    // get chat information from local storage
     useIndexDbHook();
+    // updating online/offline
     useOnline();
+    // updating window size
     useIsPhone();
+    // add system chat if not exists
     useCheckSystemChat();
+    // logic for Telegram App
     useTelegram();
 
     const isLoaded = useTranslation();

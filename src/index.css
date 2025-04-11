@@ -23,12 +23,16 @@
 }
 
 html,body, #root{
-    height: 100dvh;
-    width: 100vw;
-    overflow: hidden;
+    height: 100%;
+    width: 100%;
     background-color: var(--menu-color);
     position: fixed;
     background-position: top right;
     background-size: 510px auto;
     background-repeat: repeat;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
 }

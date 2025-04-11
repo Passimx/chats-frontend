@@ -1,10 +1,15 @@
-#delete_chats{
+html {
+    --menu-height: 54px;
+}
+
+    #menu{
     display: grid;
     background-color: #0a4375;
     grid-template-columns: repeat(auto-fill, minmax(calc(100% / 3), 1fr));
     position: absolute;
     bottom: 0;
     width: 100%;
+    height: var(--menu-height);
 }
 
 .menu_item{

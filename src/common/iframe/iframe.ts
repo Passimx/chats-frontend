@@ -15,7 +15,7 @@ function connect() {
 
     ws.onclose = () => {
         channel.postMessage({ event: 'close_socket' });
-        connect();
+        setTimeout(connect, 1000);
     };
 
     ws.onerror = () => {
