@@ -106,13 +106,7 @@
     flex-direction: column-reverse;
     gap:10px;
     padding-left: calc(50% - 288px);
-
-    /*scroll-behavior: smooth;*/
-    padding-right: calc(50% - 288px);
-    transition: none !important;
-    animation: none !important;
-    -webkit-overflow-scrolling: auto !important;
-    scroll-behavior: auto !important;
+    scroll-behavior: smooth;
 
     @media(width < 592px) {
         padding-left: 8px;
