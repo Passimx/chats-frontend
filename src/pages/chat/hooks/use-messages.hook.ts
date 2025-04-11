@@ -74,9 +74,22 @@ export const useMessages = (): R => {
                 if (response.success) setMessages([...response.data, ...messages]);
 
                 requestAnimationFrame(() => {
+                    const diff = scrollHeight - el.scrollHeight;
+                    el.scrollTo({ behavior: 'instant', top: diff });
+
                     requestAnimationFrame(() => {
                         const diff = scrollHeight - el.scrollHeight;
                         el.scrollTo({ behavior: 'instant', top: diff });
+
+                        requestAnimationFrame(() => {
+                            const diff = scrollHeight - el.scrollHeight;
+                            el.scrollTo({ behavior: 'instant', top: diff });
+
+                            requestAnimationFrame(() => {
+                                const diff = scrollHeight - el.scrollHeight;
+                                el.scrollTo({ behavior: 'instant', top: diff });
+                            });
+                        });
                     });
                 });
             }
