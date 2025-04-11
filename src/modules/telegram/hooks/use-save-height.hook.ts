@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 export const useSaveHeight = () => {
     useEffect(() => {
-        if (!window.Telegram?.WebApp.initDataUnsafe?.user.id) return;
+        if (!window.Telegram?.WebApp?.initDataUnsafe?.user?.id) return;
         const prevScroll = window.scrollY;
 
         const lockScroll = () => {
