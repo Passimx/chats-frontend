@@ -108,7 +108,8 @@
     padding-left: calc(50% - 288px);
     scroll-behavior: smooth;
     padding-right: calc(50% - 288px);
-
+    transition: none !important;
+    animation: none !important;
     @media(width < 592px) {
         padding-left: 8px;
         padding-right: 8px;
