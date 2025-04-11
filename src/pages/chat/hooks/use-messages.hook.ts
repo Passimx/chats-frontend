@@ -45,7 +45,7 @@ export const useMessages = (): R => {
             if (!chatOnPage || !messages.length) return;
 
             /** дозагрузка старых сообщений */
-            if (number === messages[messages.length - 1].number && number !== 1) {
+            if (number === messages[messages.length - 1 - 10].number && number !== 1) {
                 if (topMessage === number) return;
                 topMessage = number;
 
@@ -62,7 +62,7 @@ export const useMessages = (): R => {
             }
 
             /** дозагрузка новых сообщений */
-            if (number === messages[0].number && number < chatOnPage.countMessages) {
+            if (number === messages[0 + 10].number && number < chatOnPage.countMessages) {
                 if (bottomMessage === number) return;
                 bottomMessage = number;
                 const el = document.getElementById(styles.messages)!;
