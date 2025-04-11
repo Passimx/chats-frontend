@@ -110,6 +110,7 @@
     padding-right: calc(50% - 288px);
     transition: none !important;
     animation: none !important;
+    -webkit-overflow-scrolling: auto !important;
     @media(width < 592px) {
         padding-left: 8px;
         padding-right: 8px;
