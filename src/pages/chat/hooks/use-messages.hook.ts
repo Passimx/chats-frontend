@@ -17,10 +17,10 @@ export const useMessages = (): R => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const [messages, setMessages] = useState<MessageType[]>([]);
 
-    useEffect(() => {
-        if (chatOnPage && chatOnPage.message.number === messages[0]?.number + 1 && messages[0].chatId === chatOnPage.id)
-            setMessages([chatOnPage.message, ...messages]);
-    }, [chatOnPage?.message]);
+    // useEffect(() => {
+    //     if (chatOnPage && chatOnPage.message.number === messages[0]?.number + 1 && messages[0].chatId === chatOnPage.id)
+    //         setMessages([chatOnPage.message, ...messages]);
+    // }, [chatOnPage?.message]);
 
     /** загрузка первых сообщений */
     useEffect(() => {
