@@ -41,6 +41,6 @@ html,body, #root{
     overflow: hidden;
 
     overscroll-behavior: none;
-    /*-webkit-font-smoothing: antialiased;*/
-    /*-moz-osx-font-smoothing: grayscale;*/
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
