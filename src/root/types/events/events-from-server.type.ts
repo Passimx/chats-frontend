@@ -1,6 +1,6 @@
 import { EventsEnum } from './events.enum.ts';
 import { IData } from '../../api';
-import { ChatUpdateOnline } from '../chat/chat-update-online.type.ts';
+import { ChatUpdateOnlineType } from '../chat/chat-update-online.type.ts';
 import { ChatUpdateMaxUsersOnline } from '../chat/chat-update-max-users-online.type.ts';
 import { ChatType } from '../chat/chat.type.ts';
 import { MessageType } from '../chat/message.type.ts';
@@ -12,12 +12,12 @@ type GetSocketId = {
 
 type UpdateChatOnline = {
     readonly event: EventsEnum.UPDATE_CHAT_ONLINE;
-    readonly data: IData<ChatUpdateOnline[]>;
+    readonly data: IData<ChatUpdateOnlineType[]>;
 };
 
 type MaxUsersOnline = {
     readonly event: EventsEnum.UPDATE_MAX_USERS_ONLINE;
-    readonly data: IData<ChatUpdateMaxUsersOnline>;
+    readonly data: IData<ChatUpdateMaxUsersOnline[]>;
 };
 
 type CreateChat = {

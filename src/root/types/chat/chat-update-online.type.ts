@@ -1,4 +1,4 @@
-export type ChatUpdateOnline = {
-    name: string;
+export type ChatUpdateOnlineType = {
+    id: string;
     onlineUsers: string;
 };
