@@ -14,7 +14,7 @@ let bottomMessage: number | undefined;
 export const useMessages = (): R => {
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
     const { postMessageToBroadCastChannel, update } = useAppAction();
-    const { chatOnPage, chats } = useAppSelector((state) => state.chats);
+    const { chatOnPage } = useAppSelector((state) => state.chats);
     const [messages, setMessages] = useState<MessageType[]>([]);
 
     useEffect(() => {
@@ -54,8 +54,6 @@ export const useMessages = (): R => {
     /** сохранение скрола вместе с сообщениями*/
     useEffect(() => {
         if (!chatOnPage?.id || chatOnPage?.id !== messages[0]?.chatId) return;
-        const chat = getRawChat(chatOnPage.id);
-        if (!chat) return;
         const el = document.getElementById(styles.messages)!;
         let scrollTimeout: NodeJS.Timeout;
 
@@ -64,7 +62,7 @@ export const useMessages = (): R => {
 
             scrollTimeout = setTimeout(() => {
                 const scrollTop = el.scrollTop;
-                update({ ...chat, messages, scrollTop });
+                update({ id: chatOnPage.id, messages, scrollTop });
             }, 150);
         };
 
@@ -142,7 +140,7 @@ export const useMessages = (): R => {
             if (num !== undefined && number > num)
                 postMessageToBroadCastChannel({ event: EventsEnum.READ_MESSAGE, data: { chatId, number } });
         },
-        [chatOnPage?.id, chats, messages.length],
+        [chatOnPage?.id, messages.length],
     );
 
     return [messages, readMessage];
