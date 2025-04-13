@@ -41,6 +41,7 @@ export const useEnterHook = (): UseEnterHookType => {
         if (!text.length) return;
 
         element.innerText = '';
+        element.focus();
         setIsShowPlaceholder(true);
 
         update({ id: chatOnPage.id, inputMessage: undefined });
