@@ -7,6 +7,7 @@ import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
 import { createMessage } from '../../../root/api/messages';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { focusToEnd } from '../common/focus-to-end.ts';
+import { getIsFocused } from '../../../common/hooks/get-is-focused.hook.ts';
 
 export const useEnterHook = (): UseEnterHookType => {
     const { t } = useTranslation();
@@ -40,7 +41,7 @@ export const useEnterHook = (): UseEnterHookType => {
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
 
-        const isFocused = document.activeElement === element;
+        const isFocused = getIsFocused(element);
 
         element.innerText = '';
         if (isFocused) element.focus();
@@ -87,7 +88,7 @@ export const useEnterHook = (): UseEnterHookType => {
     const setEmoji = useCallback(
         (emoji: string) => {
             const chatInput = document.getElementById(styles.new_message)!;
-            const isFocused = document.activeElement === chatInput;
+            const isFocused = getIsFocused(chatInput);
 
             setIsShowPlaceholder(false);
             const selection = window.getSelection()!;
