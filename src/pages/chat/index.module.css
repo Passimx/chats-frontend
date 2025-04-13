@@ -100,7 +100,11 @@
 }
 
 #messages{
-    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    transform: translateZ(0);
+    overflow-y: auto;
+
+    /*overflow-y: scroll;*/
     overflow-x: hidden;
     display: flex;
     flex-direction: column-reverse;
