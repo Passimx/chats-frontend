@@ -15,8 +15,8 @@
     align-items: center;
     padding: 8px;
     cursor: pointer;
+    -webkit-user-select: none;
     user-select: none;
-    /*pointer-events: none;*/
 }
 
 .question_logo{

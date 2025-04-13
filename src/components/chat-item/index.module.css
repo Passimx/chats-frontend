@@ -55,6 +55,7 @@
     padding-left: 8px;
     font-size: 13px;
     color:#a6a6a6;
+    -webkit-user-select: none;
     user-select: none;
 }
 
@@ -92,6 +93,7 @@
     display: grid;
     justify-items: center;
     align-items: center;
+    -webkit-user-select: none;
     user-select: none;
 }
 

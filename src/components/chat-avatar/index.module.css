@@ -14,6 +14,7 @@
     width: 36px;
     height: 36px;
     border: 2px solid white;
+    -webkit-user-select: none;
     user-select: none;
     pointer-events: none;
     display: grid;
