@@ -17,10 +17,29 @@ export const useMessages = (): R => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const [messages, setMessages] = useState<MessageType[]>([]);
 
-    // useEffect(() => {
-    //     if (chatOnPage && chatOnPage.message.number === messages[0]?.number + 1 && messages[0].chatId === chatOnPage.id)
-    //         setMessages([chatOnPage.message, ...messages]);
-    // }, [chatOnPage?.message]);
+    useEffect(() => {
+        if (
+            chatOnPage &&
+            chatOnPage.message.number === messages[0]?.number + 1 &&
+            messages[0].chatId === chatOnPage.id
+        ) {
+            const el = document.getElementById(styles.messages)!;
+            const scrollHeight = el.scrollHeight;
+
+            setMessages([chatOnPage.message, ...messages]);
+
+            const chat = getRawChat(chatOnPage.id);
+            if (!chat) return;
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    const scrollTop = chat.scrollTop + scrollHeight - el.scrollHeight;
+                    el.scrollTo({ behavior: 'instant', top: scrollTop });
+                    update({ id: chatOnPage.id, messages, scrollTop });
+                });
+            });
+        }
+    }, [chatOnPage?.message]);
 
     /** загрузка первых сообщений */
     useEffect(() => {
@@ -37,10 +56,8 @@ export const useMessages = (): R => {
 
             /** установка скрола */
             requestAnimationFrame(() => {
-                if (chat.scrollTop !== undefined) el.scrollTo({ behavior: 'instant', top: chat.scrollTop });
-
                 requestAnimationFrame(() => {
-                    if (chat.scrollTop !== undefined) el.scrollTo({ behavior: 'instant', top: chat.scrollTop });
+                    el.scrollTo({ behavior: 'instant', top: chat.scrollTop });
                 });
             });
         } else {
@@ -116,9 +133,6 @@ export const useMessages = (): R => {
                 const data = [...response.data, ...lastMessages];
                 setMessages(data);
                 requestAnimationFrame(() => {
-                    const diff = scrollHeight - el.scrollHeight;
-                    el.scrollTo({ behavior: 'instant', top: diff });
-
                     requestAnimationFrame(() => {
                         const diff = scrollHeight - el.scrollHeight;
                         el.scrollTo({ behavior: 'instant', top: diff });

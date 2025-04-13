@@ -105,6 +105,7 @@ const Chat: FC = memo(() => {
                         {messages.map((message) => (
                             <Message key={message.id} {...message} readMessage={readMessage} />
                         ))}
+                        <div></div>
                     </div>
                 </div>
             </div>
