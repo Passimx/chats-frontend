@@ -1,4 +1,5 @@
 import { Envs } from '../config/envs/envs.ts';
+import { EventsFromServer } from '../../root/types/events/events-from-server.type.ts';
 const channel = new BroadcastChannel('ws-channel');
 
 let socketId: string;
@@ -7,9 +8,9 @@ let ws: WebSocket;
 function connect() {
     ws = new WebSocket(Envs.notificationsServiceUrl);
 
-    ws.onmessage = (event) => {
-        const payload = JSON.parse(event.data);
-        if (payload.event === 'get_socket_id') socketId = payload.data;
+    ws.onmessage = (event: MessageEvent<string>) => {
+        const payload = JSON.parse(event.data) as EventsFromServer;
+        if (payload.event === 'get_socket_id') socketId = payload.data.data;
         channel.postMessage(payload);
     };
 

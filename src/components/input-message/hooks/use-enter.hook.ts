@@ -7,6 +7,7 @@ import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
 import { createMessage } from '../../../root/api/messages';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { focusToEnd } from '../common/focus-to-end.ts';
+import { getIsFocused } from '../../../common/hooks/get-is-focused.hook.ts';
 
 export const useEnterHook = (): UseEnterHookType => {
     const { t } = useTranslation();
@@ -40,8 +41,10 @@ export const useEnterHook = (): UseEnterHookType => {
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
 
+        const isFocused = getIsFocused(element);
+
         element.innerText = '';
-        element.focus();
+        if (isFocused) element.focus();
         setIsShowPlaceholder(true);
 
         update({ id: chatOnPage.id, inputMessage: undefined });
@@ -85,6 +88,8 @@ export const useEnterHook = (): UseEnterHookType => {
     const setEmoji = useCallback(
         (emoji: string) => {
             const chatInput = document.getElementById(styles.new_message)!;
+            const isFocused = getIsFocused(chatInput);
+
             setIsShowPlaceholder(false);
             const selection = window.getSelection()!;
             let range = null;
@@ -94,7 +99,7 @@ export const useEnterHook = (): UseEnterHookType => {
                 range = selection.getRangeAt(0);
             } else {
                 // Если курсор не внутри div, создаём новый range в КОНЦЕ div
-                chatInput.focus();
+                if (isFocused) chatInput.focus();
                 range = document.createRange();
                 range.selectNodeContents(chatInput);
                 range.collapse(false); // false делает курсор в конец
@@ -113,7 +118,9 @@ export const useEnterHook = (): UseEnterHookType => {
             selection.removeAllRanges();
             selection.addRange(range);
 
-            chatInput.focus(); // Поддерживаем фокус на div
+            if (isFocused)
+                chatInput.focus(); // Поддерживаем фокус на div
+            else chatInput.blur();
             onInput();
         },
         [chatOnPage?.id],
