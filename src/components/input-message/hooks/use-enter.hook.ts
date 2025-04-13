@@ -87,6 +87,8 @@ export const useEnterHook = (): UseEnterHookType => {
     const setEmoji = useCallback(
         (emoji: string) => {
             const chatInput = document.getElementById(styles.new_message)!;
+            const isFocused = document.activeElement === chatInput;
+
             setIsShowPlaceholder(false);
             const selection = window.getSelection()!;
             let range = null;
@@ -96,7 +98,7 @@ export const useEnterHook = (): UseEnterHookType => {
                 range = selection.getRangeAt(0);
             } else {
                 // Если курсор не внутри div, создаём новый range в КОНЦЕ div
-                chatInput.focus();
+                if (isFocused) chatInput.focus();
                 range = document.createRange();
                 range.selectNodeContents(chatInput);
                 range.collapse(false); // false делает курсор в конец
@@ -115,7 +117,9 @@ export const useEnterHook = (): UseEnterHookType => {
             selection.removeAllRanges();
             selection.addRange(range);
 
-            chatInput.focus(); // Поддерживаем фокус на div
+            if (isFocused)
+                chatInput.focus(); // Поддерживаем фокус на div
+            else chatInput.blur();
             onInput();
         },
         [chatOnPage?.id],
