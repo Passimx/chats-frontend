@@ -40,8 +40,10 @@ export const useEnterHook = (): UseEnterHookType => {
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
 
+        const isFocused = document.activeElement === element;
+
         element.innerText = '';
-        element.focus();
+        if (isFocused) element.focus();
         setIsShowPlaceholder(true);
 
         update({ id: chatOnPage.id, inputMessage: undefined });
