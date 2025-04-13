@@ -144,15 +144,18 @@ export const useMessages = (): R => {
     );
 
     const readMessage = useCallback(
-        (chatId: string, number: number) => {
-            if (!chatOnPage || chatId !== chatOnPage.id || !messages.length) return;
+        (id: string, readMessage: number) => {
+            if (!chatOnPage || id !== chatOnPage.id || !messages.length) return;
 
             /** загрузка сообщений */
-            loadMessages(number);
+            loadMessages(readMessage);
 
-            const num = getRawChat(chatId)?.readMessage;
-            if (num !== undefined && number > num)
-                postMessageToBroadCastChannel({ event: EventsEnum.READ_MESSAGE, data: { chatId, number } });
+            const num = getRawChat(id)?.readMessage;
+            if (num !== undefined && readMessage > num)
+                postMessageToBroadCastChannel({
+                    event: EventsEnum.READ_MESSAGE,
+                    data: { id, readMessage },
+                });
         },
         [chatOnPage?.id, messages.length],
     );
