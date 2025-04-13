@@ -2,6 +2,7 @@
     background-color: var(--menu-color);
     position: absolute;
     bottom:72px;
+    -webkit-user-select: none;
     user-select: none;
     visibility: hidden;
     padding: 16px;

@@ -35,4 +35,8 @@ html,body, #root{
     right: 0;
     bottom: 0;
     overflow: hidden;
+
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }

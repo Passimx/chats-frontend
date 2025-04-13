@@ -32,6 +32,7 @@ export const useAppEvents = () => {
                     readMessage: 1,
                     online: '1',
                     maxUsersOnline: 1,
+                    scrollTop: 0,
                 });
                 navigate(`/${data.data.id}`);
                 break;

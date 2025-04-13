@@ -29,8 +29,7 @@ export const useEnterHook = (): UseEnterHookType => {
         if (chatOnPage?.id) {
             const isText = !!el.innerText.replace(/^\n+|\n+$/g, '').trim()?.length;
 
-            const findChat = getRawChat(chatOnPage.id);
-            if (findChat) update({ ...findChat, inputMessage: isText ? el.innerText : undefined });
+            update({ id: chatOnPage.id, inputMessage: isText ? el.innerText : undefined });
         }
     }, [chatOnPage?.id]);
 
@@ -42,10 +41,10 @@ export const useEnterHook = (): UseEnterHookType => {
         if (!text.length) return;
 
         element.innerText = '';
+        element.focus();
         setIsShowPlaceholder(true);
 
-        const findChat = getRawChat(chatOnPage.id);
-        if (findChat) update({ ...findChat, inputMessage: undefined });
+        update({ id: chatOnPage.id, inputMessage: undefined });
 
         await createMessage({ message: text, chatId: chatOnPage.id });
     }, [chatOnPage?.id]);

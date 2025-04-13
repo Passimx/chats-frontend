@@ -16,9 +16,12 @@ const ChatsSlice = createSlice({
     name: 'chats',
     initialState,
     reducers: {
-        update(state, { payload }: PayloadAction<ChatItemIndexDb>) {
-            updateChatIndexDb(payload);
-            updateRawChat(payload);
+        update(state, { payload }: PayloadAction<{ id: string } & Partial<ChatItemIndexDb>>) {
+            const chat = getRawChat(payload.id);
+            if (!chat) return;
+            const updatedChat = { ...chat, ...payload };
+            updateChatIndexDb(updatedChat);
+            updateRawChat(updatedChat);
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
         },

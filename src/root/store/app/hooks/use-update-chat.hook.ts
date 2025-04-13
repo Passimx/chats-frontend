@@ -1,21 +1,13 @@
-import { useAppAction, useAppSelector } from '../../index.ts';
-import { ChatItemIndexDb, ChatType } from '../../../types/chat/chat.type.ts';
-import { useEffect } from 'react';
-import { getRawChat } from '../../chats/chats.raw.ts';
-
-let globChats: ChatType[] = [];
+import { useAppAction } from '../../index.ts';
+import { ChatItemIndexDb } from '../../../types/chat/chat.type.ts';
+import { getRawChat, getRawChats } from '../../chats/chats.raw.ts';
 
 export const useUpdateChat = () => {
     const time = 200;
     const { addUpdatedChat, setToBegin, removeUpdatedChats, update } = useAppAction();
-    const { chats } = useAppSelector((state) => state.chats);
-
-    useEffect(() => {
-        globChats = chats;
-    }, [chats]);
 
     return (chat: ChatItemIndexDb) => {
-        if (globChats[0]?.id === chat.id) return update(chat);
+        if (getRawChats()[0]?.id === chat.id) return update(chat);
 
         addUpdatedChat(chat);
 

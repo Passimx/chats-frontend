@@ -14,12 +14,31 @@ let bottomMessage: number | undefined;
 export const useMessages = (): R => {
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
     const { postMessageToBroadCastChannel, update } = useAppAction();
-    const { chatOnPage, chats } = useAppSelector((state) => state.chats);
+    const { chatOnPage } = useAppSelector((state) => state.chats);
     const [messages, setMessages] = useState<MessageType[]>([]);
 
     useEffect(() => {
-        if (chatOnPage && chatOnPage.message.number === messages[0]?.number + 1 && messages[0].chatId === chatOnPage.id)
+        if (
+            chatOnPage &&
+            chatOnPage.message.number === messages[0]?.number + 1 &&
+            messages[0].chatId === chatOnPage.id
+        ) {
+            const el = document.getElementById(styles.messages)!;
+            const scrollHeight = el.scrollHeight;
+
             setMessages([chatOnPage.message, ...messages]);
+
+            const chat = getRawChat(chatOnPage.id);
+            if (!chat) return;
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    const scrollTop = chat.scrollTop + scrollHeight - el.scrollHeight;
+                    el.scrollTo({ behavior: 'instant', top: scrollTop });
+                    update({ id: chatOnPage.id, messages, scrollTop });
+                });
+            });
+        }
     }, [chatOnPage?.message]);
 
     /** загрузка первых сообщений */
@@ -37,10 +56,8 @@ export const useMessages = (): R => {
 
             /** установка скрола */
             requestAnimationFrame(() => {
-                if (chat.scrollTop !== undefined) el.scrollTo({ behavior: 'instant', top: chat.scrollTop });
-
                 requestAnimationFrame(() => {
-                    if (chat.scrollTop !== undefined) el.scrollTo({ behavior: 'instant', top: chat.scrollTop });
+                    el.scrollTo({ behavior: 'instant', top: chat.scrollTop });
                 });
             });
         } else {
@@ -54,8 +71,6 @@ export const useMessages = (): R => {
     /** сохранение скрола вместе с сообщениями*/
     useEffect(() => {
         if (!chatOnPage?.id || chatOnPage?.id !== messages[0]?.chatId) return;
-        const chat = getRawChat(chatOnPage.id);
-        if (!chat) return;
         const el = document.getElementById(styles.messages)!;
         let scrollTimeout: NodeJS.Timeout;
 
@@ -64,7 +79,7 @@ export const useMessages = (): R => {
 
             scrollTimeout = setTimeout(() => {
                 const scrollTop = el.scrollTop;
-                update({ ...chat, messages, scrollTop });
+                update({ id: chatOnPage.id, messages, scrollTop });
             }, 150);
         };
 
@@ -118,9 +133,6 @@ export const useMessages = (): R => {
                 const data = [...response.data, ...lastMessages];
                 setMessages(data);
                 requestAnimationFrame(() => {
-                    const diff = scrollHeight - el.scrollHeight;
-                    el.scrollTo({ behavior: 'instant', top: diff });
-
                     requestAnimationFrame(() => {
                         const diff = scrollHeight - el.scrollHeight;
                         el.scrollTo({ behavior: 'instant', top: diff });
@@ -142,7 +154,7 @@ export const useMessages = (): R => {
             if (num !== undefined && number > num)
                 postMessageToBroadCastChannel({ event: EventsEnum.READ_MESSAGE, data: { chatId, number } });
         },
-        [chatOnPage?.id, chats, messages.length],
+        [chatOnPage?.id, messages.length],
     );
 
     return [messages, readMessage];
