@@ -34,6 +34,22 @@ export const useEnterHook = (): UseEnterHookType => {
         }
     }, [chatOnPage?.id]);
 
+    useEffect(() => {
+        const handler = () => {
+            const height = window.visualViewport?.height;
+            if (!height) return;
+
+            if (height < window.innerHeight - 100) {
+                alert('⌨️ Клавиатура / фокус активен');
+            } else {
+                alert('☝️ Клавиатура / фокус НЕ активен');
+            }
+        };
+
+        window.visualViewport?.addEventListener('resize', handler);
+        return () => window.visualViewport?.removeEventListener('resize', handler);
+    }, []);
+
     const sendMessage = useCallback(async () => {
         if (!chatOnPage?.id) return;
         const element = document.getElementById(styles.new_message)!;
@@ -41,8 +57,6 @@ export const useEnterHook = (): UseEnterHookType => {
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
         const isFocused = getIsFocused();
-
-        alert(JSON.stringify([document.activeElement === element, isFocused]));
 
         element.innerText = '';
         if (isFocused) element.focus();
