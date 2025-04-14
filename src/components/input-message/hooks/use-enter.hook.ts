@@ -42,13 +42,13 @@ export const useEnterHook = (): UseEnterHookType => {
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
 
-        // element.innerText = '';
-        // element.focus();
-        // setIsShowPlaceholder(true);
+        element.innerText = '';
+        element.focus();
+        setIsShowPlaceholder(true);
 
         update({ id: chatOnPage.id, inputMessage: undefined });
 
-        await createMessage({ message: text, chatId: chatOnPage.id });
+        await createMessage({ message: `${isOpenMobileKeyboard}`, chatId: chatOnPage.id });
     }, [chatOnPage?.id, isPhone, isOpenMobileKeyboard]);
 
     useEffect(() => {
