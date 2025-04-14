@@ -11,7 +11,7 @@ export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
     const navigate = useCustomNavigate();
     const [playNotificationSound] = useLoadSoundsHooks();
-    const { setSocketId, updateOnline, setIsListening, createMessage, removeChat, update } = useAppAction();
+    const { setSocketId, updateMany, setIsListening, createMessage, removeChat, update } = useAppAction();
 
     return (dataEvent: DataType) => {
         const { event, data } = dataEvent;
@@ -56,12 +56,12 @@ export const useAppEvents = () => {
             //         break;
             case EventsEnum.UPDATE_CHAT_ONLINE:
                 if (!data.success) break;
-                updateOnline(data.data);
+                updateMany(data.data);
                 break;
 
             case EventsEnum.UPDATE_MAX_USERS_ONLINE:
                 if (!data.success) break;
-                update({ id: data.data.name, maxUsersOnline: data.data.maxUsersOnline });
+                updateMany(data.data);
                 break;
             case EventsEnum.CLOSE_SOCKET:
                 setSocketId(undefined);

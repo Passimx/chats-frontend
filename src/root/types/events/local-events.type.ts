@@ -1,6 +1,6 @@
 import { EventsEnum } from './events.enum.ts';
 import { ChatItemIndexDb } from '../chat/chat.type.ts';
-import { UpdateReadChatType } from '../../store/chats/types/update-read-chat.type.ts';
+import { UpdateReadChatType } from '../chat/update-read-chat.type.ts';
 
 type ReadMessage = {
     readonly event: EventsEnum.READ_MESSAGE;
