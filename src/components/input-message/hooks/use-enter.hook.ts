@@ -17,7 +17,6 @@ export const useEnterHook = (): UseEnterHookType => {
     const { isPhone, isOpenMobileKeyboard } = useAppSelector((state) => state.app);
 
     const placeholder = useMemo((): string => {
-        return String(isOpenMobileKeyboard);
         const text = chatOnPage?.type === ChatEnum.IS_SYSTEM ? 'chats_message_unavailable' : 'chats_enter_message';
         return t(text);
     }, [chatOnPage?.type, t, isOpenMobileKeyboard]);
@@ -38,12 +37,13 @@ export const useEnterHook = (): UseEnterHookType => {
     const sendMessage = useCallback(async () => {
         if (!chatOnPage?.id) return;
         const element = document.getElementById(styles.new_message)!;
+        const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
 
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
 
         element.innerText = '';
-        element.focus();
+        if (isFocused) element.focus();
         setIsShowPlaceholder(true);
 
         update({ id: chatOnPage.id, inputMessage: undefined });
