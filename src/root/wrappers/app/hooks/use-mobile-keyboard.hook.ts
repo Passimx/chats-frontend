@@ -13,7 +13,7 @@ export const useMobileKeyboard = () => {
             if (!height) return;
 
             if (height < window.innerHeight - 100) setStateApp({ isOpenMobileKeyboard: true });
-            else setStateApp({ isOpenMobileKeyboard: true });
+            else setStateApp({ isOpenMobileKeyboard: false });
         };
 
         window.visualViewport?.addEventListener('resize', handler);
