@@ -16,8 +16,8 @@ export const useMobileKeyboard = () => {
             setTimeout(() => setStateApp({ isOpenMobileKeyboard: false }), 300);
         };
 
-        window.addEventListener('focusin', lockScroll); // iOS Safari когда клавиатура появляется
-        window.addEventListener('focusout', unlockScroll); // когда скрывается
+        window.addEventListener('focusin', lockScroll);
+        window.addEventListener('focusout', unlockScroll);
 
         return () => {
             window.removeEventListener('focusin', lockScroll);
