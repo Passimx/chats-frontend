@@ -7,7 +7,7 @@ import { ChatItemIndexDb, ChatType } from '../../../types/chat/chat.type.ts';
 import { upsertChatIndexDb } from '../../../store/chats/index-db/hooks.ts';
 
 export const useListenAndUpdateChats = () => {
-    const { setIsListening, setToBegin } = useAppAction();
+    const { setStateApp, setToBegin } = useAppAction();
     const { socketId, isLoadedChatsFromIndexDb, isOnline } = useAppSelector((state) => state.app);
 
     const compareFn = useCallback((chat1: ChatType, chat2: ChatType) => {
@@ -19,10 +19,10 @@ export const useListenAndUpdateChats = () => {
     }, []);
 
     useEffect(() => {
-        if (!socketId) setIsListening(false);
+        if (!socketId) setStateApp({ isListening: false });
         if (!socketId || !isLoadedChatsFromIndexDb || !isOnline) return;
         if (!getRawChats().length) {
-            setIsListening(true);
+            setStateApp({ isListening: true });
             return;
         }
 
@@ -43,8 +43,8 @@ export const useListenAndUpdateChats = () => {
                     setToBegin(updatedChat);
                     upsertChatIndexDb(updatedChat);
                 });
-                setIsListening(true);
+                setStateApp({ isListening: true });
             })
-            .catch(() => setIsListening(false));
+            .catch(() => setStateApp({ isListening: false }));
     }, [socketId, isLoadedChatsFromIndexDb, isOnline]);
 };

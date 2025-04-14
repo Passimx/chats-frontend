@@ -13,6 +13,7 @@ import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 import { useCheckSystemChat } from './hooks/use-check-system-chat.hook.ts';
 import { Menu } from '../../../components/menu';
 import { useTelegram } from '../../../modules/telegram';
+import { useMobileKeyboard } from './hooks/use-mobile-keyboard.hook.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -29,6 +30,8 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useCheckSystemChat();
     // logic for Telegram App
     useTelegram();
+    // logic for mobile keyboard
+    useMobileKeyboard();
 
     const isLoaded = useTranslation();
     const { id } = useParams();

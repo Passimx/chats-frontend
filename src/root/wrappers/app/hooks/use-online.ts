@@ -1,11 +1,11 @@
 import { useAppAction } from '../../../store';
 
 export const useOnline = () => {
-    const { setOnline, setIsListening } = useAppAction();
+    const { setStateApp } = useAppAction();
 
     const updateOnlineStatus = () => {
-        if (!navigator.onLine) setIsListening(false);
-        setOnline(navigator.onLine);
+        if (!navigator.onLine) setStateApp({ isListening: false });
+        setStateApp({ isOnline: navigator.onLine });
     };
 
     window.addEventListener('online', updateOnlineStatus);

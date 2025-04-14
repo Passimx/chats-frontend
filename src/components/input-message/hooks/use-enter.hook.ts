@@ -12,9 +12,9 @@ import { getIsFocused } from './get-is-focused.hook.ts';
 export const useEnterHook = (): UseEnterHookType => {
     const { t } = useTranslation();
     const { update } = useAppAction();
-    const { isPhone } = useAppSelector((state) => state.app);
     const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
     const { chatOnPage } = useAppSelector((state) => state.chats);
+    const { isPhone, isOpenMobileKeyboard } = useAppSelector((state) => state.app);
 
     const placeholder = useMemo((): string => {
         const text = chatOnPage?.type === ChatEnum.IS_SYSTEM ? 'chats_message_unavailable' : 'chats_enter_message';
@@ -34,29 +34,13 @@ export const useEnterHook = (): UseEnterHookType => {
         }
     }, [chatOnPage?.id]);
 
-    useEffect(() => {
-        const handler = () => {
-            const height = window.visualViewport?.height;
-            if (!height) return;
-
-            if (height < window.innerHeight - 100) {
-                alert('⌨️ Клавиатура / фокус активен');
-            } else {
-                alert('☝️ Клавиатура / фокус НЕ активен');
-            }
-        };
-
-        window.visualViewport?.addEventListener('resize', handler);
-        return () => window.visualViewport?.removeEventListener('resize', handler);
-    }, []);
-
     const sendMessage = useCallback(async () => {
         if (!chatOnPage?.id) return;
         const element = document.getElementById(styles.new_message)!;
 
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
-        const isFocused = getIsFocused();
+        const isFocused = isOpenMobileKeyboard || getIsFocused();
 
         element.innerText = '';
         if (isFocused) element.focus();
@@ -65,7 +49,7 @@ export const useEnterHook = (): UseEnterHookType => {
         update({ id: chatOnPage.id, inputMessage: undefined });
 
         await createMessage({ message: text, chatId: chatOnPage.id });
-    }, [chatOnPage?.id, isPhone]);
+    }, [chatOnPage?.id, isPhone, isOpenMobileKeyboard]);
 
     useEffect(() => {
         if (!chatOnPage?.id) return;
