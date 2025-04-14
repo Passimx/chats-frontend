@@ -31,11 +31,11 @@ export const useMobileKeyboard = () => {
         if (!isPhone) return;
 
         const lockScroll = () => {
-            setStateApp({ isOpenMobileKeyboard: true });
+            setTimeout(() => setStateApp({ isOpenMobileKeyboard: true }), 300);
         };
 
         const unlockScroll = () => {
-            setStateApp({ isOpenMobileKeyboard: false });
+            setTimeout(() => setStateApp({ isOpenMobileKeyboard: false }), 300);
         };
 
         window.addEventListener('focusin', lockScroll); // iOS Safari когда клавиатура появляется
