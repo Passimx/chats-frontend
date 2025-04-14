@@ -28,10 +28,10 @@ const ChatsSlice = createSlice({
 
         updateMany(state, { payload: data }: PayloadAction<UpdateChat[]>) {
             data.forEach((payload) => {
+                if (payload.id === state.chatOnPage?.id) state.chatOnPage = { ...state.chatOnPage, ...payload };
                 const chat = getRawChat(payload.id);
                 if (!chat) return;
                 const updatedChat = { ...chat, ...payload };
-                if (chat.id === state.chatOnPage?.id) state.chatOnPage = updatedChat;
                 updateChatIndexDb(updatedChat);
                 updateRawChat(updatedChat);
             });

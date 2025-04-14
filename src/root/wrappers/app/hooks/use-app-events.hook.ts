@@ -6,12 +6,13 @@ import { Envs } from '../../../../common/config/envs/envs.ts';
 import { getRawChat } from '../../../store/chats/chats.raw.ts';
 import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 import { useCustomNavigate } from '../../../../common/hooks/use-custom-navigate.hook.ts';
+import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 
 export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
     const navigate = useCustomNavigate();
     const [playNotificationSound] = useLoadSoundsHooks();
-    const { setSocketId, updateMany, setIsListening, createMessage, removeChat, update } = useAppAction();
+    const { updateMany, setStateApp, createMessage, removeChat, update } = useAppAction();
 
     return (dataEvent: DataType) => {
         const { event, data } = dataEvent;
@@ -19,11 +20,12 @@ export const useAppEvents = () => {
         switch (event) {
             case EventsEnum.GET_SOCKET_ID:
                 if (!data.success) break;
-                setSocketId(data.data);
+                setStateApp({ socketId: data.data });
                 Envs.socketId = data.data;
                 break;
             case EventsEnum.ADD_CHAT:
                 setToBegin(data);
+                if (data.type === ChatEnum.IS_SYSTEM) setStateApp({ isSystemChat: true });
                 break;
             case EventsEnum.CREATE_CHAT:
                 if (!data.success) break;
@@ -64,8 +66,8 @@ export const useAppEvents = () => {
                 updateMany(data.data);
                 break;
             case EventsEnum.CLOSE_SOCKET:
-                setSocketId(undefined);
-                setIsListening(false);
+                setStateApp({ socketId: undefined });
+                setStateApp({ isListening: false });
                 break;
             case EventsEnum.ERROR:
                 console.log(`${'\x1B[31m'}error: ${data}${'\x1B[31m'}`);

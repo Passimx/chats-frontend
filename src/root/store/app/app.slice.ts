@@ -33,29 +33,15 @@ const AppSlice = createSlice({
             channel.postMessage(payload);
         },
 
-        setOnline(state, { payload }: PayloadAction<boolean>) {
-            state.isOnline = payload;
-        },
-
-        setSocketId(state, { payload }: PayloadAction<string | undefined>) {
-            state.socketId = payload;
-        },
-
-        setIsListening(state, { payload }: PayloadAction<boolean>) {
-            state.isListening = payload;
-        },
-
-        setIsLoadedChatsFromIndexDb(state, { payload }: PayloadAction<boolean>) {
-            state.isLoadedChatsFromIndexDb = payload;
-        },
-
         setIsPhone(state) {
             const toMatch = [/Android/i, /webOS/i, /iPhone/i, /iPad/i, /iPod/i, /BlackBerry/i, /Windows Phone/i];
             state.isPhone = toMatch.some((toMatchItem) => navigator.userAgent.match(toMatchItem));
         },
 
-        setIsSystemChat(state, { payload }: PayloadAction<boolean>) {
-            state.isSystemChat = payload;
+        setStateApp(state, { payload }: PayloadAction<Partial<StateType>>) {
+            for (const [key, value] of Object.entries(payload) as [keyof StateType, StateType[keyof StateType]][]) {
+                state[key] = value as never;
+            }
         },
 
         setLang(state, { payload }: PayloadAction<string>) {

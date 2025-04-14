@@ -7,14 +7,14 @@ import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
 import { createMessage } from '../../../root/api/messages';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { focusToEnd } from '../common/focus-to-end.ts';
-import { getIsFocused } from '../../../common/hooks/get-is-focused.hook.ts';
+import { getIsFocused } from './get-is-focused.hook.ts';
 
 export const useEnterHook = (): UseEnterHookType => {
     const { t } = useTranslation();
     const { update } = useAppAction();
-    const { isPhone } = useAppSelector((state) => state.app);
     const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
     const { chatOnPage } = useAppSelector((state) => state.chats);
+    const { isPhone, isOpenMobileKeyboard } = useAppSelector((state) => state.app);
 
     const placeholder = useMemo((): string => {
         const text = chatOnPage?.type === ChatEnum.IS_SYSTEM ? 'chats_message_unavailable' : 'chats_enter_message';
@@ -37,11 +37,10 @@ export const useEnterHook = (): UseEnterHookType => {
     const sendMessage = useCallback(async () => {
         if (!chatOnPage?.id) return;
         const element = document.getElementById(styles.new_message)!;
+        const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
 
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
-
-        const isFocused = getIsFocused(element);
 
         element.innerText = '';
         if (isFocused) element.focus();
@@ -50,7 +49,7 @@ export const useEnterHook = (): UseEnterHookType => {
         update({ id: chatOnPage.id, inputMessage: undefined });
 
         await createMessage({ message: text, chatId: chatOnPage.id });
-    }, [chatOnPage?.id]);
+    }, [chatOnPage?.id, isPhone, isOpenMobileKeyboard]);
 
     useEffect(() => {
         if (!chatOnPage?.id) return;
@@ -61,9 +60,9 @@ export const useEnterHook = (): UseEnterHookType => {
         element.innerText = text ?? '';
         setIsShowPlaceholder(!text);
 
-        // // 300 - время анимации, иначе быстро отрабатывает анимация
-        setTimeout(() => focusToEnd(element), 300);
-    }, [chatOnPage?.id]);
+        // 300 - время анимации, иначе быстро отрабатывает анимация
+        if (!isPhone) setTimeout(() => focusToEnd(element), 300);
+    }, [chatOnPage?.id, isPhone]);
 
     useEffect(() => {
         const element = document.getElementById(styles.new_message)!;
@@ -88,11 +87,11 @@ export const useEnterHook = (): UseEnterHookType => {
     const setEmoji = useCallback(
         (emoji: string) => {
             const chatInput = document.getElementById(styles.new_message)!;
-            const isFocused = getIsFocused(chatInput);
+            const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
 
             setIsShowPlaceholder(false);
             const selection = window.getSelection()!;
-            let range = null;
+            let range;
 
             // Проверяем, есть ли уже выделение (фокус внутри div)
             if (selection.rangeCount > 0 && chatInput.contains(selection.anchorNode)) {
@@ -123,7 +122,7 @@ export const useEnterHook = (): UseEnterHookType => {
             else chatInput.blur();
             onInput();
         },
-        [chatOnPage?.id],
+        [chatOnPage?.id, isPhone, isOpenMobileKeyboard],
     );
 
     return [sendMessage, onInput, setEmoji, placeholder, isShowPlaceholder];

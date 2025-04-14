@@ -1,8 +1,13 @@
 import { useEffect } from 'react';
+import { useAppSelector } from '../../../root/store';
 
 export const useSaveHeight = () => {
+    const { isOpenMobileKeyboard } = useAppSelector((state) => state.app);
+
     useEffect(() => {
         if (!window.Telegram?.WebApp?.initDataUnsafe?.user?.id) return;
+        if (isOpenMobileKeyboard === undefined) return;
+
         const prevScroll = window.scrollY;
 
         const lockScroll = () => {
@@ -17,12 +22,7 @@ export const useSaveHeight = () => {
             window.scrollTo(0, prevScroll);
         };
 
-        window.addEventListener('focusin', lockScroll); // iOS Safari когда клавиатура появляется
-        window.addEventListener('focusout', unlockScroll); // когда скрывается
-
-        return () => {
-            window.removeEventListener('focusin', lockScroll);
-            window.removeEventListener('focusout', unlockScroll);
-        };
-    }, []);
+        if (isOpenMobileKeyboard) lockScroll();
+        else unlockScroll();
+    }, [isOpenMobileKeyboard]);
 };

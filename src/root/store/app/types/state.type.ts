@@ -10,4 +10,5 @@ export type StateType = {
     isPhone?: boolean;
     isSystemChat?: boolean;
     lang?: string;
+    isOpenMobileKeyboard?: boolean;
 };
