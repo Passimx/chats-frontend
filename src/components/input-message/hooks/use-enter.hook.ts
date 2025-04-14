@@ -41,7 +41,6 @@ export const useEnterHook = (): UseEnterHookType => {
 
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
-        alert(isOpenMobileKeyboard);
 
         // element.innerText = '';
         // element.focus();
