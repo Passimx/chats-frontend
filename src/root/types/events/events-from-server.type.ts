@@ -30,4 +30,9 @@ type CreateMessage = {
     readonly data: IData<MessageType>;
 };
 
-export type EventsFromServer = GetSocketId | UpdateChatOnline | MaxUsersOnline | CreateChat | CreateMessage;
+type Pong = {
+    readonly event: EventsEnum.PONG;
+    readonly data: IData<unknown>;
+};
+
+export type EventsFromServer = GetSocketId | UpdateChatOnline | MaxUsersOnline | CreateChat | CreateMessage | Pong;
