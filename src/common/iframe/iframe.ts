@@ -5,12 +5,14 @@ const channel = new BroadcastChannel('ws-channel');
 const waitPong = 4 * 1000;
 const intervalPing = 20 * 1000;
 
-let socketId: string;
+let socketId: string | undefined;
 let ws: WebSocket;
 let handlerDisconnect: NodeJS.Timeout | undefined;
 let handlerPing: NodeJS.Timeout | undefined;
+let handleCloseSocket: NodeJS.Timeout | undefined;
 
 function ping() {
+    clearTimeout(handleCloseSocket);
     if (ws.readyState == 1) ws?.send(JSON.stringify({ event: 'ping', data: Date.now() }));
     handlerDisconnect = setTimeout(() => ws?.close(), waitPong);
 }
@@ -32,10 +34,11 @@ function connect() {
     };
 
     ws.onclose = () => {
-        channel.postMessage({ event: EventsEnum.CLOSE_SOCKET });
+        socketId = undefined;
+        handleCloseSocket = setTimeout(() => channel.postMessage({ event: EventsEnum.CLOSE_SOCKET }), waitPong);
         clearTimeout(handlerPing);
         clearTimeout(handlerDisconnect);
-        connect();
+        if (navigator.onLine) connect();
     };
 
     ws.onerror = () => {
@@ -57,3 +60,8 @@ channel.onmessage = (ev) => {
             break;
     }
 };
+
+self.addEventListener('online', () => {
+    if (socketId) ws?.close();
+    else connect();
+});
