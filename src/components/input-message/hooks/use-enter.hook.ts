@@ -61,9 +61,9 @@ export const useEnterHook = (): UseEnterHookType => {
         element.innerText = text ?? '';
         setIsShowPlaceholder(!text);
 
-        // // 300 - время анимации, иначе быстро отрабатывает анимация
-        setTimeout(() => focusToEnd(element), 300);
-    }, [chatOnPage?.id]);
+        // 300 - время анимации, иначе быстро отрабатывает анимация
+        if (!isPhone) setTimeout(() => focusToEnd(element), 300);
+    }, [chatOnPage?.id, isPhone]);
 
     useEffect(() => {
         const element = document.getElementById(styles.new_message)!;
