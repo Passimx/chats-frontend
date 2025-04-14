@@ -7,7 +7,7 @@ type ChatItemType = {
     type: ChatEnum;
     createdAt: Date;
     countMessages: number;
-    maxUsersOnline: number;
+    maxUsersOnline: string;
     message: MessageType;
 };
 

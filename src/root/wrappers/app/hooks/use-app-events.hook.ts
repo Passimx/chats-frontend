@@ -11,15 +11,16 @@ export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
     const navigate = useCustomNavigate();
     const [playNotificationSound] = useLoadSoundsHooks();
-    const { setSocketId, updateOnline, setIsListening, updateReadChat, createMessage, removeChat } = useAppAction();
+    const { setSocketId, updateMany, setIsListening, createMessage, removeChat, update } = useAppAction();
 
     return (dataEvent: DataType) => {
         const { event, data } = dataEvent;
 
         switch (event) {
             case EventsEnum.GET_SOCKET_ID:
-                setSocketId(data);
-                Envs.socketId = data;
+                if (!data.success) break;
+                setSocketId(data.data);
+                Envs.socketId = data.data;
                 break;
             case EventsEnum.ADD_CHAT:
                 setToBegin(data);
@@ -31,7 +32,7 @@ export const useAppEvents = () => {
                     messages: [data.data.message],
                     readMessage: 1,
                     online: '1',
-                    maxUsersOnline: 1,
+                    maxUsersOnline: '1',
                     scrollTop: 0,
                 });
                 navigate(`/${data.data.id}`);
@@ -45,7 +46,7 @@ export const useAppEvents = () => {
 
                 break;
             case EventsEnum.READ_MESSAGE:
-                updateReadChat(data);
+                update(data);
                 break;
             case EventsEnum.REMOVE_CHAT:
                 removeChat(data);
@@ -55,7 +56,12 @@ export const useAppEvents = () => {
             //         break;
             case EventsEnum.UPDATE_CHAT_ONLINE:
                 if (!data.success) break;
-                updateOnline(data.data);
+                updateMany(data.data);
+                break;
+
+            case EventsEnum.UPDATE_MAX_USERS_ONLINE:
+                if (!data.success) break;
+                updateMany(data.data);
                 break;
             case EventsEnum.CLOSE_SOCKET:
                 setSocketId(undefined);
