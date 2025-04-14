@@ -17,6 +17,7 @@ export const useEnterHook = (): UseEnterHookType => {
     const { isPhone, isOpenMobileKeyboard } = useAppSelector((state) => state.app);
 
     const placeholder = useMemo((): string => {
+        return String(isOpenMobileKeyboard);
         const text = chatOnPage?.type === ChatEnum.IS_SYSTEM ? 'chats_message_unavailable' : 'chats_enter_message';
         return t(text);
     }, [chatOnPage?.type, t, isOpenMobileKeyboard]);
