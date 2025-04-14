@@ -40,7 +40,7 @@ export const useEnterHook = (): UseEnterHookType => {
 
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
-        const isFocused = isOpenMobileKeyboard || getIsFocused();
+        const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
 
         element.innerText = '';
         if (isFocused) element.focus();
@@ -87,7 +87,7 @@ export const useEnterHook = (): UseEnterHookType => {
     const setEmoji = useCallback(
         (emoji: string) => {
             const chatInput = document.getElementById(styles.new_message)!;
-            const isFocused = getIsFocused();
+            const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
 
             setIsShowPlaceholder(false);
             const selection = window.getSelection()!;
@@ -122,7 +122,7 @@ export const useEnterHook = (): UseEnterHookType => {
             else chatInput.blur();
             onInput();
         },
-        [chatOnPage?.id, isPhone],
+        [chatOnPage?.id, isPhone, isOpenMobileKeyboard],
     );
 
     return [sendMessage, onInput, setEmoji, placeholder, isShowPlaceholder];
