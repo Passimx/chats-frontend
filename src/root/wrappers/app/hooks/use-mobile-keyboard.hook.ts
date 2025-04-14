@@ -25,6 +25,8 @@ export const useMobileKeyboard = () => {
     }, [isPhone]);
 
     useEffect(() => {
+        if (!isPhone) return;
+
         const lockScroll = () => {
             setStateApp({ isOpenMobileKeyboard: true });
         };
@@ -40,5 +42,5 @@ export const useMobileKeyboard = () => {
             window.removeEventListener('focusin', lockScroll);
             window.removeEventListener('focusout', unlockScroll);
         };
-    }, []);
+    }, [isPhone]);
 };
