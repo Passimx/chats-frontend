@@ -43,9 +43,9 @@ export const useEnterHook = (): UseEnterHookType => {
         if (!text.length) return;
         alert(isOpenMobileKeyboard);
 
-        element.innerText = '';
-        element.focus();
-        setIsShowPlaceholder(true);
+        // element.innerText = '';
+        // element.focus();
+        // setIsShowPlaceholder(true);
 
         update({ id: chatOnPage.id, inputMessage: undefined });
 
