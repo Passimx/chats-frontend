@@ -48,7 +48,7 @@ export const useEnterHook = (): UseEnterHookType => {
 
         update({ id: chatOnPage.id, inputMessage: undefined });
 
-        await createMessage({ message: `${isOpenMobileKeyboard}`, chatId: chatOnPage.id });
+        await createMessage({ message: text, chatId: chatOnPage.id });
     }, [chatOnPage?.id, isPhone, isOpenMobileKeyboard]);
 
     useEffect(() => {
