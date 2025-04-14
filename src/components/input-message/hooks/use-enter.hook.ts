@@ -7,7 +7,7 @@ import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
 import { createMessage } from '../../../root/api/messages';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { focusToEnd } from '../common/focus-to-end.ts';
-import { getIsFocused } from '../../../common/hooks/get-is-focused.hook.ts';
+import { getIsFocused } from './get-is-focused.hook.ts';
 
 export const useEnterHook = (): UseEnterHookType => {
     const { t } = useTranslation();
@@ -41,7 +41,7 @@ export const useEnterHook = (): UseEnterHookType => {
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
 
-        const isFocused = getIsFocused(element);
+        const isFocused = getIsFocused(isPhone);
 
         element.innerText = '';
         if (isFocused) element.focus();
@@ -50,7 +50,7 @@ export const useEnterHook = (): UseEnterHookType => {
         update({ id: chatOnPage.id, inputMessage: undefined });
 
         await createMessage({ message: text, chatId: chatOnPage.id });
-    }, [chatOnPage?.id]);
+    }, [chatOnPage?.id, isPhone]);
 
     useEffect(() => {
         if (!chatOnPage?.id) return;
@@ -88,7 +88,7 @@ export const useEnterHook = (): UseEnterHookType => {
     const setEmoji = useCallback(
         (emoji: string) => {
             const chatInput = document.getElementById(styles.new_message)!;
-            const isFocused = getIsFocused(chatInput);
+            const isFocused = getIsFocused(isPhone);
 
             setIsShowPlaceholder(false);
             const selection = window.getSelection()!;
@@ -123,7 +123,7 @@ export const useEnterHook = (): UseEnterHookType => {
             else chatInput.blur();
             onInput();
         },
-        [chatOnPage?.id],
+        [chatOnPage?.id, isPhone],
     );
 
     return [sendMessage, onInput, setEmoji, placeholder, isShowPlaceholder];
