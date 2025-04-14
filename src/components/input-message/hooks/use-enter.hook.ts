@@ -41,7 +41,7 @@ export const useEnterHook = (): UseEnterHookType => {
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
 
-        const isFocused = getIsFocused(isPhone);
+        const isFocused = getIsFocused();
 
         element.innerText = '';
         if (isFocused) element.focus();
@@ -88,11 +88,11 @@ export const useEnterHook = (): UseEnterHookType => {
     const setEmoji = useCallback(
         (emoji: string) => {
             const chatInput = document.getElementById(styles.new_message)!;
-            const isFocused = getIsFocused(isPhone);
+            const isFocused = getIsFocused();
 
             setIsShowPlaceholder(false);
             const selection = window.getSelection()!;
-            let range = null;
+            let range;
 
             // Проверяем, есть ли уже выделение (фокус внутри div)
             if (selection.rangeCount > 0 && chatInput.contains(selection.anchorNode)) {
