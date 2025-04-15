@@ -19,7 +19,9 @@ export const useCheckSystemChat = () => {
                 event: EventsEnum.ADD_CHAT,
                 data: { ...chat, readMessage: 0, messages: [chat.message], scrollTop: 0 },
             });
-            listenChats([{ chatId: chat.id, lastMessage: 0 }]);
+            listenChats([
+                { chatId: chat.id, lastMessage: chat.countMessages, maxUsersOnline: Number(chat.maxUsersOnline) },
+            ]);
             playNotificationSound();
         }
     };

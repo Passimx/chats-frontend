@@ -11,7 +11,10 @@ export const useJoinChat = (chat: ChatType | undefined) => {
         if (!socketId || !isLoadedChatsFromIndexDb) return;
 
         if (!chat) return;
-        if (!getRawChat(chat.id)) listenChats([{ chatId: chat.id, lastMessage: chat.countMessages }]);
+        if (!getRawChat(chat.id))
+            listenChats([
+                { chatId: chat.id, lastMessage: chat.countMessages, maxUsersOnline: Number(chat.maxUsersOnline) },
+            ]);
 
         return () => {
             if (!getRawChat(chat.id)) leaveChats([chat.id]);
