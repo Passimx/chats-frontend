@@ -27,7 +27,13 @@ export const useListenAndUpdateChats = () => {
         }
 
         const chatsListen: ChatListenRequestType[] = [];
-        getRawChats().forEach((chat) => chatsListen.push({ chatId: chat.id, lastMessage: chat.countMessages }));
+        getRawChats().forEach((chat) =>
+            chatsListen.push({
+                chatId: chat.id,
+                lastMessage: chat.countMessages,
+                maxUsersOnline: Number(chat.maxUsersOnline),
+            }),
+        );
 
         listenChats(chatsListen)
             .then(({ success, data }) => {

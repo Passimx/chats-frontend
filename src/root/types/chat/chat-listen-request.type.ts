@@ -1,1 +1,1 @@
-export type ChatListenRequestType = { chatId: string; lastMessage: number };
+export type ChatListenRequestType = { chatId: string; lastMessage: number; maxUsersOnline: number };
