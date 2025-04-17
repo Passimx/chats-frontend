@@ -1,4 +1,4 @@
-import { FC, memo, useEffect } from 'react';
+import { FC, memo, useEffect, useMemo } from 'react';
 import styles from './index.module.css';
 import ChatAvatar from '../chat-avatar';
 import { useMessage } from './hooks/use-message.hook.ts';
@@ -7,15 +7,18 @@ import { PropsType } from './types/props.type.ts';
 import { useTranslation } from 'react-i18next';
 
 const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redirect }) => {
-    const elementId = `chat-${chat.id}`;
     const { t } = useTranslation();
+    const elementId = useMemo(() => `chat-${chat.id}`, [chat.id]);
     const [message, time, countMessages] = useMessage(chat);
 
     useEffect(() => {
         const element = document.getElementById(elementId)!;
-        element.addEventListener('contextmenu', function (event) {
+        const func = (event: MouseEvent) => {
             event.preventDefault();
-        });
+        };
+        element.addEventListener('contextmenu', func);
+
+        return () => element.removeEventListener('contextmenu', func);
     }, []);
 
     return (
