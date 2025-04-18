@@ -7,16 +7,18 @@ import { EventsEnum } from '../../../root/types/events/events.enum.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import styles from '../index.module.css';
 
-type R = [MessageType[], (chatId: string, number: number) => void];
+type R = [boolean, MessageType[], (chatId: string, number: number) => void];
 let topMessage: number | undefined;
 let bottomMessage: number | undefined;
 
 export const useMessages = (): R => {
-    const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [messages, setMessages] = useState<MessageType[]>([]);
     const { postMessageToBroadCastChannel, update } = useAppAction();
     const { chatOnPage } = useAppSelector((state) => state.chats);
-    const [messages, setMessages] = useState<MessageType[]>([]);
+    const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
 
+    /** обновление нового сообщения */
     useEffect(() => {
         if (
             chatOnPage &&
@@ -62,8 +64,10 @@ export const useMessages = (): R => {
             });
         } else {
             setMessages([]);
+            setIsLoading(true);
             getMessages(chatOnPage.id).then(({ success, data }) => {
                 if (success) setMessages(data);
+                setIsLoading(false);
             });
         }
     }, [chatOnPage?.id, isLoadedChatsFromIndexDb]);
@@ -103,15 +107,19 @@ export const useMessages = (): R => {
 
                 setMessages(lastMessages);
 
+                setIsLoading(true);
                 const response = await getMessages(
                     chatOnPage.id,
                     Envs.messages.limit,
                     chatOnPage.countMessages - number + 1,
                 );
+                topMessage = undefined;
+                bottomMessage = undefined;
 
                 if (!response.success) return;
                 const data = [...lastMessages, ...response.data];
                 setMessages(data);
+                setIsLoading(false);
             }
 
             /** дозагрузка новых сообщений */
@@ -127,10 +135,14 @@ export const useMessages = (): R => {
 
                 setMessages(lastMessages);
 
+                setIsLoading(true);
                 const response = await getMessages(chatOnPage.id, limit, offset);
+                topMessage = undefined;
+                bottomMessage = undefined;
                 const scrollHeight = el.scrollHeight;
                 if (!response.success) return;
                 const data = [...response.data, ...lastMessages];
+                setIsLoading(false);
                 setMessages(data);
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
@@ -160,5 +172,5 @@ export const useMessages = (): R => {
         [chatOnPage?.id, messages.length],
     );
 
-    return [messages, readMessage];
+    return [isLoading, messages, readMessage];
 };

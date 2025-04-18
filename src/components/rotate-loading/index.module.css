@@ -1,0 +1,23 @@
+#logos_block{
+    width: 100%;
+    padding: 8px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading_logo{
+    color: var(--menu-color);
+    font-size: 24px;
+    opacity: 0.6;
+    animation: rotate_search .6s linear infinite;
+}
+
+@keyframes rotate_search {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
