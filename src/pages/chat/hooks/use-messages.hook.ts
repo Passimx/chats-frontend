@@ -27,12 +27,14 @@ export const useMessages = (): R => {
         ) {
             const el = document.getElementById(styles.messages)!;
             const scrollHeight = el.scrollHeight;
+            const scrollTop = el.scrollTop;
 
             setMessages([chatOnPage.message, ...messages]);
 
             const chat = getRawChat(chatOnPage.id);
             if (!chat) return;
 
+            if (scrollTop === 0) return;
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     const scrollTop = chat.scrollTop + scrollHeight - el.scrollHeight;
