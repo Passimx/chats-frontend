@@ -16,7 +16,7 @@
     word-wrap: break-word;
 }
 
-.text a, .text .tags{
+.text .tags{
     text-decoration: none;
     color: #439fef;
     cursor: pointer;

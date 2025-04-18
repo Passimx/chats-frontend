@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import styles from './index.module.css';
 import { useParams } from 'react-router-dom';
 import ChatAvatar from '../chat-avatar';
@@ -9,13 +9,16 @@ import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.t
 const ChatItem: FC<PropsType> = ({ chat }) => {
     const navigate = useCustomNavigate();
     const { id } = useParams();
-    const elementId = `chat-${chat.id}`;
+    const elementId = useMemo(() => `chat-${chat.id}`, [chat.id]);
 
     useEffect(() => {
         const element = document.getElementById(elementId)!;
-        element.addEventListener('contextmenu', function (event) {
+        const func = (event: MouseEvent) => {
             event.preventDefault();
-        });
+        };
+        element.addEventListener('contextmenu', func);
+
+        return () => element.removeEventListener('contextmenu', func);
     }, []);
 
     return (

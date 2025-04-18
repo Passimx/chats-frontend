@@ -2,8 +2,6 @@ import { Envs } from '../config/envs/envs.ts';
 import { EventsFromServer } from '../../root/types/events/events-from-server.type.ts';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 const channel = new BroadcastChannel('ws-channel');
-const waitPong = 4 * 1000;
-const intervalPing = 20 * 1000;
 
 let socketId: string | undefined;
 let ws: WebSocket;
@@ -14,7 +12,7 @@ let handleCloseSocket: NodeJS.Timeout | undefined;
 function ping() {
     clearTimeout(handleCloseSocket);
     if (ws.readyState == 1) ws?.send(JSON.stringify({ event: 'ping', data: Date.now() }));
-    handlerDisconnect = setTimeout(() => ws?.close(), waitPong);
+    handlerDisconnect = setTimeout(() => ws?.close(), Envs.waitPong);
 }
 
 function connect() {
@@ -28,14 +26,14 @@ function connect() {
         else if (payload.event === EventsEnum.PONG) {
             clearTimeout(handlerPing);
             clearTimeout(handlerDisconnect);
-            handlerPing = setTimeout(ping, intervalPing);
+            handlerPing = setTimeout(ping, Envs.intervalPing);
         }
         channel.postMessage(payload);
     };
 
     ws.onclose = () => {
         socketId = undefined;
-        handleCloseSocket = setTimeout(() => channel.postMessage({ event: EventsEnum.CLOSE_SOCKET }), waitPong);
+        handleCloseSocket = setTimeout(() => channel.postMessage({ event: EventsEnum.CLOSE_SOCKET }), Envs.waitPong);
         clearTimeout(handlerPing);
         clearTimeout(handlerDisconnect);
         if (navigator.onLine) connect();
