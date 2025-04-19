@@ -22,6 +22,7 @@ import { LiaEyeSolid } from 'react-icons/lia';
 import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
 import { useMethods } from './hooks/use-methods.hooks.ts';
 import { RotateLoading } from '../../components/rotate-loading';
+import { useListenScroll } from './hooks/use-listen-scroll.hook.ts';
 
 const Chat: FC = memo(() => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
@@ -29,9 +30,10 @@ const Chat: FC = memo(() => {
     useJoinChat(chatOnPage);
     const visibility = useVisibility;
     const { t } = useTranslation();
-    const [isLoading, messages, readMessage] = useMessages();
+    const [isLoading, messages, readMessage, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const [addChat, leave, back] = useMethods(messages);
+    const [isVisibleBottomButton] = useListenScroll(messages);
 
     if (!chatOnPage) return <></>;
 
@@ -103,7 +105,7 @@ const Chat: FC = memo(() => {
                 </div>
                 <div id={styles.messages_block}>
                     <div id={styles.messages}>
-                        {isLoading && <RotateLoading />}
+                        {isLoading && messages.length > 1 && <RotateLoading />}
                         {messages.map((message) => (
                             <Message key={message.id} {...message} readMessage={readMessage} />
                         ))}
@@ -112,7 +114,7 @@ const Chat: FC = memo(() => {
                     </div>
                 </div>
             </div>
-            <InputMessage />
+            <InputMessage isVisibleBottomButton={isVisibleBottomButton} showLastMessages={showLastMessages} />
         </div>
     );
 });

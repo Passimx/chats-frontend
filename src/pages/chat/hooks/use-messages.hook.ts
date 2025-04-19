@@ -7,7 +7,7 @@ import { EventsEnum } from '../../../root/types/events/events.enum.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import styles from '../index.module.css';
 
-type R = [boolean, MessageType[], (chatId: string, number: number) => void];
+type R = [boolean, MessageType[], (chatId: string, number: number) => void, () => void];
 let topMessage: number | undefined;
 let bottomMessage: number | undefined;
 
@@ -74,28 +74,6 @@ export const useMessages = (): R => {
         }
     }, [chatOnPage?.id, isLoadedChatsFromIndexDb]);
 
-    /** сохранение скрола вместе с сообщениями*/
-    useEffect(() => {
-        if (!chatOnPage?.id || chatOnPage?.id !== messages[0]?.chatId) return;
-        const el = document.getElementById(styles.messages)!;
-        let scrollTimeout: NodeJS.Timeout;
-
-        const scroll = () => {
-            clearTimeout(scrollTimeout);
-
-            scrollTimeout = setTimeout(() => {
-                const scrollTop = el.scrollTop;
-                update({ id: chatOnPage.id, messages, scrollTop });
-            }, 150);
-        };
-
-        el.addEventListener('scroll', scroll);
-        return () => {
-            clearTimeout(scrollTimeout);
-            el.removeEventListener('scroll', scroll);
-        };
-    }, [chatOnPage?.id, messages]);
-
     /** загрузка сообщений */
     const loadMessages = useCallback(
         async (number: number) => {
@@ -121,6 +99,7 @@ export const useMessages = (): R => {
                 if (!response.success) return;
                 const data = [...lastMessages, ...response.data];
                 setMessages(data);
+                update({ id: chatOnPage.id, messages: data });
                 setIsLoading(false);
             }
 
@@ -146,6 +125,7 @@ export const useMessages = (): R => {
                 const data = [...response.data, ...lastMessages];
                 setIsLoading(false);
                 setMessages(data);
+                update({ id: chatOnPage.id, messages: data });
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         const diff = scrollHeight - el.scrollHeight;
@@ -174,5 +154,24 @@ export const useMessages = (): R => {
         [chatOnPage?.id, messages.length],
     );
 
-    return [isLoading, messages, readMessage];
+    const showLastMessages = useCallback(() => {
+        if (!chatOnPage || messages[0]?.chatId !== chatOnPage.id) return;
+        const el = document.getElementById(styles.messages)!;
+
+        if (messages[0]?.number === chatOnPage.countMessages) {
+            el.scrollTo({ behavior: 'smooth', top: 0 });
+            update({ id: chatOnPage.id, scrollTop: 0 });
+        } else {
+            setMessages([chatOnPage.message]);
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    el.scrollTo({ behavior: 'instant', top: 0 });
+                    update({ id: chatOnPage.id, scrollTop: 0 });
+                });
+            });
+            setIsLoading(true);
+        }
+    }, [chatOnPage, messages]);
+
+    return [isLoading, messages, readMessage, showLastMessages];
 };
