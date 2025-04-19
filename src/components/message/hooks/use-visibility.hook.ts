@@ -24,7 +24,7 @@ export const useVisibility = (props: PropsType): [MutableRefObject<null>, string
                 if (entries[0].isIntersecting && chatOnPage) readMessage(chatId, number);
             },
             {
-                threshold: 1,
+                threshold: 0.001,
             },
         );
 

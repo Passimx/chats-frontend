@@ -6,8 +6,9 @@ import { useEnterHook } from './hooks/use-enter.hook.ts';
 import Emoji from '../emoji';
 import { useAppSelector } from '../../root/store';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
+import { PropsType } from './types/props.type.ts';
 
-const InputMessage: FC = () => {
+const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }) => {
     const [sendMessage, onInput, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
     const { chatOnPage } = useAppSelector((state) => state.chats);
@@ -15,6 +16,8 @@ const InputMessage: FC = () => {
     useEffect(() => {
         if (isVisibleEmoji) setIsVisibleEmoji(false);
     }, [chatOnPage?.id]);
+
+    const visibility = useVisibility;
 
     return (
         <div id={styles.write_message}>
@@ -50,7 +53,13 @@ const InputMessage: FC = () => {
                         ></div>
                     </div>
                 </div>
-                <div>
+                <div className={styles.buttons}>
+                    <div
+                        className={`${styles.bottom_button_background} ${visibility(styles.show_bottom_button, styles.hide_bottom_button, isVisibleBottomButton)}`}
+                        onClick={showLastMessages}
+                    >
+                        <BsFillArrowUpCircleFill className={`${styles.bottom_button}`} />
+                    </div>
                     <div className={styles.button_background} onClick={sendMessage}>
                         <BsFillArrowUpCircleFill className={`${styles.button}`} />
                     </div>
