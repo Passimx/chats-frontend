@@ -99,6 +99,7 @@
 
 .button, .bottom_button {
     font-size: 53px;
+    border-radius: 100px;
 }
 
 .button{

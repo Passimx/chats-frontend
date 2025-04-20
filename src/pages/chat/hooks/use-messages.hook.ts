@@ -36,6 +36,9 @@ export const useMessages = (): R => {
 
             if (scrollTop === 0) return;
             requestAnimationFrame(() => {
+                const scrollTop = chat.scrollTop + scrollHeight - el.scrollHeight;
+                el.scrollTo({ behavior: 'instant', top: scrollTop });
+                update({ id: chatOnPage.id, messages, scrollTop });
                 requestAnimationFrame(() => {
                     const scrollTop = chat.scrollTop + scrollHeight - el.scrollHeight;
                     el.scrollTo({ behavior: 'instant', top: scrollTop });
@@ -60,6 +63,7 @@ export const useMessages = (): R => {
 
             /** установка скрола */
             requestAnimationFrame(() => {
+                el.scrollTo({ behavior: 'instant', top: chat.scrollTop });
                 requestAnimationFrame(() => {
                     el.scrollTo({ behavior: 'instant', top: chat.scrollTop });
                 });
@@ -127,6 +131,8 @@ export const useMessages = (): R => {
                 setMessages(data);
                 update({ id: chatOnPage.id, messages: data });
                 requestAnimationFrame(() => {
+                    const diff = scrollHeight - el.scrollHeight;
+                    el.scrollTo({ behavior: 'instant', top: diff });
                     requestAnimationFrame(() => {
                         const diff = scrollHeight - el.scrollHeight;
                         el.scrollTo({ behavior: 'instant', top: diff });
@@ -164,6 +170,8 @@ export const useMessages = (): R => {
         } else {
             setMessages([chatOnPage.message]);
             requestAnimationFrame(() => {
+                el.scrollTo({ behavior: 'instant', top: 0 });
+                update({ id: chatOnPage.id, scrollTop: 0 });
                 requestAnimationFrame(() => {
                     el.scrollTo({ behavior: 'instant', top: 0 });
                     update({ id: chatOnPage.id, scrollTop: 0 });
