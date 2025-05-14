@@ -23,6 +23,7 @@ import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
 import { useMethods } from './hooks/use-methods.hooks.ts';
 import { RotateLoading } from '../../components/rotate-loading';
 import { useListenScroll } from './hooks/use-listen-scroll.hook.ts';
+import { FaStar } from 'react-icons/fa';
 
 const Chat: FC = memo(() => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
@@ -47,9 +48,13 @@ const Chat: FC = memo(() => {
                             onlineCount={chatOnPage.online}
                             maxUsersOnline={chatOnPage.maxUsersOnline}
                             iconType={IconEnum.ONLINE}
-                            isChange={true}
+                            isChange={chatOnPage.type !== ChatEnum.IS_SYSTEM}
+                            isSystem={chatOnPage.type === ChatEnum.IS_SYSTEM}
                         />
-                        <div id={styles.title}>{chatOnPage.title}</div>
+                        <div className={styles.title_block}>
+                            {chatOnPage.type === ChatEnum.IS_SYSTEM && <FaStar className={styles.icon_star} />}
+                            <div id={styles.title}>{chatOnPage.title}</div>
+                        </div>
                         <div className={styles.icon}>
                             {chatOnPage.type === ChatEnum.IS_OPEN && (
                                 <AiOutlineGlobal className={styles.type_icon} color="green" />
@@ -110,7 +115,7 @@ const Chat: FC = memo(() => {
                             <Message key={message.id} {...message} readMessage={readMessage} />
                         ))}
                         <div></div>
-                        {isLoading && messages.length !== 0 && <RotateLoading />}
+                        {isLoading && messages.length === 1 && <RotateLoading />}
                     </div>
                 </div>
             </div>

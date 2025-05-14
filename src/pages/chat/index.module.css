@@ -38,11 +38,25 @@
     }
 }
 
+.title_block{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 5px;
+}
+
 #chat_inf{
     display: grid;
     grid-template-columns: 50px auto 1fr 50px;
     align-items: center;
     gap: 10px;
+}
+
+.icon_star{
+    font-size: 18px;
+    color:gold;
+    animation: star_animation 3s ease infinite;
+    /*margin-bottom: auto;*/
+    /*margin-top: auto;*/
 }
 
 #title{
@@ -192,5 +206,19 @@
     to {
         visibility: hidden;
         opacity: 0;
+    }
+}
+
+@keyframes star_animation{
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        transform: scale(0.8) rotate(30deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
     }
 }
