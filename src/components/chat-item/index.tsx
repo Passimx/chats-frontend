@@ -37,7 +37,7 @@ const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redir
             />
             <div className={styles.main_inf}>
                 <div className={styles.title_block}>
-                    {chat.type === ChatEnum.IS_SYSTEM && <FaStar className={styles.icon_star} />}
+                    <div>{chat.type === ChatEnum.IS_SYSTEM && <FaStar className={styles.icon_star} />}</div>
                     <div className={styles.title}>{chat.title}</div>
                     <div className={styles.time}>{time}</div>
                 </div>
