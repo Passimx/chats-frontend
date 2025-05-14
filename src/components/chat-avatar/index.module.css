@@ -132,6 +132,19 @@
     animation: hide_slowly .3s linear forwards;
 }
 
+.loading_logo{
+    color: black;
+    font-size: 24px;
+    opacity: 0.6;
+    animation: rotate_search .6s linear infinite;
+    position: absolute;
+}
+
+.img_icon{
+    width: 35px;
+    height: 35px;
+}
+
 @keyframes show_slowly{
     0% {
         visibility: hidden;
@@ -153,6 +166,7 @@
         opacity: 1;
     }
 }
+
 @keyframes hide_slowly{
     0% {
         visibility: visible;
@@ -173,14 +187,6 @@
         visibility: hidden;
         opacity: 0;
     }
-}
-
-.loading_logo{
-    color: black;
-    font-size: 24px;
-    opacity: 0.6;
-    animation: rotate_search .6s linear infinite;
-    position: absolute;
 }
 
 @keyframes rotate_search {

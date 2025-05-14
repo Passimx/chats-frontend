@@ -41,7 +41,15 @@
 
 .title_block{
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr auto;
+    gap: 4px;
+}
+
+.icon_star{
+    color:gold;
+    animation: star_animation 3s ease infinite;
+    margin-bottom: auto;
+    margin-top: auto;
 }
 
 .title{
@@ -101,6 +109,11 @@
     animation: new_message .2s linear forwards;
 }
 
+.hide_chat{
+    animation: new_message .2s linear forwards;
+    animation-direction: reverse;
+}
+
 @keyframes new_message{
     from {
         opacity: 0.4;
@@ -116,7 +129,16 @@
     }
 }
 
-.hide_chat{
-    animation: new_message .2s linear forwards;
-    animation-direction: reverse;
+@keyframes star_animation{
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        transform: scale(0.8) rotate(30deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
 }

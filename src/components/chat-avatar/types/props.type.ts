@@ -5,4 +5,5 @@ export type PropsType = {
     onlineCount?: string;
     maxUsersOnline: string;
     isChange?: boolean;
+    isSystem?: boolean;
 };
