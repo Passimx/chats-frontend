@@ -90,7 +90,8 @@ const ChatsSlice = createSlice({
         },
 
         setChatOnPage(state, { payload }: PayloadAction<ChatType | null>) {
-            state.chatOnPage = payload ?? undefined;
+            if (payload) state.chatOnPage = payload;
+            else state.chatOnPage = undefined;
         },
 
         removeChat(state, { payload }: PayloadAction<string>) {

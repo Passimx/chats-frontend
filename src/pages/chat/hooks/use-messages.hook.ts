@@ -7,7 +7,7 @@ import { EventsEnum } from '../../../root/types/events/events.enum.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import styles from '../index.module.css';
 
-type R = [boolean, MessageType[], (chatId: string, number: number) => void, () => void];
+type R = [boolean, MessageType[], (chatId: string, number: number) => void, () => void, (payload: MessageType) => void];
 let topMessage: number | undefined;
 let bottomMessage: number | undefined;
 
@@ -173,5 +173,9 @@ export const useMessages = (): R => {
         }
     }, [chatOnPage, messages]);
 
-    return [isLoading, messages, readMessage, showLastMessages];
+    const findMessage = useCallback((payload: MessageType) => {
+        console.log(payload);
+    }, []);
+
+    return [isLoading, messages, readMessage, showLastMessages, findMessage];
 };

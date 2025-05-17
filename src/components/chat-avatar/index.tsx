@@ -24,12 +24,10 @@ const ChatAvatar: FC<PropsType> = ({ onlineCount, maxUsersOnline, iconType, isCh
         >
             <div className={styles.cube}>
                 <div className={`${styles.icon_number} ${styles.front}`}>
-                    {isListening && onlineCount ? (
-                        isSystem ? (
-                            <img src={imageIcon} className={styles.img_icon} alt={'icon'} />
-                        ) : (
-                            onlineCount
-                        )
+                    {isSystem ? (
+                        <img src={imageIcon} className={styles.img_icon} alt={'icon'} />
+                    ) : isListening && onlineCount ? (
+                        onlineCount
                     ) : (
                         <div id={styles.logos_block}>
                             <AiOutlineLoading3Quarters className={styles.loading_logo} />

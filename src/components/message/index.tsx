@@ -4,9 +4,10 @@ import { PropsType } from './types/props.type.ts';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { useVisibility } from './hooks/use-visibility.hook.ts';
 import { RenderMessage } from '../render-message';
+import { ParentMessage } from '../parent-message';
 
 const Message: FC<PropsType> = memo((props) => {
-    const { number, type } = props;
+    const { number, type, findMessage } = props;
     const elementId = useMemo(() => `message-${number}`, [number]);
     const [observerTarget, visibleMessage, time] = useVisibility(props);
 
@@ -30,6 +31,7 @@ const Message: FC<PropsType> = memo((props) => {
     return (
         <>
             <div ref={observerTarget} id={elementId} className={`${styles.background}`}>
+                {props.parentMessage && <ParentMessage {...{ ...props.parentMessage, findMessage }} />}
                 <RenderMessage message={visibleMessage} />
                 <div className={styles.left_div2}>{time}</div>
             </div>

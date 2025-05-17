@@ -41,12 +41,13 @@ export const useListenAndUpdateChats = () => {
                 if (!indexDb) return;
                 if (!success) return;
 
+                /** обновление последнего сообщения и максимально онлайн */
                 data.sort(compareFn).map((chat) => {
                     const chatFromRaw = getRawChat(chat.id);
                     if (!chatFromRaw) return;
                     const updatedChat: ChatItemIndexDb = { ...chatFromRaw, ...chat };
 
-                    setToBegin(updatedChat);
+                    if (updatedChat.countMessages > chatFromRaw.countMessages) setToBegin(updatedChat);
                     upsertChatIndexDb(updatedChat);
                 });
                 setStateApp({ isListening: true });

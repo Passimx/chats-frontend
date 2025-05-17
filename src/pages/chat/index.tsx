@@ -31,7 +31,7 @@ const Chat: FC = memo(() => {
     useJoinChat(chatOnPage);
     const visibility = useVisibility;
     const { t } = useTranslation();
-    const [isLoading, messages, readMessage, showLastMessages] = useMessages();
+    const [isLoading, messages, readMessage, showLastMessages, findMessage] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const [addChat, leave, back] = useMethods(messages);
     const [isVisibleBottomButton] = useListenScroll(messages);
@@ -112,7 +112,7 @@ const Chat: FC = memo(() => {
                     <div id={styles.messages}>
                         {isLoading && messages.length > 1 && <RotateLoading />}
                         {messages.map((message) => (
-                            <Message key={message.id} {...message} readMessage={readMessage} />
+                            <Message key={message.id} {...{ ...message, readMessage, findMessage }} />
                         ))}
                         <div></div>
                         {isLoading && messages.length === 1 && <RotateLoading />}
