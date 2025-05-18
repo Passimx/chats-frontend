@@ -1,22 +1,28 @@
 import { MessageType } from '../../../root/types/chat/message.type.ts';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { useAppAction, useAppSelector } from '../../../root/store';
 import { getMessages } from '../../../root/api/messages';
 import { EventsEnum } from '../../../root/types/events/events.enum.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import styles from '../index.module.css';
+import { UseMessagesType } from '../types/use-messages.type.ts';
+import { LoadingType } from '../types/loading.type.ts';
 
-type R = [boolean, MessageType[], (chatId: string, number: number) => void, () => void, (payload: MessageType) => void];
 let topMessage: number | undefined;
 let bottomMessage: number | undefined;
 
-export const useMessages = (): R => {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+export const useMessages = (): UseMessagesType => {
+    const [isLoading, setIsLoading] = useState<LoadingType>();
     const [messages, setMessages] = useState<MessageType[]>([]);
     const { postMessageToBroadCastChannel, update } = useAppAction();
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
+
+    const message = useMemo(() => {
+        const params = new URL(document.location.toString()).searchParams;
+        return params.get('message') ? Number(params.get('message')) : null;
+    }, [chatOnPage?.id]);
 
     /** обновление нового сообщения */
     useEffect(() => {
@@ -45,8 +51,14 @@ export const useMessages = (): R => {
         }
     }, [chatOnPage?.message]);
 
+    /** загрузка сообщения из query param */
+    useEffect(() => {
+        if (message) findMessage(message);
+    }, [chatOnPage?.id]);
+
     /** загрузка первых сообщений */
     useEffect(() => {
+        if (message) return;
         if (!chatOnPage?.id) return;
         if (!isLoadedChatsFromIndexDb) return;
 
@@ -66,10 +78,10 @@ export const useMessages = (): R => {
             });
         } else {
             setMessages([]);
-            setIsLoading(true);
+            setIsLoading(LoadingType.NEW);
             getMessages(chatOnPage.id).then(({ success, data }) => {
                 if (success) setMessages(data);
-                setIsLoading(false);
+                setIsLoading(undefined);
             });
         }
     }, [chatOnPage?.id, isLoadedChatsFromIndexDb]);
@@ -87,7 +99,7 @@ export const useMessages = (): R => {
 
                 setMessages(lastMessages);
 
-                setIsLoading(true);
+                setIsLoading(LoadingType.OLD);
                 const response = await getMessages(
                     chatOnPage.id,
                     Envs.messages.limit,
@@ -100,7 +112,7 @@ export const useMessages = (): R => {
                 const data = [...lastMessages, ...response.data];
                 setMessages(data);
                 update({ id: chatOnPage.id, messages: data });
-                setIsLoading(false);
+                setIsLoading(undefined);
             }
 
             /** дозагрузка новых сообщений */
@@ -116,14 +128,14 @@ export const useMessages = (): R => {
 
                 setMessages(lastMessages);
 
-                setIsLoading(true);
+                setIsLoading(LoadingType.NEW);
                 const response = await getMessages(chatOnPage.id, limit, offset);
                 topMessage = undefined;
                 bottomMessage = undefined;
                 const scrollHeight = el.scrollHeight;
                 if (!response.success) return;
                 const data = [...response.data, ...lastMessages];
-                setIsLoading(false);
+                setIsLoading(undefined);
                 setMessages(data);
                 update({ id: chatOnPage.id, messages: data });
                 requestAnimationFrame(() => {
@@ -169,13 +181,33 @@ export const useMessages = (): R => {
                     update({ id: chatOnPage.id, scrollTop: 0 });
                 });
             });
-            setIsLoading(true);
+            setIsLoading(LoadingType.NEW);
         }
     }, [chatOnPage, messages]);
 
-    const findMessage = useCallback((payload: MessageType) => {
-        console.log(payload);
-    }, []);
+    const findMessage = useCallback(
+        async (number: number) => {
+            if (!chatOnPage) return;
+            const el = document.getElementById(styles.messages)!;
+            const offset = chatOnPage.countMessages - number - Envs.messages.limit + 1;
+            setMessages([]);
+            el.scrollTo({ behavior: 'instant', top: -el.scrollHeight });
+            setIsLoading(LoadingType.OLD);
+            const response = await getMessages(chatOnPage.id, Envs.messages.limit, offset);
+            if (!response.success) return;
+            bottomMessage = number;
+            setIsLoading(undefined);
+            setMessages(response.data);
+            requestAnimationFrame(() => {
+                el.scrollTo({ behavior: 'instant', top: -el.scrollHeight });
+                requestAnimationFrame(() => {
+                    el.scrollTo({ behavior: 'instant', top: -el.scrollHeight });
+                    update({ id: chatOnPage.id, messages: response.data, scrollTop: el.scrollTop });
+                });
+            });
+        },
+        [chatOnPage],
+    );
 
     return [isLoading, messages, readMessage, showLastMessages, findMessage];
 };

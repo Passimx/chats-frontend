@@ -1,0 +1,61 @@
+#message_menu{
+    border-radius: 8px;
+    position: absolute;
+    z-index: 1;
+    box-shadow: 0 0 2px 0.1px black;
+    padding: 2px;
+    background-color: rgb(255, 255, 255, 80%);
+    backdrop-filter: blur(1px);
+    display: grid;
+    visibility: hidden;
+}
+
+.message_menu_item{
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    display: grid;
+    gap: 8px;
+    align-items: center;
+    grid-template-columns: auto 1fr;
+}
+
+.message_menu_item:hover{
+    background-color: rgb(0, 0, 0, 10%);
+}
+
+.message_menu_item_icon{
+    color: #0098EA;
+    font-weight: 900;
+    font-size: 18px;
+}
+
+.show_slowly{
+    animation: show_slowly_menu .2s linear forwards;
+}
+
+.hide_slowly{
+    animation: hide_slowly_menu .2s linear forwards;
+}
+
+@keyframes show_slowly_menu{
+    from {
+        visibility: hidden;
+        opacity: 0;
+    }
+    to {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+@keyframes hide_slowly_menu{
+    from {
+        visibility: visible;
+        opacity: 1;
+    }
+    to {
+        visibility: hidden;
+        opacity: 0;
+    }
+}

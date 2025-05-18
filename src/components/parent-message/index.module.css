@@ -9,4 +9,9 @@
     white-space: nowrap;
     font-weight: 300;
     cursor: pointer;
+    transition: background .3s ease;
+}
+
+.background:hover{
+    background-color: rgb(0, 152, 234, 0.1);
 }

@@ -7,7 +7,7 @@ export const ParentMessage: FC<PropsType> = (props) => {
     const click = useCallback(() => {
         const element = document.getElementById(`message-${number}`);
         if (element) element.scrollIntoView();
-        else findMessage(props);
+        else if (findMessage) findMessage(props.number);
     }, []);
 
     return (

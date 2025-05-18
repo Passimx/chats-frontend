@@ -35,7 +35,7 @@ const Chats: FC = memo(() => {
     }, []);
 
     return (
-        <div>
+        <>
             <div id={styles.main}>
                 <Search isLoading={isLoading} onChange={setInput} />
                 <div id={styles.chats}>
@@ -66,7 +66,7 @@ const Chats: FC = memo(() => {
             <div id={styles.page_block}>
                 <div id={styles.page}>{page}</div>
             </div>
-        </div>
+        </>
     );
 });
 export default Chats;

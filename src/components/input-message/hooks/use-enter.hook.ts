@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import styles from '../index.module.css';
 import { useAppAction, useAppSelector } from '../../../root/store';
 import { ChatEnum } from '../../../root/types/chat/chat.enum.ts';
@@ -8,10 +8,12 @@ import { createMessage } from '../../../root/api/messages';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { focusToEnd } from '../common/focus-to-end.ts';
 import { getIsFocused } from './get-is-focused.hook.ts';
+import { ChatContext } from '../../../pages/chat';
 
 export const useEnterHook = (): UseEnterHookType => {
     const { t } = useTranslation();
     const { update } = useAppAction();
+    const { answerMessage, setAnswerMessage } = useContext(ChatContext)!;
     const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { isPhone, isOpenMobileKeyboard } = useAppSelector((state) => state.app);
@@ -48,8 +50,9 @@ export const useEnterHook = (): UseEnterHookType => {
 
         update({ id: chatOnPage.id, inputMessage: undefined });
 
-        await createMessage({ message: text, chatId: chatOnPage.id });
-    }, [chatOnPage?.id, isPhone, isOpenMobileKeyboard]);
+        setAnswerMessage(undefined);
+        await createMessage({ message: text, chatId: chatOnPage.id, parentMessageId: answerMessage?.id });
+    }, [chatOnPage?.id, isPhone, isOpenMobileKeyboard, answerMessage]);
 
     useEffect(() => {
         if (!chatOnPage?.id) return;

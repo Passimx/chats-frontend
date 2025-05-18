@@ -1,9 +1,8 @@
-import { CreateMessageType } from '../../types/messages/create-message.type.ts';
 import { Api } from '../index.ts';
 import { MessageType } from '../../types/chat/message.type.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 
-export const createMessage = (body: CreateMessageType) => {
+export const createMessage = (body: Partial<MessageType>) => {
     return Api('/messages', { body, method: 'POST' });
 };
 
