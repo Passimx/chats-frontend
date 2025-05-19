@@ -8,9 +8,11 @@ import { GoLink } from 'react-icons/go';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { getRawChat } from '../../root/store/chats/chats.raw.ts';
 import { MessageType } from '../../root/types/chat/message.type.ts';
+import { useTranslation } from 'react-i18next';
 
 export const MenuMessage: FC = () => {
     const visibility = useVisibility;
+    const { t } = useTranslation();
     const ref = useRef<HTMLDivElement>(null);
     const { isPhone } = useAppSelector((state) => state.app);
     const { chatOnPage } = useAppSelector((state) => state.chats);
@@ -38,7 +40,7 @@ export const MenuMessage: FC = () => {
     }, [clickMessage, chatOnPage?.id]);
 
     useEffect(() => {
-        setIsShowMessageMenu(false);
+        if (isShowMessageMenu) setIsShowMessageMenu(false);
     }, [isPhone]);
 
     const copyMessage = useCallback(() => {
@@ -58,7 +60,7 @@ export const MenuMessage: FC = () => {
     }, [clickMessage]);
 
     const handleClickOutside = useCallback((event: any) => {
-        if (event && ref.current && !ref.current.contains(event.target)) {
+        if (isShowMessageMenu && event && ref.current && !ref.current.contains(event.target)) {
             setTimeout(() => setIsShowMessageMenu(false), 50);
         }
     }, []);
@@ -76,15 +78,15 @@ export const MenuMessage: FC = () => {
         >
             <div className={styles.message_menu_item} onClick={answerMessage}>
                 <PiArrowBendUpLeftFill className={styles.message_menu_item_icon} />
-                Ответить
+                {t('reply')}
             </div>
             <div className={styles.message_menu_item} onClick={copyMessage}>
                 <IoCopyOutline className={styles.message_menu_item_icon} />
-                Копировать текст
+                {t('copy_text')}
             </div>
             <div className={styles.message_menu_item} onClick={copyMessageWithChat}>
                 <GoLink className={styles.message_menu_item_icon} />
-                Копировать ссылку сообщения
+                {t('copy_message_link')}
             </div>
             {/*<div className={styles.message_menu_item}>*/}
             {/*    <MdOutlinePlaylistAddCheck className={styles.message_menu_item_icon} />*/}

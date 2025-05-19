@@ -9,17 +9,18 @@ import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { PropsType } from './types/props.type.ts';
 import { ParentMessage } from '../parent-message';
 import { GiCancel } from 'react-icons/gi';
+import { getRawChat } from '../../root/store/chats/chats.raw.ts';
 
 const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }) => {
     const [sendMessage, onInput, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
+    const { update, setChatOnPage } = useAppAction();
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
     const { chatOnPage } = useAppSelector((state) => state.chats);
-    const { update } = useAppAction();
 
     const cancelAnswerMessage = useCallback(() => {
-        if (!chatOnPage) return;
-        update({ id: chatOnPage.id, answerMessage: undefined });
-    }, [chatOnPage?.id]);
+        if (getRawChat(chatOnPage!.id)) update({ id: chatOnPage!.id, answerMessage: undefined });
+        else setChatOnPage({ ...chatOnPage!, answerMessage: undefined });
+    }, [chatOnPage]);
 
     useEffect(() => {
         if (isVisibleEmoji) setIsVisibleEmoji(false);
