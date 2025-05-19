@@ -38,7 +38,7 @@ export const MenuMessage: FC = () => {
     }, [clickMessage, chatOnPage?.id]);
 
     useEffect(() => {
-        setIsShowMessageMenu(false);
+        if (isShowMessageMenu) setIsShowMessageMenu(false);
     }, [isPhone]);
 
     const copyMessage = useCallback(() => {
@@ -58,7 +58,7 @@ export const MenuMessage: FC = () => {
     }, [clickMessage]);
 
     const handleClickOutside = useCallback((event: any) => {
-        if (event && ref.current && !ref.current.contains(event.target)) {
+        if (isShowMessageMenu && event && ref.current && !ref.current.contains(event.target)) {
             setTimeout(() => setIsShowMessageMenu(false), 50);
         }
     }, []);
