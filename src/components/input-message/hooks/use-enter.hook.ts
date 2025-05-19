@@ -11,7 +11,7 @@ import { getIsFocused } from './get-is-focused.hook.ts';
 
 export const useEnterHook = (): UseEnterHookType => {
     const { t } = useTranslation();
-    const { update } = useAppAction();
+    const { update, setChatOnPage } = useAppAction();
     const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { isPhone, isOpenMobileKeyboard } = useAppSelector((state) => state.app);
@@ -46,7 +46,8 @@ export const useEnterHook = (): UseEnterHookType => {
         if (isFocused) element.focus();
         setIsShowPlaceholder(true);
 
-        update({ id: chatOnPage.id, inputMessage: undefined, answerMessage: undefined });
+        if (getRawChat(chatOnPage.id)) update({ id: chatOnPage.id, inputMessage: undefined, answerMessage: undefined });
+        else setChatOnPage({ ...chatOnPage, answerMessage: undefined });
 
         await createMessage({ message: text, chatId: chatOnPage.id, parentMessageId: chatOnPage?.answerMessage?.id });
     }, [chatOnPage?.id, isPhone, isOpenMobileKeyboard, chatOnPage?.answerMessage]);
