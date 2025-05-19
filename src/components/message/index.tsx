@@ -7,17 +7,19 @@ import { RenderMessage } from '../render-message';
 import { ParentMessage } from '../parent-message';
 import styles2 from '../menu-message/index.module.css';
 import { ChatContext } from '../../pages/chat';
+import { useAppSelector } from '../../root/store';
 
 const Message: FC<PropsType> = memo((props) => {
     const { number, type, findMessage } = props;
     const elementId = useMemo(() => `message-${number}`, [number]);
     const [observerTarget, visibleMessage, time] = useVisibility(props);
     const { setClickMessage, setIsShowMessageMenu } = useContext(ChatContext)!;
+    const { isPhone } = useAppSelector((state) => state.app);
 
     useEffect(() => {
         const element = document.getElementById(elementId)!;
         const func = (event: MouseEvent) => {
-            event.preventDefault();
+            if (!isPhone) event.preventDefault();
             if (props.type === MessageTypeEnum.IS_CREATED_CHAT) return setIsShowMessageMenu(false);
             setIsShowMessageMenu(undefined);
             setTimeout(() => setIsShowMessageMenu(true), 10);
@@ -38,7 +40,7 @@ const Message: FC<PropsType> = memo((props) => {
         element.addEventListener('contextmenu', func);
 
         return () => element.removeEventListener('contextmenu', func);
-    }, []);
+    }, [isPhone]);
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
