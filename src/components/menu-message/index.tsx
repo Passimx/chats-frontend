@@ -2,26 +2,49 @@ import { FC, useCallback, useContext, useEffect, useRef } from 'react';
 import styles from './index.module.css';
 import { PiArrowBendUpLeftFill } from 'react-icons/pi';
 import { IoCopyOutline } from 'react-icons/io5';
-import { MdOutlinePlaylistAddCheck } from 'react-icons/md';
-import { FiExternalLink } from 'react-icons/fi';
 import { ChatContext } from '../../pages/chat';
 import useVisibility from '../../common/hooks/use-visibility.ts';
 import { GoLink } from 'react-icons/go';
+import { useAppAction, useAppSelector } from '../../root/store';
+import { getRawChat } from '../../root/store/chats/chats.raw.ts';
+import { MessageType } from '../../root/types/chat/message.type.ts';
 
 export const MenuMessage: FC = () => {
     const visibility = useVisibility;
     const ref = useRef<HTMLDivElement>(null);
-    const { clickMessage, isShowMessageMenu, setAnswerMessage, setIsShowMessageMenu } = useContext(ChatContext)!;
+    const { isPhone } = useAppSelector((state) => state.app);
+    const { chatOnPage } = useAppSelector((state) => state.chats);
+    const { clickMessage, isShowMessageMenu, setIsShowMessageMenu } = useContext(ChatContext)!;
+    const { update, setChatOnPage } = useAppAction();
 
     const answerMessage = useCallback(() => {
         setIsShowMessageMenu(false);
-        if (clickMessage) setAnswerMessage(clickMessage);
-    }, [clickMessage]);
+        if (!chatOnPage?.id) return;
+        if (!clickMessage) return;
+
+        const chat = getRawChat(clickMessage.chatId);
+        const answerMessage: MessageType = {
+            message: clickMessage.message,
+            number: clickMessage.number,
+            type: clickMessage.type,
+            chatId: clickMessage.chatId,
+            id: clickMessage.id,
+            createdAt: clickMessage.createdAt,
+            parentMessageId: clickMessage.parentMessageId,
+        };
+
+        if (chat) update({ id: clickMessage.chatId, answerMessage });
+        else setChatOnPage({ ...chatOnPage!, answerMessage });
+    }, [clickMessage, chatOnPage?.id]);
+
+    useEffect(() => {
+        setIsShowMessageMenu(false);
+    }, [isPhone]);
 
     const copyMessage = useCallback(() => {
         if (!clickMessage) return;
         setIsShowMessageMenu(false);
-        const element = document.getElementById(`message-${clickMessage}`)!;
+        const element = document.getElementById(`message-${clickMessage.number}`)!;
         const text = element.getElementsByTagName('pre')[0].innerText;
         navigator.clipboard.writeText(text);
     }, [clickMessage]);
@@ -31,7 +54,7 @@ export const MenuMessage: FC = () => {
         url.search = ''; // удаляем query-параметры
         setIsShowMessageMenu(false);
 
-        navigator.clipboard.writeText(`${url}?message=${clickMessage}`);
+        navigator.clipboard.writeText(`${url}?message=${clickMessage?.number}`);
     }, [clickMessage]);
 
     const handleClickOutside = useCallback((event: any) => {
@@ -63,14 +86,14 @@ export const MenuMessage: FC = () => {
                 <GoLink className={styles.message_menu_item_icon} />
                 Копировать ссылку сообщения
             </div>
-            <div className={styles.message_menu_item}>
-                <MdOutlinePlaylistAddCheck className={styles.message_menu_item_icon} />
-                Выбрать
-            </div>
-            <div className={styles.message_menu_item}>
-                <FiExternalLink className={styles.message_menu_item_icon} />
-                Переслать
-            </div>
+            {/*<div className={styles.message_menu_item}>*/}
+            {/*    <MdOutlinePlaylistAddCheck className={styles.message_menu_item_icon} />*/}
+            {/*    Выбрать*/}
+            {/*</div>*/}
+            {/*<div className={styles.message_menu_item}>*/}
+            {/*    <FiExternalLink className={styles.message_menu_item_icon} />*/}
+            {/*    Переслать*/}
+            {/*</div>*/}
         </div>
     );
 };

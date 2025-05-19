@@ -30,11 +30,9 @@ import { MessageType } from '../../root/types/chat/message.type.ts';
 
 type ContextType = {
     clickMessage?: MessageType;
-    answerMessage?: MessageType;
     isShowMessageMenu?: boolean;
     setClickMessage: (value: MessageType) => void;
     setIsShowMessageMenu: (value?: boolean) => void;
-    setAnswerMessage: (value?: MessageType) => void;
 };
 
 export const ChatContext = createContext<ContextType | null>(null);
@@ -42,7 +40,6 @@ export const ChatContext = createContext<ContextType | null>(null);
 const Chat: FC = memo(() => {
     const [clickMessage, setClickMessage] = useState<MessageType>();
     const [isShowMessageMenu, setIsShowMessageMenu] = useState<boolean>();
-    const [answerMessage, setAnswerMessage] = useState<MessageType>();
 
     const { chatOnPage } = useAppSelector((state) => state.chats);
     useGetChat();
@@ -61,10 +58,8 @@ const Chat: FC = memo(() => {
             value={{
                 clickMessage,
                 isShowMessageMenu,
-                answerMessage,
                 setClickMessage,
                 setIsShowMessageMenu,
-                setAnswerMessage,
             }}
         >
             <div id={styles.background}>
@@ -148,7 +143,7 @@ const Chat: FC = memo(() => {
                         </div>
                     </div>
                 </div>
-                <InputMessage isVisibleBottomButton={isVisibleBottomButton} showLastMessages={showLastMessages} />
+                <InputMessage {...{ isVisibleBottomButton, showLastMessages }} />
             </div>
         </ChatContext.Provider>
     );
