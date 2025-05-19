@@ -16,6 +16,9 @@
   "copy_link": "Copiar enlace",
   "leave_chat": "Salir del chat",
   "draft": "borrador",
+  "reply": "Responder",
+  "copy_text": "Copiar texto",
+  "copy_message_link":"Copiar enlace del mensaje",
 
   "description_open_chat": "La idea principal de un chat abierto es crear un canal de comunicación accesible para todos, que se pueda vincular a un nombre de dominio de un sitio web, un perfil en redes sociales u otras palabras clave. Este tipo de chat es la mejor solución para comunicarse con un público amplio.",
   "description_shared_chat": "Un chat de transmisión permite que un grupo específico de personas se comunique mientras el resto del mundo puede observar. Este tipo de chat es la mejor solución para transmitir mensajes a las masas.",
