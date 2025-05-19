@@ -17,9 +17,13 @@ const Message: FC<PropsType> = memo((props) => {
     const { isPhone } = useAppSelector((state) => state.app);
 
     useEffect(() => {
+        let longPressTimer: NodeJS.Timeout;
         const element = document.getElementById(elementId)!;
-        const func = (event: MouseEvent) => {
-            if (!isPhone) event.preventDefault();
+        const func = (event: MouseEvent | TouchEvent) => {
+            const x: number = event instanceof MouseEvent ? event.x : event.touches[0].clientX;
+            const y: number = event instanceof MouseEvent ? event.y : event.touches[0].clientY;
+
+            event.preventDefault();
             if (props.type === MessageTypeEnum.IS_CREATED_CHAT) return setIsShowMessageMenu(false);
             setIsShowMessageMenu(undefined);
             setTimeout(() => setIsShowMessageMenu(true), 10);
@@ -28,18 +32,35 @@ const Message: FC<PropsType> = memo((props) => {
 
             setClickMessage(props);
 
-            if (window.innerHeight / 2 > event.y) element.style.marginTop = `calc(${event.y}px + ${gap})`;
-            else element.style.marginTop = `calc(${event.y}px - ${element.clientHeight}px - ${gap})`;
+            if (window.innerHeight / 2 > y) element.style.marginTop = `calc(${y}px + ${gap})`;
+            else element.style.marginTop = `calc(${y}px - ${element.clientHeight}px - ${gap})`;
 
-            if (window.innerWidth / 2 > event.x)
-                element.style.marginLeft = `calc(${event.x}px - var(--menu-width) + ${gap} + var(--menu-margin))`;
+            if (window.innerWidth / 2 > x)
+                element.style.marginLeft = `calc(${x}px - var(--menu-width) + ${gap} + var(--menu-margin))`;
             else
-                element.style.marginLeft = `calc(${event.x}px - var(--menu-width) - ${element.clientWidth}px - ${gap} + var(--menu-margin))`;
+                element.style.marginLeft = `calc(${x}px - var(--menu-width) - ${element.clientWidth}px - ${gap} + var(--menu-margin))`;
         };
 
-        element.addEventListener('contextmenu', func);
+        const appleFunc = (e: TouchEvent) => {
+            if (e.touches.length > 1) return;
+            longPressTimer = setTimeout(() => func(e), 600);
+        };
 
-        return () => element.removeEventListener('contextmenu', func);
+        const clearTimeOut = () => clearTimeout(longPressTimer);
+
+        element.addEventListener('touchstart', appleFunc);
+
+        element.addEventListener('touchend', () => clearTimeOut);
+        element.addEventListener('touchmove', () => clearTimeOut);
+
+        element.addEventListener('contextmenu', func);
+        return () => {
+            element.removeEventListener('contextmenu', func);
+            element.removeEventListener('touchstart', appleFunc);
+
+            element.removeEventListener('touchend', clearTimeOut);
+            element.removeEventListener('touchmove', clearTimeOut);
+        };
     }, [isPhone]);
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
