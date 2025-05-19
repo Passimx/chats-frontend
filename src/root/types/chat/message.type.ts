@@ -8,6 +8,7 @@ export type MessageType = {
     parentMessageId: string;
     type: MessageTypeEnum;
     createdAt: Date;
+    parentMessage?: MessageType;
 };
 
 export type EncryptMessageType = {

@@ -30,4 +30,5 @@ export type ChatItemIndexDb = ChatType & {
     scrollTop: number;
     online?: string;
     inputMessage?: string;
+    answerMessage?: MessageType;
 };

@@ -198,6 +198,7 @@
         opacity: 1;
     }
 }
+
 @keyframes hide_slowly_menu{
     from {
         visibility: visible;

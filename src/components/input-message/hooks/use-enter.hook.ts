@@ -46,10 +46,10 @@ export const useEnterHook = (): UseEnterHookType => {
         if (isFocused) element.focus();
         setIsShowPlaceholder(true);
 
-        update({ id: chatOnPage.id, inputMessage: undefined });
+        update({ id: chatOnPage.id, inputMessage: undefined, answerMessage: undefined });
 
-        await createMessage({ message: text, chatId: chatOnPage.id });
-    }, [chatOnPage?.id, isPhone, isOpenMobileKeyboard]);
+        await createMessage({ message: text, chatId: chatOnPage.id, parentMessageId: chatOnPage?.answerMessage?.id });
+    }, [chatOnPage?.id, isPhone, isOpenMobileKeyboard, chatOnPage?.answerMessage]);
 
     useEffect(() => {
         if (!chatOnPage?.id) return;

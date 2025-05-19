@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useCallback, useEffect } from 'react';
 import styles from './index.module.css';
 import Chats from '../../../modules/chats';
 import { useBroadcastChannel } from './hooks/use-broadcast-channel.ts';
@@ -38,10 +38,10 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
 
     useEffect(changeHead, []);
 
-    const hideMenu = () => {
+    const hideMenu = useCallback(() => {
         if (!id) return;
         document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
-    };
+    }, [id]);
 
     if (isLoaded)
         return (

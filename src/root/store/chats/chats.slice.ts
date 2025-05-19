@@ -89,8 +89,9 @@ const ChatsSlice = createSlice({
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
         },
 
-        setChatOnPage(state, { payload }: PayloadAction<ChatType | null>) {
-            state.chatOnPage = payload ?? undefined;
+        setChatOnPage(state, { payload }: PayloadAction<(ChatType & Partial<ChatItemIndexDb>) | null>) {
+            if (payload) state.chatOnPage = payload;
+            else state.chatOnPage = undefined;
         },
 
         removeChat(state, { payload }: PayloadAction<string>) {
