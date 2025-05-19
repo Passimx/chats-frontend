@@ -20,7 +20,7 @@ const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }
     const cancelAnswerMessage = useCallback(() => {
         if (getRawChat(chatOnPage!.id)) update({ id: chatOnPage!.id, answerMessage: undefined });
         else setChatOnPage({ ...chatOnPage!, answerMessage: undefined });
-    }, [chatOnPage?.id]);
+    }, [chatOnPage]);
 
     useEffect(() => {
         if (isVisibleEmoji) setIsVisibleEmoji(false);

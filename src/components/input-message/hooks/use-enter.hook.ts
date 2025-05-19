@@ -50,7 +50,7 @@ export const useEnterHook = (): UseEnterHookType => {
         else setChatOnPage({ ...chatOnPage, answerMessage: undefined });
 
         await createMessage({ message: text, chatId: chatOnPage.id, parentMessageId: chatOnPage?.answerMessage?.id });
-    }, [chatOnPage?.id, isPhone, isOpenMobileKeyboard, chatOnPage?.answerMessage]);
+    }, [chatOnPage, isPhone, isOpenMobileKeyboard, chatOnPage?.answerMessage]);
 
     useEffect(() => {
         if (!chatOnPage?.id) return;
