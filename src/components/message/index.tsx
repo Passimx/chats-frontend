@@ -25,7 +25,7 @@ const Message: FC<PropsType> = memo((props) => {
 
             event.preventDefault();
             if (props.type === MessageTypeEnum.IS_CREATED_CHAT) return setIsShowMessageMenu(false);
-            setIsShowMessageMenu(undefined);
+            if (!isPhone) setIsShowMessageMenu(undefined);
             setTimeout(() => setIsShowMessageMenu(true), 10);
             const element = document.getElementById(styles2.message_menu)!;
             const gap = '16px';
@@ -50,8 +50,8 @@ const Message: FC<PropsType> = memo((props) => {
 
         element.addEventListener('touchstart', appleFunc);
 
-        element.addEventListener('touchend', () => clearTimeOut);
-        element.addEventListener('touchmove', () => clearTimeOut);
+        element.addEventListener('touchend', clearTimeOut);
+        element.addEventListener('touchmove', clearTimeOut);
 
         element.addEventListener('contextmenu', func);
         return () => {
