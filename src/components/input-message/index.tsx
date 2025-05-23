@@ -28,11 +28,6 @@ const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }
 
     const visibility = useVisibility;
 
-    useEffect(() => {
-        const element = document.getElementById(styles.new_message)!;
-        element.focus();
-    }, []);
-
     return (
         <div id={styles.write_message}>
             <div id={styles.message_inputs}>
