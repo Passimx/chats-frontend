@@ -1,9 +1,9 @@
 import { IconEnum } from './icon.enum.ts';
 
 export type PropsType = {
-    iconType: IconEnum;
+    iconType?: IconEnum;
     onlineCount?: string;
-    maxUsersOnline: string;
+    maxUsersOnline?: string;
     isChange?: boolean;
     isSystem?: boolean;
 };

@@ -18,8 +18,9 @@ const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }
     const { chatOnPage } = useAppSelector((state) => state.chats);
 
     const cancelAnswerMessage = useCallback(() => {
-        if (getRawChat(chatOnPage!.id)) update({ id: chatOnPage!.id, answerMessage: undefined });
-        else setChatOnPage({ ...chatOnPage!, answerMessage: undefined });
+        if (!chatOnPage?.id) return;
+        if (getRawChat(chatOnPage.id)) update({ id: chatOnPage.id, answerMessage: undefined });
+        else setChatOnPage({ answerMessage: undefined });
     }, [chatOnPage]);
 
     useEffect(() => {

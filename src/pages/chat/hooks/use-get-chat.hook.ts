@@ -27,7 +27,7 @@ const useGetChat = (): void => {
             return;
         }
 
-        if (getRawChat(id!)) {
+        if (getRawChat(id)) {
             const chat = getRawChat(id!)!;
             setIsLoading(false);
             setChatOnPage(chat);

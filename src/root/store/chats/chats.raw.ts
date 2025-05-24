@@ -9,7 +9,8 @@ const rawChats: RawChatType = {
 
 export default rawChats;
 
-export const getRawChat = (id: string): ChatItemIndexDb | undefined => {
+export const getRawChat = (id?: string): ChatItemIndexDb | undefined => {
+    if (!id) return undefined;
     return rawChats.chats.get(id) ?? rawChats.updatedChats.get(id);
 };
 

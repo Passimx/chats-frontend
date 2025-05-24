@@ -1,6 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import { createContext, FC, memo, useState } from 'react';
+import { createContext, FC, memo, useMemo, useState } from 'react';
 import ChatAvatar from '../../components/chat-avatar';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import InputMessage from '../../components/input-message';
@@ -50,18 +50,15 @@ const Chat: FC = memo(() => {
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const [addChat, leave, back] = useMethods(messages);
     const [isVisibleBottomButton] = useListenScroll(messages);
+    const value = useMemo<ContextType>(
+        () => ({ clickMessage, isShowMessageMenu, setClickMessage, setIsShowMessageMenu }),
+        [clickMessage, isShowMessageMenu, setClickMessage, setIsShowMessageMenu],
+    );
 
     if (!chatOnPage) return <></>;
 
     return (
-        <ChatContext.Provider
-            value={{
-                clickMessage,
-                isShowMessageMenu,
-                setClickMessage,
-                setIsShowMessageMenu,
-            }}
-        >
+        <ChatContext.Provider value={value}>
             <div id={styles.background}>
                 <MenuMessage />
                 <div id={styles.main}>
