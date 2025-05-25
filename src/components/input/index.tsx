@@ -30,7 +30,7 @@ const Input: FC<Partial<PropsType>> = ({ placeholder, register, value = '' }) =>
     return (
         <div id={styles.background} className={`${error ? styles.error_border : ''}`}>
             <input
-                className={styles.button}
+                className={`${styles.button} text_translate`}
                 placeholder={placeholder}
                 value={ownValue}
                 {...register}

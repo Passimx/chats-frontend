@@ -64,7 +64,7 @@ const Message: FC<PropsType> = memo((props) => {
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
             <div ref={observerTarget} id={elementId} className={styles.system_background}>
-                <div className={`${styles.background} ${styles.system_message}`}>{visibleMessage}</div>
+                <div className={`${styles.background} ${styles.system_message} text_translate`}>{visibleMessage}</div>
             </div>
         );
 
@@ -72,8 +72,8 @@ const Message: FC<PropsType> = memo((props) => {
         <>
             <div ref={observerTarget} id={elementId} className={`${styles.background}`}>
                 {props.parentMessage && <ParentMessage {...{ ...props.parentMessage, findMessage }} />}
-                <RenderMessage message={visibleMessage} />
-                <div className={styles.left_div2}>{time}</div>
+                <RenderMessage message={visibleMessage} type={type} />
+                <div className={`${styles.left_div2} text_translate`}>{time}</div>
             </div>
         </>
     );

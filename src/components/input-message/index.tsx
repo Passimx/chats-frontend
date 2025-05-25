@@ -59,7 +59,7 @@ const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }
                         </div>
                         <div id={styles.new_message_block}>
                             <div
-                                className={`${styles.placeholder_text} ${useVisibility(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)}`}
+                                className={`${styles.placeholder_text} ${useVisibility(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)} text_translate`}
                                 dir="auto"
                             >
                                 {placeholder}

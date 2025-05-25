@@ -40,3 +40,11 @@ html,body, #root{
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+/* класс для всего текста, что может быть изменен при выборе другого языка */
+.text_translate{}
+
+@keyframes show {
+    from { filter: blur(4px); }
+    to { filter: none }
+}

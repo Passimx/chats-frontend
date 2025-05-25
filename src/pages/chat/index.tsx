@@ -98,7 +98,7 @@ const Chat: FC = memo(() => {
                         </div>
                     </div>
                     {!getRawChat(chatOnPage.id) && (
-                        <div className={styles.add_chat_block} onClick={addChat}>
+                        <div className={`${styles.add_chat_block} text_translate`} onClick={addChat}>
                             <IoIosAddCircleOutline id={styles.new_chat_icon} />
                             {t('add_chat')}
                         </div>
@@ -120,12 +120,12 @@ const Chat: FC = memo(() => {
                             }}
                         >
                             <IoCopyOutline className={styles.chat_menu_item_icon} />
-                            <div>{t('copy_link')}</div>
+                            <div className={'text_translate'}>{t('copy_link')}</div>
                         </div>
                         {getRawChat(chatOnPage.id) && chatOnPage?.type !== ChatEnum.IS_SYSTEM && (
                             <div className={styles.chat_menu_item} onClick={leave}>
                                 <MdExitToApp className={`${styles.chat_menu_item_icon} ${styles.rotate}`} />
-                                <div>{t('leave_chat')}</div>
+                                <div className={'text_translate'}>{t('leave_chat')}</div>
                             </div>
                         )}
                     </div>

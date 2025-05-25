@@ -52,7 +52,7 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
                 <div className={styles.new_chats_item}>
                     <div className={styles.new_chats_item_click} onClick={() => changePage(<OpenChat />)}>
                         <AiOutlineGlobal className={styles.new_chats_item_logo} color="green" />
-                        <div>{t('create_open_chat')}</div>
+                        <div className={'text_translate'}>{t('create_open_chat')}</div>
                     </div>
                     <IoMdInformationCircleOutline
                         className={styles.new_chats_item_info}
@@ -64,7 +64,7 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
                         <div className={styles.new_chats_item}>
                             <div className={styles.new_chats_item_click} onClick={() => changePage(<SharedChat />)}>
                                 <LiaEyeSolid className={styles.new_chats_item_logo} color="green" />
-                                <div>{t('create_shared_chat')}</div>
+                                <div className={'text_translate'}>{t('create_shared_chat')}</div>
                             </div>
                             <IoMdInformationCircleOutline
                                 className={styles.new_chats_item_info}
@@ -74,7 +74,7 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
                         <div className={styles.new_chats_item}>
                             <div className={styles.new_chats_item_click} onClick={() => changePage(<PublicChat />)}>
                                 <RxLockOpen1 className={styles.new_chats_item_logo} color="green" />
-                                <div>{t('create_public_chat')}</div>
+                                <div className={'text_translate'}>{t('create_public_chat')}</div>
                             </div>
                             <IoMdInformationCircleOutline
                                 className={styles.new_chats_item_info}
@@ -84,7 +84,7 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
                         <div className={styles.new_chats_item}>
                             <div className={styles.new_chats_item_click} onClick={() => changePage(<PrivateChat />)}>
                                 <RxLockClosed className={styles.new_chats_item_logo} color="red" />
-                                <div>{t('create_private_chat')}</div>
+                                <div className={'text_translate'}>{t('create_private_chat')}</div>
                             </div>
                             <IoMdInformationCircleOutline
                                 className={styles.new_chats_item_info}

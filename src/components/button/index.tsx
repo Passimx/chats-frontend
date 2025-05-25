@@ -5,7 +5,7 @@ import { ButtonEnum } from './types/button.enum.ts';
 
 const Button: FC<Partial<PropsType>> = ({ value, onClick, styleType = ButtonEnum.WHITE, type }) => {
     return (
-        <button type={type} onClick={onClick} className={`${styles.button} ${styles[styleType]}`}>
+        <button type={type} onClick={onClick} className={`${styles.button} ${styles[styleType]} text_translate`}>
             {value}
         </button>
     );

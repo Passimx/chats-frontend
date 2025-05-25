@@ -4,12 +4,13 @@ import { PropsType } from './types/props.type.ts';
 import styles from '../message/index.module.css';
 import { parseMessage } from '../input-message/common/parse-message.ts';
 import { Link } from '../link';
+import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 
-export const RenderMessage: FC<PropsType> = ({ message }) => {
+export const RenderMessage: FC<PropsType> = ({ message, type }) => {
     const parts = parseMessage(message);
 
     return (
-        <pre className={styles.text}>
+        <pre className={`${styles.text} ${type === MessageTypeEnum.IS_SYSTEM && 'text_translate'}`}>
             {parts.map((part, index) => {
                 if (part.type === PartTypeEnum.LINK)
                     return (

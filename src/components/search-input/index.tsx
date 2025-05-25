@@ -36,7 +36,7 @@ const SearchInput: FC<PropsType> = ({ onChange, placeholder, className, value = 
                 )}
             </div>
             <input
-                className={`${styles.button} ${className ?? ''}`}
+                className={`${styles.button} ${className ?? ''} text_translate`}
                 placeholder={placeholder}
                 value={ownValue}
                 {...register}

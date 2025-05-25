@@ -32,7 +32,7 @@ const CreateChat: FC<PropsType> = ({ title: titleChatType, icon }) => {
         <div id={styles.background}>
             <div className={styles.title_block}>
                 {icon}
-                <div className={styles.title}>{t(titleChatType)}</div>
+                <div className={`${styles.title} text_translate`}>{t(titleChatType)}</div>
             </div>
             <div id={styles.form}>
                 <FormProvider {...methods}>

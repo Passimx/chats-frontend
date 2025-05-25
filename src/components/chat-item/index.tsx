@@ -7,6 +7,7 @@ import { PropsType } from './types/props.type.ts';
 import { useTranslation } from 'react-i18next';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { FaStar } from 'react-icons/fa';
+import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 
 const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redirect }) => {
     const { t } = useTranslation();
@@ -39,10 +40,12 @@ const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redir
                 <div className={styles.title_block}>
                     <div>{chat.type === ChatEnum.IS_SYSTEM && <FaStar className={styles.icon_star} />}</div>
                     <div className={styles.title}>{chat.title}</div>
-                    <div className={styles.time}>{time}</div>
+                    <div className={`${styles.time} text_translate`}>{time}</div>
                 </div>
                 <div className={styles.message_block}>
-                    <div className={styles.message}>
+                    <div
+                        className={`${styles.message} ${[MessageTypeEnum.IS_SYSTEM, MessageTypeEnum.IS_CREATED_CHAT].includes(chat.message.type) && 'text_translate'}`}
+                    >
                         {chat.inputMessage ? (
                             <>
                                 <strong>📝{t('draft')}: </strong>
