@@ -11,7 +11,7 @@ const BackButton: FC = () => {
     return (
         <div id={styles.back} onClick={() => setPage(null)}>
             <IoArrowBackCircleOutline id={styles.back_icon} />
-            <div>{t('back')}</div>
+            <div className="text_translate">{t('back')}</div>
         </div>
     );
 };

@@ -34,6 +34,12 @@ export const useTranslation = () => {
     const { lang } = useAppSelector((state) => state.app);
 
     useEffect(() => {
+        const elements = document.querySelectorAll<HTMLDivElement>('.text_translate');
+        elements.forEach((el) => {
+            el.style.animation = 'none';
+            el.style.filter = 'blur(4px)';
+        });
+
         if (!lang) {
             const browserLang = navigator.language.slice(0, 2).toLowerCase();
             const langs = Object.keys(resources);
@@ -54,7 +60,18 @@ export const useTranslation = () => {
                     escapeValue: false,
                 },
             })
-            .then(() => setIsLoaded(true));
+            .then(() => {
+                setIsLoaded(true);
+                elements.forEach((el) => {
+                    const time = 200;
+                    el.style.animation = `show ${time}ms ease forwards`;
+
+                    setTimeout(() => {
+                        el.style.filter = 'none';
+                        el.style.animation = 'none';
+                    }, time);
+                });
+            });
     }, [lang]);
 
     return isLoaded;

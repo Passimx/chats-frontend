@@ -189,11 +189,16 @@ export const useMessages = (): UseMessagesType => {
         async (number: number) => {
             if (!chatOnPage) return;
             const el = document.getElementById(styles.messages)!;
-            const offset = chatOnPage.countMessages - number - Envs.messages.limit + 1;
+            const offset =
+                chatOnPage.countMessages - number > 250
+                    ? chatOnPage.countMessages - number - Envs.messages.limit + 1
+                    : 0;
+            const limit =
+                chatOnPage.countMessages - number > 250 ? Envs.messages.limit : chatOnPage.countMessages - number + 1;
             setMessages([]);
             el.scrollTo({ behavior: 'instant', top: -el.scrollHeight });
             setIsLoading(LoadingType.OLD);
-            const response = await getMessages(chatOnPage.id, Envs.messages.limit, offset);
+            const response = await getMessages(chatOnPage.id, limit, offset);
             if (!response.success) return;
             bottomMessage = number;
             setIsLoading(undefined);

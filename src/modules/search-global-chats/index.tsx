@@ -26,7 +26,7 @@ export const SearchGlobalChats: FC<PropsType> = ({ input, changeIsLoading }) => 
                 ) : (
                     <IoSearch id={styles.search_logo} className={styles.logo} />
                 )}
-                <div>{t('global_search')}</div>
+                <div className={'text_translate'}>{t('global_search')}</div>
             </div>
             <Loading isLoading={isLoading} loadingComponent={<BigText text="" />}>
                 {chats.length ? (

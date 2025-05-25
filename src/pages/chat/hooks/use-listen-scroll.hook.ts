@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import styles from '../index.module.css';
 import { useAppAction, useAppSelector } from '../../../root/store';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
+import { updateChatIndexDb } from '../../../root/store/chats/index-db/hooks.ts';
 
 export const useListenScroll = (messages: MessageType[]): [boolean | undefined] => {
     const { update } = useAppAction();
@@ -31,16 +32,18 @@ export const useListenScroll = (messages: MessageType[]): [boolean | undefined] 
             else if (isVisibleBottomButton !== undefined) setIsVisibleBottomButton(false);
 
             scrollTimeout = setTimeout(() => {
-                if (chatOnPage?.id !== messages[0]?.chatId) return;
                 const scrollTop = el.scrollTop;
-                update({ id: chatOnPage.id, messages, scrollTop });
+                if (chatOnPage?.id !== messages[0]?.chatId) return;
+                updateChatIndexDb({ ...chatOnPage, messages, scrollTop });
             }, 150);
         };
 
         el.addEventListener('scroll', scroll);
         return () => {
+            const scrollTop = el.scrollTop;
             clearTimeout(scrollTimeout);
             el.removeEventListener('scroll', scroll);
+            update({ id: chatOnPage.id, messages, scrollTop });
         };
     }, [chatOnPage?.id, messages, isVisibleBottomButton]);
 

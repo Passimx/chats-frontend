@@ -47,7 +47,7 @@ export const useEnterHook = (): UseEnterHookType => {
         setIsShowPlaceholder(true);
 
         if (getRawChat(chatOnPage.id)) update({ id: chatOnPage.id, inputMessage: undefined, answerMessage: undefined });
-        else setChatOnPage({ ...chatOnPage, answerMessage: undefined });
+        else setChatOnPage({ answerMessage: undefined });
 
         await createMessage({ message: text, chatId: chatOnPage.id, parentMessageId: chatOnPage?.answerMessage?.id });
     }, [chatOnPage, isPhone, isOpenMobileKeyboard, chatOnPage?.answerMessage]);

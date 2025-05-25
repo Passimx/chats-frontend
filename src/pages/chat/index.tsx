@@ -1,6 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import { createContext, FC, memo, useState } from 'react';
+import { createContext, FC, memo, useMemo, useState } from 'react';
 import ChatAvatar from '../../components/chat-avatar';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import InputMessage from '../../components/input-message';
@@ -50,18 +50,15 @@ const Chat: FC = memo(() => {
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const [addChat, leave, back] = useMethods(messages);
     const [isVisibleBottomButton] = useListenScroll(messages);
+    const value = useMemo<ContextType>(
+        () => ({ clickMessage, isShowMessageMenu, setClickMessage, setIsShowMessageMenu }),
+        [clickMessage, isShowMessageMenu, setClickMessage, setIsShowMessageMenu],
+    );
 
     if (!chatOnPage) return <></>;
 
     return (
-        <ChatContext.Provider
-            value={{
-                clickMessage,
-                isShowMessageMenu,
-                setClickMessage,
-                setIsShowMessageMenu,
-            }}
-        >
+        <ChatContext.Provider value={value}>
             <div id={styles.background}>
                 <MenuMessage />
                 <div id={styles.main}>
@@ -101,7 +98,7 @@ const Chat: FC = memo(() => {
                         </div>
                     </div>
                     {!getRawChat(chatOnPage.id) && (
-                        <div className={styles.add_chat_block} onClick={addChat}>
+                        <div className={`${styles.add_chat_block} text_translate`} onClick={addChat}>
                             <IoIosAddCircleOutline id={styles.new_chat_icon} />
                             {t('add_chat')}
                         </div>
@@ -123,12 +120,12 @@ const Chat: FC = memo(() => {
                             }}
                         >
                             <IoCopyOutline className={styles.chat_menu_item_icon} />
-                            <div>{t('copy_link')}</div>
+                            <div className={'text_translate'}>{t('copy_link')}</div>
                         </div>
                         {getRawChat(chatOnPage.id) && chatOnPage?.type !== ChatEnum.IS_SYSTEM && (
                             <div className={styles.chat_menu_item} onClick={leave}>
                                 <MdExitToApp className={`${styles.chat_menu_item_icon} ${styles.rotate}`} />
-                                <div>{t('leave_chat')}</div>
+                                <div className={'text_translate'}>{t('leave_chat')}</div>
                             </div>
                         )}
                     </div>

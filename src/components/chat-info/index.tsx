@@ -11,9 +11,9 @@ const ChatInfo: FC<PropsType> = ({ icon, title, description, questions }) => {
         <div id={styles.background}>
             <div className={styles.title_block}>
                 {icon}
-                <div className={styles.title}>{t(title)}</div>
+                <div className={`${styles.title} text_translate`}>{t(title)}</div>
             </div>
-            <div className={styles.description}>{t(description)}</div>
+            <div className={`${styles.description} text_translate`}>{t(description)}</div>
             <div className={styles.questions}>
                 {questions.map(({ question, answer }) => (
                     <Question key={t(question)} question={t(question)} answer={t(answer)} />

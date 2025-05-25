@@ -18,8 +18,9 @@ const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }
     const { chatOnPage } = useAppSelector((state) => state.chats);
 
     const cancelAnswerMessage = useCallback(() => {
-        if (getRawChat(chatOnPage!.id)) update({ id: chatOnPage!.id, answerMessage: undefined });
-        else setChatOnPage({ ...chatOnPage!, answerMessage: undefined });
+        if (!chatOnPage?.id) return;
+        if (getRawChat(chatOnPage.id)) update({ id: chatOnPage.id, answerMessage: undefined });
+        else setChatOnPage({ answerMessage: undefined });
     }, [chatOnPage]);
 
     useEffect(() => {
@@ -27,11 +28,6 @@ const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }
     }, [chatOnPage?.id]);
 
     const visibility = useVisibility;
-
-    useEffect(() => {
-        const element = document.getElementById(styles.new_message)!;
-        element.focus();
-    }, []);
 
     return (
         <div id={styles.write_message}>
@@ -63,7 +59,7 @@ const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }
                         </div>
                         <div id={styles.new_message_block}>
                             <div
-                                className={`${styles.placeholder_text} ${useVisibility(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)}`}
+                                className={`${styles.placeholder_text} ${useVisibility(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)} text_translate`}
                                 dir="auto"
                             >
                                 {placeholder}

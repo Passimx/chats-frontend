@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useEffect, useRef } from 'react';
+import { FC, memo, useCallback, useContext, useEffect, useRef } from 'react';
 import styles from './index.module.css';
 import { PiArrowBendUpLeftFill } from 'react-icons/pi';
 import { IoCopyOutline } from 'react-icons/io5';
@@ -10,18 +10,16 @@ import { getRawChat } from '../../root/store/chats/chats.raw.ts';
 import { MessageType } from '../../root/types/chat/message.type.ts';
 import { useTranslation } from 'react-i18next';
 
-export const MenuMessage: FC = () => {
+export const MenuMessage: FC = memo(() => {
     const visibility = useVisibility;
     const { t } = useTranslation();
     const ref = useRef<HTMLDivElement>(null);
     const { isPhone } = useAppSelector((state) => state.app);
-    const { chatOnPage } = useAppSelector((state) => state.chats);
     const { clickMessage, isShowMessageMenu, setIsShowMessageMenu } = useContext(ChatContext)!;
     const { update, setChatOnPage } = useAppAction();
 
     const answerMessage = useCallback(() => {
         setIsShowMessageMenu(false);
-        if (!chatOnPage?.id) return;
         if (!clickMessage) return;
 
         const chat = getRawChat(clickMessage.chatId);
@@ -36,8 +34,8 @@ export const MenuMessage: FC = () => {
         };
 
         if (chat) update({ id: clickMessage.chatId, answerMessage });
-        else setChatOnPage({ ...chatOnPage!, answerMessage });
-    }, [clickMessage, chatOnPage?.id]);
+        else setChatOnPage({ answerMessage });
+    }, [clickMessage]);
 
     useEffect(() => {
         if (isShowMessageMenu) setIsShowMessageMenu(false);
@@ -59,16 +57,16 @@ export const MenuMessage: FC = () => {
         navigator.clipboard.writeText(`${url}?message=${clickMessage?.number}`);
     }, [clickMessage]);
 
-    const handleClickOutside = useCallback((event: any) => {
-        if (isShowMessageMenu && event && ref.current && !ref.current.contains(event.target)) {
-            setTimeout(() => setIsShowMessageMenu(false), 50);
-        }
-    }, []);
-
     useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (isShowMessageMenu && event && ref.current && !ref.current.contains(event.target)) {
+                setTimeout(() => setIsShowMessageMenu(false), 50);
+            }
+        };
+
         document.addEventListener('click', handleClickOutside, false);
         return () => document.removeEventListener('click', handleClickOutside, false);
-    }, []);
+    }, [isShowMessageMenu]);
 
     return (
         <div
@@ -98,4 +96,4 @@ export const MenuMessage: FC = () => {
             {/*</div>*/}
         </div>
     );
-};
+});

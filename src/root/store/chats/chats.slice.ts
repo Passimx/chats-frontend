@@ -19,7 +19,7 @@ const ChatsSlice = createSlice({
             const chat = getRawChat(payload.id);
             if (!chat) return;
             const updatedChat = { ...chat, ...payload };
-            if (chat.id === state.chatOnPage?.id) state.chatOnPage = updatedChat;
+            if (chat.id === state.chatOnPage?.id) state.chatOnPage = { ...state.chatOnPage, ...updatedChat };
             updateChatIndexDb(updatedChat);
             updateRawChat(updatedChat);
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
@@ -89,8 +89,9 @@ const ChatsSlice = createSlice({
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
         },
 
-        setChatOnPage(state, { payload }: PayloadAction<(ChatType & Partial<ChatItemIndexDb>) | null>) {
-            if (payload) state.chatOnPage = payload;
+        setChatOnPage(state, { payload }: PayloadAction<Partial<ChatItemIndexDb> | null>) {
+            if (!state.chatOnPage) state.chatOnPage = payload as ChatItemIndexDb;
+            if (state.chatOnPage) state.chatOnPage = { ...state.chatOnPage, ...payload };
             else state.chatOnPage = undefined;
         },
 

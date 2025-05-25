@@ -13,19 +13,19 @@ const Message: FC<PropsType> = memo((props) => {
     const { number, type, findMessage } = props;
     const elementId = useMemo(() => `message-${number}`, [number]);
     const [observerTarget, visibleMessage, time] = useVisibility(props);
-    const { setClickMessage, setIsShowMessageMenu } = useContext(ChatContext)!;
+    const { setClickMessage, setIsShowMessageMenu, isShowMessageMenu } = useContext(ChatContext)!;
     const { isPhone } = useAppSelector((state) => state.app);
 
     useEffect(() => {
         let longPressTimer: NodeJS.Timeout;
-        const element = document.getElementById(elementId)!;
-        const func = (event: MouseEvent | TouchEvent) => {
-            const x: number = event instanceof MouseEvent ? event.x : event.touches[0].clientX;
+        const messageDiv = document.getElementById(elementId)!;
+
+        const setMenuPosition = (event: MouseEvent | TouchEvent) => {
             const y: number = event instanceof MouseEvent ? event.y : event.touches[0].clientY;
 
             event.preventDefault();
             if (props.type === MessageTypeEnum.IS_CREATED_CHAT) return setIsShowMessageMenu(false);
-            if (!isPhone) setIsShowMessageMenu(undefined);
+            // if (!isPhone) setIsShowMessageMenu(undefined);
             setTimeout(() => setIsShowMessageMenu(true), 10);
             const element = document.getElementById(styles2.message_menu)!;
             const gap = '16px';
@@ -35,38 +35,36 @@ const Message: FC<PropsType> = memo((props) => {
             if (window.innerHeight / 2 > y) element.style.marginTop = `calc(${y}px + ${gap})`;
             else element.style.marginTop = `calc(${y}px - ${element.clientHeight}px - ${gap})`;
 
-            if (window.innerWidth / 2 > x)
-                element.style.marginLeft = `calc(${x}px - var(--menu-width) + ${gap} + var(--menu-margin))`;
+            if (isPhone) element.style.marginLeft = `calc(${window.innerWidth - element.clientWidth}px / 2)`;
             else
-                element.style.marginLeft = `calc(${x}px - var(--menu-width) - ${element.clientWidth}px - ${gap} + var(--menu-margin))`;
+                element.style.marginLeft = `calc((${window.innerWidth - element.clientWidth}px + (var(--menu-margin) - var(--menu-width)) / 2) / 2)`;
         };
 
         const appleFunc = (e: TouchEvent) => {
             if (e.touches.length > 1) return;
-            longPressTimer = setTimeout(() => func(e), 600);
+            longPressTimer = setTimeout(() => setMenuPosition(e), 600);
         };
 
         const clearTimeOut = () => clearTimeout(longPressTimer);
 
-        element.addEventListener('touchstart', appleFunc);
-
-        element.addEventListener('touchend', clearTimeOut);
-        element.addEventListener('touchmove', clearTimeOut);
-
-        element.addEventListener('contextmenu', func);
+        if (isPhone) {
+            messageDiv.addEventListener('touchstart', appleFunc);
+            messageDiv.addEventListener('touchend', clearTimeOut);
+            messageDiv.addEventListener('touchmove', clearTimeOut);
+        } else messageDiv.addEventListener('contextmenu', setMenuPosition);
         return () => {
-            element.removeEventListener('contextmenu', func);
-            element.removeEventListener('touchstart', appleFunc);
-
-            element.removeEventListener('touchend', clearTimeOut);
-            element.removeEventListener('touchmove', clearTimeOut);
+            if (isPhone) {
+                messageDiv.removeEventListener('touchstart', appleFunc);
+                messageDiv.removeEventListener('touchend', clearTimeOut);
+                messageDiv.removeEventListener('touchmove', clearTimeOut);
+            } else messageDiv.removeEventListener('contextmenu', setMenuPosition);
         };
-    }, [isPhone]);
+    }, [isPhone, isShowMessageMenu]);
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
             <div ref={observerTarget} id={elementId} className={styles.system_background}>
-                <div className={`${styles.background} ${styles.system_message}`}>{visibleMessage}</div>
+                <div className={`${styles.background} ${styles.system_message} text_translate`}>{visibleMessage}</div>
             </div>
         );
 
@@ -74,8 +72,8 @@ const Message: FC<PropsType> = memo((props) => {
         <>
             <div ref={observerTarget} id={elementId} className={`${styles.background}`}>
                 {props.parentMessage && <ParentMessage {...{ ...props.parentMessage, findMessage }} />}
-                <RenderMessage message={visibleMessage} />
-                <div className={styles.left_div2}>{time}</div>
+                <RenderMessage message={visibleMessage} type={type} />
+                <div className={`${styles.left_div2} text_translate`}>{time}</div>
             </div>
         </>
     );

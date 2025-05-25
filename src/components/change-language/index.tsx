@@ -12,7 +12,9 @@ export const ChangeLanguage: FC = () => {
 
     return (
         <div id={styles.background}>
-            <div id={styles.text_language}>{t('language')}</div>
+            <div id={styles.text_language} className="text_translate">
+                {t('language')}
+            </div>
             <div id={styles.languages}>
                 {languages.map((language) => (
                     <div
