@@ -76,12 +76,25 @@ export const useEnterHook = (): UseEnterHookType => {
             if (event.code === 'Enter' && !isPhone && !event.shiftKey) sendMessage();
         };
 
+        const paste = (event: ClipboardEvent) => {
+            event.preventDefault();
+            const clipboardData = event.clipboardData!;
+            const pastedData = clipboardData.getData('text');
+            if (!pastedData.length) return;
+            setIsShowPlaceholder(false);
+
+            const el = document.getElementById(styles.new_message)!;
+            el.innerText = pastedData;
+        };
+
         element.addEventListener('keypress', preventDefault);
         element.addEventListener('keyup', send);
+        element.addEventListener('paste', paste);
 
         return () => {
             element.removeEventListener('keypress', preventDefault);
             element.removeEventListener('keyup', send);
+            element.removeEventListener('paste', paste);
         };
     }, [chatOnPage?.id, isPhone]);
 
