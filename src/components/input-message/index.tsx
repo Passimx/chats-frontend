@@ -12,7 +12,7 @@ import { GiCancel } from 'react-icons/gi';
 import { getRawChat } from '../../root/store/chats/chats.raw.ts';
 
 const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }) => {
-    const [sendMessage, onInput, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
+    const [sendMessage, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
     const { update, setChatOnPage } = useAppAction();
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
     const { chatOnPage } = useAppSelector((state) => state.chats);
@@ -68,7 +68,6 @@ const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }
                                 id={styles.new_message}
                                 contentEditable={chatOnPage?.type !== ChatEnum.IS_SYSTEM}
                                 dir="auto"
-                                onInput={onInput}
                             ></div>
                         </div>
                     </div>

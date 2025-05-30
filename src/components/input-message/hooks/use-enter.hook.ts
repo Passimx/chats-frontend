@@ -77,24 +77,49 @@ export const useEnterHook = (): UseEnterHookType => {
         };
 
         const paste = (event: ClipboardEvent) => {
-            event.preventDefault();
-            const clipboardData = event.clipboardData!;
-            const pastedData = clipboardData.getData('text');
-            if (!pastedData.length) return;
+            event.preventDefault(); // Отменяем стандартное поведение
+
+            // Получаем текст из буфера обмена
+            const pastedText = event.clipboardData?.getData('text');
+            if (!pastedText?.length) return;
+
             setIsShowPlaceholder(false);
 
-            const el = document.getElementById(styles.new_message)!;
-            el.innerText = pastedData;
+            // Получаем текущее выделение
+            const selection = window.getSelection();
+            if (!selection) return;
+            if (selection.rangeCount === 0) return;
+
+            const range = selection.getRangeAt(0);
+            range.deleteContents(); // Удаляем выделенный текст (если есть)
+
+            // Создаем текстовый узел и вставляем его
+            const textNode = document.createTextNode(pastedText);
+            range.insertNode(textNode);
+            range.collapse(true);
+
+            // Перемещаем курсор после вставленного текста
+            range.setStartAfter(textNode);
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            if (chatOnPage?.id) {
+                const isText = !!element.innerText.replace(/^\n+|\n+$/g, '').trim()?.length;
+
+                update({ id: chatOnPage.id, inputMessage: isText ? element.innerText : undefined });
+            }
         };
 
         element.addEventListener('keypress', preventDefault);
         element.addEventListener('keyup', send);
         element.addEventListener('paste', paste);
+        element.addEventListener('input', onInput);
 
         return () => {
             element.removeEventListener('keypress', preventDefault);
             element.removeEventListener('keyup', send);
             element.removeEventListener('paste', paste);
+            element.removeEventListener('input', onInput);
         };
     }, [chatOnPage?.id, isPhone]);
 
@@ -139,5 +164,5 @@ export const useEnterHook = (): UseEnterHookType => {
         [chatOnPage?.id, isPhone, isOpenMobileKeyboard],
     );
 
-    return [sendMessage, onInput, setEmoji, placeholder, isShowPlaceholder];
+    return [sendMessage, setEmoji, placeholder, isShowPlaceholder];
 };

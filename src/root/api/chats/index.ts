@@ -67,6 +67,6 @@ export const leaveChats = (chatIds: string[]) => {
     return Api('/chats/leave', { method: 'POST', body: { chatIds } });
 };
 
-export const getSystemChat = (): Promise<IData<ChatType>> => {
-    return Api<ChatType>('/chats/chat-system');
+export const getSystemChat = (): Promise<IData<ChatType[]>> => {
+    return Api<ChatType[]>('/chats/system_chats');
 };

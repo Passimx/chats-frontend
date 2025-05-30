@@ -13,7 +13,7 @@ export const useCheckSystemChat = () => {
         const response = await getSystemChat();
 
         if (response.success) {
-            const chat = response.data;
+            const [chat] = response.data;
 
             postMessageToBroadCastChannel({
                 event: EventsEnum.ADD_CHAT,
