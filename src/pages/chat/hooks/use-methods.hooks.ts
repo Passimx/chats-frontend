@@ -11,7 +11,7 @@ type R = [() => void, (e: MouseEvent<unknown>) => void, (e: MouseEvent<unknown>)
 
 export const useMethods = (messages: MessageType[]): R => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
-    const { postMessageToBroadCastChannel } = useAppAction();
+    const { postMessageToBroadCastChannel, setChatOnPage } = useAppAction();
     const navigate = useCustomNavigate();
 
     const addChat = useCallback(() => {
@@ -35,6 +35,7 @@ export const useMethods = (messages: MessageType[]): R => {
             leaveChats([id]);
             postMessageToBroadCastChannel({ event: EventsEnum.REMOVE_CHAT, data: id });
 
+            setChatOnPage(null);
             changeHead();
 
             navigate('/');

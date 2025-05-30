@@ -1,1 +1,1 @@
-export type UseEnterHookType = [() => Promise<void>, () => void, (emoji: string) => void, string, boolean];
+export type UseEnterHookType = [() => Promise<void>, (emoji: string) => void, string, boolean];
