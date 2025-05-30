@@ -1,5 +1,5 @@
 import styles from './index.module.css';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { PropsType } from './types/props.type.ts';
 import useVisibility from '../../common/hooks/use-visibility.ts';
@@ -15,6 +15,10 @@ const ChatAvatar: FC<PropsType> = ({ onlineCount, maxUsersOnline, iconType, isCh
     const { isListening, isOnline } = useAppSelector((state) => state.app);
     const setClass = useVisibility;
     const [isShow, setIsShow] = useState<boolean>();
+
+    useEffect(() => {
+        if (isSystem) setIsShow(undefined);
+    }, [isSystem]);
 
     return (
         <div
