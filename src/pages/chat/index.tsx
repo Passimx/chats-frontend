@@ -3,7 +3,6 @@ import styles from './index.module.css';
 import { createContext, FC, memo, useMemo, useState } from 'react';
 import ChatAvatar from '../../components/chat-avatar';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
-import InputMessage from '../../components/input-message';
 import Message from '../../components/message';
 import { useTranslation } from 'react-i18next';
 import { getRawChat } from '../../root/store/chats/chats.raw.ts';
@@ -27,6 +26,7 @@ import { FaStar } from 'react-icons/fa';
 import { LoadingType } from './types/loading.type.ts';
 import { MenuMessage } from '../../components/menu-message';
 import { MessageType } from '../../root/types/chat/message.type.ts';
+import { InputNewMessage } from '../../components/input-new-message';
 
 type ContextType = {
     clickMessage?: MessageType;
@@ -140,7 +140,8 @@ const Chat: FC = memo(() => {
                         </div>
                     </div>
                 </div>
-                <InputMessage {...{ isVisibleBottomButton, showLastMessages }} />
+                {/*<InputMessage {...{ isVisibleBottomButton, showLastMessages }} />*/}
+                <InputNewMessage {...{ isVisibleBottomButton, showLastMessages }} />
             </div>
         </ChatContext.Provider>
     );

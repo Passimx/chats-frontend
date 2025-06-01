@@ -3,11 +3,11 @@ import styles from '../index.module.css';
 import { useAppAction, useAppSelector } from '../../../root/store';
 import { ChatEnum } from '../../../root/types/chat/chat.enum.ts';
 import { useTranslation } from 'react-i18next';
-import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
 import { createMessage } from '../../../root/api/messages';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
-import { focusToEnd } from '../common/focus-to-end.ts';
 import { getIsFocused } from './get-is-focused.hook.ts';
+import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
+import { focusToEnd } from '../common/focus-to-end.ts';
 
 export const useEnterHook = (): UseEnterHookType => {
     const { t } = useTranslation();
@@ -67,6 +67,8 @@ export const useEnterHook = (): UseEnterHookType => {
 
     useEffect(() => {
         const element = document.getElementById(styles.new_message)!;
+        const background = document.getElementById(styles.background)!;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
         const preventDefault = (event: KeyboardEvent) => {
             if (event.code === 'Enter' && !isPhone && !event.shiftKey) event.preventDefault();
@@ -110,16 +112,32 @@ export const useEnterHook = (): UseEnterHookType => {
             }
         };
 
+        const mobileFocus = () => {
+            background.style.paddingBottom = '8px';
+        };
+
+        const mobileFocusOut = () => {
+            background.style.paddingBottom = '40px';
+        };
+
         element.addEventListener('keypress', preventDefault);
         element.addEventListener('keyup', send);
         element.addEventListener('paste', paste);
         element.addEventListener('input', onInput);
+        if (isStandalone) {
+            element.addEventListener('focus', mobileFocus);
+            element.addEventListener('focusout', mobileFocusOut);
+        }
 
         return () => {
             element.removeEventListener('keypress', preventDefault);
             element.removeEventListener('keyup', send);
             element.removeEventListener('paste', paste);
             element.removeEventListener('input', onInput);
+            if (isStandalone) {
+                element.removeEventListener('focus', mobileFocus);
+                element.removeEventListener('focusout', mobileFocusOut);
+            }
         };
     }, [chatOnPage?.id, isPhone]);
 

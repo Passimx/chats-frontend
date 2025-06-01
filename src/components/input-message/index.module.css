@@ -7,7 +7,7 @@
 
 #input_block{
     background-color: white;
-    overflow: hidden;
+    overflow: auto;
     min-height: 40px;
     max-height: 16rem;
     height: auto;
