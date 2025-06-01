@@ -1,8 +1,8 @@
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 import { FC } from 'react';
 import AppWrapper from '../wrappers/app';
-import Chat from '../../pages/chat';
 import { Redirect } from '../../pages/redirect';
+import { ChatContext } from '../../pages/chat/context/chat-context.tsx';
 
 const router = createBrowserRouter([
     {
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: ':id',
-                element: <Chat />,
+                element: <ChatContext />,
             },
             {
                 path: '*',
