@@ -13,7 +13,7 @@
     }
 
     @media (display-mode: standalone) {
-        padding-bottom: 24px;
+        padding-bottom: 40px;
     }
 }
 
@@ -51,12 +51,13 @@
 
 #inputs{
     display: grid;
-    grid-template-columns: 46px 1fr 66px;
+    grid-template-columns: auto 1fr 70px;
 }
 
 .button_inputs_background{
     display: grid;
     align-items: end;
+    background-color: greenyellow;
 }
 
 #button_emoji_block, #button_input_block{
@@ -75,6 +76,7 @@
 
 #button_input_block{
     background-color: deeppink;
+
     @media(width < 600px) {
         border-radius: 15px 0 0 15px;
     }
@@ -97,9 +99,8 @@
 }
 
 #new_message_block{
-    overflow: auto;
+    overflow: hidden;
     min-height: 30px;
-    width: 100%;
     padding: 8px;
     background-color: #FFFFFF;
     scrollbar-width: thin;
