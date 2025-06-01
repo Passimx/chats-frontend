@@ -57,10 +57,8 @@
 .button_inputs_background{
     display: grid;
     align-items: end;
-    background-color: greenyellow;
 }
 
-/*#button_emoji_block, #button_input_block{*/
 #button_emoji_block, #button_input_block{
     display: grid;
     justify-content: center;
@@ -73,6 +71,11 @@
     @media(width < 600px) {
         border-radius: 0 15px 15px 0;
     }
+}
+
+#button_input_background{
+    display: grid;
+    align-items: end;
 }
 
 #button_input_block{
