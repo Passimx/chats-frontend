@@ -60,6 +60,7 @@
     background-color: greenyellow;
 }
 
+/*#button_emoji_block, #button_input_block{*/
 #button_emoji_block, #button_input_block{
     display: grid;
     justify-content: center;
