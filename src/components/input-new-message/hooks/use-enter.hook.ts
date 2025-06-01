@@ -113,11 +113,11 @@ export const useEnterHook = (): UseEnterHookType => {
         };
 
         const mobileFocus = () => {
-            background.style.paddingBottom = '80px';
+            background.style.paddingBottom = '8px';
         };
 
         const mobileFocusOut = () => {
-            background.style.paddingBottom = '8px';
+            background.style.paddingBottom = '40px';
         };
 
         element.addEventListener('keypress', preventDefault);
