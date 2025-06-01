@@ -71,7 +71,7 @@ export const InputNewMessage: FC<PropsType> = () => {
                         ></div>
                     </div>
                     <div className={styles.button_inputs_background}>
-                        <div id={styles.button_emoji_block} onClick={sendMessage}>
+                        <div id={styles.button_input_block} onClick={sendMessage}>
                             <BsFillArrowUpCircleFill className={styles.button} />
                         </div>
                     </div>
