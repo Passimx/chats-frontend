@@ -70,10 +70,12 @@ export const InputNewMessage: FC<PropsType> = () => {
                             dir="auto"
                         ></div>
                     </div>
-                    <div className={styles.button_inputs_background}>
-                        <div id={styles.button_input_block} onClick={sendMessage}>
-                            <BsFillArrowUpCircleFill className={styles.button} />
-                        </div>
+                    <div
+                    // className={styles.button_inputs_background}
+                    >
+                        {/*<div id={styles.button_input_block} onClick={sendMessage}>*/}
+                        <BsFillArrowUpCircleFill id={styles.button} onClick={sendMessage} />
+                        {/*</div>*/}
                     </div>
                 </div>
             </div>
