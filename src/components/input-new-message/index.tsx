@@ -75,11 +75,6 @@ export const InputNewMessage: FC<PropsType> = () => {
                             <BsFillArrowUpCircleFill className={styles.button} />
                         </div>
                     </div>
-                    {/*<div id={styles.buttons}>*/}
-                    {/*    <div className={styles.button_background} onClick={sendMessage}>*/}
-                    {/*        <BsFillArrowUpCircleFill className={`${styles.button}`} />*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
                 </div>
             </div>
         </div>

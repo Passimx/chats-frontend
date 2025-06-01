@@ -51,7 +51,7 @@
 
 #inputs{
     display: grid;
-    grid-template-columns: 46px 1fr 46px;
+    grid-template-columns: 46px 1fr 86px;
 }
 
 .button_inputs_background{
