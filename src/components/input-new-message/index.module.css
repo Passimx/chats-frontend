@@ -79,8 +79,6 @@
 }
 
 #button_input_block{
-    background-color: deeppink;
-
     @media(width < 600px) {
         border-radius: 15px 0 0 15px;
     }

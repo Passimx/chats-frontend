@@ -17,8 +17,6 @@ export const InputNewMessage: FC<PropsType> = () => {
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
     const [sendMessage, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
 
-    console.log(placeholder, isShowPlaceholder);
-
     const cancelAnswerMessage = useCallback(() => {
         if (!chatOnPage?.id) return;
         if (getRawChat(chatOnPage.id)) update({ id: chatOnPage.id, answerMessage: undefined });
