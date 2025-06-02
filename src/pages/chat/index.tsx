@@ -25,7 +25,7 @@ import { useListenScroll } from './hooks/use-listen-scroll.hook.ts';
 import { FaStar } from 'react-icons/fa';
 import { LoadingType } from './types/loading.type.ts';
 import { MenuMessage } from '../../components/menu-message';
-import { InputNewMessage } from '../../components/input-message';
+import { InputMessage } from '../../components/input-message';
 
 const Chat: FC = memo(() => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
@@ -122,7 +122,7 @@ const Chat: FC = memo(() => {
                     </div>
                 </div>
             </div>
-            <InputNewMessage {...{ isVisibleBottomButton, showLastMessages }} />
+            <InputMessage {...{ isVisibleBottomButton, showLastMessages }} />
         </div>
     );
 });

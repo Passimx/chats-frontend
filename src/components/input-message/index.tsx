@@ -11,7 +11,7 @@ import { useEnterHook } from './hooks/use-enter.hook.ts';
 import { PropsType } from './types/props.type.ts';
 import useVisibility from '../../common/hooks/use-visibility.ts';
 
-export const InputNewMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomButton }) => {
+export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomButton }) => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { update, setChatOnPage } = useAppAction();
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
