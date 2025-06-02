@@ -113,7 +113,7 @@ export const useEnterHook = (): UseEnterHookType => {
         };
 
         const mobileFocus = () => {
-            background.style.paddingBottom = '8px';
+            background.style.paddingBottom = '0px';
         };
 
         const mobileFocusOut = () => {
