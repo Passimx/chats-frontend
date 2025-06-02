@@ -18,12 +18,11 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
     const [sendMessage, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
 
     useEffect(() => {
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        const testElement = document.getElementById(styles.background)!;
+        const element = document.getElementById(styles.background)!;
 
-        const computedStyle = window.getComputedStyle(testElement);
+        const computedStyle = window.getComputedStyle(element);
         const safeAreaBottom = parseFloat(computedStyle.paddingBottom) || 0;
-        alert(isIOS && safeAreaBottom > 0);
+        alert(safeAreaBottom);
     }, []);
 
     const visibility = useVisibility;
