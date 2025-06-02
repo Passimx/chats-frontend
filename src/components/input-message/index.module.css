@@ -7,15 +7,10 @@
 
     @media(width < 600px) {
         margin-left: 0;
-        /*padding-bottom: 0;*/
         padding-bottom: env(safe-area-inset-bottom, 32px);
         background-color: white;
         grid-template-columns: 1fr;
     }
-
-    /*@media (display-mode: standalone) {*/
-    /*    padding-bottom: 40px;*/
-    /*}*/
 }
 
 #main_block{
@@ -160,7 +155,7 @@
 
 #button{
     font-size: 38px;
-    color: var(--menu-color);
+    color: #0098ea;
 }
 
 #bottom_button_background{
@@ -176,12 +171,12 @@
     z-index: 1;
     position: absolute;
     margin-left: 4px;
-    margin-top: 8px;
+    margin-bottom: 4px;
 }
 
 #bottom_button{
     font-size: 38px;
-    color: #0098ea;
+    color: var(--menu-color);
 }
 
 .show_slowly{
