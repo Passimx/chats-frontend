@@ -7,14 +7,15 @@
 
     @media(width < 600px) {
         margin-left: 0;
-        padding-bottom: 0;
+        /*padding-bottom: 0;*/
+        padding-bottom: env(safe-area-inset-bottom);
         background-color: white;
         grid-template-columns: 1fr;
     }
 
-    @media (display-mode: standalone) {
-        padding-bottom: 40px;
-    }
+    /*@media (display-mode: standalone) {*/
+    /*    padding-bottom: 40px;*/
+    /*}*/
 }
 
 #main_block{

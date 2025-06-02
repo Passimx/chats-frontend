@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import styles from './index.module.css';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { ParentMessage } from '../parent-message';
@@ -17,13 +17,12 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
     const [sendMessage, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
 
-    useEffect(() => {
-        const element = document.getElementById(styles.background)!;
-
-        const computedStyle = window.getComputedStyle(element);
-        const safeAreaBottom = parseFloat(computedStyle.paddingBottom) || 0;
-        alert(safeAreaBottom);
-    }, []);
+    // useEffect(() => {
+    //     const element = document.getElementById(styles.background)!;
+    //     const computedStyle = window.getComputedStyle(element);
+    //     const safeAreaBottom = parseFloat(computedStyle.paddingBottom) || 0;
+    //     alert(safeAreaBottom);
+    // }, []);
 
     const visibility = useVisibility;
 

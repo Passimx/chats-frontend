@@ -68,7 +68,8 @@ export const useEnterHook = (): UseEnterHookType => {
     useEffect(() => {
         const element = document.getElementById(styles.new_message)!;
         const background = document.getElementById(styles.background)!;
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        const computedStyle = window.getComputedStyle(element);
+        const safeAreaBottom = parseFloat(computedStyle.paddingBottom) || 0;
 
         const preventDefault = (event: KeyboardEvent) => {
             if (event.code === 'Enter' && !isPhone && !event.shiftKey) event.preventDefault();
@@ -117,14 +118,14 @@ export const useEnterHook = (): UseEnterHookType => {
         };
 
         const mobileFocusOut = () => {
-            background.style.paddingBottom = '40px';
+            background.style.paddingBottom = `${safeAreaBottom + 8}px`;
         };
 
         element.addEventListener('keypress', preventDefault);
         element.addEventListener('keyup', send);
         element.addEventListener('paste', paste);
         element.addEventListener('input', onInput);
-        if (isStandalone) {
+        if (safeAreaBottom) {
             element.addEventListener('focus', mobileFocus);
             element.addEventListener('focusout', mobileFocusOut);
         }
@@ -134,7 +135,7 @@ export const useEnterHook = (): UseEnterHookType => {
             element.removeEventListener('keyup', send);
             element.removeEventListener('paste', paste);
             element.removeEventListener('input', onInput);
-            if (isStandalone) {
+            if (safeAreaBottom) {
                 element.removeEventListener('focus', mobileFocus);
                 element.removeEventListener('focusout', mobileFocusOut);
             }
