@@ -18,11 +18,33 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
     const [sendMessage, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
 
     useEffect(() => {
-        const element = document.getElementById(styles.background)!;
-        const computedStyle = window.getComputedStyle(element);
-        const safeAreaBottom = parseFloat(computedStyle.paddingBottom) || 0;
-        alert(safeAreaBottom);
-        element.style.paddingBottom = `${safeAreaBottom}px`;
+        //     const element = document.getElementById(styles.background)!;
+        //     const computedStyle = window.getComputedStyle(element);
+        //     const safeAreaBottom = parseFloat(computedStyle.paddingBottom) || 0;
+        //     alert(safeAreaBottom);
+        //     element.style.paddingBottom = `${safeAreaBottom}px`;
+
+        const div = document.createElement('div');
+        div.style.position = 'absolute';
+        div.style.bottom = '0';
+        div.style.height = '0';
+        div.style.paddingBottom = 'env(safe-area-inset-bottom)';
+        div.style.visibility = 'hidden';
+
+        // Добавим в тело
+        document.body.appendChild(div);
+
+        // Получим computed style и значение padding-bottom
+        const computedStyle = window.getComputedStyle(div);
+        const paddingBottom = computedStyle.paddingBottom; // строка вида "34px" (на iPhone с вырезом)
+
+        // Уберем элемент
+        document.body.removeChild(div);
+
+        // Преобразуем в число
+        const insetBottom = parseFloat(paddingBottom);
+
+        alert(`safe-area-inset-bottom in px: ${insetBottom}`);
     }, []);
 
     const visibility = useVisibility;
