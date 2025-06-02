@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import styles from './index.module.css';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { ParentMessage } from '../parent-message';
@@ -16,6 +16,15 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
     const { update, setChatOnPage } = useAppAction();
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
     const [sendMessage, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
+
+    useEffect(() => {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const testElement = document.getElementById(styles.background)!;
+
+        const computedStyle = window.getComputedStyle(testElement);
+        const safeAreaBottom = parseFloat(computedStyle.paddingBottom) || 0;
+        alert(isIOS && safeAreaBottom > 0);
+    }, []);
 
     const visibility = useVisibility;
 
