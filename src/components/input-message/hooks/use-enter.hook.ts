@@ -124,7 +124,7 @@ export const useEnterHook = (): UseEnterHookType => {
         element.addEventListener('keyup', send);
         element.addEventListener('paste', paste);
         element.addEventListener('input', onInput);
-        if (isStandalone) {
+        if (isStandalone && isPhone) {
             element.addEventListener('focus', mobileFocus);
             element.addEventListener('focusout', mobileFocusOut);
         }
@@ -134,7 +134,7 @@ export const useEnterHook = (): UseEnterHookType => {
             element.removeEventListener('keyup', send);
             element.removeEventListener('paste', paste);
             element.removeEventListener('input', onInput);
-            if (isStandalone) {
+            if (isStandalone && isPhone) {
                 element.removeEventListener('focus', mobileFocus);
                 element.removeEventListener('focusout', mobileFocusOut);
             }
