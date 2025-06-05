@@ -2,7 +2,7 @@ html {
     --menu-height: 54px;
 }
 
-    #menu{
+#menu{
     display: grid;
     background-color: #0a4375;
     grid-template-columns: repeat(auto-fill, minmax(calc(100% / 3), 1fr));
@@ -10,6 +10,10 @@ html {
     bottom: 0;
     width: 100%;
     height: var(--menu-height);
+
+    @media(width < 600px) {
+        padding-bottom: env(safe-area-inset-bottom, 32px);
+    }
 }
 
 .menu_item{
