@@ -31,7 +31,7 @@ export const Menu = memo(() => {
                 <div className={styles.menu_item_inner}>
                     <MdDeleteOutline size={24} />
                 </div>
-                <div className={'text_translate'}>{t('delete_chats')}</div>
+                <div className={`text_translate ${styles.menu_item_inner_text}`}>{t('delete_chats')}</div>
             </div>
             <div
                 className={`${styles.menu_item} ${activeTab === 'messages' && styles.menu_item_active}`}
@@ -43,7 +43,7 @@ export const Menu = memo(() => {
                 <div className={styles.menu_item_inner}>
                     <GoMail size={24} />
                 </div>
-                <div className={'text_translate'}>{t('messages')}</div>
+                <div className={`text_translate ${styles.menu_item_inner_text}`}>{t('messages')}</div>
             </div>
             <div
                 className={`${styles.menu_item} ${activeTab === 'language' && styles.menu_item_active}`}
@@ -55,7 +55,7 @@ export const Menu = memo(() => {
                 <div className={styles.menu_item_inner}>
                     <GrLanguage size={20} />
                 </div>
-                <div className={'text_translate'}>{t('language')}</div>
+                <div className={`text_translate ${styles.menu_item_inner_text}`}>{t('language')}</div>
             </div>
         </div>
     );
