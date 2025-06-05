@@ -4,6 +4,8 @@
   "search": "Buscar",
   "search_chats": "Buscar chats",
   "chats_enter_message": "Mensaje...",
+  "messages": "Mensajes",
+  "delete_chats": "Eliminar chats",
   "create_open_chat": "Chat abierto",
   "chats_message_unavailable": "Message sending is unavailable",
   "no_chats": "No se encontraron chats",

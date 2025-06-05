@@ -4,6 +4,8 @@
   "search": "搜索",
   "search_chats": "搜索聊天",
   "chats_enter_message": "消息...",
+  "messages": "消息",
+  "delete_chats": "删除聊天",
   "chats_message_unavailable": "无法发送消息 ",
   "create_open_chat": "公开聊天",
   "no_chats": "未找到聊天",

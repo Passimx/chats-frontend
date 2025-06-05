@@ -4,6 +4,8 @@
   "search": "Поиск",
   "search_chats": "Поиск чатов",
   "chats_enter_message": "Сообщение...",
+  "messages": "Сообщения",
+  "delete_chats": "Удалить чаты",
   "chats_message_unavailable": "Отправка сообщений недоступна",
   "create_open_chat": "Открытый чат",
   "no_chats": "Чаты не найдены",
