@@ -11,7 +11,8 @@ import { ContextChat } from '../context/chat-context.tsx';
 type R = [() => void, (e: MouseEvent<unknown>) => void, (e: MouseEvent<unknown>) => void];
 
 export const useMethods = (messages: MessageType[]): R => {
-    const { chatOnPage } = useAppSelector((state) => state.chats);
+    const isPhone = useAppSelector((state) => state.app.isPhone);
+    const chatOnPage = useAppSelector((state) => state.chats.chatOnPage);
     const { postMessageToBroadCastChannel, setChatOnPage } = useAppAction();
     const { isShowMessageMenu, setIsShowMessageMenu } = useContext(ContextChat)!;
     const navigate = useCustomNavigate();
@@ -30,9 +31,11 @@ export const useMethods = (messages: MessageType[]): R => {
         (e: MouseEvent<unknown>) => {
             e.stopPropagation();
             document.documentElement.style.setProperty('--menu-margin', '0px');
+
+            if (window.innerWidth <= 600) setTimeout(() => navigate('/'), 300);
             if (isShowMessageMenu) setIsShowMessageMenu(false);
         },
-        [isShowMessageMenu],
+        [isShowMessageMenu, isPhone],
     );
 
     const leave = useCallback(
