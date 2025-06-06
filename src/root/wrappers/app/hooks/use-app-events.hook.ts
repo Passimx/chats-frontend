@@ -26,6 +26,7 @@ export const useAppEvents = () => {
             case EventsEnum.ADD_CHAT:
                 setToBegin(data);
                 if (data.type === ChatEnum.IS_SYSTEM) setStateApp({ isSystemChat: true });
+                playNotificationSound();
                 break;
             case EventsEnum.CREATE_CHAT:
                 if (!data.success) break;
@@ -38,6 +39,7 @@ export const useAppEvents = () => {
                     scrollTop: 0,
                 });
                 navigate(`/${data.data.id}`);
+                playNotificationSound();
                 break;
             case EventsEnum.CREATE_MESSAGE:
                 if (!data.success) break;
@@ -68,6 +70,9 @@ export const useAppEvents = () => {
             case EventsEnum.CLOSE_SOCKET:
                 setStateApp({ socketId: undefined });
                 setStateApp({ isListening: false });
+                break;
+            case EventsEnum.PLAY_NOTIFICATION:
+                playNotificationSound();
                 break;
             case EventsEnum.ERROR:
                 console.log(`${'\x1B[31m'}error: ${data}${'\x1B[31m'}`);

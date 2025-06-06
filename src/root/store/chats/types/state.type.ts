@@ -4,4 +4,5 @@ export type StateType = {
     chats: ChatItemIndexDb[];
     updatedChats: ChatItemIndexDb[];
     chatOnPage?: ChatItemIndexDb;
+    messageCount?: string;
 };

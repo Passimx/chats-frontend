@@ -6,11 +6,13 @@ import { GoMail } from 'react-icons/go';
 import useSetPageHook from '../../root/store/app/hooks/use-set-page.hook.ts';
 import { ChangeLanguage } from '../change-language';
 import { useTranslation } from 'react-i18next';
+import { useAppSelector } from '../../root/store';
 
 export const Menu = memo(() => {
     const setPage = useSetPageHook();
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<string>('messages');
+    const messageCount = useAppSelector((state) => state.chats.messageCount);
 
     const deleteAllChats = useCallback(() => {
         window.indexedDB.databases().then((r) => {
@@ -40,6 +42,11 @@ export const Menu = memo(() => {
                     setPage(null);
                 }}
             >
+                {messageCount && (
+                    <div id={styles.message_count}>
+                        <div id={styles.count}>{messageCount}</div>
+                    </div>
+                )}
                 <div className={styles.menu_item_inner}>
                     <GoMail size={24} />
                 </div>

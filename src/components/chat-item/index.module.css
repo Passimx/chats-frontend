@@ -10,11 +10,12 @@
 }
 
 .chat_item:active {
-    @media(width <= 600px){
+    @media(width < 600px){
         background-color: #0c518d;
         border-radius: 10px;
     }
 }
+
 .selected_chat{
     @media(width > 600px){
         background-color: #0c518d;

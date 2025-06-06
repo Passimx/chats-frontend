@@ -25,10 +25,29 @@ html {
     grid-template-rows: auto;
     cursor: pointer;
     color: white;
+    padding-top: 6px;
 }
 
 .menu_item:hover {
-    background-color: #0c518d;
+    @media(width >= 600px) {
+        background-color: #0c518d;
+        #message_count{
+            #count{
+                border: 2px solid #0c518d;
+            }
+        }
+    }
+}
+
+.menu_item:active{
+    @media(width < 600px){
+        background-color: #0c518d;
+        #message_count{
+            #count{
+                border: 2px solid #0c518d;
+            }
+        }
+    }
 }
 
 .menu_item_active{
@@ -43,8 +62,36 @@ html {
 
 .menu_item_inner_text{
     font-size: 14px;
+    -webkit-user-select: none;
+    user-select: none;
 
     @media(width < 600px) {
         font-size: 12px;
     }
+}
+
+#message_count{
+    display: grid;
+    justify-content: center;
+    width: calc(var(--menu-width) / 3);
+    top:0;
+    position: absolute;
+}
+
+#count{
+    padding: 0 5px 0 5px;
+    height: 0.5cm;
+    border-radius: 0.4cm;
+    min-width: calc(0.5cm - 10px);
+    background-color: #0098EA;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    -webkit-user-select: none;
+    user-select: none;
+    margin-left: 30px;
+    border: 2px solid #0a4375;
+    color: white;
+    font-size: 10px;
+    transition: all .3s ease;
 }

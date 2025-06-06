@@ -9,6 +9,7 @@ import { UpdateChat } from './types/update-chat.type.ts';
 const initialState: StateType = {
     chats: [],
     updatedChats: [],
+    messageCount: '23',
 };
 
 const ChatsSlice = createSlice({
