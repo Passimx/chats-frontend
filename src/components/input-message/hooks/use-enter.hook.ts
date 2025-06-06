@@ -9,12 +9,17 @@ import { getIsFocused } from './get-is-focused.hook.ts';
 import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
 import { focusToEnd } from '../common/focus-to-end.ts';
 
+let mediaRecorder: MediaRecorder | undefined;
+let chunks: Blob[] = [];
+
 export const useEnterHook = (): UseEnterHookType => {
     const { t } = useTranslation();
     const { update, setChatOnPage } = useAppAction();
     const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { isPhone, isOpenMobileKeyboard } = useAppSelector((state) => state.app);
+    const [textExist, setTextExist] = useState<boolean>(true);
+    const [isRecovering, setIsRecovering] = useState<boolean>(false);
 
     const placeholder = useMemo((): string => {
         const text = chatOnPage?.type === ChatEnum.IS_SYSTEM ? 'chats_message_unavailable' : 'chats_enter_message';
@@ -29,10 +34,11 @@ export const useEnterHook = (): UseEnterHookType => {
         setIsShowPlaceholder(isEmpty);
         if (chatOnPage?.id) {
             const isText = !!el.innerText.replace(/^\n+|\n+$/g, '').trim()?.length;
+            setTextExist(isText);
 
             update({ id: chatOnPage.id, inputMessage: isText ? el.innerText : undefined });
         }
-    }, [chatOnPage?.id]);
+    }, [chatOnPage?.id, textExist]);
 
     const sendMessage = useCallback(async () => {
         if (!chatOnPage?.id) return;
@@ -45,6 +51,7 @@ export const useEnterHook = (): UseEnterHookType => {
         element.innerText = '';
         if (isFocused) element.focus();
         setIsShowPlaceholder(true);
+        setTextExist(false);
 
         if (getRawChat(chatOnPage.id)) update({ id: chatOnPage.id, inputMessage: undefined, answerMessage: undefined });
         else setChatOnPage({ answerMessage: undefined });
@@ -60,14 +67,19 @@ export const useEnterHook = (): UseEnterHookType => {
 
         element.innerText = text ?? '';
         setIsShowPlaceholder(!text);
+        setTextExist(!!text);
 
         // 300 - время анимации, иначе быстро отрабатывает анимация
         if (!isPhone) setTimeout(() => focusToEnd(element), 300);
     }, [chatOnPage?.id, isPhone]);
 
     useEffect(() => {
+        if (chatOnPage?.type === ChatEnum.IS_SYSTEM) return;
         const element = document.getElementById(styles.new_message)!;
         const background = document.getElementById(styles.background)!;
+        const buttonStartRecover = document.getElementById(styles.microphone)!;
+        const sendMessageButton = document.getElementById(styles.button_input_block)!;
+        const microphoneButton = document.getElementById(styles.button_microphone_block);
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
         const preventDefault = (event: KeyboardEvent) => {
@@ -107,6 +119,7 @@ export const useEnterHook = (): UseEnterHookType => {
 
             if (chatOnPage?.id) {
                 const isText = !!element.innerText.replace(/^\n+|\n+$/g, '').trim()?.length;
+                setTextExist(isText);
 
                 update({ id: chatOnPage.id, inputMessage: isText ? element.innerText : undefined });
             }
@@ -120,10 +133,60 @@ export const useEnterHook = (): UseEnterHookType => {
             background.style.paddingBottom = 'env(safe-area-inset-bottom, 32px)';
         };
 
+        const startRecover = async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+            if (isRecovering && mediaRecorder) {
+                mediaRecorder.stop();
+
+                if (stream) stream.getTracks().forEach((track) => track.stop());
+                return;
+            }
+
+            buttonStartRecover.style.background = 'red';
+            setIsRecovering(true);
+            mediaRecorder = new MediaRecorder(stream);
+            let startTime: number, endTime;
+
+            mediaRecorder.onstart = () => (startTime = Date.now());
+
+            mediaRecorder.ondataavailable = (event) => {
+                chunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                buttonStartRecover.style.background = '#0098ea';
+                endTime = Date.now();
+                setIsRecovering(false);
+
+                // Создаем Blob из кусочков
+                const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+                chunks = [];
+
+                // Создаем URL для воспроизведения
+                const audioUrl = URL.createObjectURL(audioBlob);
+
+                // Воспроизведение
+                const audio = new Audio(audioUrl);
+                audio.play();
+
+                // Время записи в секундах
+                const duration = (endTime - startTime) / 1000;
+                console.log(`Длительность записи: ${duration.toFixed(2)} секунд`);
+
+                if (stream) stream.getTracks().forEach((track) => track.stop());
+            };
+
+            // Запускаем запись
+            mediaRecorder.start();
+        };
+
         element.addEventListener('keypress', preventDefault);
         element.addEventListener('keyup', send);
         element.addEventListener('paste', paste);
         element.addEventListener('input', onInput);
+        sendMessageButton.addEventListener('click', sendMessage);
+        microphoneButton?.addEventListener('mousedown', startRecover);
         if (isStandalone && isPhone) {
             element.addEventListener('focus', mobileFocus);
             element.addEventListener('focusout', mobileFocusOut);
@@ -134,12 +197,15 @@ export const useEnterHook = (): UseEnterHookType => {
             element.removeEventListener('keyup', send);
             element.removeEventListener('paste', paste);
             element.removeEventListener('input', onInput);
+            sendMessageButton.removeEventListener('click', sendMessage);
+            microphoneButton?.removeEventListener('mousedown', startRecover);
+
             if (isStandalone && isPhone) {
                 element.removeEventListener('focus', mobileFocus);
                 element.removeEventListener('focusout', mobileFocusOut);
             }
         };
-    }, [chatOnPage?.id, isPhone]);
+    }, [chatOnPage?.id, isPhone, sendMessage, isRecovering]);
 
     const setEmoji = useCallback(
         (emoji: string) => {
@@ -182,5 +248,5 @@ export const useEnterHook = (): UseEnterHookType => {
         [chatOnPage?.id, isPhone, isOpenMobileKeyboard],
     );
 
-    return [sendMessage, setEmoji, placeholder, isShowPlaceholder];
+    return [textExist, setEmoji, placeholder, isShowPlaceholder];
 };

@@ -42,7 +42,7 @@ export const Menu = memo(() => {
                     setPage(null);
                 }}
             >
-                {messageCount && (
+                {messageCount?.length && (
                     <div id={styles.message_count}>
                         <div id={styles.count}>{messageCount}</div>
                     </div>

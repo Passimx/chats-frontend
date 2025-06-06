@@ -9,7 +9,6 @@ import { UpdateChat } from './types/update-chat.type.ts';
 const initialState: StateType = {
     chats: [],
     updatedChats: [],
-    messageCount: '23',
 };
 
 const ChatsSlice = createSlice({
@@ -112,6 +111,12 @@ const ChatsSlice = createSlice({
             deleteChat(payload);
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
+        },
+
+        setStateChat(state, { payload }: PayloadAction<Partial<StateType>>) {
+            for (const [key, value] of Object.entries(payload) as [keyof StateType, StateType[keyof StateType]][]) {
+                state[key] = value as never;
+            }
         },
     },
 });

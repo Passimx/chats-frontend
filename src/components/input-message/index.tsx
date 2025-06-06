@@ -10,12 +10,13 @@ import Emoji from '../emoji';
 import { useEnterHook } from './hooks/use-enter.hook.ts';
 import { PropsType } from './types/props.type.ts';
 import useVisibility from '../../common/hooks/use-visibility.ts';
+import { FaMicrophone } from 'react-icons/fa';
 
 export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomButton }) => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { update, setChatOnPage } = useAppAction();
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
-    const [sendMessage, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
+    const [textExist, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
 
     const visibility = useVisibility;
 
@@ -78,9 +79,21 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                         >
                             <BsFillArrowUpCircleFill id={`${styles.bottom_button}`} />
                         </div>
-                        <div id={styles.button_input_block} onClick={sendMessage}>
+                        <div id={styles.button_input_block}>
                             <BsFillArrowUpCircleFill id={styles.button} />
                         </div>
+                        {navigator.mediaDevices && (
+                            <div
+                                id={styles.button_microphone_block}
+                                className={visibility(
+                                    styles.show_recover_button,
+                                    styles.hide_recover_button,
+                                    textExist,
+                                )}
+                            >
+                                <FaMicrophone id={styles.microphone} />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -55,7 +55,7 @@
     align-items: end;
 }
 
-#button_emoji_block, #button_input_block{
+#button_emoji_block, #button_input_block, #button_microphone_block{
     display: grid;
     justify-content: center;
     align-items: center;
@@ -69,7 +69,7 @@
     }
 }
 
-#button_input_block{
+#button_input_block, #button_microphone_block{
     padding: 4px;
 }
 
@@ -78,16 +78,26 @@
     align-items: end;
 }
 
-#button_input_block{
+#button_input_block, #button_microphone_block{
     @media(width < 600px) {
         border-radius: 15px 0 0 15px;
     }
 }
 
-#button_input_block:hover{
+#button_microphone_block{
+    /*background-color: #0098ea;*/
+}
+
+#button_input_block:hover, #button_microphone_block:hover{
     @media(width >= 600px) {
         background-color: #d0e7fb;
     }
+}
+
+#button_microphone_block{
+    position: absolute;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .button_block_active, #button_emoji_block:hover {
@@ -158,6 +168,15 @@
     color: #0098ea;
 }
 
+#microphone{
+    font-size: 18px;
+    color: white;
+    background-color: #0098ea;
+    padding: 10px;
+    border-radius: 50px;
+    transition: background .3s ease;
+}
+
 #bottom_button_background{
     display: grid;
     justify-content: center;
@@ -193,6 +212,14 @@
 
 .hide_bottom_button{
     animation: hide_bottom_button .2s linear forwards;
+}
+
+.show_recover_button{
+    animation: show_recover_button .2s linear forwards;
+}
+
+.hide_recover_button{
+    animation: hide_recover_button .2s linear forwards;
 }
 
 @keyframes show_slowly{
@@ -246,5 +273,30 @@
         opacity: 0.2;
         transform: translateY(0) rotate(0deg);
         color: var(--menu-color);
+    }
+}
+
+@keyframes show_recover_button{
+    from {
+        visibility: visible;
+        opacity: 1;
+        filter: none;
+    }
+    to {
+        filter: blur(4px);
+        visibility: hidden;
+        opacity: 0.2;
+    }
+}
+@keyframes hide_recover_button{
+    from {
+        visibility: hidden;
+        opacity: 0.2;
+        filter: blur(4px);
+    }
+    to {
+        filter: none;
+        visibility: visible;
+        opacity: 1;
     }
 }

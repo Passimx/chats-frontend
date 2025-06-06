@@ -3,7 +3,7 @@ import { useUpdateChat } from '../../../store/app/hooks/use-update-chat.hook.ts'
 import { DataType } from '../../../types/events/event-data.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
-import { getRawChat } from '../../../store/chats/chats.raw.ts';
+import { getRawChat, getRawChats } from '../../../store/chats/chats.raw.ts';
 import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 import { useCustomNavigate } from '../../../../common/hooks/use-custom-navigate.hook.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
@@ -12,7 +12,7 @@ export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
     const navigate = useCustomNavigate();
     const [playNotificationSound] = useLoadSoundsHooks();
-    const { updateMany, setStateApp, createMessage, removeChat, update } = useAppAction();
+    const { updateMany, setStateApp, setStateChat, createMessage, removeChat, update } = useAppAction();
 
     return (dataEvent: DataType) => {
         const { event, data } = dataEvent;
@@ -80,5 +80,16 @@ export const useAppEvents = () => {
             default:
                 break;
         }
+
+        // todo
+        // фигня - неправильно работает
+        setTimeout(() => {
+            let messageCount = 0;
+            getRawChats().forEach((chat) => {
+                messageCount += chat.countMessages - chat.readMessage;
+            });
+
+            if (messageCount) setStateChat({ messageCount: messageCount.toString() });
+        }, 100);
     };
 };
