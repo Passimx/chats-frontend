@@ -12,6 +12,11 @@ html{
     position: absolute;
     height: calc(100% - var(--menu-height));
     width: 100%;
+
+    @media(width < 600px) {
+        -webkit-user-select: none;
+        user-select: none;
+    }
 }
 
 #page_block{
