@@ -70,8 +70,8 @@ export const useEnterHook = (): UseEnterHookType => {
     }, [chatOnPage?.id, textExist]);
 
     const sendMessage = useCallback(async () => {
-        if (!chatOnPage?.id) return;
         alert(2);
+        if (!chatOnPage?.id) return;
         const element = document.getElementById(styles.new_message)!;
         const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
 
