@@ -8,7 +8,7 @@ import { upsertChatIndexDb } from '../../../store/chats/index-db/hooks.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 
 export const useListenAndUpdateChats = () => {
-    const { setStateApp, setToBegin, postMessageToBroadCastChannel } = useAppAction();
+    const { setStateApp, setToBegin, calculateMessageCount, postMessageToBroadCastChannel } = useAppAction();
     const { socketId, isLoadedChatsFromIndexDb, isOnline } = useAppSelector((state) => state.app);
 
     const compareFn = useCallback((chat1: ChatType, chat2: ChatType) => {
@@ -50,12 +50,17 @@ export const useListenAndUpdateChats = () => {
                     const updatedChat: ChatItemIndexDb = { ...chatFromRaw, ...chat };
 
                     if (updatedChat.countMessages > chatFromRaw.countMessages) {
+                        const readMessage = chatFromRaw.readMessage - (chat.countMessages - chatFromRaw.countMessages);
                         isPlayNotification = true;
                         setToBegin(updatedChat);
+                        calculateMessageCount({
+                            id: chat.id,
+                            readMessage,
+                        });
                     }
                     upsertChatIndexDb(updatedChat);
-                    if (isPlayNotification) postMessageToBroadCastChannel({ event: EventsEnum.PLAY_NOTIFICATION });
                 });
+                if (isPlayNotification) postMessageToBroadCastChannel({ event: EventsEnum.PLAY_NOTIFICATION });
                 setStateApp({ isListening: true });
             })
             .catch(() => setStateApp({ isListening: false }));

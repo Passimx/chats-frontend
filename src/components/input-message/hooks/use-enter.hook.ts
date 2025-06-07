@@ -23,8 +23,9 @@ export const useEnterHook = (): UseEnterHookType => {
 
     const placeholder = useMemo((): string => {
         const text = chatOnPage?.type === ChatEnum.IS_SYSTEM ? 'chats_message_unavailable' : 'chats_enter_message';
+        if (isRecovering) return 'Запись';
         return t(text);
-    }, [chatOnPage?.type, t]);
+    }, [chatOnPage?.type, t, isRecovering]);
 
     const onInput = useCallback(() => {
         const el = document.getElementById(styles.new_message)!;
@@ -69,9 +70,21 @@ export const useEnterHook = (): UseEnterHookType => {
         setIsShowPlaceholder(!text);
         setTextExist(!!text);
 
+        if (isRecovering && mediaRecorder) {
+            mediaRecorder.stop();
+        }
+
         // 300 - время анимации, иначе быстро отрабатывает анимация
         if (!isPhone) setTimeout(() => focusToEnd(element), 300);
     }, [chatOnPage?.id, isPhone]);
+
+    useEffect(() => {
+        if (!chatOnPage) return;
+        const element = document.getElementById(styles.new_message)!;
+        if (isRecovering) {
+            element.removeAttribute('contentEditable');
+        } else element.setAttribute('contentEditable', `${chatOnPage.type !== ChatEnum.IS_SYSTEM}`);
+    }, [isRecovering, chatOnPage]);
 
     useEffect(() => {
         if (chatOnPage?.type === ChatEnum.IS_SYSTEM) return;
@@ -209,6 +222,7 @@ export const useEnterHook = (): UseEnterHookType => {
 
     const setEmoji = useCallback(
         (emoji: string) => {
+            if (isRecovering) return;
             const chatInput = document.getElementById(styles.new_message)!;
             const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
 
@@ -245,7 +259,7 @@ export const useEnterHook = (): UseEnterHookType => {
             else chatInput.blur();
             onInput();
         },
-        [chatOnPage?.id, isPhone, isOpenMobileKeyboard],
+        [chatOnPage?.id, isPhone, isOpenMobileKeyboard, isRecovering],
     );
 
     return [textExist, setEmoji, placeholder, isShowPlaceholder];

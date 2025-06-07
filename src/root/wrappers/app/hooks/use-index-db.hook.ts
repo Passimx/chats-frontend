@@ -4,7 +4,7 @@ import rawChats from '../../../store/chats/chats.raw.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 
 export const useIndexDbHook = () => {
-    const { setToEnd, setStateApp } = useAppAction();
+    const { setToEnd, setStateApp, setStateChat } = useAppAction();
 
     useEffect(() => {
         const openRequest = indexedDB?.open('store', 1);
@@ -18,7 +18,16 @@ export const useIndexDbHook = () => {
                 setToEnd([...request.result].reverse());
                 setStateApp({ isLoadedChatsFromIndexDb: true });
 
-                const systemChat = request.result.find((chat) => chat.type === ChatEnum.IS_SYSTEM);
+                let systemChat;
+                let messageCount = 0;
+
+                request.result.forEach((chat) => {
+                    messageCount += chat.countMessages - chat.readMessage;
+                    if (chat.type === ChatEnum.IS_SYSTEM) systemChat = chat;
+                });
+
+                if (messageCount) setStateChat({ messageCount });
+
                 if (systemChat) setStateApp({ isSystemChat: true });
                 else setStateApp({ isSystemChat: false });
             };

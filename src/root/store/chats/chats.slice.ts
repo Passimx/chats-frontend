@@ -5,10 +5,12 @@ import rawChats, { deleteChat, getRawChat, updateRawChat } from './chats.raw.ts'
 import { deleteChatIndexDb, updateChatIndexDb, upsertChatIndexDb } from './index-db/hooks.ts';
 import { MessageType } from '../../types/chat/message.type.ts';
 import { UpdateChat } from './types/update-chat.type.ts';
+import { UpdateReadChatType } from '../../types/chat/update-read-chat.type.ts';
 
 const initialState: StateType = {
     chats: [],
     updatedChats: [],
+    messageCount: 0,
 };
 
 const ChatsSlice = createSlice({
@@ -49,6 +51,7 @@ const ChatsSlice = createSlice({
         createMessage(state, { payload }: PayloadAction<MessageType>) {
             const chatFromState = getRawChat(payload.chatId);
             if (chatFromState) {
+                state.messageCount = state.messageCount + 1;
                 let messages = chatFromState.messages;
                 if (chatFromState?.messages[0]?.number === payload.number - 1) messages = [payload, ...messages];
 
@@ -104,8 +107,9 @@ const ChatsSlice = createSlice({
         },
 
         removeChat(state, { payload }: PayloadAction<string>) {
-            const chat = getRawChat(payload);
-            if (!chat) return;
+            const chat = getRawChat(payload)!;
+            const diff = chat.countMessages - chat.readMessage;
+            state.messageCount = state.messageCount - diff;
             deleteChatIndexDb(payload);
 
             deleteChat(payload);
@@ -117,6 +121,12 @@ const ChatsSlice = createSlice({
             for (const [key, value] of Object.entries(payload) as [keyof StateType, StateType[keyof StateType]][]) {
                 state[key] = value as never;
             }
+        },
+
+        calculateMessageCount(state, { payload: { id, readMessage } }: PayloadAction<UpdateReadChatType>) {
+            const chat = getRawChat(id)!;
+            const diff = readMessage - chat.readMessage;
+            state.messageCount = state.messageCount - diff;
         },
     },
 });
