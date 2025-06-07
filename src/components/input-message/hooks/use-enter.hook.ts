@@ -121,6 +121,7 @@ export const useEnterHook = (): UseEnterHookType => {
         const buttonStartRecover = document.getElementById(styles.microphone)!;
         const sendMessageButton = document.getElementById(styles.button_input_block)!;
         const microphoneButton = document.getElementById(styles.button_microphone_block);
+        const buttonMicrophoneDelete = document.getElementById(styles.button_microphone_delete);
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
         const preventDefault = (event: KeyboardEvent) => {
@@ -174,6 +175,10 @@ export const useEnterHook = (): UseEnterHookType => {
             background.style.paddingBottom = 'env(safe-area-inset-bottom, 32px)';
         };
 
+        const stopRecover = async () => {
+            if (mediaRecorder) mediaRecorder.stop();
+        };
+
         const startRecover = async () => {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -184,7 +189,7 @@ export const useEnterHook = (): UseEnterHookType => {
                 return;
             }
 
-            buttonStartRecover.style.background = 'red';
+            buttonStartRecover.classList.add(styles.recover_color);
             setIsRecovering(true);
             mediaRecorder = new MediaRecorder(stream);
 
@@ -194,7 +199,7 @@ export const useEnterHook = (): UseEnterHookType => {
 
             mediaRecorder.onstop = () => {
                 if (stream) stream.getTracks().forEach((track) => track.stop());
-                buttonStartRecover.style.background = '#0098ea';
+                buttonStartRecover.classList.remove(styles.recover_color);
                 setIsRecovering(false);
 
                 // todo
@@ -221,6 +226,7 @@ export const useEnterHook = (): UseEnterHookType => {
         element.addEventListener('input', onInput);
         sendMessageButton.addEventListener('click', sendMessage);
         microphoneButton?.addEventListener('mousedown', startRecover);
+        buttonMicrophoneDelete?.addEventListener('mousedown', stopRecover);
         if (isStandalone && isPhone) {
             element.addEventListener('focus', mobileFocus);
             element.addEventListener('focusout', mobileFocusOut);
@@ -233,6 +239,7 @@ export const useEnterHook = (): UseEnterHookType => {
             element.removeEventListener('input', onInput);
             sendMessageButton.removeEventListener('click', sendMessage);
             microphoneButton?.removeEventListener('mousedown', startRecover);
+            buttonMicrophoneDelete?.removeEventListener('mousedown', stopRecover);
 
             if (isStandalone && isPhone) {
                 element.removeEventListener('focus', mobileFocus);
@@ -283,5 +290,5 @@ export const useEnterHook = (): UseEnterHookType => {
         [chatOnPage?.id, isPhone, isOpenMobileKeyboard, isRecovering],
     );
 
-    return [textExist, setEmoji, placeholder, isShowPlaceholder];
+    return [textExist, recoveringTime, setEmoji, placeholder, isShowPlaceholder];
 };

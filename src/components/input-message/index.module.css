@@ -55,7 +55,7 @@
     align-items: end;
 }
 
-#button_emoji_block, #button_input_block, #button_microphone_block{
+#button_emoji_block, #button_input_block, #button_microphone_block, #button_microphone_delete{
     display: grid;
     justify-content: center;
     align-items: center;
@@ -69,7 +69,7 @@
     }
 }
 
-#button_input_block, #button_microphone_block{
+#button_input_block, #button_microphone_block, #button_microphone_delete{
     padding: 4px;
 }
 
@@ -78,26 +78,26 @@
     align-items: end;
 }
 
-#button_input_block, #button_microphone_block{
+#button_input_block, #button_microphone_block, #button_microphone_delete{
     @media(width < 600px) {
         border-radius: 15px 0 0 15px;
     }
 }
 
-#button_microphone_block{
-    /*background-color: #0098ea;*/
-}
-
-#button_input_block:hover, #button_microphone_block:hover{
+#button_input_block:hover, #button_microphone_block:hover, #button_microphone_delete:hover{
     @media(width >= 600px) {
         background-color: #d0e7fb;
     }
 }
 
-#button_microphone_block{
+#button_microphone_block, #button_microphone_delete{
     position: absolute;
     user-select: none;
     -webkit-user-select: none;
+}
+
+#button_microphone_delete{
+    margin-left: -46px;
 }
 
 .button_block_active, #button_emoji_block:hover {
@@ -177,6 +177,15 @@
     transition: background .3s ease;
 }
 
+#microphone_stop{
+    font-size: 18px;
+    color: white;
+    background-color: red;
+    padding: 10px;
+    border-radius: 50px;
+    transition: background .3s ease;
+}
+
 #bottom_button_background{
     display: grid;
     justify-content: center;
@@ -238,6 +247,10 @@
 
 .hide_recover_button{
     animation: hide_recover_button .2s linear forwards;
+}
+
+.recover_color{
+    animation: recover_color 1s linear alternate infinite;
 }
 
 @keyframes show_slowly{
@@ -306,6 +319,7 @@
         opacity: 0.2;
     }
 }
+
 @keyframes hide_recover_button{
     from {
         visibility: hidden;
@@ -316,5 +330,15 @@
         filter: none;
         visibility: visible;
         opacity: 1;
+    }
+}
+
+
+@keyframes recover_color{
+    from {
+        background-color: var(--menu-color);
+    }
+    to {
+        background-color: red;
     }
 }
