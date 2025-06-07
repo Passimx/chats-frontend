@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import styles from './index.module.css';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { ParentMessage } from '../parent-message';
@@ -13,17 +13,23 @@ import useVisibility from '../../common/hooks/use-visibility.ts';
 import { FaMicrophone } from 'react-icons/fa';
 
 export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomButton }) => {
+    const visibility = useVisibility;
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { update, setChatOnPage } = useAppAction();
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
     const [textExist, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
 
-    const visibility = useVisibility;
-
     const cancelAnswerMessage = useCallback(() => {
         if (!chatOnPage?.id) return;
         if (getRawChat(chatOnPage.id)) update({ id: chatOnPage.id, answerMessage: undefined });
         else setChatOnPage({ answerMessage: undefined });
+    }, [chatOnPage]);
+
+    const readMessages = useMemo(() => {
+        if (!chatOnPage?.readMessage) return undefined;
+        const diff = chatOnPage.countMessages - chatOnPage.readMessage;
+        if (diff === 0) return undefined;
+        return diff;
     }, [chatOnPage]);
 
     return (
@@ -78,6 +84,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                             onClick={showLastMessages}
                         >
                             <BsFillArrowUpCircleFill id={`${styles.bottom_button}`} />
+                            {readMessages && <div id={styles.button_count}>{readMessages}</div>}
                         </div>
                         <div id={styles.button_input_block}>
                             <BsFillArrowUpCircleFill id={styles.button} />

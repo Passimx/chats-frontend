@@ -198,6 +198,25 @@
     color: var(--menu-color);
 }
 
+#button_count{
+    position: absolute;
+    background-color: #0a4375;
+    color: white;
+    font-size: 12px;
+    border-radius: 20px;
+    padding: 2px;
+    height: 20px;
+    min-width: 20px;
+    bottom:0;
+    margin-bottom: -10px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(0) rotate(180deg);
+    border: 1px solid white;;
+    /*border: 1px solid #0a4375;;*/
+}
+
 .show_slowly{
     animation: show_slowly 0.2s linear forwards;
 }
