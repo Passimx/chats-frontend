@@ -70,7 +70,6 @@ export const useEnterHook = (): UseEnterHookType => {
     }, [chatOnPage?.id, textExist]);
 
     const sendMessage = useCallback(async () => {
-        alert(2);
         if (!chatOnPage?.id) return;
         const element = document.getElementById(styles.new_message)!;
         const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
@@ -120,7 +119,7 @@ export const useEnterHook = (): UseEnterHookType => {
         const element = document.getElementById(styles.new_message)!;
         const background = document.getElementById(styles.background)!;
         const buttonStartRecover = document.getElementById(styles.microphone)!;
-        const sendMessageButton = document.getElementById(styles.button_input_block)!;
+        // const sendMessageButton = document.getElementById(styles.button_input_block)!;
         const microphoneButton = document.getElementById(styles.button_microphone_block);
         const buttonMicrophoneDelete = document.getElementById(styles.button_microphone_delete);
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
@@ -225,7 +224,7 @@ export const useEnterHook = (): UseEnterHookType => {
         element.addEventListener('keyup', send);
         element.addEventListener('paste', paste);
         element.addEventListener('input', onInput);
-        sendMessageButton.addEventListener('click', sendMessage);
+        // sendMessageButton.addEventListener('click', sendMessage);
         microphoneButton?.addEventListener('mousedown', startRecover);
         buttonMicrophoneDelete?.addEventListener('mousedown', stopRecover);
         if (isStandalone && isPhone) {
@@ -238,7 +237,7 @@ export const useEnterHook = (): UseEnterHookType => {
             element.removeEventListener('keyup', send);
             element.removeEventListener('paste', paste);
             element.removeEventListener('input', onInput);
-            sendMessageButton.removeEventListener('click', sendMessage);
+            // sendMessageButton.removeEventListener('click', sendMessage);
             microphoneButton?.removeEventListener('mousedown', startRecover);
             buttonMicrophoneDelete?.removeEventListener('mousedown', stopRecover);
 
