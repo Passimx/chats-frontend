@@ -171,9 +171,9 @@ export const useEnterHook = (): UseEnterHookType => {
             background.style.paddingBottom = '0px';
         };
 
-        const mobileFocusOut = () => {
-            background.style.paddingBottom = 'env(safe-area-inset-bottom, 32px)';
-        };
+        // const mobileFocusOut = () => {
+        //     background.style.paddingBottom = 'env(safe-area-inset-bottom, 32px)';
+        // };
 
         const stopRecover = async () => {
             if (mediaRecorder) mediaRecorder.stop();
@@ -229,7 +229,7 @@ export const useEnterHook = (): UseEnterHookType => {
         buttonMicrophoneDelete?.addEventListener('mousedown', stopRecover);
         if (isStandalone && isPhone) {
             element.addEventListener('focus', mobileFocus);
-            element.addEventListener('focusout', mobileFocusOut);
+            // element.addEventListener('focusout', mobileFocusOut);
         }
 
         return () => {
@@ -243,7 +243,7 @@ export const useEnterHook = (): UseEnterHookType => {
 
             if (isStandalone && isPhone) {
                 element.removeEventListener('focus', mobileFocus);
-                element.removeEventListener('focusout', mobileFocusOut);
+                // element.removeEventListener('focusout', mobileFocusOut);
             }
         };
     }, [chatOnPage?.id, isPhone, sendMessage, isRecovering]);
