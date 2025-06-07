@@ -70,7 +70,6 @@ export const useEnterHook = (): UseEnterHookType => {
     }, [chatOnPage?.id, textExist]);
 
     const sendMessage = useCallback(async () => {
-        alert(2);
         if (!chatOnPage?.id) return;
         const element = document.getElementById(styles.new_message)!;
         const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
@@ -225,27 +224,27 @@ export const useEnterHook = (): UseEnterHookType => {
         element.addEventListener('keyup', send);
         element.addEventListener('paste', paste);
         element.addEventListener('input', onInput);
-        sendMessageButton.addEventListener('click', sendMessage);
         microphoneButton?.addEventListener('mousedown', startRecover);
         buttonMicrophoneDelete?.addEventListener('mousedown', stopRecover);
         if (isStandalone && isPhone) {
             element.addEventListener('focus', mobileFocus);
             element.addEventListener('focusout', mobileFocusOut);
-        }
+            sendMessageButton.addEventListener('touchend', sendMessage);
+        } else sendMessageButton.addEventListener('click', sendMessage);
 
         return () => {
             element.removeEventListener('keypress', preventDefault);
             element.removeEventListener('keyup', send);
             element.removeEventListener('paste', paste);
             element.removeEventListener('input', onInput);
-            sendMessageButton.removeEventListener('click', sendMessage);
             microphoneButton?.removeEventListener('mousedown', startRecover);
             buttonMicrophoneDelete?.removeEventListener('mousedown', stopRecover);
 
             if (isStandalone && isPhone) {
                 element.removeEventListener('focus', mobileFocus);
                 element.removeEventListener('focusout', mobileFocusOut);
-            }
+                sendMessageButton.removeEventListener('touchend', sendMessage);
+            } else sendMessageButton.removeEventListener('click', sendMessage);
         };
     }, [chatOnPage?.id, isPhone, sendMessage, isRecovering]);
 
