@@ -3,16 +3,16 @@ import { useUpdateChat } from '../../../store/app/hooks/use-update-chat.hook.ts'
 import { DataType } from '../../../types/events/event-data.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
-import { getRawChat } from '../../../store/chats/chats.raw.ts';
 import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 import { useCustomNavigate } from '../../../../common/hooks/use-custom-navigate.hook.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
+import { getRawChat } from '../../../store/chats/chats.raw.ts';
 
 export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
     const navigate = useCustomNavigate();
     const [playNotificationSound] = useLoadSoundsHooks();
-    const { updateMany, setStateApp, createMessage, removeChat, update } = useAppAction();
+    const { updateMany, setStateApp, calculateMessageCount, createMessage, removeChat, update } = useAppAction();
 
     return (dataEvent: DataType) => {
         const { event, data } = dataEvent;
@@ -26,6 +26,7 @@ export const useAppEvents = () => {
             case EventsEnum.ADD_CHAT:
                 setToBegin(data);
                 if (data.type === ChatEnum.IS_SYSTEM) setStateApp({ isSystemChat: true });
+                playNotificationSound();
                 break;
             case EventsEnum.CREATE_CHAT:
                 if (!data.success) break;
@@ -38,6 +39,7 @@ export const useAppEvents = () => {
                     scrollTop: 0,
                 });
                 navigate(`/${data.data.id}`);
+                playNotificationSound();
                 break;
             case EventsEnum.CREATE_MESSAGE:
                 if (!data.success) break;
@@ -48,6 +50,7 @@ export const useAppEvents = () => {
 
                 break;
             case EventsEnum.READ_MESSAGE:
+                calculateMessageCount(data);
                 update(data);
                 break;
             case EventsEnum.REMOVE_CHAT:
@@ -68,6 +71,9 @@ export const useAppEvents = () => {
             case EventsEnum.CLOSE_SOCKET:
                 setStateApp({ socketId: undefined });
                 setStateApp({ isListening: false });
+                break;
+            case EventsEnum.PLAY_NOTIFICATION:
+                playNotificationSound();
                 break;
             case EventsEnum.ERROR:
                 console.log(`${'\x1B[31m'}error: ${data}${'\x1B[31m'}`);

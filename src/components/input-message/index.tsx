@@ -1,21 +1,24 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import styles from './index.module.css';
-import { BsEmojiSmile, BsFillArrowUpCircleFill } from 'react-icons/bs';
-import useVisibility from '../../common/hooks/use-visibility.ts';
-import { useEnterHook } from './hooks/use-enter.hook.ts';
-import Emoji from '../emoji';
 import { useAppAction, useAppSelector } from '../../root/store';
-import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
-import { PropsType } from './types/props.type.ts';
 import { ParentMessage } from '../parent-message';
 import { GiCancel } from 'react-icons/gi';
 import { getRawChat } from '../../root/store/chats/chats.raw.ts';
+import { BsEmojiSmile, BsFillArrowUpCircleFill } from 'react-icons/bs';
+import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
+import Emoji from '../emoji';
+import { useEnterHook } from './hooks/use-enter.hook.ts';
+import { PropsType } from './types/props.type.ts';
+import useVisibility from '../../common/hooks/use-visibility.ts';
+import { FaMicrophone } from 'react-icons/fa';
+import { MdDelete } from 'react-icons/md';
 
-const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }) => {
-    const [sendMessage, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
+export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomButton }) => {
+    const visibility = useVisibility;
+    const { chatOnPage } = useAppSelector((state) => state.chats);
     const { update, setChatOnPage } = useAppAction();
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
-    const { chatOnPage } = useAppSelector((state) => state.chats);
+    const [textExist, recoveringTime, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
 
     const cancelAnswerMessage = useCallback(() => {
         if (!chatOnPage?.id) return;
@@ -23,28 +26,34 @@ const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }
         else setChatOnPage({ answerMessage: undefined });
     }, [chatOnPage]);
 
-    useEffect(() => {
-        if (isVisibleEmoji) setIsVisibleEmoji(false);
-    }, [chatOnPage?.id]);
-
-    const visibility = useVisibility;
+    const readMessages = useMemo(() => {
+        if (!chatOnPage?.readMessage) return undefined;
+        const diff = chatOnPage.countMessages - chatOnPage.readMessage;
+        if (diff === 0) return undefined;
+        return diff;
+    }, [chatOnPage]);
 
     return (
-        <div id={styles.write_message}>
-            <div id={styles.message_inputs}>
-                <Emoji setEmoji={setEmoji} isVisibleOutside={isVisibleEmoji} setIsVisibleOutside={setIsVisibleEmoji} />
-                <div id={styles.input_block}>
-                    {chatOnPage?.answerMessage && (
-                        <div id={styles.answer_block}>
-                            <ParentMessage {...chatOnPage?.answerMessage} />
-                            <div id={styles.answer_block_cancel} onClick={cancelAnswerMessage}>
-                                <GiCancel id={styles.answer_block_cancel_icon} />
-                            </div>
+        <div id={styles.background}>
+            <div id={styles.main_block}>
+                {chatOnPage?.answerMessage && (
+                    <div id={styles.answer_block}>
+                        <ParentMessage {...chatOnPage?.answerMessage} />
+                        <div id={styles.answer_block_cancel} onClick={cancelAnswerMessage}>
+                            <GiCancel id={styles.answer_block_cancel_icon} />
                         </div>
-                    )}
-                    <div id={styles.text_block}>
+                    </div>
+                )}
+                <div id={styles.inputs}>
+                    <Emoji
+                        setEmoji={setEmoji}
+                        isVisibleOutside={isVisibleEmoji}
+                        setIsVisibleOutside={setIsVisibleEmoji}
+                    />
+                    <div className={styles.button_inputs_background}>
                         <div
-                            className={`${styles.button_block} ${isVisibleEmoji && styles.button_block_active}`}
+                            id={styles.button_emoji_block}
+                            className={`${isVisibleEmoji && styles.button_block_active}`}
                             onClick={(event) => {
                                 event.preventDefault();
                                 if (chatOnPage?.type !== ChatEnum.IS_SYSTEM) setIsVisibleEmoji(true);
@@ -53,39 +62,61 @@ const InputMessage: FC<PropsType> = ({ isVisibleBottomButton, showLastMessages }
                                 event.preventDefault();
                             }}
                         >
-                            <div className={styles.button_emoji_background}>
-                                <BsEmojiSmile className={styles.button_emoji} />
-                            </div>
-                        </div>
-                        <div id={styles.new_message_block}>
-                            <div
-                                className={`${styles.placeholder_text} ${useVisibility(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)} text_translate`}
-                                dir="auto"
-                            >
-                                {placeholder}
-                            </div>
-                            <div
-                                id={styles.new_message}
-                                contentEditable={chatOnPage?.type !== ChatEnum.IS_SYSTEM}
-                                dir="auto"
-                            ></div>
+                            <BsEmojiSmile className={styles.button_emoji} />
                         </div>
                     </div>
-                </div>
-                <div className={styles.buttons}>
-                    <div
-                        className={`${styles.bottom_button_background} ${visibility(styles.show_bottom_button, styles.hide_bottom_button, isVisibleBottomButton)}`}
-                        onClick={showLastMessages}
-                    >
-                        <BsFillArrowUpCircleFill className={`${styles.bottom_button}`} />
+                    <div id={styles.new_message_block}>
+                        <div
+                            className={`${styles.placeholder_text} ${useVisibility(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)} text_translate`}
+                            dir="auto"
+                        >
+                            {placeholder}
+                        </div>
+                        <div
+                            id={styles.new_message}
+                            contentEditable={chatOnPage?.type !== ChatEnum.IS_SYSTEM}
+                            dir="auto"
+                        ></div>
                     </div>
-                    <div className={styles.button_background} onClick={sendMessage}>
-                        <BsFillArrowUpCircleFill className={`${styles.button}`} />
+                    <div id={styles.button_input_background}>
+                        <div
+                            id={styles.bottom_button_background}
+                            className={`${visibility(styles.show_bottom_button, styles.hide_bottom_button, isVisibleBottomButton)}`}
+                            onClick={showLastMessages}
+                        >
+                            <BsFillArrowUpCircleFill id={`${styles.bottom_button}`} />
+                            {readMessages && <div id={styles.button_count}>{readMessages}</div>}
+                        </div>
+                        <div id={styles.button_input_block} onClick={() => alert(123)}>
+                            <BsFillArrowUpCircleFill id={styles.button} />
+                        </div>
+                        {navigator.mediaDevices && (
+                            <>
+                                <div
+                                    id={styles.button_microphone_delete}
+                                    className={visibility(
+                                        styles.show_recover_button,
+                                        styles.hide_recover_button,
+                                        !recoveringTime,
+                                    )}
+                                >
+                                    <MdDelete id={styles.microphone_stop} />
+                                </div>
+                                <div
+                                    id={styles.button_microphone_block}
+                                    className={visibility(
+                                        styles.show_recover_button,
+                                        styles.hide_recover_button,
+                                        textExist,
+                                    )}
+                                >
+                                    <FaMicrophone id={styles.microphone} />
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
         </div>
     );
 };
-
-export default InputMessage;

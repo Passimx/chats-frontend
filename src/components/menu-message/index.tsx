@@ -2,20 +2,21 @@ import { FC, memo, useCallback, useContext, useEffect, useRef } from 'react';
 import styles from './index.module.css';
 import { PiArrowBendUpLeftFill } from 'react-icons/pi';
 import { IoCopyOutline } from 'react-icons/io5';
-import { ChatContext } from '../../pages/chat';
 import useVisibility from '../../common/hooks/use-visibility.ts';
 import { GoLink } from 'react-icons/go';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { getRawChat } from '../../root/store/chats/chats.raw.ts';
 import { MessageType } from '../../root/types/chat/message.type.ts';
 import { useTranslation } from 'react-i18next';
+import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
+import { ContextChat } from '../../pages/chat/context/chat-context.tsx';
 
 export const MenuMessage: FC = memo(() => {
     const visibility = useVisibility;
     const { t } = useTranslation();
     const ref = useRef<HTMLDivElement>(null);
     const { isPhone } = useAppSelector((state) => state.app);
-    const { clickMessage, isShowMessageMenu, setIsShowMessageMenu } = useContext(ChatContext)!;
+    const { clickMessage, isShowMessageMenu, setIsShowMessageMenu } = useContext(ContextChat)!;
     const { update, setChatOnPage } = useAppAction();
 
     const answerMessage = useCallback(() => {
@@ -64,8 +65,10 @@ export const MenuMessage: FC = memo(() => {
             }
         };
 
-        document.addEventListener('click', handleClickOutside, false);
-        return () => document.removeEventListener('click', handleClickOutside, false);
+        if (isShowMessageMenu) document.addEventListener('click', handleClickOutside, false);
+        return () => {
+            if (isShowMessageMenu) document.removeEventListener('click', handleClickOutside, false);
+        };
     }, [isShowMessageMenu]);
 
     return (
@@ -74,10 +77,12 @@ export const MenuMessage: FC = memo(() => {
             className={visibility(styles.show_slowly, styles.hide_slowly, isShowMessageMenu)}
             ref={ref}
         >
-            <div className={styles.message_menu_item} onClick={answerMessage}>
-                <PiArrowBendUpLeftFill className={styles.message_menu_item_icon} />
-                {t('reply')}
-            </div>
+            {clickMessage?.type !== MessageTypeEnum.IS_SYSTEM && (
+                <div className={styles.message_menu_item} onClick={answerMessage}>
+                    <PiArrowBendUpLeftFill className={styles.message_menu_item_icon} />
+                    {t('reply')}
+                </div>
+            )}
             <div className={styles.message_menu_item} onClick={copyMessage}>
                 <IoCopyOutline className={styles.message_menu_item_icon} />
                 {t('copy_text')}

@@ -5,9 +5,10 @@ import { ChatListenRequestType } from '../../../types/chat/chat-listen-request.t
 import rawChats, { getRawChat, getRawChats } from '../../../store/chats/chats.raw.ts';
 import { ChatItemIndexDb, ChatType } from '../../../types/chat/chat.type.ts';
 import { upsertChatIndexDb } from '../../../store/chats/index-db/hooks.ts';
+import { EventsEnum } from '../../../types/events/events.enum.ts';
 
 export const useListenAndUpdateChats = () => {
-    const { setStateApp, setToBegin } = useAppAction();
+    const { setStateApp, setToBegin, calculateMessageCount, postMessageToBroadCastChannel } = useAppAction();
     const { socketId, isLoadedChatsFromIndexDb, isOnline } = useAppSelector((state) => state.app);
 
     const compareFn = useCallback((chat1: ChatType, chat2: ChatType) => {
@@ -37,6 +38,7 @@ export const useListenAndUpdateChats = () => {
 
         listenChats(chatsListen)
             .then(({ success, data }) => {
+                let isPlayNotification = false;
                 const indexDb = rawChats.indexDb;
                 if (!indexDb) return;
                 if (!success) return;
@@ -47,9 +49,18 @@ export const useListenAndUpdateChats = () => {
                     if (!chatFromRaw) return;
                     const updatedChat: ChatItemIndexDb = { ...chatFromRaw, ...chat };
 
-                    if (updatedChat.countMessages > chatFromRaw.countMessages) setToBegin(updatedChat);
+                    if (updatedChat.countMessages > chatFromRaw.countMessages) {
+                        const readMessage = chatFromRaw.readMessage - (chat.countMessages - chatFromRaw.countMessages);
+                        isPlayNotification = true;
+                        setToBegin(updatedChat);
+                        calculateMessageCount({
+                            id: chat.id,
+                            readMessage,
+                        });
+                    }
                     upsertChatIndexDb(updatedChat);
                 });
+                if (isPlayNotification) postMessageToBroadCastChannel({ event: EventsEnum.PLAY_NOTIFICATION });
                 setStateApp({ isListening: true });
             })
             .catch(() => setStateApp({ isListening: false }));

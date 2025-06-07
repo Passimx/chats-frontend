@@ -27,9 +27,14 @@ type CloseSocket = {
     readonly data?: unknown;
 };
 
+type PlayNotification = {
+    readonly event: EventsEnum.PLAY_NOTIFICATION;
+    readonly data?: unknown;
+};
+
 type Error = {
     readonly event: EventsEnum.ERROR;
     readonly data: string;
 };
 
-export type LocalEvents = ReadMessage | AddChat | RemoveChat | UpdateBadge | CloseSocket | Error;
+export type LocalEvents = ReadMessage | AddChat | RemoveChat | UpdateBadge | CloseSocket | PlayNotification | Error;

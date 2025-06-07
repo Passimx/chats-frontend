@@ -34,7 +34,8 @@ export const useListenScroll = (messages: MessageType[]): [boolean | undefined] 
             scrollTimeout = setTimeout(() => {
                 const scrollTop = el.scrollTop;
                 if (chatOnPage?.id !== messages[0]?.chatId) return;
-                updateChatIndexDb({ ...chatOnPage, messages, scrollTop });
+                update({ id: chatOnPage.id, scrollTop });
+                updateChatIndexDb({ ...chatOnPage, scrollTop });
             }, 150);
         };
 
@@ -43,7 +44,7 @@ export const useListenScroll = (messages: MessageType[]): [boolean | undefined] 
             const scrollTop = el.scrollTop;
             clearTimeout(scrollTimeout);
             el.removeEventListener('scroll', scroll);
-            update({ id: chatOnPage.id, messages, scrollTop });
+            update({ id: chatOnPage.id, scrollTop });
         };
     }, [chatOnPage?.id, messages, isVisibleBottomButton]);
 

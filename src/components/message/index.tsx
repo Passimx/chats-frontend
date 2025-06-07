@@ -6,14 +6,14 @@ import { useVisibility } from './hooks/use-visibility.hook.ts';
 import { RenderMessage } from '../render-message';
 import { ParentMessage } from '../parent-message';
 import styles2 from '../menu-message/index.module.css';
-import { ChatContext } from '../../pages/chat';
 import { useAppSelector } from '../../root/store';
+import { ContextChat } from '../../pages/chat/context/chat-context.tsx';
 
 const Message: FC<PropsType> = memo((props) => {
     const { number, type, findMessage } = props;
     const elementId = useMemo(() => `message-${number}`, [number]);
     const [observerTarget, visibleMessage, time] = useVisibility(props);
-    const { setClickMessage, setIsShowMessageMenu, isShowMessageMenu } = useContext(ChatContext)!;
+    const { setClickMessage, setIsShowMessageMenu, isShowMessageMenu } = useContext(ContextChat)!;
     const { isPhone } = useAppSelector((state) => state.app);
 
     useEffect(() => {
@@ -24,8 +24,10 @@ const Message: FC<PropsType> = memo((props) => {
             const y: number = event instanceof MouseEvent ? event.y : event.touches[0].clientY;
 
             event.preventDefault();
-            if (props.type === MessageTypeEnum.IS_CREATED_CHAT) return setIsShowMessageMenu(false);
-            // if (!isPhone) setIsShowMessageMenu(undefined);
+            if (props.type === MessageTypeEnum.IS_CREATED_CHAT) {
+                if (isShowMessageMenu) setIsShowMessageMenu(false);
+                return;
+            }
             setTimeout(() => setIsShowMessageMenu(true), 10);
             const element = document.getElementById(styles2.message_menu)!;
             const gap = '16px';

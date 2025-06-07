@@ -4,6 +4,8 @@
   "search": "搜索",
   "search_chats": "搜索聊天",
   "chats_enter_message": "消息...",
+  "messages": "消息",
+  "delete_chats": "删除聊天",
   "chats_message_unavailable": "无法发送消息 ",
   "create_open_chat": "公开聊天",
   "no_chats": "未找到聊天",
@@ -19,6 +21,7 @@
   "reply": "回复",
   "copy_text": "复制文本",
   "copy_message_link":"复制消息链接",
+  "recording": "录音",
 
   "description_open_chat": "公开聊天的主要目的是创建一个任何人都可以访问的交流渠道，可以绑定到网站域名、社交媒体个人资料链接或其他关键词。这种聊天模式是与更广泛的人群进行交流的最佳方式。",
   "description_shared_chat": "广播聊天允许特定人群进行交流，同时所有人都可以观看。这种聊天模式是将信息传播给大众的最佳解决方案。",

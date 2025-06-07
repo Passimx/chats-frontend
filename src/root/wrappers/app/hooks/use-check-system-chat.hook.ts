@@ -2,10 +2,8 @@ import { useAppAction, useAppSelector } from '../../../store';
 import { useEffect } from 'react';
 import { getSystemChat, listenChats } from '../../../api/chats';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
-import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 
 export const useCheckSystemChat = () => {
-    const [playNotificationSound] = useLoadSoundsHooks();
     const { postMessageToBroadCastChannel } = useAppAction();
     const { isSystemChat, isLoadedChatsFromIndexDb, isListening } = useAppSelector((state) => state.app);
 
@@ -22,7 +20,6 @@ export const useCheckSystemChat = () => {
             listenChats([
                 { chatId: chat.id, lastMessage: chat.countMessages, maxUsersOnline: Number(chat.maxUsersOnline) },
             ]);
-            playNotificationSound();
         }
     };
 
