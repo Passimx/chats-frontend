@@ -119,7 +119,7 @@ export const useEnterHook = (): UseEnterHookType => {
         const element = document.getElementById(styles.new_message)!;
         const background = document.getElementById(styles.background)!;
         const buttonStartRecover = document.getElementById(styles.microphone)!;
-        // const sendMessageButton = document.getElementById(styles.button_input_block)!;
+        const sendMessageButton = document.getElementById(styles.button_input_block)!;
         const microphoneButton = document.getElementById(styles.button_microphone_block);
         const buttonMicrophoneDelete = document.getElementById(styles.button_microphone_delete);
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
@@ -171,9 +171,9 @@ export const useEnterHook = (): UseEnterHookType => {
             background.style.paddingBottom = '0px';
         };
 
-        // const mobileFocusOut = () => {
-        //     background.style.paddingBottom = 'env(safe-area-inset-bottom, 32px)';
-        // };
+        const mobileFocusOut = () => {
+            background.style.paddingBottom = 'env(safe-area-inset-bottom, 32px)';
+        };
 
         const stopRecover = async () => {
             if (mediaRecorder) mediaRecorder.stop();
@@ -224,27 +224,27 @@ export const useEnterHook = (): UseEnterHookType => {
         element.addEventListener('keyup', send);
         element.addEventListener('paste', paste);
         element.addEventListener('input', onInput);
-        // sendMessageButton.addEventListener('click', sendMessage);
         microphoneButton?.addEventListener('mousedown', startRecover);
         buttonMicrophoneDelete?.addEventListener('mousedown', stopRecover);
         if (isStandalone && isPhone) {
             element.addEventListener('focus', mobileFocus);
-            // element.addEventListener('focusout', mobileFocusOut);
-        }
+            element.addEventListener('focusout', mobileFocusOut);
+            sendMessageButton.addEventListener('touchend', sendMessage);
+        } else sendMessageButton.addEventListener('click', sendMessage);
 
         return () => {
             element.removeEventListener('keypress', preventDefault);
             element.removeEventListener('keyup', send);
             element.removeEventListener('paste', paste);
             element.removeEventListener('input', onInput);
-            // sendMessageButton.removeEventListener('click', sendMessage);
             microphoneButton?.removeEventListener('mousedown', startRecover);
             buttonMicrophoneDelete?.removeEventListener('mousedown', stopRecover);
 
             if (isStandalone && isPhone) {
                 element.removeEventListener('focus', mobileFocus);
-                // element.removeEventListener('focusout', mobileFocusOut);
-            }
+                element.removeEventListener('focusout', mobileFocusOut);
+                sendMessageButton.removeEventListener('touchend', sendMessage);
+            } else sendMessageButton.removeEventListener('click', sendMessage);
         };
     }, [chatOnPage?.id, isPhone, sendMessage, isRecovering]);
 
