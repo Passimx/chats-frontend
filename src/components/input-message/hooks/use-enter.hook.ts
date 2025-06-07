@@ -71,6 +71,7 @@ export const useEnterHook = (): UseEnterHookType => {
 
     const sendMessage = useCallback(async () => {
         if (!chatOnPage?.id) return;
+        alert(2);
         const element = document.getElementById(styles.new_message)!;
         const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
 
