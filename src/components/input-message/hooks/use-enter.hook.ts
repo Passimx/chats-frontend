@@ -8,6 +8,7 @@ import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { getIsFocused } from './get-is-focused.hook.ts';
 import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
 import { focusToEnd } from '../common/focus-to-end.ts';
+import moment from 'moment/min/moment-with-locales';
 
 let mediaRecorder: MediaRecorder | undefined;
 let chunks: Blob[] = [];
@@ -20,12 +21,39 @@ export const useEnterHook = (): UseEnterHookType => {
     const { isPhone, isOpenMobileKeyboard } = useAppSelector((state) => state.app);
     const [textExist, setTextExist] = useState<boolean>(true);
     const [isRecovering, setIsRecovering] = useState<boolean>(false);
+    const [recoveringTime, setRecoveringTime] = useState<string>();
 
     const placeholder = useMemo((): string => {
         const text = chatOnPage?.type === ChatEnum.IS_SYSTEM ? 'chats_message_unavailable' : 'chats_enter_message';
-        if (isRecovering) return 'Запись';
+        if (isRecovering) return `${t('recording')}: ${recoveringTime}`;
         return t(text);
-    }, [chatOnPage?.type, t, isRecovering]);
+    }, [chatOnPage?.type, t, isRecovering, recoveringTime]);
+
+    useEffect(() => {
+        if (!isRecovering) return;
+        let handler: NodeJS.Timeout;
+        const startTime = Date.now();
+
+        const updateTime = () => {
+            const duration = moment.duration(Date.now() - startTime);
+
+            const minutes = Math.floor(duration.asMinutes()); // минуты
+            const seconds = duration.seconds(); // секунды (0-59)
+            const milliseconds = Math.floor(duration.milliseconds() / 10); // сотые доли (0-99)
+
+            setRecoveringTime(
+                `${minutes}:${seconds.toString().padStart(2, '0')},${milliseconds.toString().padStart(2, '0')}`,
+            );
+            handler = setTimeout(updateTime, 20);
+        };
+
+        updateTime();
+
+        return () => {
+            setRecoveringTime(undefined);
+            clearTimeout(handler);
+        };
+    }, [isRecovering]);
 
     const onInput = useCallback(() => {
         const el = document.getElementById(styles.new_message)!;
@@ -159,35 +187,28 @@ export const useEnterHook = (): UseEnterHookType => {
             buttonStartRecover.style.background = 'red';
             setIsRecovering(true);
             mediaRecorder = new MediaRecorder(stream);
-            let startTime: number, endTime;
-
-            mediaRecorder.onstart = () => (startTime = Date.now());
 
             mediaRecorder.ondataavailable = (event) => {
                 chunks.push(event.data);
             };
 
             mediaRecorder.onstop = () => {
+                if (stream) stream.getTracks().forEach((track) => track.stop());
                 buttonStartRecover.style.background = '#0098ea';
-                endTime = Date.now();
                 setIsRecovering(false);
 
-                // Создаем Blob из кусочков
-                const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+                // todo
+                // перенести в отправку на сервер
+                // // Создаем Blob из кусочков
+                // const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+
+                // // Создаем URL для воспроизведения
+                // const audioUrl = URL.createObjectURL(audioBlob);
+
+                // // Воспроизведение
+                // const audio = new Audio(audioUrl);
+                // audio.play();
                 chunks = [];
-
-                // Создаем URL для воспроизведения
-                const audioUrl = URL.createObjectURL(audioBlob);
-
-                // Воспроизведение
-                const audio = new Audio(audioUrl);
-                audio.play();
-
-                // Время записи в секундах
-                const duration = (endTime - startTime) / 1000;
-                console.log(`Длительность записи: ${duration.toFixed(2)} секунд`);
-
-                if (stream) stream.getTracks().forEach((track) => track.stop());
             };
 
             // Запускаем запись

@@ -214,7 +214,6 @@
     align-items: center;
     transform: translateY(0) rotate(180deg);
     border: 1px solid white;;
-    /*border: 1px solid #0a4375;;*/
 }
 
 .show_slowly{

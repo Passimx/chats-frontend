@@ -21,6 +21,7 @@
   "reply": "Reply",
   "copy_text": "Copy text",
   "copy_message_link":"Copy message link",
+  "recording": "Recording",
 
   "description_open_chat": "The main idea of an open chat is to create a communication channel accessible to everyone, which can be linked to a website domain name, a social media profile link, or other keywords. This type of chat is the best solution for communicating with a wide audience.",
   "description_shared_chat": "A broadcast chat allows a specific group of people to communicate while the whole world can observe. This type of chat is the best solution for broadcasting messages to a large audience.",
