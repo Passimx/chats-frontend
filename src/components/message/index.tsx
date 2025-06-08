@@ -74,7 +74,7 @@ const Message: FC<PropsType> = memo((props) => {
         <>
             <div ref={observerTarget} id={elementId} className={`${styles.background}`}>
                 {props.parentMessage && <ParentMessage {...{ ...props.parentMessage, findMessage }} />}
-                <RenderMessage message={visibleMessage} type={type} />
+                <RenderMessage message={visibleMessage} type={type} files={props.files} />
                 <div className={`${styles.left_div2} text_translate`}>{time}</div>
             </div>
         </>

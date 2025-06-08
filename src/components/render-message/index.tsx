@@ -5,12 +5,17 @@ import styles from '../message/index.module.css';
 import { parseMessage } from '../input-message/common/parse-message.ts';
 import { Link } from '../link';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
+import { MimetypeEnum } from '../../root/types/files/file.type.ts';
+import { Envs } from '../../common/config/envs/envs.ts';
+import { AudioPlayer } from '../audio-player';
 
-export const RenderMessage: FC<PropsType> = ({ message, type }) => {
+export const RenderMessage: FC<PropsType> = ({ message, type, files }) => {
     const parts = parseMessage(message);
+    const fileAudio = files?.find((file) => file.mimetype === MimetypeEnum.AUDIO_WAV);
 
     return (
         <pre className={`${styles.text} ${type === MessageTypeEnum.IS_SYSTEM && 'text_translate'}`}>
+            {fileAudio && <AudioPlayer audioSrc={`${Envs.chatsServiceUrl}/files/${fileAudio.path}`} />}
             {parts.map((part, index) => {
                 if (part.type === PartTypeEnum.LINK)
                     return (

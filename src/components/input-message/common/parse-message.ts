@@ -8,7 +8,7 @@ export const parseMessage = (text: string): ParseMessagePartType[] => {
     const parts: ParseMessagePartType[] = [];
     let lastIndex = 0;
 
-    text.replace(new RegExp(`${domainRegex.source}|${hashtagRegex.source}`, 'gu'), (match, offset) => {
+    text?.replace(new RegExp(`${domainRegex.source}|${hashtagRegex.source}`, 'gu'), (match, offset) => {
         if (offset > lastIndex) {
             parts.push({ type: PartTypeEnum.TEXT, content: text.slice(lastIndex, offset) });
         }
@@ -24,7 +24,7 @@ export const parseMessage = (text: string): ParseMessagePartType[] => {
         return '';
     });
 
-    if (lastIndex < text.length) {
+    if (lastIndex < text?.length) {
         parts.push({ type: PartTypeEnum.TEXT, content: text.slice(lastIndex) });
     }
 
