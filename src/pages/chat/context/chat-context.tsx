@@ -1,11 +1,11 @@
 import Chat from '../index.tsx';
 import { MessageType } from '../../../root/types/chat/message.type.ts';
-import { createContext, useMemo, useState } from 'react';
+import { createContext, FC, useMemo, useState } from 'react';
 import { ContextType } from '../types/context.type.ts';
 
 export const ContextChat = createContext<ContextType | null>(null);
 
-export const ChatContext = () => {
+export const ChatContext: FC = () => {
     const [clickMessage, setClickMessage] = useState<MessageType>();
     const [isShowMessageMenu, setIsShowMessageMenu] = useState<boolean>();
 

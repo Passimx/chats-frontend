@@ -1,7 +1,9 @@
 export type FileType = {
     id: string;
-    path: string;
-    mimetype: MimetypeEnum;
+    originalName: string;
+    mimeType: MimetypeEnum;
+    size: number;
+    createdAt: Date;
 };
 
 export enum MimetypeEnum {
