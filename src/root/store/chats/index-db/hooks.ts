@@ -3,31 +3,46 @@ import rawChats, { getRawChat } from '../chats.raw.ts';
 import { rawApp } from '../../app/app.raw.ts';
 
 export const upsertChatIndexDb = (chat: ChatItemIndexDb) =>
-    new Promise<void>((resolve) => {
+    new Promise<void>((resolve, reject) => {
         const IndexDb = rawChats.indexDb;
-        if (!IndexDb) return;
+        if (!IndexDb || !rawApp.isMainTab) return resolve(); // Проверки в начале
 
-        // только главная вкладка может делать операции с IndexDb
-        if (!rawApp.isMainTab) return;
-
-        const payload = Object.assign({}, chat);
+        const payload = { ...chat };
         delete payload.online;
 
-        const chatIsAdded = !!getRawChat(payload.id);
-        const dateNow = new Date(chatIsAdded ? payload.message.createdAt : Date.now()).getTime();
+        const isChatAdded = !!getRawChat(payload.id);
+        const dateNow = new Date(isChatAdded ? payload.message.createdAt : Date.now()).getTime();
 
-        const request1 = IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys').get(payload.id);
+        const tx = IndexDb.transaction(['chats', 'chats-keys'], 'readwrite'); // Единая транзакция
+        const chatsStore = tx.objectStore('chats');
+        const keysStore = tx.objectStore('chats-keys');
 
-        request1.onsuccess = () => {
-            if (request1.result) IndexDb.transaction('chats', 'readwrite').objectStore('chats').delete(request1.result);
+        // Получаем текущий ключ из chats-keys
+        const getKeyRequest = keysStore.get(payload.id);
 
-            IndexDb.transaction('chats', 'readwrite').objectStore('chats').add(payload, dateNow);
-            IndexDb.transaction('chats-keys', 'readwrite').objectStore('chats-keys').delete(payload.id).onsuccess =
-                () => {
-                    IndexDb.transaction('chats-keys', 'readwrite')
-                        .objectStore('chats-keys')
-                        .add(dateNow, payload.id).onsuccess = () => resolve();
+        getKeyRequest.onsuccess = () => {
+            const oldKey = getKeyRequest.result;
+
+            // Удаляем старую запись в chats, если ключ существует
+            if (oldKey) {
+                const deleteRequest = chatsStore.delete(oldKey);
+                deleteRequest.onerror = (e) => reject(e);
+            }
+
+            // Добавляем/обновляем запись в chats с новым ключом (dateNow)
+            const addRequest = chatsStore.add(payload, dateNow);
+
+            addRequest.onsuccess = () => {
+                keysStore.delete(payload.id).onsuccess = () => {
+                    keysStore.add(dateNow, payload.id).onsuccess = () => resolve();
                 };
+            };
+            addRequest.onerror = (e) => reject(e);
+        };
+
+        getKeyRequest.onerror = (e) => {
+            console.error('Ошибка получения ключа:', e);
+            reject(e);
         };
     });
 

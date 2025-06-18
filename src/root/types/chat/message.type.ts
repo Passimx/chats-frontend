@@ -1,4 +1,5 @@
 import { MessageTypeEnum } from './message-type.enum.ts';
+import { FileType } from '../files/file.type.ts';
 
 export type MessageType = {
     id: string;
@@ -9,6 +10,7 @@ export type MessageType = {
     type: MessageTypeEnum;
     createdAt: Date;
     parentMessage?: MessageType;
+    files: FileType[];
 };
 
 export type EncryptMessageType = {

@@ -22,24 +22,28 @@ self.addEventListener('fetch', function (event) {
         return;
     }
 
-    if (url.pathname.includes('/assets/')) {
+    if (url.pathname.includes('/assets/') || url.pathname.includes('/files/')) {
         event.respondWith(
-            caches.match(request).then((cachedResponse) => {
-                const fetchPromise = fetch(request)
-                    .then((networkResponse) => {
-                        if (networkResponse && networkResponse.status === 200) {
-                            const responseClone = networkResponse.clone(); // 🛠 клон ДО использования
+            caches.open(CACHE_NAME).then(async (cache) => {
+                const cachedResponse = await cache.match(request);
+                if (cachedResponse) {
+                    // запускаем обновление в фоне
+                    //     fetch(request).then((networkResponse) => {
+                    //         if (networkResponse && networkResponse.status === 200) {
+                    //             cache.put(request, networkResponse.clone());
+                    //         }
+                    //     });
 
-                            caches.open(CACHE_NAME).then((cache) => {
-                                cache.put(request, responseClone);
-                            });
-                        }
-
-                        return networkResponse;
-                    })
-                    .catch(() => cachedResponse); // оффлайн — вернуть кэш, если есть
-
-                return cachedResponse || fetchPromise;
+                    return cachedResponse;
+                }
+                // Нет кеша — делаем запрос
+                else {
+                    const networkResponse = await fetch(request);
+                    if (networkResponse && networkResponse.status === 200) {
+                        cache.put(request, networkResponse.clone());
+                    }
+                    return networkResponse;
+                }
             }),
         );
     }

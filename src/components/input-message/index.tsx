@@ -18,7 +18,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { update, setChatOnPage } = useAppAction();
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
-    const [textExist, recoveringTime, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
+    const [textExist, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
 
     const cancelAnswerMessage = useCallback(() => {
         if (!chatOnPage?.id) return;
@@ -92,21 +92,14 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                         </div>
                         {navigator.mediaDevices && (
                             <>
-                                <div
-                                    id={styles.button_microphone_delete}
-                                    className={visibility(
-                                        styles.show_recover_button,
-                                        styles.hide_recover_button,
-                                        !recoveringTime,
-                                    )}
-                                >
+                                <div id={styles.button_microphone_delete}>
                                     <MdDelete id={styles.microphone_stop} />
                                 </div>
                                 <div
                                     id={styles.button_microphone_block}
                                     className={visibility(
-                                        styles.show_recover_button,
                                         styles.hide_recover_button,
+                                        styles.show_recover_button,
                                         textExist,
                                     )}
                                 >

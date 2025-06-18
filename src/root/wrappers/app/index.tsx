@@ -14,6 +14,8 @@ import { useCheckSystemChat } from './hooks/use-check-system-chat.hook.ts';
 import { Menu } from '../../../components/menu';
 import { useTelegram } from '../../../modules/telegram';
 import { useMobileKeyboard } from './hooks/use-mobile-keyboard.hook.ts';
+import { AudioPlayer } from '../../contexts/audio-player';
+import { useMemory } from './hooks/use-memory.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -32,11 +34,14 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useTelegram();
     // logic for mobile keyboard
     useMobileKeyboard();
+    // logic for usage memory
+    useMemory();
+    // todo
+    // перенести на сервер
+    useEffect(changeHead, []);
 
     const isLoaded = useTranslation();
     const { id } = useParams();
-
-    useEffect(changeHead, []);
 
     const hideMenu = useCallback(() => {
         if (!id) return;
@@ -45,15 +50,17 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
 
     if (isLoaded)
         return (
-            <div id={styles.background}>
-                <div id={styles.menu}>
-                    <Chats />
-                    <Menu />
+            <AudioPlayer>
+                <div id={styles.background}>
+                    <div id={styles.menu}>
+                        <Chats />
+                        <Menu />
+                    </div>
+                    <div id={styles.chat} onClick={hideMenu}>
+                        {children}
+                    </div>
                 </div>
-                <div id={styles.chat} onClick={hideMenu}>
-                    {children}
-                </div>
-            </div>
+            </AudioPlayer>
         );
 };
 

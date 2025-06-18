@@ -98,6 +98,7 @@
 
 #button_microphone_delete{
     margin-left: -46px;
+    visibility: hidden;
 }
 
 .button_block_active, #button_emoji_block:hover {
@@ -309,27 +310,27 @@
 
 @keyframes show_recover_button{
     from {
-        visibility: visible;
-        opacity: 1;
-        filter: none;
-    }
-    to {
         filter: blur(4px);
         visibility: hidden;
         opacity: 0.2;
+    }
+    to {
+        visibility: visible;
+        opacity: 1;
+        filter: none;
     }
 }
 
 @keyframes hide_recover_button{
     from {
-        visibility: hidden;
-        opacity: 0.2;
-        filter: blur(4px);
-    }
-    to {
         filter: none;
         visibility: visible;
         opacity: 1;
+    }
+    to {
+        visibility: hidden;
+        opacity: 0.2;
+        filter: blur(4px);
     }
 }
 

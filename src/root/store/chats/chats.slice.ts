@@ -49,25 +49,28 @@ const ChatsSlice = createSlice({
         },
 
         createMessage(state, { payload }: PayloadAction<MessageType>) {
-            const chatFromState = getRawChat(payload.chatId);
-            if (chatFromState) {
+            const chat = getRawChat(payload.chatId);
+            if (chat) {
                 state.messageCount = state.messageCount + 1;
-                let messages = chatFromState.messages;
-                if (chatFromState?.messages[0]?.number === payload.number - 1) messages = [payload, ...messages];
+                let messages = chat.messages;
+                if (chat?.messages[0]?.number === payload.number - 1) messages = [payload, ...messages];
 
                 const updatedChat: ChatItemIndexDb = {
-                    ...chatFromState,
+                    ...chat,
                     message: payload,
                     countMessages: payload.number,
                     messages,
                 };
                 updateRawChat(updatedChat);
+                upsertChatIndexDb(updatedChat);
                 state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
                 state.chats = [...Array.from(rawChats.chats.values())].reverse();
             }
 
-            if (payload.chatId === state.chatOnPage?.id && payload.number > state.chatOnPage.message.number)
+            if (payload.chatId === state.chatOnPage?.id && payload.number > state.chatOnPage.message.number) {
                 state.chatOnPage.message = payload;
+                state.chatOnPage.countMessages = payload.number;
+            }
         },
 
         setToBegin(state, { payload }: PayloadAction<ChatItemIndexDb>) {

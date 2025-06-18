@@ -9,6 +9,7 @@ import { getIsFocused } from './get-is-focused.hook.ts';
 import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
 import { focusToEnd } from '../common/focus-to-end.ts';
 import moment from 'moment/min/moment-with-locales';
+import { uploadFile } from '../../../root/api/files';
 
 let mediaRecorder: MediaRecorder | undefined;
 let chunks: Blob[] = [];
@@ -30,7 +31,12 @@ export const useEnterHook = (): UseEnterHookType => {
     }, [chatOnPage?.type, t, isRecovering, recoveringTime]);
 
     useEffect(() => {
+        const deleteButton = document.getElementById(styles.button_microphone_delete)!;
         if (!isRecovering) return;
+
+        deleteButton.classList.remove(styles.hide_recover_button);
+        deleteButton.classList.add(styles.show_recover_button);
+
         let handler: NodeJS.Timeout;
         const startTime = Date.now();
 
@@ -50,10 +56,23 @@ export const useEnterHook = (): UseEnterHookType => {
         updateTime();
 
         return () => {
+            deleteButton.classList.remove(styles.show_recover_button);
+            deleteButton.classList.add(styles.hide_recover_button);
             setRecoveringTime(undefined);
             clearTimeout(handler);
         };
     }, [isRecovering]);
+
+    const save = async (chunks: Blob[]) => {
+        const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+        const formData = new FormData();
+        formData.append('file', audioBlob, 'recording.wav');
+
+        const response = await uploadFile(formData);
+        if (!response.success) return;
+
+        await createMessage({ chatId: chatOnPage!.id, files: [response.data.id] });
+    };
 
     const onInput = useCallback(() => {
         const el = document.getElementById(styles.new_message)!;
@@ -180,14 +199,20 @@ export const useEnterHook = (): UseEnterHookType => {
         };
 
         const startRecover = async () => {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
             if (isRecovering && mediaRecorder) {
+                // const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+                // const formData = new FormData();
+                // formData.append('file', audioBlob, 'recording.wav');
+                //
+                // const response = await fetch('http://localhost:7020/files/upload', {
+                //     method: 'POST',
+                //     body: formData,
+                // });
                 mediaRecorder.stop();
-
-                if (stream) stream.getTracks().forEach((track) => track.stop());
                 return;
             }
+
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
             buttonStartRecover.classList.add(styles.recover_color);
             setIsRecovering(true);
@@ -201,18 +226,7 @@ export const useEnterHook = (): UseEnterHookType => {
                 if (stream) stream.getTracks().forEach((track) => track.stop());
                 buttonStartRecover.classList.remove(styles.recover_color);
                 setIsRecovering(false);
-
-                // todo
-                // перенести в отправку на сервер
-                // // Создаем Blob из кусочков
-                // const audioBlob = new Blob(chunks, { type: 'audio/webm' });
-
-                // // Создаем URL для воспроизведения
-                // const audioUrl = URL.createObjectURL(audioBlob);
-
-                // // Воспроизведение
-                // const audio = new Audio(audioUrl);
-                // audio.play();
+                save(chunks);
                 chunks = [];
             };
 
@@ -290,5 +304,5 @@ export const useEnterHook = (): UseEnterHookType => {
         [chatOnPage?.id, isPhone, isOpenMobileKeyboard, isRecovering],
     );
 
-    return [textExist, recoveringTime, setEmoji, placeholder, isShowPlaceholder];
+    return [textExist, setEmoji, placeholder, isShowPlaceholder];
 };
