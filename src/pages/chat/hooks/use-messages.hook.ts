@@ -73,7 +73,8 @@ export const useMessages = (): UseMessagesType => {
             /** установка скрола */
             requestAnimationFrame(() => {
                 setTimeout(() => {
-                    el.scrollTo({ behavior: 'instant', top: chat.scrollTop });
+                    /** смещается на 0.5, чтобы не было моментальной загрузки новых сообщений */
+                    el.scrollTo({ behavior: 'instant', top: chat.scrollTop - 0.5 });
                 });
             });
         } else {
