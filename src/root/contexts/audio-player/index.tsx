@@ -20,6 +20,7 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
 
             source.buffer = await audioContext.decodeAudioData(arrayBuffer);
             source.connect(audioContext.destination);
+            if (source.buffer?.duration - 0.1 < offset) offset = 0;
             source.start(0, offset);
             const begin = Date.now() - (offset ?? 0) * 1000;
             context = source;
@@ -27,7 +28,7 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
             context.onended = () => {
                 const end = Date.now();
                 const currentTime = context.context.currentTime;
-                const duration = source.buffer?.duration;
+                const duration = source.buffer?.duration ?? 0 - 0.1;
 
                 if ((duration && currentTime > duration) || fileId !== audio.id) offset = 0;
                 else offset = (end - begin) / 1000;

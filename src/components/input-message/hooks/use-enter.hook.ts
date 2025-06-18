@@ -31,7 +31,12 @@ export const useEnterHook = (): UseEnterHookType => {
     }, [chatOnPage?.type, t, isRecovering, recoveringTime]);
 
     useEffect(() => {
+        const deleteButton = document.getElementById(styles.button_microphone_delete)!;
         if (!isRecovering) return;
+
+        deleteButton.classList.remove(styles.hide_recover_button);
+        deleteButton.classList.add(styles.show_recover_button);
+
         let handler: NodeJS.Timeout;
         const startTime = Date.now();
 
@@ -51,6 +56,8 @@ export const useEnterHook = (): UseEnterHookType => {
         updateTime();
 
         return () => {
+            deleteButton.classList.remove(styles.show_recover_button);
+            deleteButton.classList.add(styles.hide_recover_button);
             setRecoveringTime(undefined);
             clearTimeout(handler);
         };
@@ -297,5 +304,5 @@ export const useEnterHook = (): UseEnterHookType => {
         [chatOnPage?.id, isPhone, isOpenMobileKeyboard, isRecovering],
     );
 
-    return [textExist, recoveringTime, setEmoji, placeholder, isShowPlaceholder];
+    return [textExist, setEmoji, placeholder, isShowPlaceholder];
 };

@@ -15,6 +15,7 @@ import { Menu } from '../../../components/menu';
 import { useTelegram } from '../../../modules/telegram';
 import { useMobileKeyboard } from './hooks/use-mobile-keyboard.hook.ts';
 import { AudioPlayer } from '../../contexts/audio-player';
+import { useMemory } from './hooks/use-memory.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -33,11 +34,14 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useTelegram();
     // logic for mobile keyboard
     useMobileKeyboard();
+    // logic for usage memory
+    useMemory();
+    // todo
+    // перенести на сервер
+    useEffect(changeHead, []);
 
     const isLoaded = useTranslation();
     const { id } = useParams();
-
-    useEffect(changeHead, []);
 
     const hideMenu = useCallback(() => {
         if (!id) return;

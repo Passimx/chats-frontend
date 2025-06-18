@@ -11,4 +11,6 @@ export type StateType = {
     isSystemChat?: boolean;
     lang?: string;
     isOpenMobileKeyboard?: boolean;
+    cacheMemory?: string;
+    totalMemory?: string;
 };

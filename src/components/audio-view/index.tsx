@@ -168,6 +168,7 @@ export const AudioView: React.FC<PropsType> = memo(
                         <IoPlayCircleSharp className={styles.play_button} />
                         <div className={styles.load_icon_background}>
                             <FaCircleArrowDown className={styles.load_icon} />
+                            <div className={styles.load_icon_round}></div>
                         </div>
                     </div>
                 </div>

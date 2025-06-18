@@ -42,10 +42,10 @@ export const useMessages = (): UseMessagesType => {
 
             if (scrollTop === 0) return;
             requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
+                setTimeout(() => {
                     const scrollTop = chat.scrollTop + scrollHeight - el.scrollHeight;
                     el.scrollTo({ behavior: 'instant', top: scrollTop });
-                    update({ id: chatOnPage.id, messages, scrollTop });
+                    update({ id: chatOnPage.id, scrollTop });
                 });
             });
         }
@@ -72,7 +72,7 @@ export const useMessages = (): UseMessagesType => {
 
             /** установка скрола */
             requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
+                setTimeout(() => {
                     el.scrollTo({ behavior: 'instant', top: chat.scrollTop });
                 });
             });
@@ -139,7 +139,7 @@ export const useMessages = (): UseMessagesType => {
                 setMessages(data);
                 update({ id: chatOnPage.id, messages: data });
                 requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
+                    setTimeout(() => {
                         const diff = scrollHeight - el.scrollHeight;
                         el.scrollTo({ behavior: 'instant', top: diff });
                     });
@@ -176,7 +176,7 @@ export const useMessages = (): UseMessagesType => {
         } else {
             setMessages([chatOnPage.message]);
             requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
+                setTimeout(() => {
                     el.scrollTo({ behavior: 'instant', top: 0 });
                     update({ id: chatOnPage.id, scrollTop: 0 });
                 });
@@ -196,7 +196,6 @@ export const useMessages = (): UseMessagesType => {
             const limit =
                 chatOnPage.countMessages - number > 250 ? Envs.messages.limit : chatOnPage.countMessages - number + 1;
             setMessages([]);
-            el.scrollTo({ behavior: 'instant', top: -el.scrollHeight });
             setIsLoading(LoadingType.OLD);
             const response = await getMessages(chatOnPage.id, limit, offset);
             if (!response.success) return;
@@ -204,8 +203,7 @@ export const useMessages = (): UseMessagesType => {
             setIsLoading(undefined);
             setMessages(response.data);
             requestAnimationFrame(() => {
-                el.scrollTo({ behavior: 'instant', top: -el.scrollHeight });
-                requestAnimationFrame(() => {
+                setTimeout(() => {
                     el.scrollTo({ behavior: 'instant', top: -el.scrollHeight });
                     update({ id: chatOnPage.id, messages: response.data, scrollTop: el.scrollTop });
                 });

@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import { FileType } from '../../../root/types/files/file.type.ts';
 import { AudioPlayerContext } from '../../../root/contexts/audio-player';
+import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
 
 const readerMap: Map<string, ReadableStreamDefaultReader> = new Map();
 const stopReaderSet: Set<string> = new Set();
@@ -85,6 +86,11 @@ export const useLoad = (fileAudio: FileType): [number] => {
         readerMap.delete(fileAudio.id);
     }, [blob]);
 
+    const loadFromCache = useCallback(async () => {
+        const isExist = await cacheIsExist(`/files/${fileAudio.id}`);
+        if (isExist) load();
+    }, []);
+
     const cancel = useCallback(async () => {
         const reader = readerMap.get(fileAudio.id);
         if (reader) {
@@ -98,8 +104,10 @@ export const useLoad = (fileAudio: FileType): [number] => {
     }, []);
 
     useEffect(() => {
-        // если файл меньше 1МБ - то скачиваем автоматически
+        // если файл меньше 1МБ - то загрузка автоматически
         if (fileAudio.size / 1024 / 1024 < 1 && countLoadParts === 0) load();
+        // если файл есть в кеше - загружаем его
+        else loadFromCache();
 
         return () => {
             Array.from(readerMap).forEach((values) => values[1].cancel());
