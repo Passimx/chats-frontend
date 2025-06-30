@@ -66,7 +66,7 @@ export const useEnterHook = (): UseEnterHookType => {
     const save = async (chunks: Blob[]) => {
         const audioBlob = new Blob(chunks, { type: 'audio/wav' });
         const formData = new FormData();
-        formData.append('file', audioBlob, 'recording.wav');
+        formData.append('files', audioBlob, 'recording.wav');
 
         const response = await uploadFile(formData);
         if (!response.success) return;
