@@ -71,7 +71,7 @@ export const useEnterHook = (): UseEnterHookType => {
         const response = await uploadFile(formData);
         if (!response.success) return;
 
-        await createMessage({ chatId: chatOnPage!.id, files: response.data });
+        await createMessage({ chatId: chatOnPage!.id, fileIds: response.data });
     };
 
     const onInput = useCallback(() => {
