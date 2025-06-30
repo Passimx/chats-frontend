@@ -66,7 +66,12 @@ export const useAppEvents = () => {
 
             case EventsEnum.UPDATE_MAX_USERS_ONLINE:
                 if (!data.success) break;
-                updateMany(data.data);
+                data.data.forEach(({ id, maxUsersOnline }) => {
+                    const chat = getRawChat(id);
+                    if (!chat) return;
+                    if (Number(maxUsersOnline) > Number(chat.maxUsersOnline)) update({ id, maxUsersOnline });
+                });
+
                 break;
             case EventsEnum.CLOSE_SOCKET:
                 setStateApp({ socketId: undefined });
