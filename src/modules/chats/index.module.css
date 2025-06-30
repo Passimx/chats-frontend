@@ -10,7 +10,7 @@ html{
     transition-duration: 0.3s;
     overflow: hidden;
     position: absolute;
-    height: calc(100% - var(--menu-height));
+    height: calc(100% - var(--menu-height) - env(safe-area-inset-bottom, 32px));
     width: 100%;
 
     @media(width < 600px) {
