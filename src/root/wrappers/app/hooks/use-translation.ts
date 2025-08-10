@@ -34,6 +34,10 @@ export const useTranslation = () => {
     const { lang } = useAppSelector((state) => state.app);
 
     useEffect(() => {
+        alert(lang);
+    }, [lang]);
+
+    useEffect(() => {
         const elements = document.querySelectorAll<HTMLDivElement>('.text_translate');
         elements.forEach((el) => {
             el.style.animation = 'none';
