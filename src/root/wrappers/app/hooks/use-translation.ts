@@ -34,10 +34,6 @@ export const useTranslation = () => {
     const { lang } = useAppSelector((state) => state.app);
 
     useEffect(() => {
-        alert(lang);
-    }, [lang]);
-
-    useEffect(() => {
         const elements = document.querySelectorAll<HTMLDivElement>('.text_translate');
         elements.forEach((el) => {
             el.style.animation = 'none';
@@ -46,6 +42,7 @@ export const useTranslation = () => {
 
         if (!lang) {
             const browserLang = navigator.language.slice(0, 2).toLowerCase();
+            alert([browserLang, navigator.language]);
             const langs = Object.keys(resources);
             const lang = localStorage.getItem('lang') ?? langs.find((lang) => lang === browserLang) ?? 'en';
             if (!localStorage.getItem('lang')) localStorage.setItem('lang', lang);
