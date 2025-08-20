@@ -4,8 +4,14 @@ export type FileType = {
     mimeType: MimetypeEnum;
     size: number;
     createdAt: Date;
+    fileType: FileExtensionEnum;
 };
 
 export enum MimetypeEnum {
-    'AUDIO_WAV' = 'audio/wav',
+    AUDIO_WAV = 'audio/wav',
+}
+
+export enum FileExtensionEnum {
+    IS_VOICE = 'is_voice',
+    IS_MEDIA = 'is_media',
 }

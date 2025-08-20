@@ -2,7 +2,7 @@ import { Api } from '../index.ts';
 import { MessageType } from '../../types/chat/message.type.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 
-export const createMessage = (body: Partial<Omit<MessageType, 'files'> & { files: string[] }>) => {
+export const createMessage = (body: Partial<MessageType & { fileIds: string[] }>) => {
     return Api('/messages', { body, method: 'POST' });
 };
 

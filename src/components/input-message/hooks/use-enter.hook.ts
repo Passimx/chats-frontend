@@ -67,11 +67,20 @@ export const useEnterHook = (): UseEnterHookType => {
         const audioBlob = new Blob(chunks, { type: 'audio/wav' });
         const formData = new FormData();
         formData.append('files', audioBlob, 'recording.wav');
+        formData.append('fileType', 'is_voice');
 
         const response = await uploadFile(formData);
-        if (!response.success) return;
+        if (!response.success || !response.data.length) return;
 
-        await createMessage({ chatId: chatOnPage!.id, files: [response.data.id] });
+        if (getRawChat(chatOnPage?.id))
+            update({ id: chatOnPage!.id, inputMessage: undefined, answerMessage: undefined });
+        else setChatOnPage({ answerMessage: undefined });
+
+        await createMessage({
+            chatId: chatOnPage!.id,
+            fileIds: response.data,
+            parentMessageId: chatOnPage?.answerMessage?.id,
+        });
     };
 
     const onInput = useCallback(() => {
