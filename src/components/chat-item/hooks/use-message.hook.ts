@@ -1,9 +1,9 @@
 import { ChatItemIndexDb } from '../../../root/types/chat/chat.type.ts';
-import { MessageTypeEnum } from '../../../root/types/chat/message-type.enum.ts';
 import { useCallback, useEffect, useState } from 'react';
 import moment from 'moment/min/moment-with-locales';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../../../root/store';
+import { getVisibleMessage } from './use-visible-message.hook.ts';
 
 export const useMessage = (chat: ChatItemIndexDb): (string | undefined)[] => {
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
@@ -25,13 +25,10 @@ export const useMessage = (chat: ChatItemIndexDb): (string | undefined)[] => {
 
     const changeMessage = useCallback(() => {
         const message = chat.message;
-        let visibleMessage: string = '';
+        const visibleMessage: string = getVisibleMessage(chat.message, t);
 
-        if (message.type === MessageTypeEnum.IS_USER) visibleMessage = message.message;
-        else visibleMessage = t(message.message);
-
-        setMessage(visibleMessage);
         updateTime(message.createdAt);
+        setMessage(visibleMessage);
     }, [chat]);
 
     const changeCountMessages = useCallback(() => {

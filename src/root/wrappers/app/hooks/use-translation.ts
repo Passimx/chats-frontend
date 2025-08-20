@@ -4,27 +4,27 @@ import moment from 'moment/min/moment-with-locales';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import AR from '../../../../../public/languages/ar/translation.json';
-import CH from '../../../../../public/languages/ch/translation.json';
+import CH from '../../../../../public/languages/zh/translation.json';
 import EN from '../../../../../public/languages/en/translation.json';
 import ES from '../../../../../public/languages/es/translation.json';
 import RU from '../../../../../public/languages/ru/translation.json';
 import { useAppAction, useAppSelector } from '../../../store';
 
 export const resources = {
+    ar: {
+        translation: AR,
+    },
     en: {
         translation: EN,
-    },
-    zh_cn: {
-        translation: CH,
     },
     es: {
         translation: ES,
     },
-    ar: {
-        translation: AR,
-    },
     ru: {
         translation: RU,
+    },
+    zh: {
+        translation: CH,
     },
 };
 
