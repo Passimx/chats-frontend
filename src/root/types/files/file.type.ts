@@ -11,7 +11,7 @@ export enum MimetypeEnum {
     AUDIO_WAV = 'audio/wav',
 }
 
-export enum FileExtensionEnum {
+enum FileExtensionEnum {
     IS_VOICE = 'is_voice',
     IS_MEDIA = 'is_media',
 }

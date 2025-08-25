@@ -13,6 +13,7 @@ import { uploadFile } from '../../../root/api/files';
 
 let mediaRecorder: MediaRecorder | undefined;
 let chunks: Blob[] = [];
+let isDeleteVoiceMessage: boolean = false;
 
 export const useEnterHook = (): UseEnterHookType => {
     const { t } = useTranslation();
@@ -127,6 +128,7 @@ export const useEnterHook = (): UseEnterHookType => {
         setTextExist(!!text);
 
         if (isRecovering && mediaRecorder) {
+            isDeleteVoiceMessage = true;
             mediaRecorder.stop();
         }
 
@@ -204,19 +206,12 @@ export const useEnterHook = (): UseEnterHookType => {
         };
 
         const stopRecover = async () => {
+            isDeleteVoiceMessage = true;
             if (mediaRecorder) mediaRecorder.stop();
         };
 
         const startRecover = async () => {
             if (isRecovering && mediaRecorder) {
-                // const audioBlob = new Blob(chunks, { type: 'audio/wav' });
-                // const formData = new FormData();
-                // formData.append('file', audioBlob, 'recording.wav');
-                //
-                // const response = await fetch('http://localhost:7020/files/upload', {
-                //     method: 'POST',
-                //     body: formData,
-                // });
                 mediaRecorder.stop();
                 return;
             }
@@ -235,7 +230,9 @@ export const useEnterHook = (): UseEnterHookType => {
                 if (stream) stream.getTracks().forEach((track) => track.stop());
                 buttonStartRecover.classList.remove(styles.recover_color);
                 setIsRecovering(false);
-                save(chunks);
+                if (!isDeleteVoiceMessage) save(chunks);
+                isDeleteVoiceMessage = false;
+
                 chunks = [];
             };
 
