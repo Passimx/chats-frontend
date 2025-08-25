@@ -20,6 +20,7 @@ export const useMessages = (): UseMessagesType => {
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
 
     const message = useMemo(() => {
+        setIsLoading(undefined);
         const params = new URL(document.location.toString()).searchParams;
         return params.get('message') ? Number(params.get('message')) : null;
     }, [chatOnPage?.id]);
@@ -28,8 +29,10 @@ export const useMessages = (): UseMessagesType => {
     useEffect(() => {
         if (
             chatOnPage &&
-            chatOnPage.message.number === messages[0]?.number + 1 &&
-            messages[0].chatId === chatOnPage.id
+            chatOnPage.message.chatId === chatOnPage.id
+            // &&
+            // ((chatOnPage.message.number === messages[0]?.number + 1 && messages[0].chatId === chatOnPage.id) ||
+            //     !messages?.length)
         ) {
             const el = document.getElementById(styles.messages)!;
             const scrollHeight = el.scrollHeight;
