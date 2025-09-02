@@ -1,0 +1,22 @@
+.title{
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    height: 56px;
+    font-size: 28px;
+}
+
+.back{
+    position: absolute;
+    cursor: pointer;
+    padding: 4px;
+    color: #0098ea;
+}
+
+.background{
+    color: white;
+    -webkit-user-select: none;
+    user-select: none;
+}

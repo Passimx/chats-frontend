@@ -25,7 +25,7 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.ADD_CHAT:
                 setToBegin(data);
-                if (data.type === ChatEnum.IS_SYSTEM) setStateApp({ isSystemChat: true });
+                if (data.type === ChatEnum.IS_SYSTEM) setStateApp({ systemChatId: data.id });
                 playNotificationSound();
                 break;
             case EventsEnum.CREATE_CHAT:

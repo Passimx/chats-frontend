@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useAppAction } from '../../../store';
 import rawChats from '../../../store/chats/chats.raw.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
+import { ChatItemIndexDb } from '../../../types/chat/chat.type.ts';
 
 export const useIndexDbHook = () => {
     const { setToEnd, setStateApp, setStateChat } = useAppAction();
@@ -18,7 +19,7 @@ export const useIndexDbHook = () => {
                 setToEnd([...request.result].reverse());
                 setStateApp({ isLoadedChatsFromIndexDb: true });
 
-                let systemChat;
+                let systemChat: ChatItemIndexDb | undefined;
                 let messageCount = 0;
 
                 request.result.forEach((chat) => {
@@ -28,8 +29,8 @@ export const useIndexDbHook = () => {
 
                 if (messageCount) setStateChat({ messageCount });
 
-                if (systemChat) setStateApp({ isSystemChat: true });
-                else setStateApp({ isSystemChat: false });
+                if (systemChat) setStateApp({ systemChatId: systemChat.id });
+                else setStateApp({ systemChatId: undefined });
             };
         };
 

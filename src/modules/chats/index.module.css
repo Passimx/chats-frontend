@@ -5,18 +5,9 @@ html{
 }
 
 #main{
-    background-color: var(--menu-color);
-    transform: scale(var(--scale-value));
-    transition-duration: 0.3s;
-    overflow: hidden;
-    position: absolute;
-    height: calc(100% - var(--menu-height) - env(safe-area-inset-bottom, 32px));
     width: 100%;
-
-    @media(width < 600px) {
-        -webkit-user-select: none;
-        user-select: none;
-    }
+    height: 100%;
+    overflow: hidden;
 }
 
 #page_block{
