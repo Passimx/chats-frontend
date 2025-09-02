@@ -1,5 +1,5 @@
 import SearchInput from '../../components/search-input';
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './index.module.css';
 import { IoIosAddCircleOutline, IoMdInformationCircleOutline } from 'react-icons/io';
@@ -7,10 +7,9 @@ import { AiOutlineGlobal } from 'react-icons/ai';
 import { LiaEyeSolid } from 'react-icons/lia';
 import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
 import useClickOutside from '../../common/hooks/use-click-outside.ts';
-import { useAppSelector } from '../../root/store';
+import { useAppAction, useAppSelector } from '../../root/store';
 import { PropsType } from './props.type.ts';
 import OpenChatInfo from '../../components/chat-info/open-chat-info';
-import useSetPageHook from '../../root/store/app/hooks/use-set-page.hook.ts';
 import SharedChatInfo from '../../components/chat-info/shared-chat-info';
 import PublicChatInfo from '../../components/chat-info/public-chat-info';
 import PrivateChatInfo from '../../components/chat-info/private-chat-info';
@@ -25,16 +24,22 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
     const [input, setInput] = useState<string>();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const { aesKey } = useAppSelector((state) => state.user);
-    const setPage = useSetPageHook();
+    const { activeTab } = useAppSelector((state) => state.app);
+    const { setStateApp } = useAppAction();
+
+    const changePage = useCallback(
+        (page: JSX.Element) => {
+            setIsVisible(false);
+            const pages = new Map();
+            pages.set(activeTab, [page]);
+            setStateApp({ pages });
+        },
+        [activeTab],
+    );
 
     useEffect(() => {
         onChange(input);
     }, [input]);
-
-    const changePage = (page: JSX.Element) => {
-        setIsVisible(false);
-        setPage(page);
-    };
 
     return (
         <div id={styles.search}>

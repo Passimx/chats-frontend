@@ -5,7 +5,7 @@ import { EventsEnum } from '../../../types/events/events.enum.ts';
 
 export const useCheckSystemChat = () => {
     const { postMessageToBroadCastChannel } = useAppAction();
-    const { isSystemChat, isLoadedChatsFromIndexDb, isListening } = useAppSelector((state) => state.app);
+    const { systemChatId, isLoadedChatsFromIndexDb, isListening } = useAppSelector((state) => state.app);
 
     const setSystemChat = async () => {
         const response = await getSystemChat();
@@ -24,7 +24,7 @@ export const useCheckSystemChat = () => {
     };
 
     useEffect(() => {
-        if (isSystemChat || !isLoadedChatsFromIndexDb || !isListening) return;
+        if (systemChatId || !isLoadedChatsFromIndexDb || !isListening) return;
         setSystemChat();
-    }, [isSystemChat, isLoadedChatsFromIndexDb, isListening]);
+    }, [systemChatId, isLoadedChatsFromIndexDb, isListening]);
 };

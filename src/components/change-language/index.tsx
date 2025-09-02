@@ -3,6 +3,8 @@ import styles from './index.module.css';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { resources } from '../../root/wrappers/app/hooks/use-translation.ts';
 import { useTranslation } from 'react-i18next';
+import { MenuTitle } from '../menu-title';
+import { GrLanguage } from 'react-icons/gr';
 
 export const ChangeLanguage: FC = () => {
     const { t } = useTranslation();
@@ -12,9 +14,7 @@ export const ChangeLanguage: FC = () => {
 
     return (
         <div id={styles.background}>
-            <div id={styles.text_language} className="text_translate">
-                {t('language')}
-            </div>
+            <MenuTitle icon={<GrLanguage />} title={'language'} />
             <div id={styles.languages}>
                 {languages.map((language) => (
                     <div
