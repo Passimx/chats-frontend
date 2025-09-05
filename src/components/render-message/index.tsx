@@ -6,11 +6,10 @@ import { parseMessage } from '../input-message/common/parse-message.ts';
 import { Link } from '../link';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { AudioView } from '../audio-view';
-import { MimetypeEnum } from '../../root/types/files/file.type.ts';
 
 export const RenderMessage: FC<PropsType> = ({ message, type, files }) => {
     const parts = parseMessage(message);
-    const filesAudio = files?.filter((file) => file.mimeType === MimetypeEnum.AUDIO_WAV);
+    const filesAudio = files?.filter((file) => file.fileType === 'is_voice');
 
     return (
         <pre className={`${styles.text} ${type === MessageTypeEnum.IS_SYSTEM && 'text_translate'}`}>

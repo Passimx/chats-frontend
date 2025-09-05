@@ -5,7 +5,7 @@ html {
 #menu{
     display: grid;
     background-color: #0a4375;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     position: absolute;
     bottom: 0;
     width: 100%;

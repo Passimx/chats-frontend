@@ -1,16 +1,25 @@
 import { JSX } from 'react';
 
+export enum TabEnum {
+    CHATS = 'chats',
+    SETTINGS = 'settings',
+    SERVICES = 'services',
+}
+
 export type StateType = {
     isOnline: boolean;
     isOpenPage: boolean;
+    activeTab: TabEnum;
+    pages: Map<TabEnum, JSX.Element[]>;
     page?: JSX.Element;
     socketId?: string;
     isListening?: boolean;
     isLoadedChatsFromIndexDb?: boolean;
     isPhone?: boolean;
-    isSystemChat?: boolean;
+    systemChatId?: string;
     lang?: string;
     isOpenMobileKeyboard?: boolean;
-    cacheMemory?: string;
-    totalMemory?: string;
+    useMemory?: number;
+    cacheMemory?: number;
+    totalMemory?: number;
 };

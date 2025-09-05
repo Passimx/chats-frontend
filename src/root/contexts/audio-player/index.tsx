@@ -20,6 +20,7 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
 
             source.buffer = await audioContext.decodeAudioData(arrayBuffer);
             source.connect(audioContext.destination);
+
             if (source.buffer?.duration - 0.1 < offset) offset = 0;
             source.start(0, offset);
             const begin = Date.now() - (offset ?? 0) * 1000;

@@ -1,12 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { StateType } from './types/state.type.ts';
+import { StateType, TabEnum } from './types/state.type.ts';
 import { LocalEvents } from '../../types/events/local-events.type.ts';
+import { JSX } from 'react';
 
 const channel = new BroadcastChannel('ws-channel');
 
 const initialState: StateType = {
     isOpenPage: false,
+    activeTab: TabEnum.CHATS,
     isOnline: navigator.onLine,
+    pages: new Map<TabEnum, JSX.Element[]>(),
 };
 
 const AppSlice = createSlice({

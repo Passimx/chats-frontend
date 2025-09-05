@@ -1,46 +1,44 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback } from 'react';
 import styles from './index.module.css';
-import { MdDeleteOutline } from 'react-icons/md';
-import { GrLanguage } from 'react-icons/gr';
 import { GoMail } from 'react-icons/go';
-import useSetPageHook from '../../root/store/app/hooks/use-set-page.hook.ts';
-import { ChangeLanguage } from '../change-language';
 import { useTranslation } from 'react-i18next';
-import { useAppSelector } from '../../root/store';
+import { useAppAction, useAppSelector } from '../../root/store';
+import { IoSettingsOutline } from 'react-icons/io5';
+import { TabEnum } from '../../root/store/app/types/state.type.ts';
 
 export const Menu = memo(() => {
-    const setPage = useSetPageHook();
     const { t } = useTranslation();
-    const [activeTab, setActiveTab] = useState<string>('messages');
+    const { activeTab, pages } = useAppSelector((state) => state.app);
     const messageCount = useAppSelector((state) => state.chats.messageCount);
+    const { setStateApp } = useAppAction();
 
-    const deleteAllChats = useCallback(() => {
-        window.indexedDB.databases().then((r) => {
-            for (let i = 0; i < r.length; i++) window.indexedDB.deleteDatabase(r[i].name!);
-        });
-        window.location.reload();
-    }, []);
+    const onClickMenuTab = useCallback(
+        (tab: TabEnum) => {
+            setStateApp({ activeTab: tab });
+
+            if (tab === activeTab) {
+                const newPages = new Map(pages);
+                newPages.set(activeTab, []);
+                setStateApp({ pages: newPages });
+            }
+        },
+        [activeTab, pages],
+    );
 
     return (
         <div id={styles.menu}>
+            {/*<div*/}
+            {/*    className={`${styles.menu_item} ${activeTab === TabEnum.SERVICES && styles.menu_item_active}`}*/}
+            {/*    onClick={() => onClickMenuTab(TabEnum.SERVICES)}*/}
+            {/*>*/}
+            {/*    <div className={styles.menu_item_inner}>*/}
+            {/*        <IoIosApps size={24} />*/}
+            {/*    </div>*/}
+            {/*    <div className={`text_translate ${styles.menu_item_inner_text}`}>{t('services')}</div>*/}
+            {/*</div>*/}
             <div
-                className={`${styles.menu_item} ${activeTab === 'delete_all' && styles.menu_item_active}`}
-                onClick={() => {
-                    setActiveTab('delete_chats');
-                    deleteAllChats();
-                }}
-            >
-                <div className={styles.menu_item_inner}>
-                    <MdDeleteOutline size={24} />
-                </div>
-                <div className={`text_translate ${styles.menu_item_inner_text}`}>{t('delete_chats')}</div>
-            </div>
-            <div
-                className={`${styles.menu_item} ${activeTab === 'messages' && styles.menu_item_active}`}
-                onClick={() => {
-                    setActiveTab('messages');
-                    setPage(null);
-                }}
+                className={`${styles.menu_item} ${activeTab === TabEnum.CHATS && styles.menu_item_active}`}
+                onClick={() => onClickMenuTab(TabEnum.CHATS)}
             >
                 {messageCount > 0 && (
                     <div id={styles.message_count}>
@@ -53,16 +51,13 @@ export const Menu = memo(() => {
                 <div className={`text_translate ${styles.menu_item_inner_text}`}>{t('messages')}</div>
             </div>
             <div
-                className={`${styles.menu_item} ${activeTab === 'language' && styles.menu_item_active}`}
-                onClick={() => {
-                    setActiveTab('language');
-                    setPage(<ChangeLanguage />);
-                }}
+                className={`${styles.menu_item} ${activeTab === TabEnum.SETTINGS && styles.menu_item_active}`}
+                onClick={() => onClickMenuTab(TabEnum.SETTINGS)}
             >
                 <div className={styles.menu_item_inner}>
-                    <GrLanguage size={20} />
+                    <IoSettingsOutline size={20} />
                 </div>
-                <div className={`text_translate ${styles.menu_item_inner_text}`}>{t('language')}</div>
+                <div className={`text_translate ${styles.menu_item_inner_text}`}>{t('settings')}</div>
             </div>
         </div>
     );

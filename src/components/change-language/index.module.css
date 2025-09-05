@@ -60,11 +60,3 @@
     height: 12px;
     border-radius: 10px;
 }
-
-#text_language{
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    height: 56px;
-    font-size: 28px;
-}
