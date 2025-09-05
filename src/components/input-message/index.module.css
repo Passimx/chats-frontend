@@ -47,7 +47,7 @@
 
 #inputs{
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr auto auto;
 }
 
 .button_inputs_background{
@@ -55,7 +55,7 @@
     align-items: end;
 }
 
-#button_emoji_block, #button_input_block, #button_microphone_block, #button_microphone_delete{
+.button_emoji_block, #button_input_block, #button_microphone_block, #button_microphone_delete{
     display: grid;
     justify-content: center;
     align-items: center;
@@ -101,7 +101,7 @@
     visibility: hidden;
 }
 
-.button_block_active, #button_emoji_block:hover {
+.button_block_active, .button_emoji_block:hover {
     background-color: #d0e7fb;
 }
 

@@ -1,0 +1,58 @@
+.background{
+    border-radius: 8px;
+    padding: 8px;
+    color:white;
+    background-color: var(--menu-color);
+    position: absolute;
+    bottom: calc(72px + env(safe-area-inset-bottom, 32px));
+    right: calc(50% - 280px);
+    z-index: 10;
+    visibility: hidden;
+    display: grid;
+    gap: 8px;
+
+    @media (width < 592px){
+        right: 8px;
+    }
+}
+
+.menu_item{
+    display: grid;
+    grid-template-columns: 30px 200px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.menu_item_icon{
+    font-size: 20px;
+}
+
+.show_slowly{
+    animation: show_slowly .2s linear forwards;
+}
+
+.hide_slowly{
+    animation: hide_slowly .2s linear forwards;
+}
+
+@keyframes show_slowly{
+    from {
+        visibility: hidden;
+        opacity: 0;
+    }
+    to {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+@keyframes hide_slowly{
+    from {
+        visibility: visible;
+        opacity: 1;
+    }
+    to {
+        visibility: hidden;
+        opacity: 0;
+    }
+}

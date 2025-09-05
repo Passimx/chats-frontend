@@ -19,6 +19,8 @@ import { useMemory } from './hooks/use-memory.ts';
 import { Settings } from '../../../pages/settings';
 import { PageItem } from '../../../components/page-item';
 import { TabEnum } from '../../store/app/types/state.type.ts';
+import { PreviewMedia } from '../../../components/preview-media';
+import { PreviewMediaContext } from '../../../components/preview-media-context';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -55,23 +57,26 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
         return (
             <AudioPlayer>
                 <div id={styles.background}>
-                    <div id={styles.menu}>
-                        <div id={styles.pages}>
-                            {/*<PageItem name={TabEnum.SERVICES}>*/}
-                            {/*    <Services />*/}
-                            {/*</PageItem>*/}
-                            <PageItem name={TabEnum.CHATS}>
-                                <Chats />
-                            </PageItem>
-                            <PageItem name={TabEnum.SETTINGS}>
-                                <Settings />
-                            </PageItem>
+                    <PreviewMediaContext>
+                        <PreviewMedia />
+                        <div id={styles.menu}>
+                            <div id={styles.pages}>
+                                {/*<PageItem name={TabEnum.SERVICES}>*/}
+                                {/*    <Services />*/}
+                                {/*</PageItem>*/}
+                                <PageItem name={TabEnum.CHATS}>
+                                    <Chats />
+                                </PageItem>
+                                <PageItem name={TabEnum.SETTINGS}>
+                                    <Settings />
+                                </PageItem>
+                            </div>
+                            <Menu />
                         </div>
-                        <Menu />
-                    </div>
-                    <div id={styles.chat} onClick={hideMenu}>
-                        {children}
-                    </div>
+                        <div id={styles.chat} onClick={hideMenu}>
+                            {children}
+                        </div>
+                    </PreviewMediaContext>
                 </div>
             </AudioPlayer>
         );
