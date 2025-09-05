@@ -26,13 +26,14 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
     const { aesKey } = useAppSelector((state) => state.user);
     const { activeTab } = useAppSelector((state) => state.app);
     const { setStateApp } = useAppAction();
+    const { pages } = useAppSelector((state) => state.app);
 
     const changePage = useCallback(
         (page: JSX.Element) => {
             setIsVisible(false);
-            const pages = new Map();
-            pages.set(activeTab, [page]);
-            setStateApp({ pages });
+            const newPages = new Map(pages);
+            newPages.set(activeTab, [page]);
+            setStateApp({ pages: newPages });
         },
         [activeTab],
     );

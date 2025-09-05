@@ -2,10 +2,11 @@ import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { PropsType } from './props.type.ts';
 import styles from './index.module.css';
 import { useFileSize } from '../../common/hooks/use-file-size.ts';
-import { CiFileOn, CiMusicNote1 } from 'react-icons/ci';
+import { CiFileOn } from 'react-icons/ci';
 import { MdDeleteOutline } from 'react-icons/md';
 import { ContextMedia } from '../preview-media-context';
 import { TbBrandOpenvpn } from 'react-icons/tb';
+import { IoMusicalNotesSharp } from 'react-icons/io5';
 
 enum FileTypeEnum {
     VIDEO = 'video',
@@ -61,11 +62,11 @@ export const PreviewFile: FC<PropsType> = ({ file, number }) => {
     return (
         <div className={styles.background}>
             <div>
-                {type === FileTypeEnum.IMAGE && <img src={url} className={styles.file_preview_image} alt={'image'} />}
+                {type === FileTypeEnum.IMAGE && <img src={url} className={styles.file_preview_image} />}
                 {type === FileTypeEnum.VIDEO && <video src={url} className={styles.file_preview_image} />}
                 {type === FileTypeEnum.AUDIO && (
                     <div className={styles.file_logo_background}>
-                        <CiMusicNote1 className={styles.file_logo} />
+                        <IoMusicalNotesSharp className={styles.file_logo} />
                     </div>
                 )}
                 {type === FileTypeEnum.VPN && (

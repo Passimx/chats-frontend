@@ -8,24 +8,28 @@ import { FormType } from './types/form.type.ts';
 import Button from '../button';
 import { ButtonEnum } from '../button/types/button.enum.ts';
 import { createChat } from '../../root/api/chats';
-import useSetPageHook from '../../root/store/app/hooks/use-set-page.hook.ts';
+import { useAppAction, useAppSelector } from '../../root/store';
 
 const CreateChat: FC<PropsType> = ({ title: titleChatType, icon }) => {
     const { t } = useTranslation();
     const methods = useForm<FormType>();
+    const { setStateApp } = useAppAction();
     const { handleSubmit, register } = methods;
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { pages, activeTab } = useAppSelector((state) => state.app);
 
     const regex = useMemo(
         () => /^(?![-. ])(?!.*[.-]{2})[A-Za-zА-Яа-яЁё\d]*(?:[ .-][A-Za-zА-Яа-яЁё\d]+)*[A-Za-zА-Яа-яЁё\d]$/,
         [],
     );
-    const setPage = useSetPageHook();
 
     const onSubmit = async (data: FormType) => {
         if (isLoading) return;
         setIsLoading(true);
-        await createChat(data).finally(() => setPage(null));
+        const newPages = new Map(pages);
+        newPages.set(activeTab, []);
+
+        await createChat(data).finally(() => setStateApp({ pages: newPages }));
     };
 
     return (

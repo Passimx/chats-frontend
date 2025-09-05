@@ -55,7 +55,8 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                     />
                     <div className={styles.button_inputs_background}>
                         <div
-                            className={`${styles.button_emoji_block} ${isVisibleEmoji && styles.button_block_active}`}
+                            id={styles.button_emoji_block}
+                            className={`${isVisibleEmoji && styles.button_block_active}`}
                             onClick={(event) => {
                                 event.preventDefault();
                                 if (chatOnPage?.type !== ChatEnum.IS_SYSTEM) setIsVisibleEmoji(true);
@@ -85,14 +86,14 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                             isVisibleMediaMenuOutside={isVisibleMediaMenu}
                             setIsVisibleMediaMenuOutside={setIsVisibleMediaMenu}
                         />
-                        <div className={styles.button_emoji_block}>
-                            <CgMenuGridO
-                                className={styles.button_emoji}
-                                onClick={(event) => {
-                                    event.preventDefault();
-                                    if (chatOnPage?.type !== ChatEnum.IS_SYSTEM) setIsVisibleMediaMenu(true);
-                                }}
-                            />
+                        <div
+                            id={styles.button_menu}
+                            onClick={(event) => {
+                                event.preventDefault();
+                                if (chatOnPage?.type !== ChatEnum.IS_SYSTEM) setIsVisibleMediaMenu(true);
+                            }}
+                        >
+                            <CgMenuGridO className={styles.button_emoji} />
                         </div>
                     </div>
                     <div id={styles.button_input_background}>

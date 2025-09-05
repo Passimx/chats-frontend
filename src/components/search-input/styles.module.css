@@ -1,8 +1,8 @@
 #background{
-    --input_search_height:40px;
+    --input_search_height: 34px;
     display: flex;
-    background-color: white;
-    border-radius: 25px;
+    background-color: #0a4375;
+    border-radius: 12px;
     align-items: center;
     height: var(--input_search_height);
 }
@@ -14,11 +14,11 @@
     padding-right: 8px;
     padding-left: 8px;
     border-radius: 30px;
-    background-color: white;
+    background-color: #0a4375;
 }
 
 #cancel_logo{
-    color: black;
+    color: white;
     font-size: 24px;
     cursor: pointer;
     opacity: 0.4;
@@ -39,12 +39,20 @@
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     min-width: 140px;
-    padding: 8px 0px 8px 12px;
+    padding: 8px 0 8px 8px;
     width: 100%;
-    border-radius: 25px;
+    border-radius: 12px;
     cursor: pointer;
     box-sizing: border-box;
     font-weight: 590;
+    height: 30px;
+    background-color: #0a4375;
+    color: white;
+}
+
+.button::placeholder {
+    color: white;
+    opacity: 0.6;
 }
 
 #search_logos{
@@ -62,7 +70,7 @@
 }
 
 .logo{
-    color: black;
+    color: white;
     font-size: 24px;
     cursor: pointer;
     opacity: 0.6;

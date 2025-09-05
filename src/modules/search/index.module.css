@@ -1,8 +1,9 @@
 #search{
-    height: 40px;
-    padding: 8px;
+    height: 34px;
+    padding: 11px 0 11px 4px;
     display: grid;
     grid-template-columns: auto 40px;
+    gap: 4px;
     transition: 0.3s all ease;
 }
 
@@ -19,7 +20,7 @@
 #new_chat_icon{
     cursor: pointer;
     color: white;
-    font-size: 40px;
+    font-size: 34px;
     opacity: 0.7;
 }
 

@@ -15,7 +15,7 @@
 }
 
 .cancel_logo{
-    font-size: 20px;
+    font-size: 32px;
     cursor: pointer;
 }
 
@@ -24,31 +24,51 @@
     color: white;
     height: auto;
     border-radius: 8px;
-    padding: 8px;
     width: 400px;
     overflow: hidden;
-
+    display: grid;
+    gap: 8px;
+    grid-template-rows: auto 1fr auto;
+    cursor: auto;
+    max-height: calc(100% - 30px);
 
     @media(width < 600px) {
-        width: 100%;
+        width: calc(100% - 30px);
     }
-    max-height: 90%;
-    cursor: auto;
 }
 
 .header{
     display: grid;
     grid-template-columns: 1fr auto;
+    padding: 8px;
 }
 
 .files{
     display: grid;
     gap: 8px;
-    max-height: 600px;
     overflow: auto;
 }
 
 .message_input{
-
+    background-color: #0a4375;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
 }
 
+#button_background{
+    display: grid;
+    align-items: center;
+    padding: 4px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+#button_background:hover{
+    background-color: #0098ea;
+}
+
+#button{
+    font-size: 38px;
+    color: white;
+}
