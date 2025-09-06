@@ -35,10 +35,10 @@ export const MediaMenu: FC<PropsType> = ({ isVisibleMediaMenuOutside, setIsVisib
                 <CiFileOn className={styles.menu_item_icon} strokeWidth={1} />
                 <div>Файл</div>
             </div>
-            <div className={styles.menu_item}>
-                <CiFileOn className={styles.menu_item_icon} strokeWidth={1} />
-                <input type={'file'} />
-            </div>
+            {/*<div className={styles.menu_item}>*/}
+            {/*    <CiFileOn className={styles.menu_item_icon} strokeWidth={1} />*/}
+            {/*    <input type={'file'} />*/}
+            {/*</div>*/}
             {/*<div className={styles.menu_item}>*/}
             {/*    <MdOutlineLocationOn className={styles.menu_item_icon} />*/}
             {/*    <div>Геолокация</div>*/}
