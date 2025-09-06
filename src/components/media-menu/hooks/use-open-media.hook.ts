@@ -6,6 +6,7 @@ export const useOpenMedia = (setIsVisible: (value: boolean) => void) => {
 
     const getFiles = (accept?: string) => {
         const input = document.createElement('input');
+        input.value = '';
         input.type = 'file';
         input.multiple = true;
         if (accept) input.accept = accept;

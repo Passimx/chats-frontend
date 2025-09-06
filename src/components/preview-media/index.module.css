@@ -50,7 +50,7 @@
 }
 
 .message_input{
-    background-color: #0a4375;
+    background-color: #08365e;
     width: 100%;
     display: grid;
     grid-template-columns: auto 1fr auto;
@@ -65,7 +65,7 @@
 }
 
 #button_background:hover{
-    background-color: #0098ea;
+    background-color: #0c518d;
 }
 
 #button{
