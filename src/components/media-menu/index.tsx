@@ -27,14 +27,18 @@ export const MediaMenu: FC<PropsType> = ({ isVisibleMediaMenuOutside, setIsVisib
             ref={wrapperRef}
             className={`${styles.background} ${visibility(styles.show_slowly, styles.hide_slowly, isVisible)}`}
         >
-            <button className={styles.menu_item} onClick={openMedia}>
+            <div className={styles.menu_item} onClick={openMedia}>
                 <GoFileMedia className={styles.menu_item_icon} />
                 <div>Фото и видео</div>
-            </button>
-            <button className={styles.menu_item} onClick={openFiles}>
+            </div>
+            <div className={styles.menu_item} onClick={openFiles}>
                 <CiFileOn className={styles.menu_item_icon} strokeWidth={1} />
                 <div>Файл</div>
-            </button>
+            </div>
+            <div className={styles.menu_item}>
+                <CiFileOn className={styles.menu_item_icon} strokeWidth={1} />
+                <input type={'file'} />
+            </div>
             {/*<div className={styles.menu_item}>*/}
             {/*    <MdOutlineLocationOn className={styles.menu_item_icon} />*/}
             {/*    <div>Геолокация</div>*/}

@@ -5,21 +5,24 @@ export const useOpenMedia = (setIsVisible: (value: boolean) => void) => {
     const { setFiles } = useContext(ContextMedia)!;
 
     const getFiles = (accept?: string) => {
-        const input = document.createElement('input');
-        input.value = '';
-        input.type = 'file';
-        input.multiple = true;
-        if (accept) input.accept = accept;
+        return new Promise((resolve) => {
+            const input = document.createElement('input');
+            input.value = '';
+            input.type = 'file';
+            input.multiple = true;
+            if (accept) input.accept = accept;
 
-        // input.accept = 'image/*,video/*';
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        input.onchange = (e: ChangeEvent<HTMLInputElement>) => {
-            const files = e.target.files;
-            if (files?.length) setFiles(files);
-        };
-        input.click();
-        setIsVisible(false);
+            // input.accept = 'image/*,video/*';
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            input.onchange = (e: ChangeEvent<HTMLInputElement>) => {
+                const files = e.target.files;
+                if (files?.length) setFiles(files);
+                resolve(true);
+            };
+            input.click();
+            setIsVisible(false);
+        });
     };
 
     const openMedia = useCallback(() => getFiles('image/*,video/*'), []);
