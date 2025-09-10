@@ -32,6 +32,18 @@ export const useEnterHook = (): UseEnterHookType => {
     }, [chatOnPage?.type, t, isRecovering, recoveringTime]);
 
     useEffect(() => {
+        const el = document.getElementById(styles.new_message);
+        if (!el || !chatOnPage?.id) return;
+
+        if (el.innerText !== chatOnPage?.inputMessage) {
+            el.innerText = chatOnPage?.inputMessage ?? '';
+            const isText = !!el.innerText.replace(/^\n+|\n+$/g, '').trim()?.length;
+            setTextExist(isText);
+            setIsShowPlaceholder(!chatOnPage?.inputMessage?.length);
+        }
+    }, [chatOnPage?.inputMessage]);
+
+    useEffect(() => {
         const deleteButton = document.getElementById(styles.button_microphone_delete)!;
         if (!isRecovering) return;
 
@@ -106,6 +118,8 @@ export const useEnterHook = (): UseEnterHookType => {
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
 
+        await createMessage({ message: text, chatId: chatOnPage.id, parentMessageId: chatOnPage?.answerMessage?.id });
+
         element.innerText = '';
         if (isFocused) element.focus();
         setIsShowPlaceholder(true);
@@ -113,8 +127,6 @@ export const useEnterHook = (): UseEnterHookType => {
 
         if (getRawChat(chatOnPage.id)) update({ id: chatOnPage.id, inputMessage: undefined, answerMessage: undefined });
         else setChatOnPage({ answerMessage: undefined });
-
-        await createMessage({ message: text, chatId: chatOnPage.id, parentMessageId: chatOnPage?.answerMessage?.id });
     }, [chatOnPage, isPhone, isOpenMobileKeyboard, chatOnPage?.answerMessage]);
 
     useEffect(() => {
