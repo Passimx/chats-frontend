@@ -13,33 +13,36 @@ self.addEventListener('fetch', function (event) {
     if (request.mode === 'navigate') {
         event.respondWith(
             caches.open(CACHE_NAME).then(async (cache) => {
-                const cachedResponse = await cache.match('/index.html');
+                // сначала пробуем найти именно этот запрос (/, /route, /?t=1 …)
+                let cachedResponse = await cache.match(request);
 
-                // запускаем обновление в фоне
+                // если нет — пробуем index.html
+                if (!cachedResponse) {
+                    cachedResponse = await cache.match('/index.html');
+                }
+
+                // параллельно тянем сеть
                 const fetchPromise = fetch(request)
                     .then((networkResponse) => {
                         if (networkResponse && networkResponse.status === 200) {
-                            cache.put('/index.html', networkResponse.clone());
+                            cache.put(request, networkResponse.clone()); // кэшируем именно URL
+                            cache.put('/index.html', networkResponse.clone()); // и index.html на всякий случай
                             return networkResponse;
                         }
                         return null;
                     })
                     .catch(() => null);
 
-                // Всегда возвращаем что-то
+                // всегда что-то возвращаем
                 if (cachedResponse) {
-                    // отдаём кеш сразу, а обновление пусть идёт в фоне
-                    fetchPromise;
+                    fetchPromise; // обновление в фоне
                     return cachedResponse;
                 }
 
-                // кеша нет → ждём сети
                 const networkResponse = await fetchPromise;
-                if (networkResponse) {
-                    return networkResponse;
-                }
+                if (networkResponse) return networkResponse;
 
-                // совсем fallback (например, оффлайн-страница)
+                // fallback оффлайн
                 return new Response('<h1>Offline</h1>', {
                     headers: { 'Content-Type': 'text/html' },
                 });
