@@ -8,6 +8,7 @@ import { ParentMessage } from '../parent-message';
 import styles2 from '../menu-message/index.module.css';
 import { useAppSelector } from '../../root/store';
 import { ContextChat } from '../../pages/chat/context/chat-context.tsx';
+import { MessageFile } from '../message-file';
 
 const Message: FC<PropsType> = memo((props) => {
     const { number, type, findMessage } = props;
@@ -73,7 +74,14 @@ const Message: FC<PropsType> = memo((props) => {
     return (
         <>
             <div ref={observerTarget} id={elementId} className={`${styles.background}`}>
-                {props.parentMessage && <ParentMessage {...{ ...props.parentMessage, findMessage }} />}
+                {!!props.parentMessage && <ParentMessage {...{ ...props.parentMessage, findMessage }} />}
+                {!!props.files?.length && (
+                    <div className={styles.file_list}>
+                        {props.files.map((file, number) => (
+                            <MessageFile key={number} file={file} />
+                        ))}
+                    </div>
+                )}
                 <RenderMessage message={visibleMessage} type={type} files={props.files} />
                 <div className={`${styles.left_div2} text_translate`}>{time}</div>
             </div>

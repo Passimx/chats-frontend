@@ -1,0 +1,77 @@
+.background{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    padding: 4px;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+.background:hover{
+    background-color: #ccedff;
+    border-radius: 8px;
+
+    .file_logo{
+        display: none;
+    }
+
+    .download_logo{
+        display: inline;
+        animation: show_slowly .3s linear forwards;
+    }
+}
+
+.name{
+    display: grid;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -moz-box;
+    -moz-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.file_background{
+    width: 40px;
+    height: 40px;
+    border-radius: 30px;
+    background-color: #0098ea;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.file_logo{
+    font-size: 25px;
+    color: white;
+}
+
+.download_logo{
+    display: none;
+    font-size: 25px;
+    color: white;
+}
+
+.file_inf{
+    display: grid;
+    overflow: hidden;
+}
+
+.size{
+    font-weight: 500;
+    opacity: 0.4;
+}
+
+
+@keyframes show_slowly{
+    from {
+        visibility: hidden;
+        opacity: 0;
+    }
+    to {
+        visibility: visible;
+        opacity: 1;
+    }
+}

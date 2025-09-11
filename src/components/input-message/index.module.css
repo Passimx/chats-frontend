@@ -41,8 +41,10 @@
 }
 
 #answer_block_cancel_icon{
-    color: rgb(0, 152, 234);
+    /*color: rgb(0, 152, 234);*/
     font-size: 24px;
+    opacity: 0.5;
+    stroke-width: 1px;
 }
 
 #inputs{
