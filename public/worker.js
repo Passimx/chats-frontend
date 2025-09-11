@@ -20,13 +20,29 @@ self.addEventListener('fetch', function (event) {
                     .then((networkResponse) => {
                         if (networkResponse && networkResponse.status === 200) {
                             cache.put('/index.html', networkResponse.clone());
+                            return networkResponse;
                         }
-                        return networkResponse;
+                        return null;
                     })
                     .catch(() => null);
 
-                // сразу отдаём кеш, а обновление идёт в фоне
-                return cachedResponse || fetchPromise;
+                // Всегда возвращаем что-то
+                if (cachedResponse) {
+                    // отдаём кеш сразу, а обновление пусть идёт в фоне
+                    fetchPromise;
+                    return cachedResponse;
+                }
+
+                // кеша нет → ждём сети
+                const networkResponse = await fetchPromise;
+                if (networkResponse) {
+                    return networkResponse;
+                }
+
+                // совсем fallback (например, оффлайн-страница)
+                return new Response('<h1>Offline</h1>', {
+                    headers: { 'Content-Type': 'text/html' },
+                });
             }),
         );
         return;
