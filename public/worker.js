@@ -11,7 +11,24 @@ self.addEventListener('fetch', function (event) {
     const request = event.request;
 
     if (request.mode === 'navigate') {
-        event.respondWith(fetch(request).catch(() => caches.match('/index.html')));
+        event.respondWith(
+            caches.open(CACHE_NAME).then(async (cache) => {
+                const cachedResponse = await cache.match('/index.html');
+
+                // запускаем обновление в фоне
+                const fetchPromise = fetch(request)
+                    .then((networkResponse) => {
+                        if (networkResponse && networkResponse.status === 200) {
+                            cache.put('/index.html', networkResponse.clone());
+                        }
+                        return networkResponse;
+                    })
+                    .catch(() => null);
+
+                // сразу отдаём кеш, а обновление идёт в фоне
+                return cachedResponse || fetchPromise;
+            }),
+        );
         return;
     }
 

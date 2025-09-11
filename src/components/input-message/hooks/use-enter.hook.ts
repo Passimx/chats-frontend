@@ -9,7 +9,7 @@ import { getIsFocused } from './get-is-focused.hook.ts';
 import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
 import { focusToEnd } from '../common/focus-to-end.ts';
 import moment from 'moment/min/moment-with-locales';
-import { uploadFile } from '../../../root/api/files';
+import { uploadFile } from '../../../root/api/files/file.ts';
 
 let mediaRecorder: MediaRecorder | undefined;
 let chunks: Blob[] = [];

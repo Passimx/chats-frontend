@@ -1,7 +1,7 @@
-import { FileType } from '../../../root/types/files/file.type.ts';
+import { Types } from '../../../root/types/files/types.ts';
 
 export type PropsType = {
-    fileAudio: FileType;
+    fileAudio: Types;
     // width?: number;
     // height?: number;
     // barColor?: string;

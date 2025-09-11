@@ -1,5 +1,5 @@
-import { FileType } from '../../root/types/files/file.type.ts';
+import { Types } from '../../root/types/files/types.ts';
 
 export type PropsType = {
-    file: FileType;
+    file: Types;
 };

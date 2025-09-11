@@ -1,4 +1,4 @@
-export type FileType = {
+export type Types = {
     id: string;
     originalName: string;
     mimeType: MimetypeEnum;

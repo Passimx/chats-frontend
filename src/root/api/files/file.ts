@@ -1,6 +1,6 @@
 import { IData } from '../index.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
-import { FileType } from '../../types/files/file.type.ts';
+import { Types } from '../../types/files/types.ts';
 
 export const uploadFile = async (body: FormData): Promise<IData<string[]>> => {
     const response = await fetch(`${Envs.chatsServiceUrl}/files/upload`, { method: 'POST', body }).then((response) =>
@@ -10,7 +10,7 @@ export const uploadFile = async (body: FormData): Promise<IData<string[]>> => {
     return response as IData<string[]>;
 };
 
-export const DownloadFile = async (file: FileType): Promise<void> => {
+export const DownloadFile = async (file: Types): Promise<void> => {
     const response = await fetch(`${Envs.chatsServiceUrl}/files/${file.id}`);
 
     if (!response.ok) {

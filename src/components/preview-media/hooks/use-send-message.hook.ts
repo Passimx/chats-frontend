@@ -2,7 +2,7 @@ import styles from '../index.module.css';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useAppAction, useAppSelector } from '../../../root/store';
 import { ContextMedia } from '../../preview-media-context';
-import { uploadFile } from '../../../root/api/files';
+import { uploadFile } from '../../../root/api/files/file.ts';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { createMessage } from '../../../root/api/messages';
 

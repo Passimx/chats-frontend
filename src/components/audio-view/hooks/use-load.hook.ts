@@ -1,13 +1,13 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Envs } from '../../../common/config/envs/envs.ts';
-import { FileType } from '../../../root/types/files/file.type.ts';
+import { Types } from '../../../root/types/files/types.ts';
 import { AudioPlayerContext } from '../../../root/contexts/audio-player';
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
 
 const readerMap: Map<string, ReadableStreamDefaultReader> = new Map();
 const stopReaderSet: Set<string> = new Set();
 
-export const useLoad = (fileAudio: FileType): [number] => {
+export const useLoad = (fileAudio: Types): [number] => {
     const { setAudio, play, pause } = useContext(AudioPlayerContext)!;
 
     const [countLoadParts, setCountLoadParts] = useState<number>(0);

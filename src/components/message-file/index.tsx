@@ -3,9 +3,9 @@ import { PropsType } from './props.type.ts';
 import { useFileSize } from '../../common/hooks/use-file-size.ts';
 import styles from './index.module.css';
 import { IoMusicalNotesSharp } from 'react-icons/io5';
-import { DownloadFile } from '../../root/api/files';
-import { FileMap, MimetypeEnum } from '../../root/types/files/file.type.ts';
+import { FileMap, MimetypeEnum } from '../../root/types/files/types.ts';
 import { CiFileOn } from 'react-icons/ci';
+import { DownloadFile } from '../../root/api/files/file.ts';
 import { TbBrandOpenvpn } from 'react-icons/tb';
 import {
     BsCode,
