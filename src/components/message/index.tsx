@@ -77,9 +77,11 @@ const Message: FC<PropsType> = memo((props) => {
                 {!!props.parentMessage && <ParentMessage {...{ ...props.parentMessage, findMessage }} />}
                 {!!props.files?.length && (
                     <div className={styles.file_list}>
-                        {props.files.map((file, number) => (
-                            <MessageFile key={number} file={file} />
-                        ))}
+                        {props.files
+                            .filter((file) => file.fileType === 'is_media')
+                            .map((file, number) => (
+                                <MessageFile key={number} file={file} />
+                            ))}
                     </div>
                 )}
                 <RenderMessage message={visibleMessage} type={type} files={props.files} />
