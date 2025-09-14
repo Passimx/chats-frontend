@@ -38,7 +38,7 @@ export const useBroadcastChannel = () => {
 
         function becomeOwner() {
             const iframe = document.createElement('iframe');
-            iframe.src = 'assets/iframe.html';
+            iframe.src = 'iframe.html';
             iframe.style.display = 'none';
             rawApp.isMainTab = true;
             document.body.appendChild(iframe);
