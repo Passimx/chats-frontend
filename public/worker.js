@@ -58,31 +58,31 @@ self.addEventListener('fetch', function (event) {
         return;
     }
 
-    if (url.pathname.includes('/assets/') || url.pathname.includes('/files/')) {
-        event.respondWith(
-            caches.open(CACHE_NAME).then(async (cache) => {
-                const cachedResponse = await cache.match(request);
-                if (cachedResponse) {
-                    // запускаем обновление в фоне
-                    //     fetch(request).then((networkResponse) => {
-                    //         if (networkResponse && networkResponse.status === 200) {
-                    //             cache.put(request, networkResponse.clone());
-                    //         }
-                    //     });
-
-                    return cachedResponse;
-                }
-                // Нет кеша — делаем запрос
-                else {
-                    const networkResponse = await fetch(request);
-                    if (networkResponse && networkResponse.status === 200) {
-                        cache.put(request, networkResponse.clone());
-                    }
-                    return networkResponse;
-                }
-            }),
-        );
-    }
+    // if (url.pathname.includes('/assets/') || url.pathname.includes('/files/')) {
+    //     event.respondWith(
+    //         caches.open(CACHE_NAME).then(async (cache) => {
+    //             const cachedResponse = await cache.match(request);
+    //             if (cachedResponse) {
+    //                 // запускаем обновление в фоне
+    //                 //     fetch(request).then((networkResponse) => {
+    //                 //         if (networkResponse && networkResponse.status === 200) {
+    //                 //             cache.put(request, networkResponse.clone());
+    //                 //         }
+    //                 //     });
+    //
+    //                 return cachedResponse;
+    //             }
+    //             // Нет кеша — делаем запрос
+    //             else {
+    //                 const networkResponse = await fetch(request);
+    //                 if (networkResponse && networkResponse.status === 200) {
+    //                     cache.put(request, networkResponse.clone());
+    //                 }
+    //                 return networkResponse;
+    //             }
+    //         }),
+    //     );
+    // }
 });
 
 self.addEventListener('activate', (event) => {

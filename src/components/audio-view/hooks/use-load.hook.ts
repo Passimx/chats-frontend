@@ -8,7 +8,7 @@ const readerMap: Map<string, ReadableStreamDefaultReader> = new Map();
 const stopReaderSet: Set<string> = new Set();
 
 export const useLoad = (fileAudio: Types): [number] => {
-    const { setAudio, play, pause } = useContext(AudioPlayerContext)!;
+    const { addFile, play, pause } = useContext(AudioPlayerContext)!;
 
     const [countLoadParts, setCountLoadParts] = useState<number>(0);
     const [blob, setBlob] = useState<Blob>();
@@ -131,7 +131,7 @@ export const useLoad = (fileAudio: Types): [number] => {
             playButton.style.visibility = 'hidden';
             pauseButton.style.visibility = 'visible';
 
-            setAudio({ id: fileAudio.id, blob: blob! });
+            addFile({ file: fileAudio, blob: blob! });
             await play();
             playButton.style.visibility = 'visible';
             pauseButton.style.visibility = 'hidden';

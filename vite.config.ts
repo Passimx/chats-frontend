@@ -13,7 +13,6 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 main: resolve(__dirname, 'index.html'), // основное SPA
-                iframe: resolve(__dirname, 'iframe.html'), // дополнительная точка входа
             },
         },
         outDir: 'dist',

@@ -1,10 +1,14 @@
+import { Types } from '../../../types/files/types.ts';
+
 export type AudioType = {
-    id: string;
+    file: Types;
     blob: Blob;
 };
 
 export type ContextType = {
-    setAudio: (value: AudioType) => void;
-    play: () => Promise<null>;
+    audio?: AudioType;
+    isPlaying: boolean;
+    addFile: (value: AudioType) => void;
+    play: () => Promise<void>;
     pause: () => void;
 };

@@ -53,9 +53,10 @@ export enum MimetypeEnum {
     OGG = 'audio/ogg',
     FLAC = 'audio/flac',
     AAC = 'audio/aac',
-    M4A = 'audio/mp4',
-    AMR = 'audio/amr',
+    M4A = 'audio/x-m4a',
     Opus = 'audio/opus',
+    // не воспроизводится в браузере
+    // AMR = 'audio/amr',
 
     // Текстовые форматы
     JSON = 'application/json',
@@ -76,7 +77,7 @@ export enum MimetypeEnum {
     BAT = 'application/x-bat',
 }
 
-enum FileExtensionEnum {
+export enum FileExtensionEnum {
     IS_VOICE = 'is_voice',
     IS_MEDIA = 'is_media',
 }
@@ -94,7 +95,7 @@ export const FileMap = new Map<string, MimetypeEnum[]>([
             MimetypeEnum.FLAC,
             MimetypeEnum.AAC,
             MimetypeEnum.M4A,
-            MimetypeEnum.AMR,
+            // MimetypeEnum.AMR,
             MimetypeEnum.Opus,
         ],
     ],

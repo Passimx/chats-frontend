@@ -1,0 +1,37 @@
+.background{
+    width: 40px;
+    height: 40px;
+    padding: 4px;
+
+    .background_play, .background_stop{
+        background-color: #0098ea;
+        width: 40px;
+        height: 40px;
+        border-radius: 40px;
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+
+        .play_button{
+            font-size: 15px;
+            font-weight: 700;
+            color: white;
+        }
+    }
+
+    .background_stop{
+        background: none;
+        position: relative;
+        top: -40px;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -1,20 +1,23 @@
-import { createContext, FC, memo, ReactElement, useCallback } from 'react';
+import { createContext, FC, memo, ReactElement, useCallback, useState } from 'react';
 import { AudioType, ContextType } from './types/context.type.ts';
 
 export const AudioPlayerContext = createContext<ContextType | null>(null);
-let audio: AudioType;
+let audioInside: AudioType;
 let context: AudioBufferSourceNode;
 let offset: number;
 
 export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) => {
-    const play: () => Promise<null> = () =>
+    const [audio, setAudio] = useState<AudioType>();
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+    const play: () => Promise<void> = () =>
         // eslint-disable-next-line no-async-promise-executor
         new Promise(async (resolve) => {
-            const fileId = audio.id;
+            const fileId = audioInside.file.id;
             if (context) context.stop();
-            if (!audio?.blob) return resolve(null);
+            if (!audioInside?.blob) return resolve();
 
-            const arrayBuffer = await audio.blob.arrayBuffer();
+            const arrayBuffer = await audioInside.blob.arrayBuffer();
             const audioContext = new window.AudioContext();
             const source = audioContext.createBufferSource();
 
@@ -23,6 +26,7 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
 
             if (source.buffer?.duration - 0.1 < offset) offset = 0;
             source.start(0, offset);
+            setIsPlaying(true);
             const begin = Date.now() - (offset ?? 0) * 1000;
             context = source;
 
@@ -31,25 +35,27 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                 const currentTime = context.context.currentTime;
                 const duration = source.buffer?.duration ?? 0 - 0.1;
 
-                if ((duration && currentTime > duration) || fileId !== audio.id) offset = 0;
+                if ((duration && currentTime > duration) || fileId !== audioInside?.file?.id) offset = 0;
                 else offset = (end - begin) / 1000;
 
-                resolve(null);
+                resolve();
             };
         });
 
     const pause = useCallback(() => {
         if (!context) return;
         context.stop();
+        setIsPlaying(false);
     }, []);
 
-    const setAudio = useCallback((value: AudioType) => {
-        if (audio?.id !== value?.id) offset = 0;
-        audio = value;
+    const addFile = useCallback((value: AudioType) => {
+        if (audio?.file?.id !== value?.file?.id) offset = 0;
+        audioInside = value;
+        setAudio(value);
     }, []);
 
     return (
-        <AudioPlayerContext.Provider value={{ setAudio, play, pause }}>
+        <AudioPlayerContext.Provider value={{ audio, isPlaying, addFile, play, pause }}>
             <>{children}</>
         </AudioPlayerContext.Provider>
     );

@@ -5,20 +5,44 @@
     padding: 4px;
     cursor: pointer;
     transition: all .3s ease;
+    border-radius: 8px;
 }
 
-.background:hover{
-    background-color: #ccedff;
-    border-radius: 8px;
-
-    .file_logo{
-        display: none;
+.background:hover {
+    @media(width > 600px) {
+        background-color: #ccedff;
     }
+}
 
-    .download_logo{
-        display: inline;
-        animation: show_slowly .3s linear forwards;
+.background_animation:hover{
+
+    @media(width > 600px) {
+        .file_logo{
+            display: none;
+        }
+
+        .download_logo{
+            display: inline;
+            animation: show_slowly .3s linear forwards;
+        }
     }
+}
+
+.background_stop{
+    width: 40px;
+    height: 40px;
+    background: none;
+    position: relative;
+    top: -40px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.stop_button{
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
 }
 
 .name{
@@ -41,6 +65,25 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+}
+
+.file_icon, .stop_button{
+    height: 40px;
+    width: 40px;
+    border-radius: 40px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.stop_button{
+    font-size: 15px;
+    font-weight: 700;
+    color:white;
+}
+
+.play_button{
+    color: white;
 }
 
 .file_logo{

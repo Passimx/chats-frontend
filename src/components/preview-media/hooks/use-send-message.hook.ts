@@ -5,6 +5,7 @@ import { ContextMedia } from '../../preview-media-context';
 import { uploadFile } from '../../../root/api/files/file.ts';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { createMessage } from '../../../root/api/messages';
+import { FileExtensionEnum } from '../../../root/types/files/types.ts';
 
 export const useSendMessage = () => {
     const { files, setFiles } = useContext(ContextMedia)!;
@@ -16,7 +17,7 @@ export const useSendMessage = () => {
     const sendMessage = useCallback(async () => {
         if (!files?.length) return;
         const formData = new FormData();
-        formData.append('fileType', 'is_media');
+        formData.append('fileType', FileExtensionEnum.IS_MEDIA);
         Array.from(files).forEach((file) => formData.append('files', file));
 
         const response = await uploadFile(formData);
@@ -26,7 +27,7 @@ export const useSendMessage = () => {
 
         await createMessage({
             chatId: chatOnPage!.id,
-            fileIds: response.data,
+            // fileIds: response.data,
             parentMessageId: chatOnPage?.answerMessage?.id,
             message: text,
         });

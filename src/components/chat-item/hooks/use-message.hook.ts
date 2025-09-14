@@ -46,11 +46,11 @@ export const useMessage = (chat: ChatItemIndexDb): (string | undefined)[] => {
 
     useEffect(() => {
         changeMessage();
-    }, [chat, t]);
+    }, [chat.message.id, t]);
 
     useEffect(() => {
         changeCountMessages();
-    }, [chat]);
+    }, [chat.readMessage]);
 
     return [message, time, countMessages];
 };

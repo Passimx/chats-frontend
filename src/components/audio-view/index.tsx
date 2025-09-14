@@ -1,11 +1,12 @@
 import React, { memo } from 'react';
 import { PropsType } from './types/props.type.ts';
 import styles from './index.module.css';
-import { useLoad } from './hooks/use-load.hook.ts';
-import { MdCancel } from 'react-icons/md';
-import { FaCircleArrowDown } from 'react-icons/fa6';
-import { IoPlayCircleSharp } from 'react-icons/io5';
-import { RiPauseCircleFill } from 'react-icons/ri';
+// import { useLoad } from './hooks/use-load.hook.ts';
+// import { MdCancel } from 'react-icons/md';
+// import { FaCircleArrowDown } from 'react-icons/fa6';
+// import { IoPlayCircleSharp } from 'react-icons/io5';
+// import { RiPauseCircleFill } from 'react-icons/ri';
+import { FaPlay } from 'react-icons/fa';
 
 export const AudioView: React.FC<PropsType> = memo(
     ({
@@ -15,7 +16,7 @@ export const AudioView: React.FC<PropsType> = memo(
         // gap = 2,
         // minBarHeight = 1,
     }) => {
-        useLoad(fileAudio);
+        // useLoad(fileAudio);
         // const width = 440;
         // const height = 20;
         //
@@ -155,21 +156,25 @@ export const AudioView: React.FC<PropsType> = memo(
             <div className={styles.background}>
                 <div className={styles.buttons_background}>
                     <div id={`play_background_${fileAudio.id}`} className={styles.play_background}>
-                        <IoPlayCircleSharp id={`play_${fileAudio.id}`} className={styles.play_button} />
-                        <RiPauseCircleFill id={`pause_${fileAudio.id}`} className={styles.pause_button} />
-                    </div>
-                    <div id={`cancel_background_${fileAudio.id}`} className={styles.cancel_background}>
-                        <div className={styles.cancel_button_round}>
-                            <div className={styles.cancel_button_round_inside}></div>
+                        <div id={`play_${fileAudio.id}`} className={styles.background_button}>
+                            <FaPlay color={'white'} />
                         </div>
-                        <MdCancel id={`cancel_button_${fileAudio.id}`} className={styles.cancel_button} />
+                        {/*<div id={`pause_${fileAudio.id}`}></div>*/}
+                        {/*<IoPlayCircleSharp id={`play_${fileAudio.id}`} className={styles.play_button} />*/}
+                        {/*<RiPauseCircleFill id={`pause_${fileAudio.id}`} className={styles.pause_button} />*/}
                     </div>
+                    {/*<div id={`cancel_background_${fileAudio.id}`} className={styles.cancel_background}>*/}
+                    {/*    <div className={styles.cancel_button_round}>*/}
+                    {/*        <div className={styles.cancel_button_round_inside}></div>*/}
+                    {/*    </div>*/}
+                    {/*    <MdCancel id={`cancel_button_${fileAudio.id}`} className={styles.cancel_button} />*/}
+                    {/*</div>*/}
                     <div id={`download_button_${fileAudio.id}`} className={styles.download_button}>
-                        <IoPlayCircleSharp className={styles.play_button} />
-                        <div className={styles.load_icon_background}>
-                            <FaCircleArrowDown className={styles.load_icon} />
-                            <div className={styles.load_icon_round}></div>
-                        </div>
+                        {/*<IoPlayCircleSharp className={styles.play_button} />*/}
+                        {/*<div className={styles.load_icon_background}>*/}
+                        {/*    <FaCircleArrowDown className={styles.load_icon} />*/}
+                        {/*    <div className={styles.load_icon_round}></div>*/}
+                        {/*</div>*/}
                     </div>
                 </div>
                 <div>
