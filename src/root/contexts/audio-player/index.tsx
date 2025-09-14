@@ -1,6 +1,7 @@
 import { createContext, FC, memo, ReactElement, useCallback, useEffect, useState } from 'react';
 import { AudioType, ContextType } from './types/context.type.ts';
 import { FileExtensionEnum } from '../../types/files/types.ts';
+import image from '../../../../public/assets/icons/512.png';
 
 export const AudioPlayerContext = createContext<ContextType | null>(null);
 
@@ -45,7 +46,7 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title,
                         artist: 'PassimX',
-                        artwork: [{ src: '/assets/icons/512.png', sizes: '512x512', type: 'image/png' }],
+                        artwork: [{ src: image, sizes: '512x512', type: 'image/png' }],
                     });
 
                     navigator.mediaSession.setActionHandler('play', play);
@@ -53,18 +54,21 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
 
                     navigator.mediaSession.setActionHandler('seekto', (details) => {
                         if (!audioEl) return;
-
-                        // если аудио на паузе — включаем, перематываем, потом оставляем на паузе (для ios)
-                        const wasPaused = audioEl.paused;
-                        if (wasPaused) {
-                            const originalVolume = audioEl.volume;
-                            audioEl.volume = 0;
-                            audioEl?.play().then(() => {
-                                audioEl!.currentTime = details.seekTime!;
-                                if (wasPaused) audioEl!.pause();
-                                audioEl!.volume = originalVolume;
-                            });
-                        } else audioEl.currentTime = details.seekTime!;
+                        const originalVolume = audioEl.volume;
+                        try {
+                            // если аудио на паузе — включаем, перематываем, потом оставляем на паузе (для ios)
+                            const wasPaused = audioEl.paused;
+                            if (wasPaused) {
+                                audioEl.volume = 0;
+                                audioEl?.play().then(() => {
+                                    audioEl!.currentTime = details.seekTime!;
+                                    if (wasPaused) audioEl!.pause();
+                                    audioEl!.volume = originalVolume;
+                                });
+                            } else audioEl.currentTime = details.seekTime!;
+                        } catch (e) {
+                            audioEl!.volume = originalVolume;
+                        }
                     });
 
                     navigator.mediaSession.setActionHandler('previoustrack', () => {
