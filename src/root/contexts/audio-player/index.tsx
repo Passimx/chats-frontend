@@ -1,5 +1,6 @@
 import { createContext, FC, memo, ReactElement, useCallback, useEffect, useState } from 'react';
 import { AudioType, ContextType } from './types/context.type.ts';
+import { FileExtensionEnum } from '../../types/files/types.ts';
 
 export const AudioPlayerContext = createContext<ContextType | null>(null);
 
@@ -38,9 +39,12 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                 audioEl.addEventListener('timeupdate', timeupdate);
 
                 if ('mediaSession' in navigator) {
+                    const title =
+                        value.file.fileType === FileExtensionEnum.IS_VOICE ? 'Голосовое сообщение' : 'Медиафайл';
+
                     navigator.mediaSession.metadata = new MediaMetadata({
-                        title: audio?.file.originalName,
-                        // artist: size,
+                        title,
+                        artist: 'PassimX',
                         artwork: [{ src: '/assets/icons/512.png', sizes: '512x512', type: 'image/png' }],
                     });
 
