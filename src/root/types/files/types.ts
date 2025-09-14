@@ -5,6 +5,8 @@ export type Types = {
     size: number;
     createdAt: Date;
     fileType: FileExtensionEnum;
+    duration?: number;
+    loudnessData?: number[];
 };
 
 export enum MimetypeEnum {

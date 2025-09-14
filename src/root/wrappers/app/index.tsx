@@ -12,7 +12,6 @@ import { PropsType } from './types/props.type.ts';
 import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 import { useCheckSystemChat } from './hooks/use-check-system-chat.hook.ts';
 import { Menu } from '../../../components/menu';
-import { useTelegram } from '../../../modules/telegram';
 import { useMobileKeyboard } from './hooks/use-mobile-keyboard.hook.ts';
 import { AudioPlayer } from '../../contexts/audio-player';
 import { useMemory } from './hooks/use-memory.ts';
@@ -36,7 +35,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     // add system chat if not exists
     useCheckSystemChat();
     // logic for Telegram App
-    useTelegram();
+    // useTelegram();
     // logic for mobile keyboard
     useMobileKeyboard();
     // logic for usage memory

@@ -11,6 +11,8 @@ import { focusToEnd } from '../common/focus-to-end.ts';
 import moment from 'moment/min/moment-with-locales';
 import { uploadFile } from '../../../root/api/files/file.ts';
 import { FileExtensionEnum, MimetypeEnum } from '../../../root/types/files/types.ts';
+import { getAudioDurationFromBlob } from '../../../common/hooks/get-audio-duration-from-blob.hook.ts';
+import { getAudioWaveform } from '../../../common/hooks/get-sound-bar.hook.ts';
 
 let mediaRecorder: MediaRecorder | undefined;
 let chunks: Blob[] = [];
@@ -79,12 +81,17 @@ export const useEnterHook = (): UseEnterHookType => {
 
     const save = async (chunks: Blob[]) => {
         const audioBlob = new Blob(chunks, { type: MimetypeEnum.WAV });
+
         const formData = new FormData();
         const originalName = 'recording.wav';
         formData.append('files', audioBlob, originalName);
-        formData.append('fileType', FileExtensionEnum.IS_VOICE);
 
-        const response = await uploadFile(formData);
+        const [response, duration, loudnessData] = await Promise.all([
+            uploadFile(formData),
+            getAudioDurationFromBlob(audioBlob),
+            getAudioWaveform(audioBlob),
+        ]);
+
         if (!response.success || !response?.data?.length) return;
 
         if (getRawChat(chatOnPage?.id))
@@ -96,9 +103,11 @@ export const useEnterHook = (): UseEnterHookType => {
             parentMessageId: chatOnPage?.answerMessage?.id,
             files: [
                 {
+                    duration,
+                    loudnessData,
+                    originalName,
                     id: response.data,
                     size: audioBlob.size,
-                    originalName,
                     mimeType: MimetypeEnum.WAV,
                     fileType: FileExtensionEnum.IS_VOICE,
                 },
