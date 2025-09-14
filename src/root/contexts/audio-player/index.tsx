@@ -2,6 +2,7 @@ import { createContext, FC, memo, ReactElement, useCallback, useEffect, useState
 import { AudioType, ContextType } from './types/context.type.ts';
 import { FileExtensionEnum } from '../../types/files/types.ts';
 import image from '../../../../public/assets/icons/512.png';
+import { useTranslation } from 'react-i18next';
 
 export const AudioPlayerContext = createContext<ContextType | null>(null);
 
@@ -10,6 +11,7 @@ let audioEl: HTMLAudioElement | null = null;
 export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) => {
     const [audio, setAudio] = useState<AudioType>();
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const { t } = useTranslation();
 
     const play = async () => {
         setIsPlaying(true);
@@ -42,8 +44,8 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                 if ('mediaSession' in navigator) {
                     const title =
                         value.file.fileType === FileExtensionEnum.IS_VOICE
-                            ? 'Голосовое сообщение'
-                            : value?.file.originalName.slice(0, 25);
+                            ? t('voice_message')
+                            : value?.file.originalName;
 
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title,
