@@ -52,9 +52,16 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                     navigator.mediaSession.setActionHandler('pause', pause);
 
                     navigator.mediaSession.setActionHandler('seekto', (details) => {
-                        if (audioEl && details.seekTime != null) {
-                            audioEl.currentTime = details.seekTime;
-                        }
+                        if (!audioEl) return;
+
+                        // если аудио на паузе — включаем, перематываем, потом оставляем на паузе (для ios)
+                        const wasPaused = audioEl.paused;
+                        if (wasPaused)
+                            audioEl?.play().then(() => {
+                                audioEl!.currentTime = details.seekTime!;
+                                if (wasPaused) audioEl!.pause();
+                            });
+                        else audioEl.currentTime = details.seekTime!;
                     });
 
                     navigator.mediaSession.setActionHandler('previoustrack', () => {
