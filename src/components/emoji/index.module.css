@@ -20,7 +20,7 @@
 
     @media(width > 592px){
         left: calc(50% - 288px);
-        right: calc(50% - 288px);
+        right: calc(50% - 280px);
     }
 }
 

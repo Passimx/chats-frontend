@@ -9,7 +9,10 @@ import { getIsFocused } from './get-is-focused.hook.ts';
 import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
 import { focusToEnd } from '../common/focus-to-end.ts';
 import moment from 'moment/min/moment-with-locales';
-import { uploadFile } from '../../../root/api/files';
+import { uploadFile } from '../../../root/api/files/file.ts';
+import { FileExtensionEnum, MimetypeEnum } from '../../../root/types/files/types.ts';
+import { getAudioDurationFromBlob } from '../../../common/hooks/get-audio-duration-from-blob.hook.ts';
+import { getAudioWaveform } from '../../../common/hooks/get-sound-bar.hook.ts';
 
 let mediaRecorder: MediaRecorder | undefined;
 let chunks: Blob[] = [];
@@ -30,6 +33,18 @@ export const useEnterHook = (): UseEnterHookType => {
         if (isRecovering) return `${t('recording')}: ${recoveringTime}`;
         return t(text);
     }, [chatOnPage?.type, t, isRecovering, recoveringTime]);
+
+    useEffect(() => {
+        const el = document.getElementById(styles.new_message);
+        if (!el || !chatOnPage?.id) return;
+
+        if (el.innerText !== chatOnPage?.inputMessage) {
+            el.innerText = chatOnPage?.inputMessage ?? '';
+            const isText = !!el.innerText.replace(/^\n+|\n+$/g, '').trim()?.length;
+            setTextExist(isText);
+            setIsShowPlaceholder(!chatOnPage?.inputMessage?.length);
+        }
+    }, [chatOnPage?.inputMessage]);
 
     useEffect(() => {
         const deleteButton = document.getElementById(styles.button_microphone_delete)!;
@@ -65,13 +80,19 @@ export const useEnterHook = (): UseEnterHookType => {
     }, [isRecovering]);
 
     const save = async (chunks: Blob[]) => {
-        const audioBlob = new Blob(chunks, { type: 'audio/wav' });
-        const formData = new FormData();
-        formData.append('files', audioBlob, 'recording.wav');
-        formData.append('fileType', 'is_voice');
+        const audioBlob = new Blob(chunks, { type: MimetypeEnum.WAV });
 
-        const response = await uploadFile(formData);
-        if (!response.success || !response.data.length) return;
+        const formData = new FormData();
+        const originalName = 'recording.wav';
+        formData.append('files', audioBlob, originalName);
+
+        const [response, duration, loudnessData] = await Promise.all([
+            uploadFile(formData),
+            getAudioDurationFromBlob(audioBlob),
+            getAudioWaveform(audioBlob),
+        ]);
+
+        if (!response.success || !response?.data?.length) return;
 
         if (getRawChat(chatOnPage?.id))
             update({ id: chatOnPage!.id, inputMessage: undefined, answerMessage: undefined });
@@ -79,8 +100,18 @@ export const useEnterHook = (): UseEnterHookType => {
 
         await createMessage({
             chatId: chatOnPage!.id,
-            fileIds: response.data,
             parentMessageId: chatOnPage?.answerMessage?.id,
+            files: [
+                {
+                    duration,
+                    loudnessData,
+                    originalName,
+                    id: response.data,
+                    size: audioBlob.size,
+                    mimeType: MimetypeEnum.WAV,
+                    fileType: FileExtensionEnum.IS_VOICE,
+                },
+            ],
         });
     };
 
@@ -106,6 +137,8 @@ export const useEnterHook = (): UseEnterHookType => {
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
 
+        await createMessage({ message: text, chatId: chatOnPage.id, parentMessageId: chatOnPage?.answerMessage?.id });
+
         element.innerText = '';
         if (isFocused) element.focus();
         setIsShowPlaceholder(true);
@@ -113,8 +146,6 @@ export const useEnterHook = (): UseEnterHookType => {
 
         if (getRawChat(chatOnPage.id)) update({ id: chatOnPage.id, inputMessage: undefined, answerMessage: undefined });
         else setChatOnPage({ answerMessage: undefined });
-
-        await createMessage({ message: text, chatId: chatOnPage.id, parentMessageId: chatOnPage?.answerMessage?.id });
     }, [chatOnPage, isPhone, isOpenMobileKeyboard, chatOnPage?.answerMessage]);
 
     useEffect(() => {

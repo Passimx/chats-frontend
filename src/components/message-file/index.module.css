@@ -1,0 +1,120 @@
+.background{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    padding: 4px;
+    cursor: pointer;
+    transition: all .3s ease;
+    border-radius: 8px;
+}
+
+.background:hover {
+    @media(width > 600px) {
+        background-color: #ccedff;
+    }
+}
+
+.background_animation:hover{
+
+    @media(width > 600px) {
+        .file_logo{
+            display: none;
+        }
+
+        .download_logo{
+            display: inline;
+            animation: show_slowly .3s linear forwards;
+        }
+    }
+}
+
+.background_stop{
+    width: 40px;
+    height: 40px;
+    background: none;
+    position: relative;
+    top: -40px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.stop_button{
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+}
+
+.name{
+    display: grid;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -moz-box;
+    -moz-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.file_background{
+    width: 40px;
+    height: 40px;
+    border-radius: 30px;
+    background-color: #0098ea;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.file_icon, .stop_button{
+    height: 40px;
+    width: 40px;
+    border-radius: 40px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.stop_button{
+    font-size: 15px;
+    font-weight: 700;
+    color:white;
+}
+
+.play_button{
+    color: white;
+}
+
+.file_logo{
+    font-size: 25px;
+    color: white;
+}
+
+.download_logo{
+    display: none;
+    font-size: 25px;
+    color: white;
+}
+
+.file_inf{
+    display: grid;
+    overflow: hidden;
+}
+
+.size{
+    font-weight: 500;
+    opacity: 0.4;
+}
+
+
+@keyframes show_slowly{
+    from {
+        visibility: hidden;
+        opacity: 0;
+    }
+    to {
+        visibility: visible;
+        opacity: 1;
+    }
+}

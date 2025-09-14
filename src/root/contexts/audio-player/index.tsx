@@ -1,55 +1,107 @@
-import { createContext, FC, memo, ReactElement, useCallback } from 'react';
+import { createContext, FC, memo, ReactElement, useCallback, useEffect, useState } from 'react';
 import { AudioType, ContextType } from './types/context.type.ts';
+import { FileExtensionEnum } from '../../types/files/types.ts';
+import image from '../../../../public/assets/icons/512.png';
+import { useTranslation } from 'react-i18next';
+import json from '../../../../package.json';
 
 export const AudioPlayerContext = createContext<ContextType | null>(null);
-let audio: AudioType;
-let context: AudioBufferSourceNode;
-let offset: number;
+
+let audioEl: HTMLAudioElement | null = null;
 
 export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) => {
-    const play: () => Promise<null> = () =>
-        // eslint-disable-next-line no-async-promise-executor
-        new Promise(async (resolve) => {
-            const fileId = audio.id;
-            if (context) context.stop();
-            if (!audio?.blob) return resolve(null);
+    const [audio, setAudio] = useState<AudioType>();
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const { t } = useTranslation();
 
-            const arrayBuffer = await audio.blob.arrayBuffer();
-            const audioContext = new window.AudioContext();
-            const source = audioContext.createBufferSource();
+    const play = async () => {
+        setIsPlaying(true);
+    };
 
-            source.buffer = await audioContext.decodeAudioData(arrayBuffer);
-            source.connect(audioContext.destination);
+    const pause = useCallback(() => setIsPlaying(false), []);
 
-            if (source.buffer?.duration - 0.1 < offset) offset = 0;
-            source.start(0, offset);
-            const begin = Date.now() - (offset ?? 0) * 1000;
-            context = source;
-
-            context.onended = () => {
-                const end = Date.now();
-                const currentTime = context.context.currentTime;
-                const duration = source.buffer?.duration ?? 0 - 0.1;
-
-                if ((duration && currentTime > duration) || fileId !== audio.id) offset = 0;
-                else offset = (end - begin) / 1000;
-
-                resolve(null);
-            };
-        });
-
-    const pause = useCallback(() => {
-        if (!context) return;
-        context.stop();
+    const timeupdate = useCallback(() => {
+        //     const current = audioEl.currentTime; // сколько секунд прошло
+        //     const total = audioEl.duration; // общая длительность
+        //
+        //     const progress = (current / total) * 100; // прогресс в процентах
+        //     console.log('Прогресс:', progress);
     }, []);
 
-    const setAudio = useCallback((value: AudioType) => {
-        if (audio?.id !== value?.id) offset = 0;
-        audio = value;
-    }, []);
+    const addFile = useCallback(
+        (value: AudioType) => {
+            if (value.file.id && value.file.id !== audio?.file.id) {
+                audioEl?.pause();
+                audioEl?.removeEventListener('ended', pause);
+                audioEl?.removeEventListener('timeupdate', timeupdate);
+                audioEl = null;
+
+                const url = URL.createObjectURL(value.blob);
+                audioEl = new Audio(url);
+
+                audioEl.addEventListener('ended', pause);
+                audioEl.addEventListener('timeupdate', timeupdate);
+
+                if ('mediaSession' in navigator) {
+                    const title =
+                        value.file.fileType === FileExtensionEnum.IS_VOICE
+                            ? t('voice_message')
+                            : value?.file.originalName;
+
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        title,
+                        artist: json.name,
+                        artwork: [{ src: image, sizes: '512x512', type: 'image/png' }],
+                    });
+
+                    navigator.mediaSession.setActionHandler('play', play);
+                    navigator.mediaSession.setActionHandler('pause', pause);
+
+                    navigator.mediaSession.setActionHandler('seekto', (details) => {
+                        if (!audioEl) return;
+                        const originalVolume = audioEl.volume;
+                        const wasPaused = audioEl.paused;
+                        if (wasPaused) {
+                            audioEl.volume = 0;
+                            audioEl?.play().then(() => {
+                                audioEl!.currentTime = details.seekTime!;
+                                if (wasPaused) audioEl!.pause();
+                                audioEl!.volume = originalVolume;
+                            });
+                        } else audioEl.currentTime = details.seekTime!;
+                    });
+
+                    navigator.mediaSession.setActionHandler('previoustrack', () => {
+                        if (audioEl) audioEl.currentTime = 0;
+
+                        console.log('⬅️ предыдущая');
+                        // switchToPreviousTrack();
+                    });
+
+                    navigator.mediaSession.setActionHandler('nexttrack', () => {
+                        console.log('➡️ следующая');
+                        // switchToNextTrack();
+                    });
+                }
+            }
+
+            setAudio(value);
+        },
+        [audio],
+    );
+
+    useEffect(() => {
+        if (isPlaying && audio) {
+            audioEl?.play();
+        }
+
+        if (!isPlaying && audio) {
+            audioEl?.pause();
+        }
+    }, [isPlaying, audio]);
 
     return (
-        <AudioPlayerContext.Provider value={{ setAudio, play, pause }}>
+        <AudioPlayerContext.Provider value={{ audio, isPlaying, addFile, play, pause }}>
             <>{children}</>
         </AudioPlayerContext.Provider>
     );

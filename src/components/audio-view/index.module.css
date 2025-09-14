@@ -1,5 +1,5 @@
 .background{
-    --button-size: 40px;
+    --button-size: 48px;
 
     width: 100%;
     display: grid;
@@ -13,7 +13,7 @@
         width: var(--button-size);
         height: var(--button-size);
         overflow: hidden;
-        border-radius: var(--button-size);
+        /*border-radius: var(--button-size);*/
 
         .cancel_background{
             margin-top: calc(-1 * var(--button-size));
@@ -45,13 +45,13 @@
         }
 
         .play_background{
-            width: var(--button-size);
-            height: var(--button-size);
+            /*width: var(--button-size);*/
+            /*height: var(--button-size);*/
 
-            .pause_button{
-                margin-top: calc(-1 * var(--button-size));
-                visibility: hidden;
-            }
+            /*.pause_button{*/
+            /*    margin-top: calc(-1 * var(--button-size));*/
+            /*    visibility: hidden;*/
+            /*}*/
         }
 
         .play_button, .cancel_button, .pause_button{
@@ -92,4 +92,14 @@
             }
         }
     }
+}
+
+.background_button{
+    background-color: #0098ea;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
 }

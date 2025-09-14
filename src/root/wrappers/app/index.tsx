@@ -12,13 +12,14 @@ import { PropsType } from './types/props.type.ts';
 import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 import { useCheckSystemChat } from './hooks/use-check-system-chat.hook.ts';
 import { Menu } from '../../../components/menu';
-import { useTelegram } from '../../../modules/telegram';
 import { useMobileKeyboard } from './hooks/use-mobile-keyboard.hook.ts';
 import { AudioPlayer } from '../../contexts/audio-player';
 import { useMemory } from './hooks/use-memory.ts';
 import { Settings } from '../../../pages/settings';
 import { PageItem } from '../../../components/page-item';
 import { TabEnum } from '../../store/app/types/state.type.ts';
+import { PreviewMedia } from '../../../components/preview-media';
+import { PreviewMediaContext } from '../../../components/preview-media-context';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -34,7 +35,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     // add system chat if not exists
     useCheckSystemChat();
     // logic for Telegram App
-    useTelegram();
+    // useTelegram();
     // logic for mobile keyboard
     useMobileKeyboard();
     // logic for usage memory
@@ -55,23 +56,26 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
         return (
             <AudioPlayer>
                 <div id={styles.background}>
-                    <div id={styles.menu}>
-                        <div id={styles.pages}>
-                            {/*<PageItem name={TabEnum.SERVICES}>*/}
-                            {/*    <Services />*/}
-                            {/*</PageItem>*/}
-                            <PageItem name={TabEnum.CHATS}>
-                                <Chats />
-                            </PageItem>
-                            <PageItem name={TabEnum.SETTINGS}>
-                                <Settings />
-                            </PageItem>
+                    <PreviewMediaContext>
+                        <PreviewMedia />
+                        <div id={styles.menu}>
+                            <div id={styles.pages}>
+                                {/*<PageItem name={TabEnum.SERVICES}>*/}
+                                {/*    <Services />*/}
+                                {/*</PageItem>*/}
+                                <PageItem name={TabEnum.CHATS}>
+                                    <Chats />
+                                </PageItem>
+                                <PageItem name={TabEnum.SETTINGS}>
+                                    <Settings />
+                                </PageItem>
+                            </div>
+                            <Menu />
                         </div>
-                        <Menu />
-                    </div>
-                    <div id={styles.chat} onClick={hideMenu}>
-                        {children}
-                    </div>
+                        <div id={styles.chat} onClick={hideMenu}>
+                            {children}
+                        </div>
+                    </PreviewMediaContext>
                 </div>
             </AudioPlayer>
         );

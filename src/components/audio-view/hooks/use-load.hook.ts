@@ -1,14 +1,14 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Envs } from '../../../common/config/envs/envs.ts';
-import { FileType } from '../../../root/types/files/file.type.ts';
+import { Types } from '../../../root/types/files/types.ts';
 import { AudioPlayerContext } from '../../../root/contexts/audio-player';
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
 
 const readerMap: Map<string, ReadableStreamDefaultReader> = new Map();
 const stopReaderSet: Set<string> = new Set();
 
-export const useLoad = (fileAudio: FileType): [number] => {
-    const { setAudio, play, pause } = useContext(AudioPlayerContext)!;
+export const useLoad = (fileAudio: Types): [number] => {
+    const { addFile, play, pause } = useContext(AudioPlayerContext)!;
 
     const [countLoadParts, setCountLoadParts] = useState<number>(0);
     const [blob, setBlob] = useState<Blob>();
@@ -131,7 +131,7 @@ export const useLoad = (fileAudio: FileType): [number] => {
             playButton.style.visibility = 'hidden';
             pauseButton.style.visibility = 'visible';
 
-            setAudio({ id: fileAudio.id, blob: blob! });
+            addFile({ file: fileAudio, blob: blob! });
             await play();
             playButton.style.visibility = 'visible';
             pauseButton.style.visibility = 'hidden';

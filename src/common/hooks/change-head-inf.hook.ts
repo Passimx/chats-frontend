@@ -1,4 +1,6 @@
-export const changeHead = (title: string = 'PassimX', description?: string) => {
+import json from '../../../package.json';
+
+export const changeHead = (title: string = json.name, description?: string) => {
     document.querySelector('meta[property="og:url"]')?.setAttribute('content', window.location.href);
     document.querySelector('meta[property="al:web:url"]')?.setAttribute('content', window.location.href);
     document.querySelector('meta[name="twitter:url"]')?.setAttribute('content', window.location.href);

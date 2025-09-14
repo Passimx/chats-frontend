@@ -1,7 +1,7 @@
 import styles from './index.module.css';
 import { useTranslation } from 'react-i18next';
 import { GrLanguage } from 'react-icons/gr';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback } from 'react';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { IoChatboxEllipsesOutline, IoRocketOutline, IoSettingsOutline } from 'react-icons/io5';
 import json from '../../../package.json';
@@ -11,13 +11,14 @@ import { MenuTitle } from '../../components/menu-title';
 import { Chats } from '../../components/chats';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
+import { useFileSize } from '../../common/hooks/use-file-size.ts';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
     const { useMemory, pages, activeTab, systemChatId } = useAppSelector((state) => state.app);
     const chatsLength = useAppSelector((state) => state.chats.chats.length);
     const { setStateApp } = useAppAction();
-    const [memory, setMemory] = useState<string>(`0 ${t('mb')}`);
+    const memory = useFileSize(useMemory);
 
     const navigate = useCustomNavigate();
 
@@ -30,14 +31,6 @@ export const Settings = memo(() => {
         },
         [pages, activeTab],
     );
-
-    useEffect(() => {
-        if (!useMemory) return;
-        const value = useMemory / 1024 / 1024;
-
-        if (value < 1024) setMemory(`${value.toFixed(0)} ${t('mb')}`);
-        else setMemory(`${value.toFixed(2)} ${t('gb')}`);
-    }, [useMemory, t]);
 
     return (
         <div id={styles.background}>

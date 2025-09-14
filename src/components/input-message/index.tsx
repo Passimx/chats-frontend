@@ -12,12 +12,15 @@ import { PropsType } from './types/props.type.ts';
 import useVisibility from '../../common/hooks/use-visibility.ts';
 import { FaMicrophone } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
+import { CgMenuGridO } from 'react-icons/cg';
+import { MediaMenu } from '../media-menu';
 
 export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomButton }) => {
     const visibility = useVisibility;
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { update, setChatOnPage } = useAppAction();
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
+    const [isVisibleMediaMenu, setIsVisibleMediaMenu] = useState<boolean>();
     const [textExist, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
 
     const cancelAnswerMessage = useCallback(() => {
@@ -77,6 +80,21 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                             contentEditable={chatOnPage?.type !== ChatEnum.IS_SYSTEM}
                             dir="auto"
                         ></div>
+                    </div>
+                    <div className={styles.button_inputs_background}>
+                        <MediaMenu
+                            isVisibleMediaMenuOutside={isVisibleMediaMenu}
+                            setIsVisibleMediaMenuOutside={setIsVisibleMediaMenu}
+                        />
+                        <div
+                            id={styles.button_menu}
+                            onClick={(event) => {
+                                event.preventDefault();
+                                if (chatOnPage?.type !== ChatEnum.IS_SYSTEM) setIsVisibleMediaMenu(true);
+                            }}
+                        >
+                            <CgMenuGridO className={styles.button_emoji} />
+                        </div>
                     </div>
                     <div id={styles.button_input_background}>
                         <div

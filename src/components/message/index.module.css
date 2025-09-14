@@ -49,3 +49,7 @@
     padding-left: 5px;
     font-size: 13px;
 }
+
+.file_list {
+    display: grid;
+}
