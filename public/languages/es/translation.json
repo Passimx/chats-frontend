@@ -35,6 +35,8 @@
   "version": "Versión",
   "services": "Servicios",
   "wallet": "Cartera",
+  "file": "Archivo",
+  "media": "Fotos y videos",
 
   "description_open_chat": "La idea principal de un chat abierto es crear un canal de comunicación accesible para todos, que se pueda vincular a un nombre de dominio de un sitio web, un perfil en redes sociales u otras palabras clave. Este tipo de chat es la mejor solución para comunicarse con un público amplio.",
   "description_shared_chat": "Un chat de transmisión permite que un grupo específico de personas se comunique mientras el resto del mundo puede observar. Este tipo de chat es la mejor solución para transmitir mensajes a las masas.",

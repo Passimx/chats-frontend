@@ -3,6 +3,7 @@ import { AudioType, ContextType } from './types/context.type.ts';
 import { FileExtensionEnum } from '../../types/files/types.ts';
 import image from '../../../../public/assets/icons/512.png';
 import { useTranslation } from 'react-i18next';
+import json from '../../../../package.json';
 
 export const AudioPlayerContext = createContext<ContextType | null>(null);
 
@@ -49,7 +50,7 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
 
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title,
-                        artist: 'PassimX',
+                        artist: json.name,
                         artwork: [{ src: image, sizes: '512x512', type: 'image/png' }],
                     });
 
