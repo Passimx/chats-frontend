@@ -1,17 +1,13 @@
 import { createContext, FC, memo, ReactElement, useCallback, useEffect, useState } from 'react';
 import { AudioType, ContextType } from './types/context.type.ts';
-import { useFileSize } from '../../../common/hooks/use-file-size.ts';
 
 export const AudioPlayerContext = createContext<ContextType | null>(null);
-// let audioInside: AudioType;
-// let context: AudioBufferSourceNode;
 
 let audioEl: HTMLAudioElement | null = null;
 
 export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) => {
     const [audio, setAudio] = useState<AudioType>();
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
-    const getFileSize = useFileSize;
 
     const play = async () => {
         setIsPlaying(true);
@@ -42,16 +38,14 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                 audioEl.addEventListener('timeupdate', timeupdate);
 
                 if ('mediaSession' in navigator) {
-                    const size = getFileSize(audio?.file?.size);
-
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title: audio?.file.originalName,
-                        artist: size,
+                        // artist: size,
                         artwork: [{ src: '/assets/icons/512.png', sizes: '512x512', type: 'image/png' }],
                     });
 
-                    navigator.mediaSession.setActionHandler('play', () => audioEl?.play());
-                    navigator.mediaSession.setActionHandler('pause', () => audioEl?.pause());
+                    navigator.mediaSession.setActionHandler('play', play);
+                    navigator.mediaSession.setActionHandler('pause', pause);
 
                     navigator.mediaSession.setActionHandler('seekto', (details) => {
                         if (audioEl && details.seekTime != null) {
