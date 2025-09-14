@@ -56,12 +56,15 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
 
                         // если аудио на паузе — включаем, перематываем, потом оставляем на паузе (для ios)
                         const wasPaused = audioEl.paused;
-                        if (wasPaused)
+                        if (wasPaused) {
+                            const originalVolume = audioEl.volume;
+                            audioEl.volume = 0;
                             audioEl?.play().then(() => {
                                 audioEl!.currentTime = details.seekTime!;
                                 if (wasPaused) audioEl!.pause();
+                                audioEl!.volume = originalVolume;
                             });
-                        else audioEl.currentTime = details.seekTime!;
+                        } else audioEl.currentTime = details.seekTime!;
                     });
 
                     navigator.mediaSession.setActionHandler('previoustrack', () => {
