@@ -1,6 +1,8 @@
-import { Types } from '../../root/types/files/types.ts';
+import { FileMap, Types } from '../../root/types/files/types.ts';
 
 export const CanPlayAudio = (file: Types): boolean => {
     const audio = document.createElement('audio');
-    return audio.canPlayType(file.mimeType) !== '';
+    return (
+        audio.canPlayType(file.mimeType) !== '' && !!FileMap.get('MP3')?.find((mimeType) => mimeType === file.mimeType)
+    );
 };

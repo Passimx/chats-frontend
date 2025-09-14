@@ -35,8 +35,10 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                 const currentTime = context.context.currentTime;
                 const duration = source.buffer?.duration ?? 0 - 0.1;
 
-                if ((duration && currentTime > duration) || fileId !== audioInside?.file?.id) offset = 0;
-                else offset = (end - begin) / 1000;
+                if ((duration && currentTime > duration) || fileId !== audioInside?.file?.id) {
+                    setIsPlaying(false);
+                    offset = 0;
+                } else offset = (end - begin) / 1000;
 
                 resolve();
             };
