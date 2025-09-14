@@ -43,7 +43,7 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                     const title =
                         value.file.fileType === FileExtensionEnum.IS_VOICE
                             ? 'Голосовое сообщение'
-                            : audio?.file.originalName.slice(0, 25);
+                            : value?.file.originalName.slice(0, 25);
 
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title,
