@@ -41,7 +41,9 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
 
                 if ('mediaSession' in navigator) {
                     const title =
-                        value.file.fileType === FileExtensionEnum.IS_VOICE ? 'Голосовое сообщение' : 'Медиафайл';
+                        value.file.fileType === FileExtensionEnum.IS_VOICE
+                            ? 'Голосовое сообщение'
+                            : audio?.file.originalName.slice(0, 25);
 
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title,
@@ -55,20 +57,15 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                     navigator.mediaSession.setActionHandler('seekto', (details) => {
                         if (!audioEl) return;
                         const originalVolume = audioEl.volume;
-                        try {
-                            // если аудио на паузе — включаем, перематываем, потом оставляем на паузе (для ios)
-                            const wasPaused = audioEl.paused;
-                            if (wasPaused) {
-                                audioEl.volume = 0;
-                                audioEl?.play().then(() => {
-                                    audioEl!.currentTime = details.seekTime!;
-                                    if (wasPaused) audioEl!.pause();
-                                    audioEl!.volume = originalVolume;
-                                });
-                            } else audioEl.currentTime = details.seekTime!;
-                        } catch (e) {
-                            audioEl!.volume = originalVolume;
-                        }
+                        const wasPaused = audioEl.paused;
+                        if (wasPaused) {
+                            audioEl.volume = 0;
+                            audioEl?.play().then(() => {
+                                audioEl!.currentTime = details.seekTime!;
+                                if (wasPaused) audioEl!.pause();
+                                audioEl!.volume = originalVolume;
+                            });
+                        } else audioEl.currentTime = details.seekTime!;
                     });
 
                     navigator.mediaSession.setActionHandler('previoustrack', () => {
