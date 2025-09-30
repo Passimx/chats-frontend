@@ -45,6 +45,17 @@
     color: white;
 }
 
+.name_background{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px;
+}
+
+.name_background_logo{
+    font-size: 22px;
+    color: var(--menu-color);;
+}
+
 .name{
     display: grid;
     overflow: hidden;
@@ -105,6 +116,9 @@
 .size{
     font-weight: 500;
     opacity: 0.4;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2px;
 }
 
 

@@ -84,7 +84,8 @@ export const useEnterHook = (): UseEnterHookType => {
 
         const formData = new FormData();
         const originalName = 'recording.wav';
-        formData.append('files', audioBlob, originalName);
+        formData.append('file', audioBlob, originalName);
+        formData.append('chatId', chatOnPage!.id);
 
         const [response, duration, loudnessData] = await Promise.all([
             uploadFile(formData),
@@ -106,7 +107,7 @@ export const useEnterHook = (): UseEnterHookType => {
                     duration,
                     loudnessData,
                     originalName,
-                    id: response.data,
+                    url: response.data,
                     size: audioBlob.size,
                     mimeType: MimetypeEnum.WAV,
                     fileType: FileExtensionEnum.IS_VOICE,

@@ -4,4 +4,4 @@ export type PropsType = {
     file: Types;
 };
 
-export type Return = [number | undefined, () => void, Blob | undefined];
+export type Return = { downloadPercent?: number; blob?: Blob; clickFile: () => void; downloadOnDevice: () => void };

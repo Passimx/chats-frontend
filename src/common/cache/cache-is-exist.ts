@@ -6,14 +6,7 @@ export const cacheIsExist = async (key: string): Promise<Blob | undefined> => {
         return undefined;
     }
 
-    const cacheNames = await caches.keys();
-
-    for (const name of cacheNames) {
-        const cache = await caches.open(name);
-        const match = await cache.match(`${Envs.chatsServiceUrl}${key}`);
-        if (match) {
-            return match.blob();
-        }
-    }
-    return undefined;
+    const cache = await caches.open(Envs.cache.files);
+    const match = await cache.match(`${Envs.filesServiceUrl}/files${key}`);
+    return match?.blob();
 };

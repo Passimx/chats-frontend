@@ -84,10 +84,12 @@ export const MenuMessage: FC = memo(() => {
                     {t('reply')}
                 </div>
             )}
-            <div className={styles.message_menu_item} onClick={copyMessage}>
-                <IoCopyOutline className={styles.message_menu_item_icon} />
-                {t('copy_text')}
-            </div>
+            {clickMessage?.message && (
+                <div className={styles.message_menu_item} onClick={copyMessage}>
+                    <IoCopyOutline className={styles.message_menu_item_icon} />
+                    {t('copy_text')}
+                </div>
+            )}
             <div className={styles.message_menu_item} onClick={copyMessageWithChat}>
                 <GoLink className={styles.message_menu_item_icon} />
                 {t('copy_message_link')}

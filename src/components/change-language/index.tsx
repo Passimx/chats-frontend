@@ -5,11 +5,12 @@ import { resources } from '../../root/wrappers/app/hooks/use-translation.ts';
 import { useTranslation } from 'react-i18next';
 import { MenuTitle } from '../menu-title';
 import { GrLanguage } from 'react-icons/gr';
+import { EventsEnum } from '../../root/types/events/events.enum.ts';
 
 export const ChangeLanguage: FC = () => {
     const { t } = useTranslation();
     const languages = Object.keys(resources);
-    const { setLang } = useAppAction();
+    const { postMessageToBroadCastChannel } = useAppAction();
     const { lang } = useAppSelector((state) => state.app);
 
     return (
@@ -20,7 +21,9 @@ export const ChangeLanguage: FC = () => {
                     <div
                         key={language}
                         className={`${styles.language_item} ${lang === language && styles.language_item_active}`}
-                        onClick={() => setLang(language)}
+                        onClick={() =>
+                            postMessageToBroadCastChannel({ event: EventsEnum.CHANGE_LANGUAGE, data: language })
+                        }
                     >
                         {t('language_native', { lng: language })}
                         <div

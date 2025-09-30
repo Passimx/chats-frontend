@@ -1,4 +1,4 @@
-export async function getAudioWaveform(blob: Blob, barsCount = 60): Promise<number[]> {
+export async function getAudioWaveform(blob: Blob, barsCount = 100): Promise<number[]> {
     // создаём AudioContext
     const audioCtx = new AudioContext();
 

@@ -8,7 +8,10 @@ export type AudioType = {
 export type ContextType = {
     audio?: AudioType;
     isPlaying: boolean;
+    progress?: number;
+
     addFile: (value: AudioType) => void;
     play: () => Promise<void>;
     pause: () => void;
+    seek: (value: number) => void;
 };

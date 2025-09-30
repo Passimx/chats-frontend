@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
 import { Return } from '../types.ts';
 import { AudioPlayerContext } from '../../../root/contexts/audio-player';
-import { CancelDownload, DownloadFileWithPercents } from '../../../root/api/files/file.ts';
+import { CancelDownload, DownloadFile, DownloadFileWithPercents } from '../../../root/api/files/file.ts';
 import { CanPlayAudio } from '../../../common/hooks/can-play-audio.hook.ts';
 
 export const useDownloadFile = (file: Types): Return => {
@@ -12,7 +12,7 @@ export const useDownloadFile = (file: Types): Return => {
     const { addFile, play, pause, isPlaying, audio } = useContext(AudioPlayerContext)!;
 
     useEffect(() => {
-        cacheIsExist(`/files/${file.id}`).then((result) => {
+        cacheIsExist(file.url).then((result) => {
             if (result) setBlob(result);
         });
     }, [file]);
@@ -31,7 +31,6 @@ export const useDownloadFile = (file: Types): Return => {
 
         // Скачать
         if (!blob) {
-            setDownloadPercent(0);
             const blob = await DownloadFileWithPercents(file, setDownloadPercent);
             if (!blob) return;
             setBlob(blob);
@@ -42,19 +41,21 @@ export const useDownloadFile = (file: Types): Return => {
             }
         }
 
-        if (!CanPlayAudio(file)) return;
+        if (CanPlayAudio(file)) {
+            // Воспроизвести
+            if (blob && (!isPlaying || audio?.file.id !== file.id)) {
+                if (audio?.file.id !== file.id) addFile({ file, blob });
+                await play();
+            }
 
-        // Воспроизвести
-        if (blob && (!isPlaying || audio?.file.id !== file.id)) {
-            if (audio?.file.id !== file.id) addFile({ file, blob });
-            await play();
-        }
-
-        // Остановить
-        if (isPlaying && audio?.file.id === file.id) {
-            pause();
+            // Остановить
+            if (isPlaying && audio?.file.id === file.id) {
+                pause();
+            }
         }
     }, [file, blob, downloadPercent, isPlaying, audio]);
 
-    return [downloadPercent, clickFile, blob];
+    const downloadOnDevice = useCallback(() => DownloadFile(file, blob), [file, blob]);
+
+    return { downloadPercent, clickFile, blob, downloadOnDevice };
 };

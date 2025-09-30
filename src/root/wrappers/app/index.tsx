@@ -20,6 +20,7 @@ import { PageItem } from '../../../components/page-item';
 import { TabEnum } from '../../store/app/types/state.type.ts';
 import { PreviewMedia } from '../../../components/preview-media';
 import { PreviewMediaContext } from '../../../components/preview-media-context';
+import { useUpdateStaticCache } from './hooks/use-update-static-cache.hook.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -43,6 +44,8 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     // todo
     // перенести на сервер
     useEffect(changeHead, []);
+    // update cache files
+    useUpdateStaticCache();
 
     const isLoaded = useTranslation();
     const { id } = useParams();
