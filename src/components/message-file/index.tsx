@@ -1,4 +1,4 @@
-import { FC, memo, useContext } from 'react';
+import { FC, memo, MouseEvent, useCallback, useContext } from 'react';
 import { PropsType } from './props.type.ts';
 import { useFileSize } from '../../common/hooks/use-file-size.ts';
 import styles from './index.module.css';
@@ -30,13 +30,22 @@ import { CanPlayAudio } from '../../common/hooks/can-play-audio.hook.ts';
 import { LoadRadius } from '../load-radius';
 import { AudioPlayerContext } from '../../root/contexts/audio-player';
 import { FaPause } from 'react-icons/fa';
+import { MdDownloadForOffline } from 'react-icons/md';
 
 export const MessageFile: FC<PropsType> = memo(({ file }) => {
     const r = 17;
     const strokeWidth = 3;
     const size = useFileSize(file.size);
-    const [downloadPercent, clickFile, blob] = useDownloadFile(file);
+    const { downloadPercent, blob, clickFile, downloadOnDevice } = useDownloadFile(file);
     const { isPlaying, audio } = useContext(AudioPlayerContext)!;
+
+    const download = useCallback(
+        (e: MouseEvent<unknown>) => {
+            e.stopPropagation();
+            downloadOnDevice();
+        },
+        [file, downloadOnDevice],
+    );
 
     return (
         <div className={`${styles.background} ${!blob && styles.background_animation}`} onClick={clickFile}>
@@ -81,8 +90,14 @@ export const MessageFile: FC<PropsType> = memo(({ file }) => {
                 )}
             </div>
             <div className={styles.file_inf}>
-                <div className={styles.name}>{file.originalName}</div>
-                <div className={styles.size}>{size}</div>
+                <div className={styles.name_background}>
+                    <MdDownloadForOffline className={styles.name_background_logo} onClick={download} />
+                    <div className={styles.name}>{file.originalName}</div>
+                </div>
+                <div className={styles.size}>
+                    <div>{size}</div>
+                    <div>{downloadPercent !== undefined ? `(${downloadPercent?.toFixed(0)}%)` : ''}</div>
+                </div>
             </div>
         </div>
     );

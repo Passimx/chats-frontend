@@ -5,7 +5,7 @@ import { ContextMedia } from '../../preview-media-context';
 import { uploadFile } from '../../../root/api/files/file.ts';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { createMessage } from '../../../root/api/messages';
-import { FileExtensionEnum } from '../../../root/types/files/types.ts';
+import { FileExtensionEnum, MimetypeEnum, Types } from '../../../root/types/files/types.ts';
 
 export const useSendMessage = () => {
     const { files, setFiles } = useContext(ContextMedia)!;
@@ -16,20 +16,33 @@ export const useSendMessage = () => {
 
     const sendMessage = useCallback(async () => {
         if (!files?.length) return;
-        const formData = new FormData();
-        formData.append('fileType', FileExtensionEnum.IS_MEDIA);
-        Array.from(files).forEach((file) => formData.append('files', file));
 
-        const response = await uploadFile(formData);
-        if (!response.success || !response.data.length) return;
+        const fileArray: Partial<Types>[] = [];
+
+        await Promise.all(
+            Array.from(files).map(async (file) => {
+                const formData = new FormData();
+                formData.append('file', file, file.name);
+                formData.append('chatId', chatOnPage!.id);
+                const response = await uploadFile(formData);
+                if (!response.success || !response.data.length) return;
+                fileArray.push({
+                    url: response.data,
+                    originalName: file.name,
+                    size: file.size,
+                    mimeType: file.type as MimetypeEnum,
+                    fileType: FileExtensionEnum.IS_MEDIA,
+                });
+            }),
+        );
 
         const text = chatOnPage?.inputMessage?.replace(/^\n+|\n+$/g, '').trim();
 
         await createMessage({
             chatId: chatOnPage!.id,
-            // fileIds: response.data,
             parentMessageId: chatOnPage?.answerMessage?.id,
             message: text,
+            files: fileArray,
         });
 
         setFiles(undefined);

@@ -12,7 +12,8 @@ export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
     const navigate = useCustomNavigate();
     const [playNotificationSound] = useLoadSoundsHooks();
-    const { updateMany, setStateApp, calculateMessageCount, createMessage, removeChat, update } = useAppAction();
+    const { updateMany, setStateApp, calculateMessageCount, createMessage, removeChat, update, setLang } =
+        useAppAction();
 
     return (dataEvent: DataType) => {
         const { event, data } = dataEvent;
@@ -79,6 +80,9 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.PLAY_NOTIFICATION:
                 playNotificationSound();
+                break;
+            case EventsEnum.CHANGE_LANGUAGE:
+                setLang(data);
                 break;
             case EventsEnum.ERROR:
                 console.log(`${'\x1B[31m'}error: ${data}${'\x1B[31m'}`);

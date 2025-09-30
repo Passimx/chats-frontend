@@ -6,6 +6,7 @@ import { deleteChatIndexDb, updateChatIndexDb, upsertChatIndexDb } from './index
 import { MessageType } from '../../types/chat/message.type.ts';
 import { UpdateChat } from './types/update-chat.type.ts';
 import { UpdateReadChatType } from '../../types/chat/update-read-chat.type.ts';
+import { deleteChatCache } from '../../../common/cache/delete-chat-cache.ts';
 
 const initialState: StateType = {
     chats: [],
@@ -114,7 +115,7 @@ const ChatsSlice = createSlice({
             const diff = chat.countMessages - chat.readMessage;
             state.messageCount = state.messageCount - diff;
             deleteChatIndexDb(payload);
-
+            deleteChatCache(chat.id);
             deleteChat(payload);
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();

@@ -87,7 +87,7 @@ export const useLoad = (fileAudio: Types): [number] => {
     }, [blob]);
 
     const loadFromCache = useCallback(async () => {
-        const isExist = await cacheIsExist(`/files/${fileAudio.id}`);
+        const isExist = await cacheIsExist(fileAudio.url);
         if (isExist) load();
     }, []);
 

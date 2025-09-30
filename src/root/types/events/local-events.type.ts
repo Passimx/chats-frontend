@@ -37,4 +37,17 @@ type Error = {
     readonly data: string;
 };
 
-export type LocalEvents = ReadMessage | AddChat | RemoveChat | UpdateBadge | CloseSocket | PlayNotification | Error;
+type ChangeLanguage = {
+    readonly event: EventsEnum.CHANGE_LANGUAGE;
+    readonly data: string;
+};
+
+export type LocalEvents =
+    | ReadMessage
+    | AddChat
+    | RemoveChat
+    | UpdateBadge
+    | CloseSocket
+    | PlayNotification
+    | Error
+    | ChangeLanguage;

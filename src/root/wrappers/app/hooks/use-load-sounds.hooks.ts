@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
+import mp3 from '../../../../../public/assets/sounds/message.mp3';
 
 let cachedAudioBuffer: AudioBuffer | null = null; // Кешируем звук
 
@@ -9,7 +10,7 @@ export const useLoadSoundsHooks = (): [() => Promise<void>] => {
         if (cachedAudioBuffer) return;
 
         try {
-            const response = await fetch('/assets/sounds/message.mp3');
+            const response = await fetch(mp3);
             const arrayBuffer = await response.arrayBuffer();
             cachedAudioBuffer = await audioContext.decodeAudioData(arrayBuffer);
         } catch (error) {

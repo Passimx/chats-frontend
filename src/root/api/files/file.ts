@@ -1,16 +1,16 @@
 import { IData } from '../index.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import { Types } from '../../types/files/types.ts';
+import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
 
 export const uploadFile = async (body: FormData): Promise<IData<string>> => {
-    const response = await fetch(`${Envs.chatsServiceUrl}/files/upload`, { method: 'POST', body }).then((response) =>
+    const response = await fetch(`${Envs.filesServiceUrl}/files/upload`, { method: 'POST', body }).then((response) =>
         response.json(),
     );
 
     return response as IData<string>;
 };
 
-const filesCacheName = 'files-cache-name';
 const cancelRequestMap = new Set<string>();
 const xhrMap: Map<string, XMLHttpRequest> = new Map();
 
@@ -21,11 +21,19 @@ export const CancelDownload = (file: Types) => {
 
 export const DownloadFileWithPercents = async (
     file: Types,
-    setCountLoadParts: (value: number) => void,
+    setCountLoadParts: (value?: number) => void,
 ): Promise<Blob | undefined> => {
+    const result = await cacheIsExist(file.url);
+    if (result) {
+        setCountLoadParts(undefined);
+        return result;
+    }
+
+    setCountLoadParts(0);
+
     return new Promise((resolve) => {
         const xhr = new XMLHttpRequest();
-        const url = `${Envs.chatsServiceUrl}/files/${file.id}`;
+        const url = `${Envs.filesServiceUrl}/files${file.url}`;
         xhrMap.set(file.id, xhr);
         xhr.open('GET', url);
         xhr.responseType = 'blob';
@@ -33,7 +41,8 @@ export const DownloadFileWithPercents = async (
 
         xhr.onprogress = (e) => {
             if (cancelRequestMap.has(file.id)) xhr.abort();
-            setCountLoadParts((e.loaded / e.total) * 100);
+            const percent = (e.loaded / e.total) * 100;
+            setCountLoadParts(percent == 100 ? percent : undefined);
         };
 
         xhr.onerror = () => {
@@ -43,8 +52,15 @@ export const DownloadFileWithPercents = async (
 
         xhr.onload = async () => {
             if (xhr.status === 200 && !cancelRequestMap.has(file.id)) {
-                const cache = await caches.open(filesCacheName);
-                const response = new Response(xhr.response);
+                const cache = await caches.open(Envs.cache.files);
+
+                // Без Content-Length, только тип
+                const response = new Response(xhr.response, {
+                    headers: {
+                        'Content-Type': xhr.getResponseHeader('Content-Type') || 'application/octet-stream',
+                    },
+                });
+
                 await cache.put(url, response);
 
                 cancelRequestMap.delete(file.id);
@@ -62,14 +78,9 @@ export const DownloadFileWithPercents = async (
     });
 };
 
-export const DownloadFile = async (file: Types): Promise<Blob | undefined> => {
-    const response = await fetch(`${Envs.chatsServiceUrl}/files/${file.id}`);
+export const DownloadFile = async (file: Types, blob?: Blob): Promise<Blob | undefined> => {
+    if (!blob) return;
 
-    if (!response.ok) {
-        return undefined;
-    }
-
-    const blob = await response.blob();
     const filename = file.originalName;
     const url = window.URL.createObjectURL(blob);
 

@@ -1,5 +1,6 @@
 export type Types = {
     id: string;
+    url: string;
     originalName: string;
     mimeType: MimetypeEnum;
     size: number;

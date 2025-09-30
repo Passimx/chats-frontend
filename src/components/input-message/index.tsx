@@ -70,10 +70,10 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                     </div>
                     <div id={styles.new_message_block}>
                         <div
-                            className={`${styles.placeholder_text} ${useVisibility(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)} text_translate`}
+                            className={`${styles.placeholder_text} ${useVisibility(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)}`}
                             dir="auto"
                         >
-                            {placeholder}
+                            <div className={'text_translate'}>{placeholder}</div>
                         </div>
                         <div
                             id={styles.new_message}

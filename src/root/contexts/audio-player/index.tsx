@@ -12,6 +12,7 @@ let audioEl: HTMLAudioElement | null = null;
 export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) => {
     const [audio, setAudio] = useState<AudioType>();
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [progress, setProgress] = useState<number>();
     const { t } = useTranslation();
 
     const play = async () => {
@@ -21,16 +22,27 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
     const pause = useCallback(() => setIsPlaying(false), []);
 
     const timeupdate = useCallback(() => {
-        //     const current = audioEl.currentTime; // сколько секунд прошло
-        //     const total = audioEl.duration; // общая длительность
-        //
-        //     const progress = (current / total) * 100; // прогресс в процентах
-        //     console.log('Прогресс:', progress);
+        if (!audioEl) return;
+        const current = audioEl.currentTime;
+        const total = audioEl.duration;
+
+        const progress = current / total;
+        if (progress == 1) {
+            setProgress(undefined);
+            setAudio(undefined);
+        } else setProgress(progress);
+    }, []);
+
+    const seek = useCallback((progress: number) => {
+        console.log([audioEl?.duration]);
+        if (!audioEl) return;
+        audioEl.currentTime = audioEl.duration * progress;
     }, []);
 
     const addFile = useCallback(
         (value: AudioType) => {
             if (value.file.id && value.file.id !== audio?.file.id) {
+                setProgress(undefined);
                 audioEl?.pause();
                 audioEl?.removeEventListener('ended', pause);
                 audioEl?.removeEventListener('timeupdate', timeupdate);
@@ -101,7 +113,7 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
     }, [isPlaying, audio]);
 
     return (
-        <AudioPlayerContext.Provider value={{ audio, isPlaying, addFile, play, pause }}>
+        <AudioPlayerContext.Provider value={{ audio, isPlaying, progress, addFile, play, pause, seek }}>
             <>{children}</>
         </AudioPlayerContext.Provider>
     );
