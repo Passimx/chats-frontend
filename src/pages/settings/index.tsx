@@ -43,6 +43,7 @@ export const Settings = memo(() => {
             {/*</div>*/}
 
             {/*todo*/}
+
             {/*<div className={styles.items}>*/}
             {/*    <div className={styles.item}>*/}
             {/*        <IoWalletOutline className={styles.item_logo} />*/}
