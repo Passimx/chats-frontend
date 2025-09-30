@@ -2,6 +2,7 @@ import { IData } from '../index.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import { Types } from '../../types/files/types.ts';
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
+import { getRawChat } from '../../store/chats/chats.raw.ts';
 
 export const uploadFile = async (body: FormData): Promise<IData<string>> => {
     const response = await fetch(`${Envs.filesServiceUrl}/upload`, { method: 'POST', body }).then((response) =>
@@ -23,7 +24,7 @@ export const DownloadFileWithPercents = async (
     file: Types,
     setCountLoadParts: (value?: number) => void,
 ): Promise<Blob | undefined> => {
-    const result = await cacheIsExist(file.url);
+    const result = await cacheIsExist(`/${file.chatId}/${file.id}`);
     if (result) {
         setCountLoadParts(undefined);
         return result;
@@ -33,7 +34,7 @@ export const DownloadFileWithPercents = async (
 
     return new Promise((resolve) => {
         const xhr = new XMLHttpRequest();
-        const url = `${Envs.filesServiceUrl}${file.url}`;
+        const url = `${Envs.filesServiceUrl}/${file.chatId}/${file.id}`;
         xhrMap.set(file.id, xhr);
         xhr.open('GET', url);
         xhr.responseType = 'blob';
@@ -52,16 +53,15 @@ export const DownloadFileWithPercents = async (
 
         xhr.onload = async () => {
             if (xhr.status === 200 && !cancelRequestMap.has(file.id)) {
-                const cache = await caches.open(Envs.cache.files);
-
-                // Без Content-Length, только тип
-                const response = new Response(xhr.response, {
-                    headers: {
-                        'Content-Type': xhr.getResponseHeader('Content-Type') || 'application/octet-stream',
-                    },
-                });
-
-                await cache.put(url, response);
+                if (getRawChat(file.chatId)) {
+                    const cache = await caches.open(Envs.cache.files);
+                    const response = new Response(xhr.response, {
+                        headers: {
+                            'Content-Type': xhr.getResponseHeader('Content-Type') || 'application/octet-stream',
+                        },
+                    });
+                    await cache.put(url, response);
+                }
 
                 cancelRequestMap.delete(file.id);
                 resolve(xhr.response);
