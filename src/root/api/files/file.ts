@@ -4,7 +4,7 @@ import { Types } from '../../types/files/types.ts';
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
 
 export const uploadFile = async (body: FormData): Promise<IData<string>> => {
-    const response = await fetch(`${Envs.filesServiceUrl}/files/upload`, { method: 'POST', body }).then((response) =>
+    const response = await fetch(`${Envs.filesServiceUrl}/upload`, { method: 'POST', body }).then((response) =>
         response.json(),
     );
 
@@ -33,7 +33,7 @@ export const DownloadFileWithPercents = async (
 
     return new Promise((resolve) => {
         const xhr = new XMLHttpRequest();
-        const url = `${Envs.filesServiceUrl}/files${file.url}`;
+        const url = `${Envs.filesServiceUrl}${file.url}`;
         xhrMap.set(file.id, xhr);
         xhr.open('GET', url);
         xhr.responseType = 'blob';
@@ -42,7 +42,7 @@ export const DownloadFileWithPercents = async (
         xhr.onprogress = (e) => {
             if (cancelRequestMap.has(file.id)) xhr.abort();
             const percent = (e.loaded / e.total) * 100;
-            setCountLoadParts(percent == 100 ? percent : undefined);
+            setCountLoadParts(percent !== 100 ? percent : undefined);
         };
 
         xhr.onerror = () => {
