@@ -13,6 +13,7 @@ import { uploadFile } from '../../../root/api/files/file.ts';
 import { FileExtensionEnum, MimetypeEnum } from '../../../root/types/files/types.ts';
 import { getAudioDurationFromBlob } from '../../../common/hooks/get-audio-duration-from-blob.hook.ts';
 import { getAudioWaveform } from '../../../common/hooks/get-sound-bar.hook.ts';
+import { getBetterVoice } from '../../../common/hooks/get-better-voice.hook.ts';
 
 let mediaRecorder: MediaRecorder | undefined;
 let chunks: Blob[] = [];
@@ -80,7 +81,7 @@ export const useEnterHook = (): UseEnterHookType => {
     }, [isRecovering]);
 
     const save = async (chunks: Blob[]) => {
-        const audioBlob = new Blob(chunks, { type: MimetypeEnum.WAV });
+        const audioBlob = await getBetterVoice(new Blob(chunks, { type: MimetypeEnum.WAV }));
 
         const formData = new FormData();
         const originalName = 'recording.wav';
@@ -107,7 +108,7 @@ export const useEnterHook = (): UseEnterHookType => {
                     duration,
                     loudnessData,
                     originalName,
-                    url: response.data,
+                    id: response.data,
                     size: audioBlob.size,
                     mimeType: MimetypeEnum.WAV,
                     fileType: FileExtensionEnum.IS_VOICE,
@@ -248,7 +249,13 @@ export const useEnterHook = (): UseEnterHookType => {
                 return;
             }
 
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true,
+                },
+            });
 
             buttonStartRecover.classList.add(styles.recover_color);
             setIsRecovering(true);

@@ -12,7 +12,7 @@ export const useDownloadFile = (file: Types): Return => {
     const { addFile, play, pause, isPlaying, audio } = useContext(AudioPlayerContext)!;
 
     useEffect(() => {
-        cacheIsExist(file.url).then((result) => {
+        cacheIsExist(`/${file.chatId}/${file.id}`).then((result) => {
             if (result) setBlob(result);
         });
     }, [file]);

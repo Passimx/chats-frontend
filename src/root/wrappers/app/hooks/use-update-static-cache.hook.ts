@@ -11,9 +11,10 @@ export const useUpdateStaticCache = () => {
         requests.map((request, index) => {
             setTimeout(async () => {
                 try {
+                    // todo
+                    // нужно сбрасывать кеш каждый раз
+                    // когда обновляется версия фронта
                     await cache.delete(request);
-                    const response = await fetch(request.url, { cache: 'no-store' });
-                    if (response && response.ok) await cache.put(request, response.clone());
                 } catch (e) {
                     console.warn(`Failed to update ${request.url}:`, e);
                 }
