@@ -17,10 +17,6 @@ export const useDownloadFile = (file: Types): Return => {
         });
     }, [file]);
 
-    useEffect(() => {
-        if (downloadPercent === 100) setDownloadPercent(undefined);
-    }, [downloadPercent]);
-
     const clickFile = useCallback(async () => {
         // Остановить скачивание
         if (downloadPercent !== undefined) {
