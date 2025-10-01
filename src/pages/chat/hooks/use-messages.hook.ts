@@ -27,12 +27,14 @@ export const useMessages = (): UseMessagesType => {
 
     /** обновление нового сообщения */
     useEffect(() => {
+        // todo
+        // переписать
+        // иначе то что вперед случайно пришло - не попадет в сообщения
         if (
             chatOnPage &&
-            chatOnPage.message.chatId === chatOnPage.id
-            // &&
-            // ((chatOnPage.message.number === messages[0]?.number + 1 && messages[0].chatId === chatOnPage.id) ||
-            //     !messages?.length)
+            chatOnPage.message.chatId === chatOnPage.id &&
+            ((chatOnPage.message.number === messages[0]?.number + 1 && messages[0].chatId === chatOnPage.id) ||
+                !messages?.length)
         ) {
             const el = document.getElementById(styles.messages)!;
             const scrollHeight = el.scrollHeight;
