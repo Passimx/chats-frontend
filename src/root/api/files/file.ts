@@ -24,6 +24,8 @@ export const DownloadFileWithPercents = async (
     file: Types,
     setCountLoadParts: (value?: number) => void,
 ): Promise<Blob | undefined> => {
+    window.location.href = `${Envs.filesServiceUrl}/${file.chatId}/${file.id}`;
+
     const result = await cacheIsExist(`/${file.chatId}/${file.id}`);
     if (result) {
         setCountLoadParts(undefined);
