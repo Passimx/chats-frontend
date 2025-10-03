@@ -42,6 +42,7 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
     const addFile = useCallback(
         (value: AudioType) => {
             if (value.file.id && value.file.id !== audio?.file.id) {
+                setAudio(value);
                 setProgress(undefined);
                 audioEl?.pause();
                 audioEl?.removeEventListener('ended', pause);
@@ -96,13 +97,12 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                     });
                 }
             }
-
-            setAudio(value);
         },
         [audio],
     );
 
     useEffect(() => {
+        alert([isPlaying, audio]);
         if (isPlaying && audio) {
             audioEl?.play();
         }
