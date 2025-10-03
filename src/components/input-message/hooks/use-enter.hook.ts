@@ -105,13 +105,15 @@ export const useEnterHook = (): UseEnterHookType => {
             parentMessageId: chatOnPage?.answerMessage?.id,
             files: [
                 {
-                    duration,
-                    loudnessData,
                     originalName,
-                    id: response.data,
+                    key: response.data,
                     size: audioBlob.size,
                     mimeType: MimetypeEnum.WAV,
                     fileType: FileExtensionEnum.IS_VOICE,
+                    metadata: {
+                        duration,
+                        loudnessData,
+                    },
                 },
             ],
         });

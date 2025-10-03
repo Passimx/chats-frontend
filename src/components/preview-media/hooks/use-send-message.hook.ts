@@ -27,7 +27,7 @@ export const useSendMessage = () => {
                 const response = await uploadFile(formData);
                 if (!response.success || !response.data.length) return;
                 fileArray.push({
-                    id: response.data,
+                    key: response.data,
                     originalName: file.name,
                     size: file.size,
                     mimeType: file.type as MimetypeEnum,

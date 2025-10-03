@@ -12,13 +12,13 @@ export const AudioFile: FC<PropsType> = memo(({ file }) => {
     const r = 17;
     const strokeWidth = 3;
     const { downloadPercent, clickFile, blob } = useDownloadFile(file);
-    const [time, setTime] = useState<string>(getStringDuration(file.duration));
+    const [time, setTime] = useState<string>(getStringDuration(file?.metadata?.duration));
     const { isPlaying, audio, progress } = useContext(AudioPlayerContext)!;
 
-    const constDuration = useMemo(() => getStringDuration(file.duration), []);
+    const constDuration = useMemo(() => getStringDuration(file?.metadata?.duration), []);
 
     useEffect(() => {
-        const duration = file.duration;
+        const duration = file?.metadata?.duration;
         if (!duration) return;
         if (audio?.file.id !== file.id) return setTime(constDuration);
 

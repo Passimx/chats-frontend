@@ -24,7 +24,7 @@ export const DownloadFileWithPercents = async (
     file: Types,
     setCountLoadParts: (value?: number) => void,
 ): Promise<Blob | undefined> => {
-    const result = await cacheIsExist(`/${file.chatId}/${file.id}`);
+    const result = await cacheIsExist(`/${file.chatId}/${file.key}`);
     if (result) {
         setCountLoadParts(undefined);
         return result;
@@ -34,7 +34,7 @@ export const DownloadFileWithPercents = async (
 
     return new Promise((resolve) => {
         const xhr = new XMLHttpRequest();
-        const url = `${Envs.filesServiceUrl}/${file.chatId}/${file.id}`;
+        const url = `${Envs.filesServiceUrl}/${file.chatId}/${file.key}`;
         xhrMap.set(file.id, xhr);
         xhr.open('GET', url);
         xhr.responseType = 'blob';

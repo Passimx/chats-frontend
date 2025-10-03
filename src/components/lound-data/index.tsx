@@ -5,7 +5,7 @@ import { PropsType } from './types.ts';
 import { AudioPlayerContext } from '../../root/contexts/audio-player';
 
 export const LoudnessBars: FC<PropsType> = memo(({ file, blob }) => {
-    const loudnessData = file.loudnessData!;
+    const loudnessData = file?.metadata?.loudnessData ?? [];
 
     const { seek, audio } = useContext(AudioPlayerContext)!;
     const barRef = useRef<HTMLDivElement>(null);

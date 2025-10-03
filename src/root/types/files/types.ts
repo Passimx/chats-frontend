@@ -1,13 +1,18 @@
+export type FileMetadataType = {
+    duration?: number;
+    loudnessData?: number[];
+};
+
 export type Types = {
     id: string;
+    key: string;
     chatId: string;
     originalName: string;
     mimeType: MimetypeEnum;
     size: number;
     createdAt: Date;
     fileType: FileExtensionEnum;
-    duration?: number;
-    loudnessData?: number[];
+    metadata: FileMetadataType;
 };
 
 export enum MimetypeEnum {

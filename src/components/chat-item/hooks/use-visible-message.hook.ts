@@ -12,7 +12,8 @@ export const getVisibleMessage = (payload: MessageType, t: TFunction): string =>
         else {
             const voiceMessage = payload.files?.find((file) => file.fileType === FileExtensionEnum.IS_VOICE);
             const fileName = payload?.files?.find((file) => file.fileType === FileExtensionEnum.IS_MEDIA)?.originalName;
-            if (voiceMessage) visibleMessage = `${t('voice_message')} (${getStringDuration(voiceMessage.duration)})`;
+            if (voiceMessage)
+                visibleMessage = `${t('voice_message')} (${getStringDuration(voiceMessage?.metadata?.duration)})`;
             if (fileName) visibleMessage = fileName;
         }
     } else visibleMessage = t(payload.message);
