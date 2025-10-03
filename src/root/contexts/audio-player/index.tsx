@@ -103,7 +103,7 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
 
     useEffect(() => {
         if (isPlaying && audio) {
-            audioEl?.play().then(() => setIsPlaying(false));
+            audioEl?.play().catch(() => setIsPlaying(false));
         }
 
         if (!isPlaying && audio) {
