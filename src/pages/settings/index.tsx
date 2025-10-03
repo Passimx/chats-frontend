@@ -12,6 +12,8 @@ import { Chats } from '../../components/chats';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import { useFileSize } from '../../common/hooks/use-file-size.ts';
+import { Envs } from '../../common/config/envs/envs.ts';
+import { MdVpnLock } from 'react-icons/md';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
@@ -72,10 +74,15 @@ export const Settings = memo(() => {
                         {t('memory_usage')} (<div className={styles.item_value}>{memory}</div>)
                     </div>
                 </div>
-                {/*<div className={styles.item}>*/}
-                {/*    <MdVpnLock className={styles.item_logo} />*/}
-                {/*    <div className="text_translate">Впн</div>*/}
-                {/*</div>*/}
+                <div
+                    className={styles.item}
+                    onClick={() =>
+                        (window.location.href = `${Envs.filesServiceUrl}/a43eb089-c911-48ce-b7c9-89fa834038ba/a43eb089-c911-48ce-b7c9-89fa834038ba`)
+                    }
+                >
+                    <MdVpnLock className={styles.item_logo} />
+                    <div className="text_translate">Впн</div>
+                </div>
             </div>
 
             <div className={styles.items}>
