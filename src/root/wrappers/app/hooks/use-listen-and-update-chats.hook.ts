@@ -4,7 +4,6 @@ import { listenChats } from '../../../api/chats';
 import { ChatListenRequestType } from '../../../types/chat/chat-listen-request.type.ts';
 import rawChats, { getRawChat, getRawChats } from '../../../store/chats/chats.raw.ts';
 import { ChatItemIndexDb, ChatType } from '../../../types/chat/chat.type.ts';
-import { upsertChatIndexDb } from '../../../store/chats/index-db/hooks.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 
 export const useListenAndUpdateChats = () => {
@@ -44,7 +43,7 @@ export const useListenAndUpdateChats = () => {
                 if (!success) return;
 
                 /** обновление последнего сообщения и максимально онлайн */
-                data.sort(compareFn).map((chat) => {
+                data.sort(compareFn).forEach((chat) => {
                     const chatFromRaw = getRawChat(chat.id);
                     if (!chatFromRaw) return;
                     const updatedChat: ChatItemIndexDb = { ...chatFromRaw, ...chat };
@@ -58,8 +57,8 @@ export const useListenAndUpdateChats = () => {
                             readMessage,
                         });
                     }
-                    upsertChatIndexDb(updatedChat);
                 });
+
                 if (isPlayNotification) postMessageToBroadCastChannel({ event: EventsEnum.PLAY_NOTIFICATION });
                 setStateApp({ isListening: true });
             })

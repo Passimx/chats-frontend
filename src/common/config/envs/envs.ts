@@ -1,4 +1,10 @@
 import json from '../../../../package.json';
+import { SettingsType } from '../../../root/store/app/types/state.type.ts';
+
+export enum EnvironmentEnum {
+    STAGING = 'staging',
+    PRODUCTION = 'production',
+}
 
 type EnvsType = {
     socketId?: string;
@@ -7,17 +13,16 @@ type EnvsType = {
     filesServiceUrl: string;
     intervalPing: number;
     waitPong: number;
+    environment: EnvironmentEnum;
     salt: string;
     chats: {
-        limit: number;
-    };
-    messages: {
         limit: number;
     };
     cache: {
         files: string;
         static: string;
     };
+    settings?: Partial<SettingsType>;
 };
 
 export const Envs: EnvsType = {
@@ -27,10 +32,8 @@ export const Envs: EnvsType = {
     intervalPing: 4 * 1000,
     waitPong: 4 * 1000,
     salt: import.meta.env.VITE_SALT,
+    environment: import.meta.env.VITE_ENVIRONMENT,
     chats: {
-        limit: 250,
-    },
-    messages: {
         limit: 250,
     },
     cache: {

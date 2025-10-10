@@ -13,6 +13,14 @@ export const createMessage = (
     return Api('/messages', { body, method: 'POST' });
 };
 
-export const getMessages = (chatId: string, limit: number = Envs.messages.limit, offset: number = 0) => {
+export const getMessages = ({
+    chatId,
+    limit = Envs.settings?.messagesLimit ?? 250,
+    offset = 0,
+}: {
+    chatId: string;
+    limit?: number;
+    offset?: number;
+}) => {
     return Api<MessageType[]>('/messages', { params: { chatId, limit, offset } });
 };

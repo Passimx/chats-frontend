@@ -31,7 +31,7 @@ export const resources = {
 export const useTranslation = () => {
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const { setLang } = useAppAction();
-    const { lang } = useAppSelector((state) => state.app);
+    const { settings } = useAppSelector((state) => state.app);
 
     useEffect(() => {
         const elements = document.querySelectorAll<HTMLDivElement>('.text_translate');
@@ -40,22 +40,21 @@ export const useTranslation = () => {
             el.style.filter = 'blur(4px)';
         });
 
-        if (!lang) {
+        if (!settings.lang) {
             const browserLang = navigator.language.slice(0, 2).toLowerCase();
             const langs = Object.keys(resources);
-            const lang = localStorage.getItem('lang') ?? langs.find((lang) => lang === browserLang) ?? 'en';
-            if (!localStorage.getItem('lang')) localStorage.setItem('lang', lang);
+            const lang = langs.find((lang) => lang === browserLang) ?? 'en';
             setLang(lang);
 
             return;
         }
 
-        moment.locale(lang);
+        moment.locale(settings.lang);
         i18n.use(initReactI18next)
             .init({
                 resources,
-                lng: lang,
-                fallbackLng: lang,
+                lng: settings.lang,
+                fallbackLng: settings.lang,
                 interpolation: {
                     escapeValue: false,
                 },
@@ -72,7 +71,7 @@ export const useTranslation = () => {
                     }, time);
                 });
             });
-    }, [lang]);
+    }, [settings.lang]);
 
     return isLoaded;
 };

@@ -34,7 +34,6 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
     }, []);
 
     const seek = useCallback((progress: number) => {
-        console.log([audioEl?.duration]);
         if (!audioEl) return;
         audioEl.currentTime = audioEl.duration * progress;
     }, []);

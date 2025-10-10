@@ -1,0 +1,74 @@
+.background{
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 8px;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 60px;
+    padding: 0 8px 0 8px;
+}
+
+.file_preview_image, .file_logo_background{
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.file_logo_background{
+    border-radius: 8px;
+    background-color: silver;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}
+
+.file_logo{
+    font-size: 40px;
+    color: var(--menu-color);
+    border-radius: 8px;
+}
+
+.file_name{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -moz-box;
+    -moz-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    line-clamp: 1;
+}
+
+.logo_delete{
+    font-size: 24px;
+}
+
+.styles_background{
+    width: 40px;
+    height: 40px;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.styles_background:hover{
+    @media(width > 600px) {
+        background-color: rgba(119,0,21,0.97);
+    }
+}
+
+.file_size{
+    opacity: 0.6;
+
+}
+
+.file_inf{
+    /*display: grid;*/
+    /*background-color: red;*/
+    /*align-items: center;*/
+    /*grid-template-rows: auto auto;*/
+}

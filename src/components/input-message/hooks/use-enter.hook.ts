@@ -21,13 +21,13 @@ let isDeleteVoiceMessage: boolean = false;
 
 export const useEnterHook = (): UseEnterHookType => {
     const { t } = useTranslation();
+    const [textExist, setTextExist] = useState<boolean>(true);
+    const [recoveringTime, setRecoveringTime] = useState<string>();
     const { update, setChatOnPage } = useAppAction();
+    const [isRecovering, setIsRecovering] = useState<boolean>(false);
     const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
     const { chatOnPage } = useAppSelector((state) => state.chats);
-    const { isPhone, isOpenMobileKeyboard } = useAppSelector((state) => state.app);
-    const [textExist, setTextExist] = useState<boolean>(true);
-    const [isRecovering, setIsRecovering] = useState<boolean>(false);
-    const [recoveringTime, setRecoveringTime] = useState<string>();
+    const { isPhone, isOpenMobileKeyboard, isStandalone } = useAppSelector((state) => state.app);
 
     const placeholder = useMemo((): string => {
         const text = chatOnPage?.type === ChatEnum.IS_SYSTEM ? 'chats_message_unavailable' : 'chats_enter_message';
@@ -187,7 +187,6 @@ export const useEnterHook = (): UseEnterHookType => {
         const sendMessageButton = document.getElementById(styles.button_input_block)!;
         const microphoneButton = document.getElementById(styles.button_microphone_block);
         const buttonMicrophoneDelete = document.getElementById(styles.button_microphone_delete);
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
         const preventDefault = (event: KeyboardEvent) => {
             if (event.code === 'Enter' && !isPhone && !event.shiftKey) event.preventDefault();

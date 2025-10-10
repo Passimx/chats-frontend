@@ -37,7 +37,6 @@ export const useIndexDbHook = () => {
         openRequest.onupgradeneeded = () => {
             const db = openRequest.result;
             if (!db.objectStoreNames.contains('chats')) db.createObjectStore('chats');
-            if (!db.objectStoreNames.contains('chats-keys')) db.createObjectStore('chats-keys');
         };
     }, []);
 };

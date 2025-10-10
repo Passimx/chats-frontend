@@ -26,3 +26,7 @@ export const deleteChat = (id: string) => {
 export const getRawChats = (): ChatItemIndexDb[] => {
     return [...rawChats.chats.values(), ...rawChats.updatedChats.values()].reverse();
 };
+
+export const getRawChatsLength = (): number => {
+    return rawChats.chats.size + rawChats.updatedChats.size;
+};

@@ -12,6 +12,7 @@ export const useOpenMedia = (setIsVisible: (value: boolean) => void) => {
             input.multiple = true;
             if (accept) input.accept = accept;
 
+            // todo
             // input.accept = 'image/*,video/*';
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error

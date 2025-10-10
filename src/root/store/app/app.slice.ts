@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { StateType, TabEnum } from './types/state.type.ts';
+import { SettingsType, StateType, TabEnum } from './types/state.type.ts';
 import { LocalEvents } from '../../types/events/local-events.type.ts';
 import { JSX } from 'react';
+import { Envs } from '../../../common/config/envs/envs.ts';
 
 const channel = new BroadcastChannel('ws-channel');
 
@@ -10,6 +11,10 @@ const initialState: StateType = {
     activeTab: TabEnum.CHATS,
     isOnline: navigator.onLine,
     pages: new Map<TabEnum, JSX.Element[]>(),
+    isStandalone: window.matchMedia('(display-mode: standalone)').matches,
+    settings: {
+        messagesLimit: 250,
+    },
 };
 
 const AppSlice = createSlice({
@@ -43,8 +48,18 @@ const AppSlice = createSlice({
         },
 
         setLang(state, { payload }: PayloadAction<string>) {
-            state.lang = payload;
-            localStorage.setItem('lang', payload);
+            state.settings.lang = payload;
+            localStorage.setItem('settings', JSON.stringify(state.settings));
+        },
+
+        addLog(state, { payload }: PayloadAction<string>) {
+            state.logs = [...(state.logs ?? []), payload];
+        },
+
+        changeSettings(state, { payload }: PayloadAction<SettingsType>) {
+            localStorage.setItem('settings', JSON.stringify(payload));
+            Envs.settings = payload;
+            state.settings = payload;
         },
     },
 });

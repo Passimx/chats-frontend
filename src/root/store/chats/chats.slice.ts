@@ -6,7 +6,8 @@ import { deleteChatIndexDb, updateChatIndexDb, upsertChatIndexDb } from './index
 import { MessageType } from '../../types/chat/message.type.ts';
 import { UpdateChat } from './types/update-chat.type.ts';
 import { UpdateReadChatType } from '../../types/chat/update-read-chat.type.ts';
-import { deleteChatCache } from '../../../common/cache/delete-chat-cache.ts';
+import { deleteCacheOne } from '../../../common/cache/delete-chat-cache.ts';
+import { Envs } from '../../../common/config/envs/envs.ts';
 
 const initialState: StateType = {
     chats: [],
@@ -43,40 +44,51 @@ const ChatsSlice = createSlice({
         },
 
         addUpdatedChat(state, { payload }: PayloadAction<ChatItemIndexDb>) {
-            upsertChatIndexDb(payload);
-            rawChats.updatedChats.delete(payload.id);
-            rawChats.updatedChats.set(payload.id, payload);
+            const updatedChat = payload;
+            rawChats.updatedChats.delete(updatedChat.id);
+            rawChats.updatedChats.set(updatedChat.id, updatedChat);
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
         },
 
         createMessage(state, { payload }: PayloadAction<MessageType>) {
-            const chat = getRawChat(payload.chatId);
-            if (chat) {
-                state.messageCount = state.messageCount + 1;
-                let messages = chat.messages;
-                if (chat?.messages[0]?.number === payload.number - 1) messages = [payload, ...messages];
-
-                const updatedChat: ChatItemIndexDb = {
-                    ...chat,
-                    message: payload,
-                    countMessages: payload.number,
-                    messages,
-                };
-                updateRawChat(updatedChat);
-                upsertChatIndexDb(updatedChat);
-                state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
-                state.chats = [...Array.from(rawChats.chats.values())].reverse();
-            }
-
             if (payload.chatId === state.chatOnPage?.id && payload.number > state.chatOnPage.message.number) {
                 state.chatOnPage.message = payload;
-                state.chatOnPage.countMessages = payload.number;
+                state.chatOnPage.countMessages++;
             }
+            const chat = getRawChat(payload.chatId);
+            if (!chat) return;
+
+            const countMessages = Math.max(payload.number, chat.countMessages);
+            const messages = [...chat.messages];
+
+            if (chat.message.number + 1 === payload.number) messages.push(payload);
+
+            const updatedChat: ChatItemIndexDb = {
+                ...chat,
+                message: payload,
+                countMessages,
+                messages,
+                key: new Date(payload.createdAt).getTime(),
+            };
+
+            updateRawChat(updatedChat);
+            upsertChatIndexDb(updatedChat, chat.key);
+            state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
+            state.chats = [...Array.from(rawChats.chats.values())].reverse();
         },
 
         setToBegin(state, { payload }: PayloadAction<ChatItemIndexDb>) {
+            const chat = getRawChat(payload.id);
+            const key = new Date(chat ? payload.message.createdAt : Date.now()).getTime();
+
+            const updatedChat: ChatItemIndexDb = {
+                ...payload,
+                key,
+            };
+
+            upsertChatIndexDb(updatedChat, chat?.key);
             rawChats.chats.delete(payload.id);
-            rawChats.chats.set(payload.id, payload);
+            rawChats.chats.set(payload.id, updatedChat);
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
         },
 
@@ -90,10 +102,9 @@ const ChatsSlice = createSlice({
 
             const newMap = new Map<string, ChatItemIndexDb>();
 
-            [...payload].reverse().forEach((chat) => newMap.set(chat.id, chat));
+            [...payload].reverse().forEach((chat) => newMap.set(chat.id, checkChat(chat)));
 
             rawChats.chats = new Map<string, ChatItemIndexDb>([...newMap, ...rawChats.chats]);
-
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
         },
 
@@ -111,11 +122,12 @@ const ChatsSlice = createSlice({
         },
 
         removeChat(state, { payload }: PayloadAction<string>) {
-            const chat = getRawChat(payload)!;
+            const chat = getRawChat(payload);
+            if (!chat) return;
+
             const diff = chat.countMessages - chat.readMessage;
             state.messageCount = state.messageCount - diff;
-            deleteChatIndexDb(payload);
-            deleteChatCache(chat.id);
+            deleteChatIndexDb(chat);
             deleteChat(payload);
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
@@ -132,8 +144,48 @@ const ChatsSlice = createSlice({
             const diff = readMessage - chat.readMessage;
             state.messageCount = state.messageCount - diff;
         },
+
+        addMessageCount(state, { payload }: PayloadAction<number>) {
+            state.messageCount += payload;
+        },
     },
 });
+
+const checkChat = (chat: ChatItemIndexDb) => {
+    sliceMessages(chat);
+    expiredMessages(chat);
+
+    return { ...chat };
+};
+
+const sliceMessages = (chat: ChatItemIndexDb) => {
+    const messageSaveCount = Envs.settings?.messageSaveCount;
+    if (!messageSaveCount) return;
+
+    chat.messages = [...chat.messages].slice(-messageSaveCount);
+};
+
+const expiredMessages = (chat: ChatItemIndexDb) => {
+    const messageSaveTime = Envs.settings?.messageSaveTime;
+    if (!messageSaveTime) return;
+
+    deleteExpiredMessages(chat);
+};
+
+export const deleteExpiredMessages = (chat: ChatItemIndexDb) => {
+    const messageSaveTime = Envs.settings?.messageSaveTime;
+    if (!messageSaveTime) return;
+    if (!chat.messages?.length) return;
+
+    const message = chat.messages[0];
+    const time = new Date(message.createdAt).getTime();
+
+    if (time + messageSaveTime > Date.now()) return;
+
+    chat.messages = chat.messages.slice(1);
+    message.files.forEach((file) => deleteCacheOne(`/${file.chatId}/${file.key}`));
+    deleteExpiredMessages(chat);
+};
 
 export const ChatsActions = ChatsSlice.actions;
 export const ChatReducers = ChatsSlice.reducer;

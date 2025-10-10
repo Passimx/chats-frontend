@@ -15,6 +15,13 @@ export type Types = {
     metadata: FileMetadataType;
 };
 
+export enum FileTypeEnum {
+    VIDEO = 'video',
+    IMAGE = 'image',
+    AUDIO = 'audio',
+    VPN = 'vpn',
+}
+
 export enum MimetypeEnum {
     // Текст / Документы
     PDF = 'application/pdf',

@@ -1,0 +1,52 @@
+.background{
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    color: white;
+}
+
+.log_list{
+    overflow-y: scroll;
+    display: grid;
+    gap: 8px;
+    padding: 0 8px 0 8px;
+    overflow-x: visible;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.log_item{
+    background-color: black;
+    /*background-color: white;*/
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.background_clear{
+    padding: 8px 12px 8px 4px;
+}
+
+.background_button{
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #0098EA;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.button{
+    display: grid;
+    gap: 8px;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.button_text_span{
+    opacity: 0.4;
+    font-weight: 600;
+}

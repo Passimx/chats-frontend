@@ -6,13 +6,14 @@ import { uploadFile } from '../../../root/api/files/file.ts';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { createMessage } from '../../../root/api/messages';
 import { FileExtensionEnum, MimetypeEnum, Types } from '../../../root/types/files/types.ts';
+// import * as mm from 'music-metadata-browser';
 
 export const useSendMessage = () => {
     const { files, setFiles } = useContext(ContextMedia)!;
     const { update, setChatOnPage } = useAppAction();
-    const { isPhone } = useAppSelector((state) => state.app);
-    const { chatOnPage } = useAppSelector((state) => state.chats);
     const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
+    const { chatOnPage } = useAppSelector((state) => state.chats);
+    const { isPhone, isStandalone } = useAppSelector((state) => state.app);
 
     const sendMessage = useCallback(async () => {
         if (!files?.length) return;
@@ -21,11 +22,17 @@ export const useSendMessage = () => {
 
         await Promise.all(
             Array.from(files).map(async (file) => {
+                // if (FileMap.get('MP3')?.find((type) => type === file.type)) {
+                //     const arrayBuffer = await file.arrayBuffer();
+                //     const uint8 = new Uint8Array(arrayBuffer);
+                //     const metadata = await mm.parseBuffer(uint8, file.type, { duration: true });
+                // }
                 const formData = new FormData();
                 formData.append('file', file, file.name);
                 formData.append('chatId', chatOnPage!.id);
                 const response = await uploadFile(formData);
                 if (!response.success || !response.data.length) return;
+
                 fileArray.push({
                     key: response.data,
                     originalName: file.name,
@@ -131,7 +138,6 @@ export const useSendMessage = () => {
 
     useEffect(() => {
         if (!files?.length) return;
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
         const sendMessageButton = document.getElementById(styles.button_background)!;
 
         if (isStandalone && isPhone) sendMessageButton.addEventListener('touchend', sendMessage);
