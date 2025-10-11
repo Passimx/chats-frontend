@@ -4,7 +4,7 @@ import { rawApp } from '../../app/app.raw.ts';
 
 export const upsertChatIndexDb = (payload: ChatItemIndexDb, oldKey?: number) => {
     const IndexDb = rawChats.indexDb;
-    if (!IndexDb || !rawApp.isMainTab) return; // Проверки в начале
+    if (!IndexDb || !rawApp.isMainTab) return; // только главная вкладка может делать операции с IndexDb
 
     const chat = { ...payload };
     delete chat.online;
@@ -18,19 +18,14 @@ export const upsertChatIndexDb = (payload: ChatItemIndexDb, oldKey?: number) => 
 
 export const deleteChatIndexDb = (chat: ChatItemIndexDb) => {
     const IndexDb = rawChats.indexDb;
-    if (!IndexDb) return;
+    if (!IndexDb || !rawApp.isMainTab) return; // только главная вкладка может делать операции с IndexDb
 
-    // только главная вкладка может делать операции с IndexDb
-    if (!rawApp.isMainTab) return;
-
-    IndexDb.transaction('chats', 'readwrite').objectStore('chats').delete(chat.key);
+    if (chat.key) IndexDb.transaction('chats', 'readwrite').objectStore('chats').delete(chat.key);
 };
 
 export const updateChatIndexDb = (payload: ChatItemIndexDb) => {
     const IndexDb = rawChats.indexDb;
-    if (!IndexDb) return;
-
-    if (!rawApp.isMainTab) return;
+    if (!IndexDb || !rawApp.isMainTab) return; // только главная вкладка может делать операции с IndexDb
 
     const chat = { ...payload };
     delete chat.online;

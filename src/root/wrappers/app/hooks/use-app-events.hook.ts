@@ -45,12 +45,11 @@ export const useAppEvents = () => {
                 if (!data.success) break;
                 setToBegin({
                     ...data.data,
-                    messages: [data.data.message],
+                    messages: [],
                     readMessage: 1,
                     online: '1',
                     maxUsersOnline: '1',
                     scrollTop: 0,
-                    key: new Date(data.data.message.createdAt).getTime(),
                 });
                 navigate(`/${data.data.id}`);
                 playNotificationSound();
@@ -73,9 +72,6 @@ export const useAppEvents = () => {
                     getUseMemory().then((useMemory) => setStateApp({ useMemory }));
                 });
                 break;
-            //     case EventsEnum.UPDATE_BADGE:
-            //         if (navigator.setAppBadge) navigator.setAppBadge(data);
-            //         break;
             case EventsEnum.UPDATE_CHAT_ONLINE:
                 if (!data.success) break;
                 updateMany(data.data);

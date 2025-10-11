@@ -1,7 +1,7 @@
 import { MessageType } from '../../../root/types/chat/message.type.ts';
 import { useEffect, useMemo, useState } from 'react';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
-import { useAppSelector } from '../../../root/store';
+import { useAppAction, useAppSelector } from '../../../root/store';
 import { getMessages } from '../../../root/api/messages';
 import styles from '../index.module.css';
 import { UseMessagesType } from '../types/use-messages.type.ts';
@@ -17,6 +17,7 @@ export const useMessages = (): UseMessagesType => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
     // const { postMessageToBroadCastChannel, update } = useAppAction();
+    const { update } = useAppAction();
 
     /** сообщение которое нужно найти */
     const searchMessageNumber = useMemo(() => {
@@ -26,7 +27,7 @@ export const useMessages = (): UseMessagesType => {
         return messageParam ? Number(messageParam) : null;
     }, [chatOnPage?.id]);
 
-    useEffect(() => {}, [searchMessageNumber]);
+    useEffect(() => {}, [searchMessageNumber, messages]);
 
     const readMessage = () => {};
     const showLastMessages = () => {};
@@ -41,8 +42,10 @@ export const useMessages = (): UseMessagesType => {
         }
         const chat = getRawChat(chatOnPage.id);
 
-        if (chat) {
+        /** загрузка сообщений из кеша сообщений */
+        if (chat?.messages?.length) {
             const el = document.getElementById(styles.messages)!;
+
             setMessages(chat.messages);
 
             /** установка скрола */
@@ -52,16 +55,22 @@ export const useMessages = (): UseMessagesType => {
                     el.scrollTo({ behavior: 'instant', top: chat.scrollTop - 0.5 });
                 });
             });
-        } else {
+        }
+
+        /** загрузка сообщений с сервера */
+        if (!chat?.messages?.length) {
             setMessages([]);
             setIsLoading(LoadingType.NEW);
 
             const limit = Envs.settings?.messagesLimit || 250;
             const offset = limit * Math.floor((chatOnPage.countMessages - 1) / limit);
 
-            getMessages({ chatId: chatOnPage.id, offset }).then(({ success, data }) => {
-                if (success) setMessages(data);
+            getMessages({ chatId: chatOnPage.id, offset, limit }).then(({ success, data }) => {
                 setIsLoading(undefined);
+                if (!success) return;
+
+                update({ id: chatOnPage.id, messages: data });
+                setMessages(data);
             });
         }
     }, [chatOnPage?.id, isLoadedChatsFromIndexDb]);

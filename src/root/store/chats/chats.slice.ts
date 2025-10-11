@@ -24,7 +24,7 @@ const ChatsSlice = createSlice({
             if (!chat) return;
             const updatedChat = { ...chat, ...payload };
             if (chat.id === state.chatOnPage?.id) state.chatOnPage = { ...state.chatOnPage, ...updatedChat };
-            updateChatIndexDb(updatedChat);
+            upsertChatIndexDb(updatedChat, chat.key);
             updateRawChat(updatedChat);
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
@@ -61,7 +61,7 @@ const ChatsSlice = createSlice({
             const countMessages = Math.max(payload.number, chat.countMessages);
             const messages = [...chat.messages];
 
-            if (chat.message.number + 1 === payload.number) messages.push(payload);
+            if (chat.message.number + 1 === payload.number) messages.push({ ...payload, saveAt: Date.now() });
 
             const updatedChat: ChatItemIndexDb = {
                 ...chat,
@@ -75,15 +75,13 @@ const ChatsSlice = createSlice({
             upsertChatIndexDb(updatedChat, chat.key);
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
+            state.messageCount++;
         },
 
         setToBegin(state, { payload }: PayloadAction<ChatItemIndexDb>) {
             const chat = getRawChat(payload.id);
-            const key = new Date(chat ? payload.message.createdAt : Date.now()).getTime();
-
             const updatedChat: ChatItemIndexDb = {
                 ...payload,
-                key,
             };
 
             upsertChatIndexDb(updatedChat, chat?.key);
@@ -109,11 +107,16 @@ const ChatsSlice = createSlice({
         },
 
         setChatOnPage(state, { payload }: PayloadAction<Partial<ChatItemIndexDb> | null>) {
-            if (!payload) return (state.chatOnPage = undefined);
+            if (!payload) {
+                state.chatOnPage = undefined;
+                return;
+            }
+
             if (payload?.id && state.chatOnPage?.id && payload?.id !== state.chatOnPage?.id) {
                 delete state.chatOnPage.answerMessage;
                 delete state.chatOnPage.online;
                 delete state.chatOnPage.inputMessage;
+                delete state.chatOnPage.key;
             }
 
             if (!state.chatOnPage) state.chatOnPage = payload as ChatItemIndexDb;
@@ -178,9 +181,7 @@ export const deleteExpiredMessages = (chat: ChatItemIndexDb) => {
     if (!chat.messages?.length) return;
 
     const message = chat.messages[0];
-    const time = new Date(message.createdAt).getTime();
-
-    if (time + messageSaveTime > Date.now()) return;
+    if (message.saveAt + messageSaveTime > Date.now()) return;
 
     chat.messages = chat.messages.slice(1);
     message.files.forEach((file) => deleteCacheOne(`/${file.chatId}/${file.key}`));
