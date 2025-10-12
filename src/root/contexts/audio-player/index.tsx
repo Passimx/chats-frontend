@@ -56,7 +56,7 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                 audioEl.addEventListener('timeupdate', timeupdate);
 
                 if ('mediaSession' in navigator) {
-                    let artwork = [{ src: image, sizes: '256x256', type: 'image/png' }];
+                    let artwork = [{ src: image, sizes: '512x512', type: 'image/png' }];
                     let title = value.file.originalName;
                     let artist = json.name;
 
