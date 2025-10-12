@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import styles from './index.module.css';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { resources } from '../../root/wrappers/app/hooks/use-translation.ts';
@@ -7,11 +7,11 @@ import { MenuTitle } from '../menu-title';
 import { GrLanguage } from 'react-icons/gr';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 
-export const ChangeLanguage: FC = () => {
+export const ChangeLanguage: FC = memo(() => {
     const { t } = useTranslation();
     const languages = Object.keys(resources);
     const { postMessageToBroadCastChannel } = useAppAction();
-    const { lang } = useAppSelector((state) => state.app);
+    const { lang } = useAppSelector((state) => state.app.settings);
 
     return (
         <div id={styles.background}>
@@ -36,4 +36,4 @@ export const ChangeLanguage: FC = () => {
             </div>
         </div>
     );
-};
+});

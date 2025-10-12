@@ -4,4 +4,67 @@
     display: grid;
     grid-template-rows: auto 1fr;
     color: white;
+
+    .settings_background{
+        display: grid;
+        grid-template-rows: 1fr auto;
+        padding: 4px;
+
+        .main{
+            display: grid;
+            gap: 16px;
+            grid-template-rows: auto auto auto 1fr;
+
+            .count{
+                background-color: #0C3870;
+                padding: 4px;
+                border-radius: 8px;
+
+                .count_text{
+                    padding: 8px;
+
+                    /*.count_text_span{*/
+                    /*    background-color: black;*/
+                    /*    color: #0098EA;*/
+                    /*    padding: 4px;*/
+                    /*    border-radius: 4px;*/
+                    /*}*/
+                }
+
+                .count_background{
+                    background-color: #0c518d;
+                    padding: 8px;
+                    border-radius: 8px;
+                }
+            }
+        }
+
+
+
+        .button_background{
+            .button{
+                cursor: pointer;
+                padding: 8px;
+                border-radius: 8px;
+                background-color: rgba(148,0,0,0.97);
+                display: grid;
+                grid-template-columns: auto;
+                justify-content: center;
+                align-items: center;
+
+                .button_text{
+                    display: grid;
+                    justify-content: center;
+                    align-items: center;
+                    grid-template-columns: auto auto;
+                    gap: 8px;
+
+                    .button_text_span{
+                        opacity: 0.4;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+    }
 }

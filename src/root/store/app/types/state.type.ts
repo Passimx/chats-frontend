@@ -6,6 +6,16 @@ export enum TabEnum {
     SERVICES = 'services',
 }
 
+export type SettingsType = {
+    lang?: string;
+
+    messagesLimit: number;
+    messageSaveCount?: number;
+    messageSaveTime?: number;
+
+    autoUploadVoiceMessage?: number;
+};
+
 export type StateType = {
     isOnline: boolean;
     isOpenPage: boolean;
@@ -17,9 +27,17 @@ export type StateType = {
     isLoadedChatsFromIndexDb?: boolean;
     isPhone?: boolean;
     systemChatId?: string;
-    lang?: string;
     isOpenMobileKeyboard?: boolean;
     useMemory?: number;
     cacheMemory?: number;
     totalMemory?: number;
+    isStandalone: boolean;
+    isIos?: boolean;
+    logs?: string[];
+
+    batteryLevel?: number;
+    batteryCharging?: boolean;
+    batterySaverMode?: boolean;
+
+    settings: SettingsType;
 };

@@ -7,13 +7,23 @@ import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 import { useCustomNavigate } from '../../../../common/hooks/use-custom-navigate.hook.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 import { getRawChat } from '../../../store/chats/chats.raw.ts';
+import { getUseMemory } from '../../../../common/cache/get-cache-memory.ts';
+import { deleteChatCache } from '../../../../common/cache/delete-chat-cache.ts';
 
 export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
     const navigate = useCustomNavigate();
     const [playNotificationSound] = useLoadSoundsHooks();
-    const { updateMany, setStateApp, calculateMessageCount, createMessage, removeChat, update, setLang } =
-        useAppAction();
+    const {
+        updateMany,
+        setStateApp,
+        addMessageCount,
+        calculateMessageCount,
+        createMessage,
+        removeChat,
+        update,
+        setLang,
+    } = useAppAction();
 
     return (dataEvent: DataType) => {
         const { event, data } = dataEvent;
@@ -26,14 +36,16 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.ADD_CHAT:
                 setToBegin(data);
+
                 if (data.type === ChatEnum.IS_SYSTEM) setStateApp({ systemChatId: data.id });
+                addMessageCount(data.countMessages - data.readMessage);
                 playNotificationSound();
                 break;
             case EventsEnum.CREATE_CHAT:
                 if (!data.success) break;
                 setToBegin({
                     ...data.data,
-                    messages: [data.data.message],
+                    messages: [],
                     readMessage: 1,
                     online: '1',
                     maxUsersOnline: '1',
@@ -56,10 +68,10 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.REMOVE_CHAT:
                 removeChat(data);
+                deleteChatCache(data).then(() => {
+                    getUseMemory().then((useMemory) => setStateApp({ useMemory }));
+                });
                 break;
-            //     case EventsEnum.UPDATE_BADGE:
-            //         if (navigator.setAppBadge) navigator.setAppBadge(data);
-            //         break;
             case EventsEnum.UPDATE_CHAT_ONLINE:
                 if (!data.success) break;
                 updateMany(data.data);

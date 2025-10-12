@@ -21,5 +21,28 @@
     "description":"open platform for messaging",
     "edge_side_panel":{
         "preferred_width":480
-    }
+    },
+    "share_target":{
+        "action": "/share",
+        "method": "POST",
+        "enctype": "multipart/form-data",
+        "params": {
+          "title": "title",
+          "text": "text",
+          "url": "url",
+          "files": [
+            {
+              "name": "files",
+              "accept": [
+                "image/*",
+                "video/*",
+                "audio/*",
+                "text/*",
+                "application/pdf",
+                "application/zip"
+              ]
+            }
+          ]
+        }
+      }
 }

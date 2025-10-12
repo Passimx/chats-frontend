@@ -1,3 +1,5 @@
+import { Envs } from '../config/envs/envs.ts';
+
 export const getLocalStorageSize = () => {
     let total = 0;
     for (let i = 0; i < localStorage.length; i++) {
@@ -64,22 +66,18 @@ export const getCacheMemory = async (): Promise<number> => {
         return 0;
     }
 
-    const cacheNames = await caches.keys();
     let totalSize = 0;
+    const cache = await caches.open(Envs.cache.files);
+    const requests = await cache.keys();
 
-    for (const cacheName of cacheNames) {
-        const cache = await caches.open(cacheName);
-        const requests = await cache.keys();
-
-        for (const request of requests) {
-            const response = await cache.match(request);
-            if (response) {
-                try {
-                    const blob = await response.clone().blob();
-                    totalSize += blob.size;
-                } catch {
-                    // Некоторые ресурсы могут быть не клонируемы
-                }
+    for (const request of requests) {
+        const response = await cache.match(request);
+        if (response) {
+            try {
+                const blob = await response.clone().blob();
+                totalSize += blob.size;
+            } catch {
+                // Некоторые ресурсы могут быть не клонируемы
             }
         }
     }
@@ -89,9 +87,29 @@ export const getCacheMemory = async (): Promise<number> => {
 };
 
 export const getUseMemory = async () => {
-    const localStorage = getLocalStorageSize();
+    if ('storage' in navigator && 'estimate' in navigator.storage) {
+        const { usage } = await navigator.storage.estimate();
+
+        if ('memory' in performance) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            const usedJSHeapSize = performance.memory?.usedJSHeapSize;
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            const jsHeapSizeLimit = performance.memory?.jsHeapSizeLimit;
+
+            console.log({
+                used: (usedJSHeapSize / 1024 / 1024).toFixed(2) + ' MB',
+                limit: (jsHeapSizeLimit / 1024 / 1024).toFixed(2) + ' MB',
+            });
+        }
+
+        return usage;
+    }
+
     const cache = await getCacheMemory();
     const indexDb = await getIndexedDBSize();
+    const localStorage = getLocalStorageSize();
 
     return cache + localStorage + indexDb;
 };

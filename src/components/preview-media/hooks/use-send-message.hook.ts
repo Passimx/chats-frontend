@@ -10,9 +10,9 @@ import { FileExtensionEnum, MimetypeEnum, Types } from '../../../root/types/file
 export const useSendMessage = () => {
     const { files, setFiles } = useContext(ContextMedia)!;
     const { update, setChatOnPage } = useAppAction();
-    const { isPhone } = useAppSelector((state) => state.app);
-    const { chatOnPage } = useAppSelector((state) => state.chats);
     const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
+    const { chatOnPage } = useAppSelector((state) => state.chats);
+    const { isPhone, isStandalone } = useAppSelector((state) => state.app);
 
     const sendMessage = useCallback(async () => {
         if (!files?.length) return;
@@ -20,19 +20,44 @@ export const useSendMessage = () => {
         const fileArray: Partial<Types>[] = [];
 
         await Promise.all(
-            Array.from(files).map(async (file) => {
-                const formData = new FormData();
-                formData.append('file', file, file.name);
-                formData.append('chatId', chatOnPage!.id);
-                const response = await uploadFile(formData);
-                if (!response.success || !response.data.length) return;
-                fileArray.push({
-                    id: response.data,
+            files.map(async (file) => {
+                const myFile = new File([await file.arrayBuffer()], file.name, { type: file.type });
+
+                const data: Partial<Types> = {
                     originalName: file.name,
                     size: file.size,
                     mimeType: file.type as MimetypeEnum,
                     fileType: FileExtensionEnum.IS_MEDIA,
-                });
+                    metadata: {
+                        ...file.metaData,
+                    },
+                };
+
+                const formData = new FormData();
+                formData.append('file', myFile, file.name);
+                formData.append('chatId', chatOnPage!.id);
+
+                if (file.metaData?.previewId) {
+                    const response = await fetch(file.metaData?.previewId);
+                    const blob = await response.blob();
+
+                    const myFile = new File([blob], file.name, { type: file.metaData.previewMimeType });
+
+                    const formData = new FormData();
+                    formData.append('file', myFile, file.name);
+                    formData.append('chatId', chatOnPage!.id);
+
+                    const request = await uploadFile(formData);
+                    if (request.success) data.metadata!.previewId = request.data.previewId;
+                }
+
+                const response = await uploadFile(formData);
+                if (!response.success) return;
+
+                data.key = response.data.fileId;
+                if (response?.data?.previewId) data.metadata!.previewId = response?.data?.previewId;
+
+                fileArray.push(data);
             }),
         );
 
@@ -131,7 +156,6 @@ export const useSendMessage = () => {
 
     useEffect(() => {
         if (!files?.length) return;
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
         const sendMessageButton = document.getElementById(styles.button_background)!;
 
         if (isStandalone && isPhone) sendMessageButton.addEventListener('touchend', sendMessage);

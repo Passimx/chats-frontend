@@ -9,6 +9,8 @@ import { useSendMessage } from './hooks/use-send-message.hook.ts';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import useVisibility from '../../common/hooks/use-visibility.ts';
 import { useTranslation } from 'react-i18next';
+import { FileTypeEnum } from '../../root/types/files/types.ts';
+import { PreviewMusic } from '../preview-music';
 
 export const PreviewMedia: FC = memo(() => {
     const visibility = useVisibility;
@@ -43,9 +45,13 @@ export const PreviewMedia: FC = memo(() => {
                         <MdOutlineCancel className={styles.cancel_logo} onClick={() => setFiles(undefined)} />
                     </div>
                     <div className={styles.files}>
-                        {filesArray.map((file, key) => (
-                            <PreviewFile key={key} number={key} file={file} />
-                        ))}
+                        {filesArray.map((file, key) =>
+                            file.type.includes(FileTypeEnum.AUDIO) ? (
+                                <PreviewMusic key={key} file={file} number={key} />
+                            ) : (
+                                <PreviewFile key={key} file={file} number={key} />
+                            ),
+                        )}
                     </div>
                     <div className={styles.message_input}>
                         <div className={styles.emoji_main}>

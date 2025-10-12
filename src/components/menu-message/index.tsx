@@ -33,6 +33,7 @@ export const MenuMessage: FC = memo(() => {
             createdAt: clickMessage.createdAt,
             parentMessageId: clickMessage.parentMessageId,
             files: clickMessage.files,
+            saveAt: clickMessage.saveAt,
         };
 
         if (chat) update({ id: clickMessage.chatId, answerMessage });

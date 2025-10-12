@@ -1,0 +1,28 @@
+.background{
+
+}
+
+.slider_background{
+    background-color: red;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: calc(100% - 10px);
+}
+
+.slider{
+    width: 100%;
+    cursor: pointer;
+}
+
+.options_background{
+    display: flex;
+    justify-content: space-between;
+}
+
+.options_item {
+    display: grid;
+    justify-content: center;
+    width: 40px;
+}
+
+

@@ -50,11 +50,14 @@ const useGetChat = (): void => {
             return navigate('/');
         }
 
-        if (!isLoading) {
-            changeHead(chatOnPage?.title);
+        if (!isLoading && chatOnPage) {
+            const countMessages = chatOnPage.countMessages - chatOnPage.readMessage;
+
+            if (countMessages > 0) changeHead(`${chatOnPage?.title} (${countMessages})`);
+            else changeHead(chatOnPage?.title);
             document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
         }
-    }, [isLoading, chatOnPage?.id]);
+    }, [isLoading, chatOnPage?.id, chatOnPage?.countMessages, chatOnPage?.readMessage]);
 };
 
 export default useGetChat;

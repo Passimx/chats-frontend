@@ -1,14 +1,43 @@
+export type FileMetadataType = {
+    duration?: number;
+    loudnessData?: number[];
+
+    previewId?: string;
+    previewMimeType?: MimetypeEnum;
+
+    artist?: string;
+    title?: string;
+    album?: string;
+    year?: number;
+};
+
+export interface FilesType extends File {
+    metaData?: FileMetadataType;
+}
+
 export type Types = {
     id: string;
+    key: string;
     chatId: string;
     originalName: string;
     mimeType: MimetypeEnum;
     size: number;
     createdAt: Date;
     fileType: FileExtensionEnum;
-    duration?: number;
-    loudnessData?: number[];
+    metadata: FileMetadataType;
 };
+
+export type UploadResultType = {
+    fileId: string;
+    previewId?: string;
+};
+
+export enum FileTypeEnum {
+    VIDEO = 'video',
+    IMAGE = 'image',
+    AUDIO = 'audio',
+    VPN = 'vpn',
+}
 
 export enum MimetypeEnum {
     // Текст / Документы
@@ -32,14 +61,14 @@ export enum MimetypeEnum {
     BINARY = 'application/octet-stream',
 
     // Фото
-    // JPEG = 'image/jpeg',
-    // JPG = 'image/jpg',
-    // PNG = 'image/png',
-    // GIF = 'image/gif',
-    // WebP = 'image/webp',
-    // BMP = 'image/bmp',
-    // TIFF = 'image/tiff',
-    // SVG = 'image/svg+xml',
+    JPEG = 'image/jpeg',
+    JPG = 'image/jpg',
+    PNG = 'image/png',
+    GIF = 'image/gif',
+    WebP = 'image/webp',
+    BMP = 'image/bmp',
+    TIFF = 'image/tiff',
+    SVG = 'image/svg+xml',
 
     // Видео
     // MP4 = 'video/mp4',
@@ -102,17 +131,17 @@ export const FileMap = new Map<string, MimetypeEnum[]>([
             MimetypeEnum.Opus,
         ],
     ],
-    // [
-    //     'IMAGE',
-    //     [
-    //         MimetypeEnum.JPEG,
-    //         MimetypeEnum.JPG,
-    //         MimetypeEnum.PNG,
-    //         MimetypeEnum.GIF,
-    //         MimetypeEnum.WebP,
-    //         MimetypeEnum.BMP,
-    //         MimetypeEnum.TIFF,
-    //         MimetypeEnum.SVG,
-    //     ],
-    // ],
+    [
+        'IMAGE',
+        [
+            MimetypeEnum.JPEG,
+            MimetypeEnum.JPG,
+            MimetypeEnum.PNG,
+            MimetypeEnum.GIF,
+            MimetypeEnum.WebP,
+            MimetypeEnum.BMP,
+            MimetypeEnum.TIFF,
+            MimetypeEnum.SVG,
+        ],
+    ],
 ]);

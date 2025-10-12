@@ -25,6 +25,7 @@ type ChatItemType = {
 export type ChatType = ChatItemType;
 
 export type ChatItemIndexDb = ChatType & {
+    key?: number;
     messages: MessageType[];
     readMessage: number;
     scrollTop: number;

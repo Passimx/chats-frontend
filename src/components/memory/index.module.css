@@ -1,0 +1,41 @@
+.background{
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    color: white;
+
+    .settings_background{
+        display: grid;
+        grid-template-rows: 1fr auto;
+
+        .button_background{
+            padding: 4px;
+
+            .button{
+                cursor: pointer;
+                padding: 8px;
+                border-radius: 8px;
+                background-color: white;
+                display: grid;
+                grid-template-columns: auto;
+                justify-content: center;
+                align-items: center;
+
+                .button_text{
+                    display: grid;
+                    justify-content: center;
+                    align-items: center;
+                    color: black;
+                    grid-template-columns: auto auto;
+                    gap: 8px;
+
+                    .button_text_span{
+                        opacity: 0.4;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+    }
+}

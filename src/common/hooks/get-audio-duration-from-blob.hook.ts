@@ -5,7 +5,7 @@ export function getAudioDurationFromBlob(blob: Blob): Promise<number> {
             const audio = new Audio(url);
 
             audio.addEventListener('loadedmetadata', () => {
-                resolve(audio.duration);
+                resolve(Math.trunc(audio.duration));
                 URL.revokeObjectURL(url);
             });
 

@@ -15,8 +15,10 @@ jobs:
       VITE_CHATS_SERVICE_URL: ${{ vars.VITE_CHATS_SERVICE_URL }}
       VITE_FILES_SERVICE_URL: ${{ vars.VITE_FILES_SERVICE_URL }}
       VITE_NOTIFICATIONS_SERVICE_URL: ${{ vars.VITE_NOTIFICATIONS_SERVICE_URL }}
+      ENVIRONMENT: ${{ vars.ENVIRONMENT }}
     secrets:
       DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
 
   release:
     needs: build
@@ -26,6 +28,7 @@ jobs:
       IMAGE_NAME: ${{ vars.IMAGE_NAME }}
     secrets:
       DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
 
   deploy:
     needs: release

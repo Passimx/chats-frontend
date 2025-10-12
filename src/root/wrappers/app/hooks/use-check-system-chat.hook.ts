@@ -15,7 +15,7 @@ export const useCheckSystemChat = () => {
 
             postMessageToBroadCastChannel({
                 event: EventsEnum.ADD_CHAT,
-                data: { ...chat, readMessage: 0, messages: [chat.message], scrollTop: 0 },
+                data: { ...chat, readMessage: 0, messages: [], scrollTop: 0, key: Date.now() },
             });
             listenChats([
                 { chatId: chat.id, lastMessage: chat.countMessages, maxUsersOnline: Number(chat.maxUsersOnline) },

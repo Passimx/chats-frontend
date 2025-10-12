@@ -5,17 +5,24 @@ import { memo, useCallback } from 'react';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { IoChatboxEllipsesOutline, IoRocketOutline, IoSettingsOutline } from 'react-icons/io5';
 import json from '../../../package.json';
-import { TbDatabase } from 'react-icons/tb';
+import { TbDatabase, TbLogs } from 'react-icons/tb';
 import { ChangeLanguage } from '../../components/change-language';
 import { MenuTitle } from '../../components/menu-title';
 import { Chats } from '../../components/chats';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import { useFileSize } from '../../common/hooks/use-file-size.ts';
+import { MdBatteryCharging20, MdVpnLock } from 'react-icons/md';
+import { LogList } from '../../components/log-list';
+import { Vpn } from '../../components/vpn';
+import { EnvironmentEnum, Envs } from '../../common/config/envs/envs.ts';
+import { Memory } from '../../components/memory';
+import { BatterySaver } from '../../components/battery-saver';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
-    const { useMemory, pages, activeTab, systemChatId } = useAppSelector((state) => state.app);
+    const { useMemory, pages, batteryLevel, batterySaverMode, activeTab, systemChatId, isStandalone, logs } =
+        useAppSelector((state) => state.app);
     const chatsLength = useAppSelector((state) => state.chats.chats.length);
     const { setStateApp } = useAppAction();
     const memory = useFileSize(useMemory);
@@ -57,21 +64,50 @@ export const Settings = memo(() => {
                 <div className={styles.item} onClick={() => selectMenu(<ChangeLanguage />)}>
                     <GrLanguage className={styles.item_logo} />
                     <div className="text_translate">
-                        {t('language')} (<div className={styles.item_value}>{t('language_native')}</div>)
+                        {t('language')}
+                        <div className={styles.item_value}>&nbsp;{t('language_native')}</div>
                     </div>
                 </div>
                 <div className={styles.item} onClick={() => selectMenu(<Chats />)}>
                     <IoChatboxEllipsesOutline className={styles.item_logo} />
                     <div className="text_translate">
-                        {t('chats')} (<div className={styles.item_value}>{chatsLength}</div>)
+                        {t('chats')}
+                        <div className={styles.item_value}>&nbsp;{chatsLength}</div>
                     </div>
                 </div>
-                <div className={styles.item}>
+                <div className={styles.item} onClick={() => selectMenu(<Memory />)}>
                     <TbDatabase className={styles.item_logo} />
                     <div className="text_translate">
-                        {t('memory_usage')} (<div className={styles.item_value}>{memory}</div>)
+                        {t('memory_usage')}
+                        <div className={styles.item_value}>&nbsp;{memory}</div>
                     </div>
                 </div>
+                {batteryLevel && (
+                    <div className={styles.item} onClick={() => selectMenu(<BatterySaver />)}>
+                        <MdBatteryCharging20 className={styles.item_logo} />
+                        <div className="text_translate">
+                            {t('battery_saver_mode')}
+                            {batteryLevel && (
+                                <div className={styles.item_value}>&nbsp;{batterySaverMode ? t('on') : t('off')}</div>
+                            )}
+                        </div>
+                    </div>
+                )}
+                {Envs.environment !== EnvironmentEnum.PRODUCTION && (
+                    <div className={styles.item} onClick={() => selectMenu(<LogList />)}>
+                        <TbLogs className={styles.item_logo} />
+                        <div className="text_translate">
+                            {t('app_logs')}
+                            {logs?.length && <div className={styles.item_value}>&nbsp;{logs.length}</div>}
+                        </div>
+                    </div>
+                )}
+                {!isStandalone && (
+                    <div className={styles.item} onClick={() => selectMenu(<Vpn />)}>
+                        <MdVpnLock className={styles.item_logo} />
+                        <div className="text_translate">{t('vpn')}</div>
+                    </div>
+                )}
             </div>
 
             <div className={styles.items}>
@@ -82,7 +118,7 @@ export const Settings = memo(() => {
                     }
                 >
                     <AiOutlineQuestionCircle className={styles.item_logo} />
-                    <div className="text_translate">{t('Помощь')}</div>
+                    <div className="text_translate">{t('help')}</div>
                 </div>
             </div>
 
@@ -90,11 +126,10 @@ export const Settings = memo(() => {
                 <div className={styles.item} onClick={() => systemChatId && navigate(systemChatId)}>
                     <IoRocketOutline className={styles.item_logo} />
                     <div className="text_translate">
-                        {t('about_app')} (
+                        {t('about_app')}
                         <div className={`${styles.item_value} text_translate`}>
-                            {t('version')} {json.version}
+                            &nbsp;{`(${t('version')} ${json.version})`}
                         </div>
-                        )
                     </div>
                 </div>
             </div>

@@ -5,17 +5,41 @@ import { Return } from '../types.ts';
 import { AudioPlayerContext } from '../../../root/contexts/audio-player';
 import { CancelDownload, DownloadFile, DownloadFileWithPercents } from '../../../root/api/files/file.ts';
 import { CanPlayAudio } from '../../../common/hooks/can-play-audio.hook.ts';
+import { getUseMemory } from '../../../common/cache/get-cache-memory.ts';
+import { useAppAction, useAppSelector } from '../../../root/store';
 
 export const useDownloadFile = (file: Types): Return => {
     const [downloadPercent, setDownloadPercent] = useState<number>();
     const [blob, setBlob] = useState<Blob>();
     const { addFile, play, pause, isPlaying, audio } = useContext(AudioPlayerContext)!;
+    const { setStateApp } = useAppAction();
+    const { isPhone } = useAppSelector((state) => state.app);
 
     useEffect(() => {
-        cacheIsExist(`/${file.chatId}/${file.id}`).then((result) => {
+        cacheIsExist(`/${file.chatId}/${file.key}`).then((result) => {
             if (result) setBlob(result);
         });
     }, [file]);
+
+    const downloadOnDevice = useCallback(async () => {
+        let duplicateBlob = blob;
+        if (!duplicateBlob) {
+            duplicateBlob = await DownloadFileWithPercents(file, setDownloadPercent);
+            if (!duplicateBlob) return;
+            setBlob(duplicateBlob);
+        }
+
+        if (isPhone) {
+            const myFile = new File([duplicateBlob], file.originalName, { type: file.mimeType });
+
+            await navigator
+                .share({
+                    files: [myFile],
+                })
+                .then(() => console.log('Успешно!'))
+                .catch((error) => console.log('Ошибка при обмене:', error));
+        } else await DownloadFile(file, duplicateBlob);
+    }, [file, blob, isPhone]);
 
     const clickFile = useCallback(async () => {
         // Остановить скачивание
@@ -30,6 +54,9 @@ export const useDownloadFile = (file: Types): Return => {
             const blob = await DownloadFileWithPercents(file, setDownloadPercent);
             if (!blob) return;
             setBlob(blob);
+            const useMemory = await getUseMemory();
+            setStateApp({ useMemory });
+
             // сразу воспроизводим аудио после загрузки
             if (CanPlayAudio(file)) {
                 addFile({ file, blob });
@@ -50,8 +77,6 @@ export const useDownloadFile = (file: Types): Return => {
             }
         }
     }, [file, blob, downloadPercent, isPlaying, audio]);
-
-    const downloadOnDevice = useCallback(() => DownloadFile(file, blob), [file, blob]);
 
     return { downloadPercent, clickFile, blob, downloadOnDevice };
 };
