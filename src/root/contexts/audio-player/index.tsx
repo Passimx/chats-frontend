@@ -74,7 +74,6 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                             },
                         ];
 
-                    console.log(artwork);
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title,
                         artist,
