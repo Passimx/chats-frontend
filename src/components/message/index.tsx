@@ -9,8 +9,9 @@ import styles2 from '../menu-message/index.module.css';
 import { useAppSelector } from '../../root/store';
 import { ContextChat } from '../../pages/chat/context/chat-context.tsx';
 import { MessageFile } from '../message-file';
-import { AudioFile } from '../audio-file';
-import { FileExtensionEnum } from '../../root/types/files/types.ts';
+import { AudioFile } from '../message-audio';
+import { FileExtensionEnum, FileTypeEnum } from '../../root/types/files/types.ts';
+import { MessageImage } from '../message-image';
 
 const Message: FC<PropsType> = memo((props) => {
     const { number, type, findMessage } = props;
@@ -79,9 +80,12 @@ const Message: FC<PropsType> = memo((props) => {
                 {!!props.parentMessage && <ParentMessage {...{ ...props.parentMessage, findMessage }} />}
                 <div className={styles.file_list}>
                     {props?.files?.map((file, index) => {
-                        if (file.fileType === FileExtensionEnum.IS_MEDIA)
-                            return <MessageFile key={index} file={file} />;
                         if (file.fileType === FileExtensionEnum.IS_VOICE) return <AudioFile key={index} file={file} />;
+                        if (file.fileType === FileExtensionEnum.IS_MEDIA) {
+                            if (file.mimeType.includes(FileTypeEnum.IMAGE))
+                                return <MessageImage key={index} file={file} />;
+                            return <MessageFile key={index} file={file} />;
+                        }
                     })}
                 </div>
                 <RenderMessage message={visibleMessage} type={type} />

@@ -11,6 +11,8 @@ import useVisibility from '../../common/hooks/use-visibility.ts';
 import { useTranslation } from 'react-i18next';
 import { FileTypeEnum } from '../../root/types/files/types.ts';
 import { PreviewMusic } from '../preview-music';
+import { setThemeColor } from '../../common/hooks/set-theme-color.ts';
+import { useFileSize } from '../../common/hooks/use-file-size.ts';
 
 export const PreviewMedia: FC = memo(() => {
     const visibility = useVisibility;
@@ -21,8 +23,12 @@ export const PreviewMedia: FC = memo(() => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
 
     useEffect(() => {
-        if (!files?.length) return;
+        if (!files?.length) {
+            setThemeColor('#062846');
+            return;
+        }
 
+        setThemeColor('#02101C');
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') setFiles(undefined);
         };
@@ -30,6 +36,12 @@ export const PreviewMedia: FC = memo(() => {
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [files]);
+
+    const size = useMemo(() => {
+        return files?.reduce((prevSum, file) => prevSum + file.size, 0);
+    }, [files?.length]);
+
+    const sizeName = useFileSize(size);
 
     if (files?.length)
         return (
@@ -41,16 +53,15 @@ export const PreviewMedia: FC = memo(() => {
             >
                 <div className={styles.main}>
                     <div className={styles.header}>
-                        <div></div>
+                        <div className={styles.files_inf}>{sizeName}</div>
                         <MdOutlineCancel className={styles.cancel_logo} onClick={() => setFiles(undefined)} />
                     </div>
                     <div className={styles.files}>
-                        {filesArray.map((file, key) =>
-                            file.type.includes(FileTypeEnum.AUDIO) ? (
-                                <PreviewMusic key={key} file={file} number={key} />
-                            ) : (
-                                <PreviewFile key={key} file={file} number={key} />
-                            ),
+                        {filesArray.map(
+                            (file, key) =>
+                                (file.type.includes(FileTypeEnum.AUDIO) && (
+                                    <PreviewMusic key={key} file={file} number={key} />
+                                )) || <PreviewFile key={key} file={file} number={key} />,
                         )}
                     </div>
                     <div className={styles.message_input}>
