@@ -65,30 +65,31 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
 
                     if (value.file.metadata.artist) artist = value.file.metadata.artist;
 
-                    if (value.file.metadata.previewId)
+                    if (value.file.metadata.previewId) {
+                        const src = `${Envs.filesServiceUrl}/${value.file.chatId}/${value.file.metadata.previewId}`;
                         artwork = [
                             {
-                                src: `${Envs.filesServiceUrl}/${value.file.metadata.previewId}`,
+                                src,
                                 sizes: '96x96',
                                 type: value.file.metadata.previewMimeType as string,
                             },
                             {
-                                src: `${Envs.filesServiceUrl}/${value.file.metadata.previewId}`,
+                                src,
                                 sizes: '128x128',
                                 type: value.file.metadata.previewMimeType as string,
                             },
                             {
-                                src: `${Envs.filesServiceUrl}/${value.file.metadata.previewId}`,
+                                src,
                                 sizes: '256x256',
                                 type: value.file.metadata.previewMimeType as string,
                             },
                             {
-                                src: `${Envs.filesServiceUrl}/${value.file.metadata.previewId}`,
+                                src,
                                 sizes: '512x512',
                                 type: value.file.metadata.previewMimeType as string,
                             },
                         ];
-
+                    }
                     console.log(artwork);
 
                     navigator.mediaSession.metadata = new MediaMetadata({
