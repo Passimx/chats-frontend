@@ -11,16 +11,8 @@ import useVisibility from '../../common/hooks/use-visibility.ts';
 import { useTranslation } from 'react-i18next';
 import { FileTypeEnum } from '../../root/types/files/types.ts';
 import { PreviewMusic } from '../preview-music';
-
-function setThemeColor(color: string) {
-    let metaThemeColor = document.querySelector('meta[name=theme-color]');
-    if (!metaThemeColor) {
-        metaThemeColor = document.createElement('meta');
-        metaThemeColor.setAttribute('name', 'theme-color');
-        document.head.appendChild(metaThemeColor);
-    }
-    metaThemeColor.setAttribute('content', color);
-}
+import { setThemeColor } from '../../common/hooks/set-theme-color.ts';
+import { useFileSize } from '../../common/hooks/use-file-size.ts';
 
 export const PreviewMedia: FC = memo(() => {
     const visibility = useVisibility;
@@ -45,6 +37,12 @@ export const PreviewMedia: FC = memo(() => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [files]);
 
+    const size = useMemo(() => {
+        return files?.reduce((prevSum, file) => prevSum + file.size, 0);
+    }, [files?.length]);
+
+    const sizeName = useFileSize(size);
+
     if (files?.length)
         return (
             <div
@@ -55,7 +53,7 @@ export const PreviewMedia: FC = memo(() => {
             >
                 <div className={styles.main}>
                     <div className={styles.header}>
-                        <div></div>
+                        <div className={styles.files_inf}>{sizeName}</div>
                         <MdOutlineCancel className={styles.cancel_logo} onClick={() => setFiles(undefined)} />
                     </div>
                     <div className={styles.files}>

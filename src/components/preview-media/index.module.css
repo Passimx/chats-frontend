@@ -41,6 +41,11 @@
     display: grid;
     grid-template-columns: 1fr auto;
     padding: 8px;
+
+    .files_inf{
+        display: grid;
+        justify-content: center;
+    }
 }
 
 .files{
