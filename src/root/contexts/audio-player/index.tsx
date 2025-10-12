@@ -1,7 +1,7 @@
 import { createContext, FC, memo, ReactElement, useCallback, useEffect, useState } from 'react';
 import { AudioType, ContextType } from './types/context.type.ts';
 import { FileExtensionEnum } from '../../types/files/types.ts';
-import image from '../../../../public/assets/icons/512.png';
+import image from '../../../../public/assets/icons/256.png';
 import { useTranslation } from 'react-i18next';
 import json from '../../../../package.json';
 import { Envs } from '../../../common/config/envs/envs.ts';
@@ -56,7 +56,7 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                 audioEl.addEventListener('timeupdate', timeupdate);
 
                 if ('mediaSession' in navigator) {
-                    let artwork = [{ src: image, sizes: '512x512', type: 'image/png' }];
+                    let artwork = [{ src: image, sizes: '256x256', type: 'image/png' }];
                     let title = value.file.originalName;
                     let artist = json.name;
 
