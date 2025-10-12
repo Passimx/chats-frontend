@@ -4,6 +4,7 @@ import { FileExtensionEnum } from '../../types/files/types.ts';
 import image from '../../../../public/assets/icons/512.png';
 import { useTranslation } from 'react-i18next';
 import json from '../../../../package.json';
+import { Envs } from '../../../common/config/envs/envs.ts';
 
 export const AudioPlayerContext = createContext<ContextType | null>(null);
 
@@ -62,13 +63,13 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                     if (value.file.metadata.previewId)
                         artwork = [
                             {
-                                src: value.file.metadata.previewId,
+                                src: `${Envs.filesServiceUrl}/${value.file.metadata.previewId}`,
                                 sizes: '300x300',
                                 type: value.file.metadata.previewMimeType as string,
                             },
                         ];
 
-                    if (value.file.metadata.artist) title = value.file.metadata.artist;
+                    if (value.file.metadata.title) title = value.file.metadata.title;
                     else if (value.file.fileType === FileExtensionEnum.IS_VOICE) title = t('voice_message');
 
                     if (value.file.metadata.artist) artist = value.file.metadata.artist;
