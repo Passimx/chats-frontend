@@ -1,4 +1,4 @@
-import { FC, memo, MouseEvent, useCallback, useContext } from 'react';
+import { FC, memo, MouseEvent, useCallback, useContext, useMemo } from 'react';
 import { PropsType } from './props.type.ts';
 import { useFileSize } from '../../common/hooks/use-file-size.ts';
 import styles from './index.module.css';
@@ -31,6 +31,7 @@ import { LoadRadius } from '../load-radius';
 import { AudioPlayerContext } from '../../root/contexts/audio-player';
 import { FaPause } from 'react-icons/fa';
 import { MdDownloadForOffline } from 'react-icons/md';
+import { Envs } from '../../common/config/envs/envs.ts';
 
 export const MessageFile: FC<PropsType> = memo(({ file }) => {
     const r = 17;
@@ -38,6 +39,11 @@ export const MessageFile: FC<PropsType> = memo(({ file }) => {
     const size = useFileSize(file.size);
     const { downloadPercent, blob, clickFile, downloadOnDevice } = useDownloadFile(file);
     const { isPlaying, audio } = useContext(AudioPlayerContext)!;
+
+    const backgroundImage = useMemo(() => {
+        if (file.metadata.previewId) return `url(${Envs.filesServiceUrl}/${file.chatId}/${file.metadata.previewId})`;
+        return undefined;
+    }, [file.metadata.previewId]);
 
     const download = useCallback(
         (e: MouseEvent<unknown>) => {
@@ -49,7 +55,7 @@ export const MessageFile: FC<PropsType> = memo(({ file }) => {
 
     return (
         <div className={`${styles.background} ${!blob && styles.background_animation}`} onClick={clickFile}>
-            <div className={styles.file_background}>
+            <div className={styles.file_background} style={{ backgroundImage }}>
                 {downloadPercent === undefined && (!isPlaying || audio?.file.id !== file.id) && (
                     <div className={styles.file_icon}>
                         {CanPlayAudio(file) && <IoMusicalNotesSharp className={styles.file_logo} />}

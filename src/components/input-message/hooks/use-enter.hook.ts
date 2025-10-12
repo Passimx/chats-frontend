@@ -94,7 +94,7 @@ export const useEnterHook = (): UseEnterHookType => {
             getAudioWaveform(audioBlob),
         ]);
 
-        if (!response.success || !response?.data?.length) return;
+        if (!response.success) return;
 
         if (getRawChat(chatOnPage?.id))
             update({ id: chatOnPage!.id, inputMessage: undefined, answerMessage: undefined });
@@ -106,13 +106,14 @@ export const useEnterHook = (): UseEnterHookType => {
             files: [
                 {
                     originalName,
-                    key: response.data,
+                    key: response.data.fileId,
                     size: audioBlob.size,
                     mimeType: MimetypeEnum.WAV,
                     fileType: FileExtensionEnum.IS_VOICE,
                     metadata: {
                         duration,
                         loudnessData,
+                        previewId: response.data.previewId,
                     },
                 },
             ],

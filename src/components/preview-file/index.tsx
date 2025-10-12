@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { PropsType } from './props.type.ts';
 import styles from './index.module.css';
 import { useFileSize } from '../../common/hooks/use-file-size.ts';
@@ -12,7 +12,7 @@ export const PreviewFile: FC<PropsType> = ({ file, number }) => {
     const size = useFileSize(file.size);
     const [url, setUrl] = useState<string>('');
     const [type, setType] = useState<FileTypeEnum>();
-    const { setFiles, files } = useContext(ContextMedia)!;
+    const { deleteFile } = useContext(ContextMedia)!;
 
     useEffect(() => {
         const url = URL.createObjectURL(file);
@@ -38,18 +38,6 @@ export const PreviewFile: FC<PropsType> = ({ file, number }) => {
         return () => URL.revokeObjectURL(url);
     }, [file]);
 
-    const deleteFile = useCallback(() => {
-        if (!files) return;
-        const dataTransfer = new DataTransfer();
-
-        Array.from(files).forEach((file, index) => {
-            if (index !== number) dataTransfer.items.add(file);
-        });
-
-        const fileList: FileList = dataTransfer.files;
-        setFiles(fileList);
-    }, [files, number]);
-
     return (
         <div className={styles.background}>
             <div>
@@ -70,7 +58,7 @@ export const PreviewFile: FC<PropsType> = ({ file, number }) => {
                 <div className={styles.file_name}>{file.name}</div>
                 <div className={styles.file_size}>{size}</div>
             </div>
-            <div className={styles.styles_background} onClick={deleteFile}>
+            <div className={styles.styles_background} onClick={() => deleteFile(number)}>
                 <MdDeleteOutline className={styles.logo_delete} />
             </div>
         </div>

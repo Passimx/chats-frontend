@@ -24,7 +24,6 @@ import { useUpdateStaticCache } from './hooks/use-update-static-cache.hook.ts';
 import { useIsIos } from './hooks/use-is-ios.hook.ts';
 import { useBattery } from './hooks/use-battery.hook.ts';
 import { useSettings } from './hooks/use-settings.hook.ts';
-import { useCatchLogs } from './hooks/use-catch-logs.hook.ts';
 import { useUpdateBadge } from './hooks/use-update-badge.hook.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
@@ -52,7 +51,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     // update cache files
     useUpdateStaticCache();
     // catch all app log-list
-    useCatchLogs();
+    // useCatchLogs();
     // calculate ios device
     useIsIos();
     // battery Saver Mode

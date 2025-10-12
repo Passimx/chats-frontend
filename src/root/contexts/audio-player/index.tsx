@@ -55,15 +55,29 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                 audioEl.addEventListener('timeupdate', timeupdate);
 
                 if ('mediaSession' in navigator) {
-                    const title =
-                        value.file.fileType === FileExtensionEnum.IS_VOICE
-                            ? t('voice_message')
-                            : value?.file.originalName;
+                    let artwork = [{ src: image, sizes: '512x512', type: 'image/png' }];
+                    let title = value.file.originalName;
+                    let artist = json.name;
+
+                    if (value.file.metadata.previewId)
+                        artwork = [
+                            {
+                                src: value.file.metadata.previewId,
+                                sizes: '300x300',
+                                type: value.file.metadata.previewMimeType as string,
+                            },
+                        ];
+
+                    if (value.file.metadata.artist) title = value.file.metadata.artist;
+                    else if (value.file.fileType === FileExtensionEnum.IS_VOICE) title = t('voice_message');
+
+                    if (value.file.metadata.artist) artist = value.file.metadata.artist;
 
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title,
-                        artist: json.name,
-                        artwork: [{ src: image, sizes: '512x512', type: 'image/png' }],
+                        artist,
+                        album: value.file.metadata.album,
+                        artwork,
                     });
 
                     navigator.mediaSession.setActionHandler('play', play);

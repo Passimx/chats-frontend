@@ -1,4 +1,7 @@
+import { FilesType } from '../../root/types/files/types.ts';
+
 export type ContextType = {
-    files?: FileList;
-    setFiles: (files?: FileList) => void;
+    files?: FilesType[];
+    setFiles: (files?: FilesType[]) => void;
+    deleteFile: (fileIndex: number) => void;
 };

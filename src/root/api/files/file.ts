@@ -1,15 +1,15 @@
 import { IData } from '../index.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
-import { Types } from '../../types/files/types.ts';
+import { Types, UploadResultType } from '../../types/files/types.ts';
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
 import { getRawChat } from '../../store/chats/chats.raw.ts';
 
-export const uploadFile = async (body: FormData): Promise<IData<string>> => {
+export const uploadFile = async (body: FormData): Promise<IData<UploadResultType>> => {
     const response = await fetch(`${Envs.filesServiceUrl}/upload`, { method: 'POST', body }).then((response) =>
         response.json(),
     );
 
-    return response as IData<string>;
+    return response as IData<UploadResultType>;
 };
 
 const cancelRequestMap = new Set<string>();

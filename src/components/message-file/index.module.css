@@ -72,6 +72,9 @@
     height: 40px;
     border-radius: 30px;
     background-color: #0098ea;
+    background-size: cover; /* или contain */
+    background-position: center;
+    background-repeat: no-repeat;
     display: grid;
     justify-content: center;
     align-items: center;

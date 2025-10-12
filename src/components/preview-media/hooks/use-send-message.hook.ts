@@ -6,7 +6,6 @@ import { uploadFile } from '../../../root/api/files/file.ts';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { createMessage } from '../../../root/api/messages';
 import { FileExtensionEnum, MimetypeEnum, Types } from '../../../root/types/files/types.ts';
-// import * as mm from 'music-metadata-browser';
 
 export const useSendMessage = () => {
     const { files, setFiles } = useContext(ContextMedia)!;
@@ -21,25 +20,44 @@ export const useSendMessage = () => {
         const fileArray: Partial<Types>[] = [];
 
         await Promise.all(
-            Array.from(files).map(async (file) => {
-                // if (FileMap.get('MP3')?.find((type) => type === file.type)) {
-                //     const arrayBuffer = await file.arrayBuffer();
-                //     const uint8 = new Uint8Array(arrayBuffer);
-                //     const metadata = await mm.parseBuffer(uint8, file.type, { duration: true });
-                // }
-                const formData = new FormData();
-                formData.append('file', file, file.name);
-                formData.append('chatId', chatOnPage!.id);
-                const response = await uploadFile(formData);
-                if (!response.success || !response.data.length) return;
+            files.map(async (file) => {
+                const myFile = new File([await file.arrayBuffer()], file.name, { type: file.type });
 
-                fileArray.push({
-                    key: response.data,
+                const data: Partial<Types> = {
                     originalName: file.name,
                     size: file.size,
                     mimeType: file.type as MimetypeEnum,
                     fileType: FileExtensionEnum.IS_MEDIA,
-                });
+                    metadata: {
+                        ...file.metaData,
+                    },
+                };
+
+                const formData = new FormData();
+                formData.append('file', myFile, file.name);
+                formData.append('chatId', chatOnPage!.id);
+
+                if (file.metaData?.previewId) {
+                    const response = await fetch(file.metaData?.previewId);
+                    const blob = await response.blob();
+
+                    const myFile = new File([blob], file.name, { type: file.metaData.previewMimeType });
+
+                    const formData = new FormData();
+                    formData.append('file', myFile, file.name);
+                    formData.append('chatId', chatOnPage!.id);
+
+                    const request = await uploadFile(formData);
+                    if (request.success) data.metadata!.previewId = request.data.previewId;
+                }
+
+                const response = await uploadFile(formData);
+                if (!response.success) return;
+
+                data.key = response.data.fileId;
+                if (response?.data?.previewId) data.metadata!.previewId = response?.data?.previewId;
+
+                fileArray.push(data);
             }),
         );
 
