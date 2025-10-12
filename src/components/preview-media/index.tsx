@@ -32,11 +32,11 @@ export const PreviewMedia: FC = memo(() => {
 
     useEffect(() => {
         if (!files?.length) {
-            setThemeColor('black');
+            setThemeColor('#062846');
             return;
         }
 
-        setThemeColor('#062846');
+        setThemeColor('black');
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') setFiles(undefined);
         };
