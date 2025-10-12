@@ -69,6 +69,8 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                             },
                         ];
 
+                    console.log(artwork);
+
                     if (value.file.metadata.title) title = value.file.metadata.title;
                     else if (value.file.fileType === FileExtensionEnum.IS_VOICE) title = t('voice_message');
 
