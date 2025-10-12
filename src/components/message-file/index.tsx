@@ -25,7 +25,7 @@ import {
     BsFiletypeYml,
     BsFileZip,
 } from 'react-icons/bs';
-import { useDownloadFile } from '../audio-file/hooks/use-download-file.hook.ts';
+import { useDownloadFile } from '../message-audio/hooks/use-download-file.hook.ts';
 import { CanPlayAudio } from '../../common/hooks/can-play-audio.hook.ts';
 import { LoadRadius } from '../load-radius';
 import { AudioPlayerContext } from '../../root/contexts/audio-player';

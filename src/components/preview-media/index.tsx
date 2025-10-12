@@ -12,6 +12,16 @@ import { useTranslation } from 'react-i18next';
 import { FileTypeEnum } from '../../root/types/files/types.ts';
 import { PreviewMusic } from '../preview-music';
 
+function setThemeColor(color: string) {
+    let metaThemeColor = document.querySelector('meta[name=theme-color]');
+    if (!metaThemeColor) {
+        metaThemeColor = document.createElement('meta');
+        metaThemeColor.setAttribute('name', 'theme-color');
+        document.head.appendChild(metaThemeColor);
+    }
+    metaThemeColor.setAttribute('content', color);
+}
+
 export const PreviewMedia: FC = memo(() => {
     const visibility = useVisibility;
     const [isShowPlaceholder] = useSendMessage();
@@ -21,8 +31,12 @@ export const PreviewMedia: FC = memo(() => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
 
     useEffect(() => {
-        if (!files?.length) return;
+        if (!files?.length) {
+            setThemeColor('black');
+            return;
+        }
 
+        setThemeColor('#062846');
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') setFiles(undefined);
         };
@@ -45,12 +59,11 @@ export const PreviewMedia: FC = memo(() => {
                         <MdOutlineCancel className={styles.cancel_logo} onClick={() => setFiles(undefined)} />
                     </div>
                     <div className={styles.files}>
-                        {filesArray.map((file, key) =>
-                            file.type.includes(FileTypeEnum.AUDIO) ? (
-                                <PreviewMusic key={key} file={file} number={key} />
-                            ) : (
-                                <PreviewFile key={key} file={file} number={key} />
-                            ),
+                        {filesArray.map(
+                            (file, key) =>
+                                (file.type.includes(FileTypeEnum.AUDIO) && (
+                                    <PreviewMusic key={key} file={file} number={key} />
+                                )) || <PreviewFile key={key} file={file} number={key} />,
                         )}
                     </div>
                     <div className={styles.message_input}>
