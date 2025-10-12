@@ -60,22 +60,21 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                     let title = value.file.originalName;
                     let artist = json.name;
 
-                    if (value.file.metadata.previewId)
-                        artwork = [
-                            {
-                                src: `${Envs.filesServiceUrl}/${value.file.metadata.previewId}`,
-                                sizes: '300x300',
-                                type: value.file.metadata.previewMimeType as string,
-                            },
-                        ];
-
-                    console.log(artwork);
-
                     if (value.file.metadata.title) title = value.file.metadata.title;
                     else if (value.file.fileType === FileExtensionEnum.IS_VOICE) title = t('voice_message');
 
                     if (value.file.metadata.artist) artist = value.file.metadata.artist;
 
+                    if (value.file.metadata.previewId)
+                        artwork = [
+                            {
+                                src: `${Envs.filesServiceUrl}/${value.file.metadata.previewId}`,
+                                sizes: '256x256',
+                                type: value.file.metadata.previewMimeType as string,
+                            },
+                        ];
+
+                    console.log(artwork);
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title,
                         artist,
