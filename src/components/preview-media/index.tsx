@@ -36,7 +36,7 @@ export const PreviewMedia: FC = memo(() => {
             return;
         }
 
-        setThemeColor('black');
+        setThemeColor('#02101C');
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') setFiles(undefined);
         };
