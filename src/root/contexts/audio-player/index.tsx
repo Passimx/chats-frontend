@@ -69,7 +69,7 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                         artwork = [
                             {
                                 src: `${Envs.filesServiceUrl}/${value.file.metadata.previewId}`,
-                                sizes: '256x256',
+                                sizes: '512x512',
                                 type: value.file.metadata.previewMimeType as string,
                             },
                         ];
