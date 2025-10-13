@@ -1,6 +1,7 @@
 import { Envs } from '../config/envs/envs.ts';
 import { EventsFromServer } from '../../root/types/events/events-from-server.type.ts';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { TabEvents } from '../../root/wrappers/app/hooks/use-broadcast-channel.ts';
 const channel = new BroadcastChannel('ws-channel');
 
 let socketId: string | undefined;
@@ -40,7 +41,7 @@ function connect() {
     };
 
     ws.onerror = () => {
-        channel.postMessage({ event: 'error', data: '[WS2] Disconnected, reconnecting…' });
+        channel.postMessage({ event: EventsEnum.ERROR, data: '[WS2] Disconnected, reconnecting…' });
         ws.close();
     };
 }
@@ -50,11 +51,9 @@ connect();
 channel.onmessage = (ev) => {
     const event = ev.data?.event;
     switch (event) {
-        case 'get_socket':
-            if (socketId) channel.postMessage({ event: 'get_socket_id', data: socketId });
-            break;
-        case 'ping':
-            channel.postMessage({ event: 'pong', data: socketId });
+        case TabEvents.CREATE_TAB:
+            if (socketId)
+                channel.postMessage({ event: EventsEnum.GET_SOCKET_ID, data: { success: true, data: socketId } });
             break;
     }
 };
