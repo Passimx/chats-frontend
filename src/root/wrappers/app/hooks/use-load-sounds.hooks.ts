@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import mp3 from '../../../../../public/assets/sounds/message.mp3';
+import { rawApp } from '../../../store/app/app.raw.ts';
 
 let cachedAudioBuffer: AudioBuffer | null = null; // Кешируем звук
 
@@ -19,6 +20,7 @@ export const useLoadSoundsHooks = (): [() => Promise<void>] => {
     }, []);
 
     const playNotificationSound = useCallback(async () => {
+        if (!rawApp.isMainTab) return;
         try {
             if (!cachedAudioBuffer) await loadNotificationSound();
 
