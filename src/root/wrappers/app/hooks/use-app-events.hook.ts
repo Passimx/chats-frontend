@@ -4,15 +4,14 @@ import { DataType } from '../../../types/events/event-data.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
 import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
-import { useCustomNavigate } from '../../../../common/hooks/use-custom-navigate.hook.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 import { getRawChat } from '../../../store/chats/chats.raw.ts';
 import { getUseMemory } from '../../../../common/cache/get-cache-memory.ts';
 import { deleteChatCache } from '../../../../common/cache/delete-chat-cache.ts';
+import { useCallback } from 'react';
 
 export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
-    const navigate = useCustomNavigate();
     const [playNotificationSound] = useLoadSoundsHooks();
     const {
         updateMany,
@@ -25,7 +24,7 @@ export const useAppEvents = () => {
         setLang,
     } = useAppAction();
 
-    return (dataEvent: DataType) => {
+    return useCallback((dataEvent: DataType) => {
         const { event, data } = dataEvent;
 
         switch (event) {
@@ -51,7 +50,6 @@ export const useAppEvents = () => {
                     maxUsersOnline: '1',
                     scrollTop: 0,
                 });
-                navigate(`/${data.data.id}`);
                 playNotificationSound();
                 break;
             case EventsEnum.CREATE_MESSAGE:
@@ -102,5 +100,5 @@ export const useAppEvents = () => {
             default:
                 break;
         }
-    };
+    }, []);
 };

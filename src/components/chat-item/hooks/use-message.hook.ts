@@ -50,7 +50,7 @@ export const useMessage = (chat: ChatItemIndexDb): (string | undefined)[] => {
 
     useEffect(() => {
         changeCountMessages();
-    }, [chat.readMessage]);
+    }, [chat.countMessages - chat.readMessage]);
 
     return [message, time, countMessages];
 };
