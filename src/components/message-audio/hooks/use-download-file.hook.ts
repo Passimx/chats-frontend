@@ -5,14 +5,13 @@ import { Return } from '../types.ts';
 import { AudioPlayerContext } from '../../../root/contexts/audio-player';
 import { CancelDownload, DownloadFile, DownloadFileWithPercents } from '../../../root/api/files/file.ts';
 import { CanPlayAudio } from '../../../common/hooks/can-play-audio.hook.ts';
-import { getCacheMemory } from '../../../common/cache/get-cache-memory.ts';
 import { useAppAction, useAppSelector } from '../../../root/store';
 
 export const useDownloadFile = (file: Types): Return => {
     const [downloadPercent, setDownloadPercent] = useState<number>();
     const [blob, setBlob] = useState<Blob>();
     const { addFile, play, pause, isPlaying, audio } = useContext(AudioPlayerContext)!;
-    const { setStateApp } = useAppAction();
+    const { addCache } = useAppAction();
     const { isPhone } = useAppSelector((state) => state.app);
 
     useEffect(() => {
@@ -26,7 +25,7 @@ export const useDownloadFile = (file: Types): Return => {
             e.stopPropagation();
             let duplicateBlob = blob;
             if (!duplicateBlob) {
-                duplicateBlob = await DownloadFileWithPercents(file, setDownloadPercent);
+                duplicateBlob = await DownloadFileWithPercents(file, setDownloadPercent, addCache);
                 if (!duplicateBlob) return;
                 setBlob(duplicateBlob);
             }
@@ -55,11 +54,9 @@ export const useDownloadFile = (file: Types): Return => {
 
         // Скачать
         if (!blob) {
-            const blob = await DownloadFileWithPercents(file, setDownloadPercent);
+            const blob = await DownloadFileWithPercents(file, setDownloadPercent, addCache);
             if (!blob) return;
             setBlob(blob);
-            const cacheMemory = await getCacheMemory();
-            setStateApp({ cacheMemory });
 
             // сразу воспроизводим аудио после загрузки
             if (CanPlayAudio(file)) {

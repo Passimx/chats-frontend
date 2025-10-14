@@ -5,18 +5,22 @@ export const deleteCacheOne = async (key: string): Promise<void> => {
     await cache.delete(`${Envs.filesServiceUrl}${key}`);
 };
 
-export const deleteChatCache = async (chatId: string): Promise<void> => {
+// возращает размер удаленного кеша
+export const deleteChatCache = async (chatId: string): Promise<number> => {
+    let totalSize = 0;
     const cache = await caches.open(Envs.cache.files);
     const requests = await cache.keys();
 
-    await Promise.all(
-        requests.map((request) => {
-            if (request.url.includes(`/files/${chatId}/`)) {
-                request.clone();
-                return cache.delete(request);
-            }
-        }),
-    );
+    for (const request of requests) {
+        const response = await cache.match(request);
+        if (response && request.url.includes(`/files/${chatId}/`)) {
+            const size = Number(response.headers.get('Content-Length')!);
+            await cache.delete(request);
+            totalSize += size;
+        }
+    }
+
+    return totalSize;
 };
 
 export const deleteAllCache = async (): Promise<void> => {
