@@ -7,21 +7,19 @@ import { AiOutlineClear } from 'react-icons/ai';
 import { Checkbox } from '../checkbox';
 import { useFileSize } from '../../common/hooks/use-file-size.ts';
 import { useAppAction, useAppSelector } from '../../root/store';
-import { getUseMemory } from '../../common/cache/get-cache-memory.ts';
+import { getCacheMemory } from '../../common/cache/get-cache-memory.ts';
 import { deleteAllCache } from '../../common/cache/delete-chat-cache.ts';
-// todo
-// import MemoryChart from '../memory-chart';
 
 export const Memory: FC = memo(() => {
     const { t } = useTranslation();
     const { setStateApp } = useAppAction();
 
-    const { useMemory } = useAppSelector((state) => state.app);
-    const memory = useFileSize(useMemory);
+    const { cacheMemory } = useAppSelector((state) => state.app);
+    const cache = useFileSize(cacheMemory);
 
     const deleteCache = useCallback(async () => {
         await deleteAllCache();
-        getUseMemory().then((useMemory) => setStateApp({ useMemory }));
+        getCacheMemory().then((cacheMemory) => setStateApp({ cacheMemory }));
     }, []);
 
     return (
@@ -39,7 +37,7 @@ export const Memory: FC = memo(() => {
                         <div className={styles.button_text}>
                             <AiOutlineClear size={24} />
                             <div className={'text_translate'}>
-                                {t('clear_cache')}&nbsp;<span className={styles.button_text_span}>{memory}</span>
+                                {t('clear_cache')}&nbsp;<span className={styles.button_text_span}>{cache}</span>
                             </div>
                         </div>
                     </div>

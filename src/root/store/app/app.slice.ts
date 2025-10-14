@@ -6,15 +6,19 @@ import { Envs } from '../../../common/config/envs/envs.ts';
 
 const channel = new BroadcastChannel('ws-channel');
 
+const settings: SettingsType = {
+    cache: true,
+    autoUpload: true,
+    messagesLimit: 250,
+};
+
 const initialState: StateType = {
     isOpenPage: false,
     activeTab: TabEnum.CHATS,
     isOnline: navigator.onLine,
     pages: new Map<TabEnum, JSX.Element[]>(),
     isStandalone: window.matchMedia('(display-mode: standalone)').matches,
-    settings: {
-        messagesLimit: 250,
-    },
+    settings,
 };
 
 const AppSlice = createSlice({
@@ -60,6 +64,10 @@ const AppSlice = createSlice({
             localStorage.setItem('settings', JSON.stringify(payload));
             Envs.settings = payload;
             state.settings = payload;
+        },
+
+        addCache(state, { payload }: PayloadAction<number>) {
+            state.cacheMemory = (state.cacheMemory ?? 0) + payload;
         },
     },
 });

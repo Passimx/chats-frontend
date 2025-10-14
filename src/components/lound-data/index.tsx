@@ -4,7 +4,7 @@ import { Bars } from './components/bars';
 import { PropsType } from './types.ts';
 import { AudioPlayerContext } from '../../root/contexts/audio-player';
 
-export const LoudnessBars: FC<PropsType> = memo(({ file, blob }) => {
+export const LoudnessBars: FC<PropsType> = memo(({ file }) => {
     const loudnessData = file?.metadata?.loudnessData ?? [];
 
     const { seek, audio } = useContext(AudioPlayerContext)!;
@@ -22,12 +22,7 @@ export const LoudnessBars: FC<PropsType> = memo(({ file, blob }) => {
     const handleClick = useCallback(
         (e: React.MouseEvent) => {
             if (!barRef.current) return;
-            if (audio?.file.id !== file.id && blob) {
-                // // todo
-                // addFile({ file, blob });
-                // // play();
-                return;
-            }
+            if (audio?.file.id !== file.id) return;
 
             const rect = barRef.current.getBoundingClientRect();
             const clickX = e.clientX - rect.left;

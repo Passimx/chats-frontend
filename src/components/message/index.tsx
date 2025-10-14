@@ -12,6 +12,8 @@ import { MessageFile } from '../message-file';
 import { AudioFile } from '../message-audio';
 import { FileExtensionEnum, FileTypeEnum } from '../../root/types/files/types.ts';
 import { MessageImage } from '../message-image';
+import { MessageMp3 } from '../message-mp3';
+import { CanPlayAudio } from '../../common/hooks/can-play-audio.hook.ts';
 
 const Message: FC<PropsType> = memo((props) => {
     const { number, type, findMessage } = props;
@@ -81,11 +83,9 @@ const Message: FC<PropsType> = memo((props) => {
                 <div className={styles.file_list}>
                     {props?.files?.map((file, index) => {
                         if (file.fileType === FileExtensionEnum.IS_VOICE) return <AudioFile key={index} file={file} />;
-                        if (file.fileType === FileExtensionEnum.IS_MEDIA) {
-                            if (file.mimeType.includes(FileTypeEnum.IMAGE))
-                                return <MessageImage key={index} file={file} />;
-                            return <MessageFile key={index} file={file} />;
-                        }
+                        if (file.mimeType.includes(FileTypeEnum.IMAGE)) return <MessageImage key={index} file={file} />;
+                        if (CanPlayAudio(file)) return <MessageMp3 key={index} file={file} />;
+                        return <MessageFile key={index} file={file} />;
                     })}
                 </div>
                 <RenderMessage message={visibleMessage} type={type} />

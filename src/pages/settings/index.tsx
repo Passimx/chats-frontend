@@ -21,11 +21,11 @@ import { BatterySaver } from '../../components/battery-saver';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
-    const { useMemory, pages, batteryLevel, batterySaverMode, activeTab, systemChatId, isStandalone, logs } =
+    const { cacheMemory, pages, batteryLevel, batterySaverMode, activeTab, systemChatId, isStandalone, logs } =
         useAppSelector((state) => state.app);
     const chatsLength = useAppSelector((state) => state.chats.chats.length);
     const { setStateApp } = useAppAction();
-    const memory = useFileSize(useMemory);
+    const cache = useFileSize(cacheMemory);
 
     const navigate = useCustomNavigate();
 
@@ -79,7 +79,7 @@ export const Settings = memo(() => {
                     <TbDatabase className={styles.item_logo} />
                     <div className="text_translate">
                         {t('memory_usage')}
-                        <div className={styles.item_value}>&nbsp;{memory}</div>
+                        <div className={styles.item_value}>&nbsp;{cache}</div>
                     </div>
                 </div>
                 {batteryLevel && (

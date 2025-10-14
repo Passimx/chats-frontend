@@ -65,6 +65,8 @@
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
+    line-height: 15px;
+    max-height: 15px;
 }
 
 .file_background{

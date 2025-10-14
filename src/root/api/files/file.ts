@@ -3,6 +3,7 @@ import { Envs } from '../../../common/config/envs/envs.ts';
 import { Types, UploadResultType } from '../../types/files/types.ts';
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
 import { getRawChat } from '../../store/chats/chats.raw.ts';
+import { canSaveCache } from '../../../common/cache/get-cache-memory.ts';
 
 export const uploadFile = async (body: FormData): Promise<IData<UploadResultType>> => {
     const response = await fetch(`${Envs.filesServiceUrl}/upload`, { method: 'POST', body }).then((response) =>
@@ -23,6 +24,7 @@ export const CancelDownload = (file: Types) => {
 export const DownloadFileWithPercents = async (
     file: Types,
     setCountLoadParts: (value?: number) => void,
+    addCache: (value: number) => void,
 ): Promise<Blob | undefined> => {
     const result = await cacheIsExist(`/${file.chatId}/${file.key}`);
     if (result) {
@@ -57,10 +59,18 @@ export const DownloadFileWithPercents = async (
                     const cache = await caches.open(Envs.cache.files);
                     const response = new Response(xhr.response, {
                         headers: {
-                            'Content-Type': xhr.getResponseHeader('Content-Type') || 'application/octet-stream',
+                            'Content-Type': file.mimeType,
+                            'Content-Length': `${file.size}`,
+                            'X-Cached-Time': `${Date.now()}`,
+                            'X-Chat-Id': file.chatId,
+                            'X-File-Type': file.fileType,
                         },
                     });
-                    await cache.put(url, response);
+                    const canSave = await canSaveCache(response);
+                    if (canSave) {
+                        addCache(file.size);
+                        await cache.put(url, response);
+                    }
                 }
 
                 cancelRequestMap.delete(file.id);

@@ -1,8 +1,7 @@
-import { FC, memo, MouseEvent, useCallback, useContext, useMemo } from 'react';
+import { FC, memo, useContext, useMemo } from 'react';
 import { PropsType } from './props.type.ts';
 import { useFileSize } from '../../common/hooks/use-file-size.ts';
 import styles from './index.module.css';
-import { IoMusicalNotesSharp } from 'react-icons/io5';
 import { FileMap, MimetypeEnum } from '../../root/types/files/types.ts';
 import { CiFileOn } from 'react-icons/ci';
 import { TbBrandOpenvpn } from 'react-icons/tb';
@@ -26,10 +25,8 @@ import {
     BsFileZip,
 } from 'react-icons/bs';
 import { useDownloadFile } from '../message-audio/hooks/use-download-file.hook.ts';
-import { CanPlayAudio } from '../../common/hooks/can-play-audio.hook.ts';
 import { LoadRadius } from '../load-radius';
 import { AudioPlayerContext } from '../../root/contexts/audio-player';
-import { FaPause } from 'react-icons/fa';
 import { MdDownloadForOffline } from 'react-icons/md';
 import { Envs } from '../../common/config/envs/envs.ts';
 
@@ -45,24 +42,15 @@ export const MessageFile: FC<PropsType> = memo(({ file }) => {
         return undefined;
     }, [file.metadata.previewId]);
 
-    const download = useCallback(
-        (e: MouseEvent<unknown>) => {
-            e.stopPropagation();
-            downloadOnDevice();
-        },
-        [file, downloadOnDevice],
-    );
-
     return (
         <div className={`${styles.background} ${!blob && styles.background_animation}`} onClick={clickFile}>
             <div className={styles.file_background} style={{ backgroundImage }}>
                 {downloadPercent === undefined && (!isPlaying || audio?.file.id !== file.id) && (
                     <div className={styles.file_icon}>
-                        {CanPlayAudio(file) && <IoMusicalNotesSharp className={styles.file_logo} />}
                         {FileMap.get('ZIP')?.includes(file.mimeType) && <BsFileZip className={styles.file_logo} />}
                         {FileMap.get('SH')?.includes(file.mimeType) && <BsCode className={styles.file_logo} />}
                         {FileMap.get('PPT')?.includes(file.mimeType) && <BsFiletypePpt className={styles.file_logo} />}
-                        {!Object.values(MimetypeEnum).includes(file.mimeType) && !CanPlayAudio(file) && (
+                        {!Object.values(MimetypeEnum).includes(file.mimeType) && (
                             <CiFileOn className={styles.file_logo} />
                         )}
                         {file.mimeType === MimetypeEnum.HTML && <BsFiletypeHtml className={styles.file_logo} />}
@@ -87,7 +75,6 @@ export const MessageFile: FC<PropsType> = memo(({ file }) => {
                         <BsDownload className={styles.download_logo} />
                     </div>
                 )}
-                {isPlaying && audio?.file.id === file.id && <FaPause className={styles.play_button} />}
                 {downloadPercent !== undefined && <div className={styles.stop_button}>X</div>}
                 {downloadPercent !== undefined && (
                     <div className={styles.background_stop}>
@@ -97,7 +84,7 @@ export const MessageFile: FC<PropsType> = memo(({ file }) => {
             </div>
             <div className={styles.file_inf}>
                 <div className={styles.name_background}>
-                    <MdDownloadForOffline className={styles.name_background_logo} onClick={download} />
+                    <MdDownloadForOffline className={styles.name_background_logo} onClick={downloadOnDevice} />
                     <div className={styles.name}>{file.originalName}</div>
                 </div>
                 <div className={styles.size}>

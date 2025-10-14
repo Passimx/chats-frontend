@@ -9,11 +9,26 @@ export enum TabEnum {
 export type SettingsType = {
     lang?: string;
 
+    // messages
     messagesLimit: number;
     messageSaveCount?: number;
     messageSaveTime?: number;
 
-    autoUploadVoiceMessage?: number;
+    // auto upload
+    autoUpload?: boolean;
+    autoUploadMusic?: number;
+    autoUploadImage?: number;
+    autoUploadFiles?: number;
+    autoUploadVideo?: number;
+    autoUploadVoice?: number;
+
+    // cache
+    cache?: boolean;
+    cacheMusicTime?: number;
+    cacheImageTime?: number;
+    cacheFilesTime?: number;
+    cacheVideoTime?: number;
+    cacheVoiceTime?: number;
 };
 
 export type StateType = {
@@ -28,7 +43,6 @@ export type StateType = {
     isPhone?: boolean;
     systemChatId?: string;
     isOpenMobileKeyboard?: boolean;
-    useMemory?: number;
     cacheMemory?: number;
     totalMemory?: number;
     isStandalone: boolean;

@@ -1,4 +1,5 @@
 import { Envs } from '../config/envs/envs.ts';
+import { FileExtensionEnum, FileTypeEnum } from '../../root/types/files/types.ts';
 
 export const getLocalStorageSize = () => {
     let total = 0;
@@ -60,56 +61,82 @@ export const getIndexedDBSize = async () => {
     });
 };
 
+export const canSaveCache = async (response: Response): Promise<boolean> => {
+    const cachedTime = Number(response.headers.get('X-Cached-Time')!) - 1000;
+    const contentType = response.headers.get('Content-Type')!;
+    const fileType = response.headers.get('X-File-Type')!;
+
+    // изображение
+    if (contentType.includes(FileTypeEnum.IMAGE)) {
+        // если хранение кеша изображений настроено
+        if (Envs.settings?.cacheImageTime !== undefined)
+            if (cachedTime + Envs.settings.cacheImageTime < Date.now()) {
+                return false;
+            }
+    }
+    // видео
+    else if (contentType.includes(FileTypeEnum.VIDEO)) {
+        // если хранение кеша видео настроено
+        if (Envs.settings?.cacheVideoTime !== undefined)
+            if (cachedTime + Envs.settings.cacheVideoTime < Date.now()) {
+                return false;
+            }
+    }
+    // голосовые
+    else if (fileType === FileExtensionEnum.IS_VOICE) {
+        // если хранение кеша голосовых настроено
+        if (Envs.settings?.cacheVoiceTime !== undefined)
+            if (cachedTime + Envs.settings.cacheVoiceTime < Date.now()) {
+                return false;
+            }
+    }
+    // музыка
+    else if (contentType.includes(FileTypeEnum.AUDIO)) {
+        // если хранение кеша музыки настроено
+        if (Envs.settings?.cacheMusicTime !== undefined)
+            if (cachedTime + Envs.settings.cacheMusicTime < Date.now()) {
+                return false;
+            }
+    }
+    // файлы
+    else {
+        // если хранение кеша файлов настроено
+        if (Envs.settings?.cacheFilesTime !== undefined)
+            if (cachedTime + Envs.settings.cacheFilesTime < Date.now()) {
+                return false;
+            }
+    }
+
+    return true;
+};
+
 export const getCacheMemory = async (): Promise<number> => {
     if (!('caches' in window)) {
         console.log('Cache API не поддерживается');
         return 0;
     }
 
-    let totalSize = 0;
     const cache = await caches.open(Envs.cache.files);
+    let totalSize = 0;
     const requests = await cache.keys();
+
+    // удаление всего кеша
+    if (!Envs.settings?.cache) {
+        await Promise.all(requests.map((request) => cache.delete(request)));
+        return 0;
+    }
 
     for (const request of requests) {
         const response = await cache.match(request);
         if (response) {
-            try {
-                const blob = await response.clone().blob();
-                totalSize += blob.size;
-            } catch {
-                // Некоторые ресурсы могут быть не клонируемы
-            }
+            const size = Number(response.headers.get('Content-Length')!);
+            const canSave = await canSaveCache(response);
+            if (!canSave) await cache.delete(request);
+
+            totalSize += size;
         }
     }
 
     // байт
     return totalSize;
-};
-
-export const getUseMemory = async () => {
-    if ('storage' in navigator && 'estimate' in navigator.storage) {
-        const { usage } = await navigator.storage.estimate();
-
-        if ('memory' in performance) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            const usedJSHeapSize = performance.memory?.usedJSHeapSize;
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            const jsHeapSizeLimit = performance.memory?.jsHeapSizeLimit;
-
-            console.log({
-                used: (usedJSHeapSize / 1024 / 1024).toFixed(2) + ' MB',
-                limit: (jsHeapSizeLimit / 1024 / 1024).toFixed(2) + ' MB',
-            });
-        }
-
-        return usage;
-    }
-
-    const cache = await getCacheMemory();
-    const indexDb = await getIndexedDBSize();
-    const localStorage = getLocalStorageSize();
-
-    return cache + localStorage + indexDb;
 };
