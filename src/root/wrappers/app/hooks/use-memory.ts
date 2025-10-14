@@ -1,6 +1,6 @@
 import { useAppAction, useAppSelector } from '../../../store';
 import { useEffect } from 'react';
-import { getCacheMemory, getUseMemory } from '../../../../common/cache/get-cache-memory.ts';
+import { getCacheMemory } from '../../../../common/cache/get-cache-memory.ts';
 import { getTotalMemory } from '../../../../common/cache/get-total-memory.ts';
 
 export const useMemory = () => {
@@ -10,7 +10,6 @@ export const useMemory = () => {
     useEffect(() => {
         if (!isLoadedChatsFromIndexDb) return;
 
-        getUseMemory().then((useMemory) => setStateApp({ useMemory }));
         getCacheMemory().then((cacheMemory) => setStateApp({ cacheMemory }));
         getTotalMemory().then((totalMemory) => setStateApp({ totalMemory }));
     }, [isLoadedChatsFromIndexDb]);

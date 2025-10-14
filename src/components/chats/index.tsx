@@ -8,7 +8,6 @@ import { useAppAction, useAppSelector } from '../../root/store';
 import { getRawChats, getRawChatsLength } from '../../root/store/chats/chats.raw.ts';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { SegmentSwitcher } from '../segment-switcher';
-import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 
 export const Chats: FC = memo(() => {
     const { t } = useTranslation();
@@ -18,8 +17,7 @@ export const Chats: FC = memo(() => {
     const deleteChats = useCallback(() => {
         const chats = getRawChats();
         chats.forEach((chat) => {
-            if (chat.type !== ChatEnum.IS_SYSTEM)
-                postMessageToBroadCastChannel({ event: EventsEnum.REMOVE_CHAT, data: chat.id });
+            postMessageToBroadCastChannel({ event: EventsEnum.REMOVE_CHAT, data: chat.id });
         });
     }, []);
 

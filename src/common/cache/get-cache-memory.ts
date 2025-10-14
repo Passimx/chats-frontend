@@ -85,31 +85,3 @@ export const getCacheMemory = async (): Promise<number> => {
     // байт
     return totalSize;
 };
-
-export const getUseMemory = async () => {
-    if ('storage' in navigator && 'estimate' in navigator.storage) {
-        const { usage } = await navigator.storage.estimate();
-
-        if ('memory' in performance) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            const usedJSHeapSize = performance.memory?.usedJSHeapSize;
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            const jsHeapSizeLimit = performance.memory?.jsHeapSizeLimit;
-
-            console.log({
-                used: (usedJSHeapSize / 1024 / 1024).toFixed(2) + ' MB',
-                limit: (jsHeapSizeLimit / 1024 / 1024).toFixed(2) + ' MB',
-            });
-        }
-
-        return usage;
-    }
-
-    const cache = await getCacheMemory();
-    const indexDb = await getIndexedDBSize();
-    const localStorage = getLocalStorageSize();
-
-    return cache + localStorage + indexDb;
-};

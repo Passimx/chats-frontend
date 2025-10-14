@@ -11,7 +11,7 @@ import { getStringDuration } from '../../common/hooks/get-string-duration.hook.t
 export const AudioFile: FC<PropsType> = memo(({ file }) => {
     const r = 17;
     const strokeWidth = 3;
-    const { downloadPercent, clickFile, blob } = useDownloadFile(file);
+    const { downloadPercent, clickFile } = useDownloadFile(file);
     const [time, setTime] = useState<string>(getStringDuration(file?.metadata?.duration));
     const { isPlaying, audio, progress } = useContext(AudioPlayerContext)!;
 
@@ -47,7 +47,7 @@ export const AudioFile: FC<PropsType> = memo(({ file }) => {
             </div>
             <div>
                 <div className={styles.duration}>
-                    <LoudnessBars file={file} blob={blob} />
+                    <LoudnessBars file={file} />
                     <div className={styles.duration_text}>{time}</div>
                 </div>
                 <div></div>

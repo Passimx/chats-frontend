@@ -6,7 +6,7 @@ import { Envs } from '../../../../common/config/envs/envs.ts';
 import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 import { getRawChat } from '../../../store/chats/chats.raw.ts';
-import { getUseMemory } from '../../../../common/cache/get-cache-memory.ts';
+import { getCacheMemory } from '../../../../common/cache/get-cache-memory.ts';
 import { deleteChatCache } from '../../../../common/cache/delete-chat-cache.ts';
 import { useCallback } from 'react';
 
@@ -67,7 +67,7 @@ export const useAppEvents = () => {
             case EventsEnum.REMOVE_CHAT:
                 removeChat(data);
                 deleteChatCache(data).then(() => {
-                    getUseMemory().then((useMemory) => setStateApp({ useMemory }));
+                    getCacheMemory().then((cacheMemory) => setStateApp({ cacheMemory }));
                 });
                 break;
             case EventsEnum.UPDATE_CHAT_ONLINE:

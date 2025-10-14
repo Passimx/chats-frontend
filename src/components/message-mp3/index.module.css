@@ -57,14 +57,12 @@
 }
 
 .name{
-    display: grid;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -moz-box;
-    -moz-box-orient: vertical;
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-align: start;
     line-height: 15px;
     max-height: 15px;
 }
@@ -72,6 +70,7 @@
 .file_background{
     width: 40px;
     height: 40px;
+    /*border-radius: 8px;*/
     border-radius: 30px;
     background-color: #0098ea;
     background-size: cover; /* или contain */
@@ -96,6 +95,10 @@
     font-size: 15px;
     font-weight: 700;
     color:white;
+}
+
+.play_button{
+    color: white;
 }
 
 .file_logo{
