@@ -29,6 +29,7 @@ export const Chats: FC = memo(() => {
 
     const changeMessageLimit = useCallback(
         (value?: number) => {
+            console.log(settings);
             if (value) changeSettings({ ...settings, messagesLimit: value });
         },
         [settings],

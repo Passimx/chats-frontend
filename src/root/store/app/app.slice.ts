@@ -63,7 +63,6 @@ const AppSlice = createSlice({
         changeSettings(state, { payload }: PayloadAction<SettingsType>) {
             localStorage.setItem('settings', JSON.stringify(payload));
             Envs.settings = payload;
-            console.log(payload);
             state.settings = payload;
         },
 
