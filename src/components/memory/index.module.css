@@ -35,6 +35,12 @@
                     .cache_list_item_text{
 
                     }
+                    .cache_list_item_precent{
+                        opacity: 0.7;
+                    }
+                    .cache_list_item_size{
+                        opacity: 0.7;
+                    }
                 }
 
                 .cache_list_item:first-child{

@@ -65,8 +65,8 @@ export const Memory: FC = memo(() => {
                         {cacheItems.map(({ name, precent, size }, index) => (
                             <div key={index} className={styles.cache_list_item}>
                                 <div className={`${styles.cache_list_item_text} text_translate`}>{t(name)}</div>
-                                <div>{precent}</div>
-                                <div>{size}</div>
+                                <div className={styles.cache_list_item_precent}>{precent}%</div>
+                                <div className={styles.cache_list_item_size}>{size}</div>
                             </div>
                         ))}
                     </div>
