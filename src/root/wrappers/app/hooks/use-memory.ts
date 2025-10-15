@@ -1,6 +1,6 @@
 import { useAppAction, useAppSelector } from '../../../store';
 import { useEffect } from 'react';
-import { getCacheMemory } from '../../../../common/cache/get-cache-memory.ts';
+import { getCacheMemory, getIndexedDBMemory } from '../../../../common/cache/get-cache-memory.ts';
 import { getTotalMemory } from '../../../../common/cache/get-total-memory.ts';
 
 export const useMemory = () => {
@@ -12,5 +12,6 @@ export const useMemory = () => {
 
         getCacheMemory().then((cacheMemory) => setStateApp({ cacheMemory }));
         getTotalMemory().then((totalMemory) => setStateApp({ totalMemory }));
+        getIndexedDBMemory().then((indexedDBMemory) => setStateApp({ indexedDBMemory }));
     }, [isLoadedChatsFromIndexDb]);
 };

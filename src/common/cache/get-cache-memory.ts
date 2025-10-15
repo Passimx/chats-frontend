@@ -12,7 +12,7 @@ export const getLocalStorageSize = () => {
     return total;
 };
 
-export const getIndexedDBSize = async () => {
+export const getIndexedDBMemory = async () => {
     let total = 0;
     if (!('indexedDB' in window)) return total;
 

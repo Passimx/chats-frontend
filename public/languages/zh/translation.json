@@ -51,6 +51,13 @@
   "messages_limit": "每个聊天在设备上保存多少条消息",
   "message_save_count": "每个聊天在设备上保存多少条消息",
   "message_save_time" : "每条消息在设备上保存多长时间",
+  "caching": "缓存",
+  "photos": "照片",
+  "videos": "视频",
+  "music": "音乐",
+  "files": "文件",
+  "voice_messages": "语音消息",
+
   "all": "全部",
   "always": "始终",
   "1d": "1天",

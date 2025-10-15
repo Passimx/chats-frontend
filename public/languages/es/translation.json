@@ -51,6 +51,13 @@
   "messages_limit": "Cuántos mensajes se guardan en cada chat en el dispositivo",
   "message_save_count": "Cuántos mensajes se guardan en cada chat en el dispositivo",
   "message_save_time" : "Cuánto tiempo se guarda cada mensaje en el dispositivo",
+  "caching": "almacenamiento en caché",
+  "photos": "fotos",
+  "videos": "vídeos",
+  "music": "música",
+  "files": "archivos",
+  "voice_messages": "mensajes de voz",
+
   "all": "todo",
   "always": "siempre",
   "1d": "1d",

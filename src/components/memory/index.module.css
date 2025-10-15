@@ -6,9 +6,47 @@
     color: white;
 
     .settings_background{
-        padding: 8px;
+        padding: 16px;
         display: grid;
+        gap: 16px;
         grid-template-rows: auto 1fr;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        .memory_usage{
+            .memory_usage_place{
+                opacity: 0.7;
+                padding: 4px;
+                display: grid;
+                justify-content: center;
+            }
+
+            .cache_list{
+
+                .cache_list_item{
+                    padding: 12px;
+                    background-color: #0C3870;
+                    border-bottom: 1px solid #0c518d;
+                    display: grid;
+                    cursor: pointer;
+                    grid-template-columns: auto 1fr auto;
+                    gap: 8px;
+
+                    .cache_list_item_text{
+
+                    }
+                }
+
+                .cache_list_item:first-child{
+                    border-radius: 8px 8px 0 0;
+                }
+
+                .cache_list_item:last-child{
+                    border-radius: 0 0 8px 8px;
+                    border: none;
+                }
+            }
+        }
 
         .cache{
             border-radius: 8px;
@@ -24,7 +62,7 @@
             }
 
             .cache_menu{
-                padding: 4px;
+                padding: 8px;
                 display: grid;
                 gap: 8px;
                 transition: all .3s ease;

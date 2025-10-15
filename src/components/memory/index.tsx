@@ -1,4 +1,4 @@
-import { FC, memo, useCallback } from 'react';
+import { FC, memo, useCallback, useMemo } from 'react';
 import styles from './index.module.css';
 import { MenuTitle } from '../menu-title';
 import { TbLogs } from 'react-icons/tb';
@@ -11,12 +11,13 @@ import { getCacheMemory } from '../../common/cache/get-cache-memory.ts';
 import { deleteAllCache } from '../../common/cache/delete-chat-cache.ts';
 import { SegmentSwitcher } from '../segment-switcher';
 import { OptionType } from '../segment-switcher/types.ts';
+import config from '../../../package.json';
 
 export const Memory: FC = memo(() => {
     const { t } = useTranslation();
     const { setStateApp, changeSettings } = useAppAction();
 
-    const { cacheMemory, settings } = useAppSelector((state) => state.app);
+    const { settings, cacheMemory, totalMemory, indexedDBMemory } = useAppSelector((state) => state.app);
     const cache = useFileSize(cacheMemory);
 
     const deleteCache = useCallback(async () => {
@@ -25,17 +26,51 @@ export const Memory: FC = memo(() => {
     }, []);
 
     const cacheOptions: OptionType[] = [
-        [t('never'), 0],
+        [t('off'), 0],
         [t('1d'), 1000 * 60 * 60 * 24],
         [t('30d'), 1000 * 60 * 60 * 24 * 30],
         [t('6m'), 1000 * 60 * 60 * 24 * 30 * 6],
         [t('always'), undefined],
     ];
 
+    const cacheItems = [
+        { name: 'photos', precent: 5, size: 32143 },
+        { name: 'videos', precent: 5, size: 32143 },
+        { name: 'music', precent: 5, size: 32143 },
+        { name: 'files', precent: 5, size: 32143 },
+        { name: 'voice_messages', precent: 5, size: 32143 },
+    ];
+
+    const placePrecent = useMemo(() => {
+        if (cacheMemory !== undefined && !!totalMemory && indexedDBMemory !== undefined) {
+            return ((cacheMemory + indexedDBMemory) / totalMemory).toFixed(2);
+        }
+
+        return undefined;
+    }, [totalMemory, cacheMemory, indexedDBMemory]);
+
     return (
         <div className={styles.background}>
             <MenuTitle icon={<TbLogs />} title={'memory'} />
             <div className={styles.settings_background}>
+                <div className={styles.memory_usage}>
+                    <div>
+                        {placePrecent && (
+                            <div
+                                className={`${styles.memory_usage_place} text_translate`}
+                            >{`${config.name} ${'занимает'} ${placePrecent}% свободного места`}</div>
+                        )}
+                    </div>
+                    <div className={styles.cache_list}>
+                        {cacheItems.map(({ name, precent, size }, index) => (
+                            <div key={index} className={styles.cache_list_item}>
+                                <div className={`${styles.cache_list_item_text} text_translate`}>{t(name)}</div>
+                                <div>{precent}</div>
+                                <div>{size}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
                 <div className={styles.cache}>
                     <div className={styles.cache_item}>
                         <div className={'text_translate'}>Кеширование</div>
@@ -49,7 +84,7 @@ export const Memory: FC = memo(() => {
                         style={{ filter: !settings.cache ? 'brightness(0.6)' : undefined }}
                     >
                         <div className={styles.cache_menu_item}>
-                            <div className={`${styles.cache_menu_item_text} text_translate`}>Фотографии</div>
+                            <div className={`${styles.cache_menu_item_text} text_translate`}>{t('photos')}</div>
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={cacheOptions}
@@ -59,7 +94,7 @@ export const Memory: FC = memo(() => {
                             </div>
                         </div>
                         <div className={styles.cache_menu_item}>
-                            <div className={`${styles.cache_menu_item_text} text_translate`}>Видео</div>
+                            <div className={`${styles.cache_menu_item_text} text_translate`}>{t('videos')}</div>
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={cacheOptions}
@@ -69,7 +104,7 @@ export const Memory: FC = memo(() => {
                             </div>
                         </div>
                         <div className={styles.cache_menu_item}>
-                            <div className={`${styles.cache_menu_item_text} text_translate`}>Музыка</div>
+                            <div className={`${styles.cache_menu_item_text} text_translate`}>{t('music')}</div>
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={cacheOptions}
@@ -79,7 +114,7 @@ export const Memory: FC = memo(() => {
                             </div>
                         </div>
                         <div className={styles.cache_menu_item}>
-                            <div className={`${styles.cache_menu_item_text} text_translate`}>Файлы</div>
+                            <div className={`${styles.cache_menu_item_text} text_translate`}>{t('files')}</div>
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={cacheOptions}
@@ -89,7 +124,7 @@ export const Memory: FC = memo(() => {
                             </div>
                         </div>
                         <div className={styles.cache_menu_item}>
-                            <div className={`${styles.cache_menu_item_text} text_translate`}>Голосовые сообщения</div>
+                            <div className={`${styles.cache_menu_item_text} text_translate`}>{t('voice_messages')}</div>
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={cacheOptions}

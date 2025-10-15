@@ -39,15 +39,18 @@ export type StateType = {
     page?: JSX.Element;
     socketId?: string;
     isListening?: boolean;
+
     isLoadedChatsFromIndexDb?: boolean;
-    isPhone?: boolean;
-    systemChatId?: string;
-    isOpenMobileKeyboard?: boolean;
     cacheMemory?: number;
     totalMemory?: number;
+    indexedDBMemory?: number;
+
     isStandalone: boolean;
     isIos?: boolean;
     logs?: string[];
+    isPhone?: boolean;
+    systemChatId?: string;
+    isOpenMobileKeyboard?: boolean;
 
     batteryLevel?: number;
     batteryCharging?: boolean;
