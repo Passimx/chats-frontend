@@ -1,4 +1,4 @@
-type OptionType = [string | number, number | undefined];
+export type OptionType = [string | number, number | undefined];
 
 export type PropsType = {
     options: OptionType[];
