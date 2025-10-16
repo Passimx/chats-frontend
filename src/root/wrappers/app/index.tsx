@@ -26,6 +26,7 @@ import { useBattery } from './hooks/use-battery.hook.ts';
 import { useSettings } from './hooks/use-settings.hook.ts';
 import { useUpdateBadge } from './hooks/use-update-badge.hook.ts';
 import { useVerify } from './hooks/use-verify.hook.ts';
+import { useCatchLogs } from './hooks/use-catch-logs.hook.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -52,7 +53,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     // update cache files
     useUpdateStaticCache();
     // catch all app log-list
-    // useCatchLogs();
+    useCatchLogs();
     // calculate ios device
     useIsIos();
     // battery Saver Mode
