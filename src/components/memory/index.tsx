@@ -71,6 +71,7 @@ export const Memory: FC = memo(() => {
                                             {cacheMemory === 0
                                                 ? 0
                                                 : ((category.absoluteMemory * 100) / (cacheMemory ?? 1)).toFixed(2)}
+                                            %
                                         </div>
                                         <div className={styles.cache_list_item_size}>
                                             {category.unit.memory} {t(category.unit.unit)}
