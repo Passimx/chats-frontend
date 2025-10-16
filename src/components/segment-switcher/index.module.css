@@ -12,6 +12,12 @@
 .slider{
     width: 100%;
     cursor: pointer;
+    border: none;
+    outline: none;
+    background-image:none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+
 }
 
 .options_background{

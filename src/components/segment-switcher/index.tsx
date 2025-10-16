@@ -14,12 +14,12 @@ export const SegmentSwitcher: FC<PropsType> = ({ options, value: valueOutside, o
     return (
         <div className={styles.background}>
             <input
-                defaultValue={options.findIndex((option) => option[1] === valueOutside)}
-                type="range"
-                max={options.length - 1}
                 min={0}
                 step={1}
+                type="range"
+                max={options.length - 1}
                 className={styles.slider}
+                defaultValue={options.findIndex((option) => option[1] === valueOutside)}
                 onChange={(event) => change(Number(event.target.value))}
             />
             <div className={styles.options_background}>
