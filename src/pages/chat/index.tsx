@@ -30,13 +30,13 @@ import { InputMessage } from '../../components/input-message';
 const Chat: FC = memo(() => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
     useGetChat();
-    useJoinChat(chatOnPage);
+    useJoinChat();
     const visibility = useVisibility;
     const { t } = useTranslation();
-    const [isLoading, messages, readMessage, showLastMessages, findMessage] = useMessages();
+    const [isLoading, readMessage, showLastMessages, findMessage] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
-    const [addChat, leave, back] = useMethods(messages);
-    const [isVisibleBottomButton] = useListenScroll(messages);
+    const [addChat, leave, back] = useMethods();
+    const [isVisibleBottomButton] = useListenScroll();
 
     if (!chatOnPage) return <></>;
 
@@ -115,7 +115,7 @@ const Chat: FC = memo(() => {
                     <div></div>
                     <div id={styles.messages}>
                         {isLoading === LoadingType.OLD && <RotateLoading />}
-                        {messages.map((message) => (
+                        {chatOnPage.messages?.map((message) => (
                             <Message key={message.id} {...{ ...message, readMessage, findMessage }} />
                         ))}
                         {isLoading === LoadingType.NEW && <RotateLoading />}

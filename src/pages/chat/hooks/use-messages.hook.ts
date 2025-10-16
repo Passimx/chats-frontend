@@ -1,6 +1,4 @@
-import { MessageType } from '../../../root/types/chat/message.type.ts';
-import { useEffect, useMemo, useState } from 'react';
-import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppAction, useAppSelector } from '../../../root/store';
 import { getMessages } from '../../../root/api/messages';
 import styles from '../index.module.css';
@@ -12,12 +10,11 @@ import { Envs } from '../../../common/config/envs/envs.ts';
 // let bottomMessage: number | undefined;
 
 export const useMessages = (): UseMessagesType => {
+    const { update, setChatOnPage } = useAppAction();
     const [isLoading, setIsLoading] = useState<LoadingType>();
-    const [messages, setMessages] = useState<MessageType[]>([]);
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
     // const { postMessageToBroadCastChannel, update } = useAppAction();
-    const { update } = useAppAction();
 
     /** сообщение которое нужно найти */
     const searchMessageNumber = useMemo(() => {
@@ -27,40 +24,41 @@ export const useMessages = (): UseMessagesType => {
         return messageParam ? Number(messageParam) : null;
     }, [chatOnPage?.id]);
 
-    useEffect(() => {}, [searchMessageNumber, messages]);
+    useEffect(() => {}, [searchMessageNumber]);
 
     const readMessage = () => {};
-    const showLastMessages = () => {};
+
+    const showLastMessages = useCallback(() => {
+        if (!chatOnPage?.messages?.length) return;
+        const el = document.getElementById(styles.messages)!;
+
+        if (chatOnPage.messages[chatOnPage.messages.length - 1]?.number === chatOnPage.countMessages) {
+            el.scrollTo({ behavior: 'smooth', top: el.scrollHeight });
+            update({ id: chatOnPage.id, scrollTop: el.scrollHeight });
+        } else {
+            setChatOnPage({ messages: [chatOnPage.message] });
+            setIsLoading(LoadingType.OLD);
+            //     requestAnimationFrame(() => {
+            //         setTimeout(() => {
+            //             el.scrollTo({ behavior: 'instant', top: el.scrollHeight });
+            //             update({ id: chatOnPage.id, scrollTop: el.scrollHeight });
+            //         });
+            //     });
+        }
+    }, [chatOnPage?.messages]);
+
     const findMessage = () => {};
 
     /** загрузка первых сообщений */
     useEffect(() => {
         if (!isLoadedChatsFromIndexDb) return;
-        if (!chatOnPage?.id) {
-            setMessages([]);
-            return;
-        }
-        const chat = getRawChat(chatOnPage.id);
-
-        /** загрузка сообщений из кеша сообщений */
-        if (chat?.messages?.length) {
-            const el = document.getElementById(styles.messages)!;
-
-            setMessages(chat.messages);
-
-            /** установка скрола */
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    /** смещается на 0.5, чтобы не было моментальной загрузки новых сообщений */
-                    el.scrollTo({ behavior: 'instant', top: chat.scrollTop - 0.5 });
-                });
-            });
-        }
+        if (!chatOnPage?.id) return;
+        const el = document.getElementById(styles.messages)!;
 
         /** загрузка сообщений с сервера */
-        if (!chat?.messages?.length) {
-            setMessages([]);
-            setIsLoading(LoadingType.NEW);
+        if (!chatOnPage?.messages?.length) {
+            setIsLoading(LoadingType.OLD);
+            setChatOnPage({ messages: [chatOnPage.message] });
 
             const limit = Envs.settings?.messagesLimit || 250;
             const offset = limit * Math.floor((chatOnPage.countMessages - 1) / limit);
@@ -70,7 +68,13 @@ export const useMessages = (): UseMessagesType => {
                 if (!success) return;
 
                 update({ id: chatOnPage.id, messages: data });
-                setMessages(data);
+                setChatOnPage({ messages: data });
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        /** смещается на 0.5, чтобы не было моментальной загрузки новых сообщений */
+                        el.scrollTo({ behavior: 'instant', top: el.scrollHeight - 0.5 });
+                    });
+                });
             });
         }
     }, [chatOnPage?.id, isLoadedChatsFromIndexDb]);
@@ -221,26 +225,7 @@ export const useMessages = (): UseMessagesType => {
     //     },
     //     [chatOnPage?.id, messages.length],
     // );
-    //
-    // const showLastMessages = useCallback(() => {
-    //     if (!chatOnPage || messages[0]?.chatId !== chatOnPage.id) return;
-    //     const el = document.getElementById(styles.messages)!;
-    //
-    //     if (messages[0]?.number === chatOnPage.countMessages) {
-    //         el.scrollTo({ behavior: 'smooth', top: 0 });
-    //         update({ id: chatOnPage.id, scrollTop: 0 });
-    //     } else {
-    //         setMessages([chatOnPage.message]);
-    //         requestAnimationFrame(() => {
-    //             setTimeout(() => {
-    //                 el.scrollTo({ behavior: 'instant', top: 0 });
-    //                 update({ id: chatOnPage.id, scrollTop: 0 });
-    //             });
-    //         });
-    //         setIsLoading(LoadingType.NEW);
-    //     }
-    // }, [chatOnPage, messages]);
-    //
+
     // const findMessage = useCallback(
     //     async (number: number) => {
     //         if (!chatOnPage) return;
@@ -268,5 +253,5 @@ export const useMessages = (): UseMessagesType => {
     //     [chatOnPage],
     // );
 
-    return [isLoading, messages, readMessage, showLastMessages, findMessage];
+    return [isLoading, readMessage, showLastMessages, findMessage];
 };

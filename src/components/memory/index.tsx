@@ -76,7 +76,7 @@ export const Memory: FC = memo(() => {
                         <div className={'text_translate'}>Кеширование</div>
                         <Checkbox
                             checked={!!settings.cache}
-                            onChange={() => changeSettings({ ...settings, cache: !settings.cache })}
+                            onChange={() => changeSettings({ cache: !settings.cache })}
                         />
                     </div>
                     <div
@@ -89,7 +89,7 @@ export const Memory: FC = memo(() => {
                                 <SegmentSwitcher
                                     options={cacheOptions}
                                     value={settings.cacheImageTime}
-                                    onChange={(cacheImageTime) => changeSettings({ ...settings, cacheImageTime })}
+                                    onChange={(cacheImageTime) => changeSettings({ cacheImageTime })}
                                 />
                             </div>
                         </div>
@@ -99,7 +99,7 @@ export const Memory: FC = memo(() => {
                                 <SegmentSwitcher
                                     options={cacheOptions}
                                     value={settings.cacheVideoTime}
-                                    onChange={(cacheVideoTime) => changeSettings({ ...settings, cacheVideoTime })}
+                                    onChange={(cacheVideoTime) => changeSettings({ cacheVideoTime })}
                                 />
                             </div>
                         </div>
@@ -109,7 +109,7 @@ export const Memory: FC = memo(() => {
                                 <SegmentSwitcher
                                     options={cacheOptions}
                                     value={settings.cacheMusicTime}
-                                    onChange={(cacheMusicTime) => changeSettings({ ...settings, cacheMusicTime })}
+                                    onChange={(cacheMusicTime) => changeSettings({ cacheMusicTime })}
                                 />
                             </div>
                         </div>
@@ -119,7 +119,7 @@ export const Memory: FC = memo(() => {
                                 <SegmentSwitcher
                                     options={cacheOptions}
                                     value={settings.cacheFilesTime}
-                                    onChange={(cacheFilesTime) => changeSettings({ ...settings, cacheFilesTime })}
+                                    onChange={(cacheFilesTime) => changeSettings({ cacheFilesTime })}
                                 />
                             </div>
                         </div>
@@ -129,7 +129,7 @@ export const Memory: FC = memo(() => {
                                 <SegmentSwitcher
                                     options={cacheOptions}
                                     value={settings.cacheVoiceTime}
-                                    onChange={(cacheVoiceTime) => changeSettings({ ...settings, cacheVoiceTime })}
+                                    onChange={(cacheVoiceTime) => changeSettings({ cacheVoiceTime })}
                                 />
                             </div>
                         </div>

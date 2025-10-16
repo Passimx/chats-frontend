@@ -14,7 +14,7 @@ export type SettingsType = {
     messageSaveCount?: number;
     messageSaveTime?: number;
 
-    // auto upload
+    // auto upload files
     autoUpload?: boolean;
     autoUploadMusic?: number;
     autoUploadImage?: number;
@@ -29,6 +29,10 @@ export type SettingsType = {
     cacheFilesTime?: number;
     cacheVideoTime?: number;
     cacheVoiceTime?: number;
+
+    // auth
+    isCheckVerified?: boolean;
+    verificationKey?: string;
 };
 
 export type StateType = {
