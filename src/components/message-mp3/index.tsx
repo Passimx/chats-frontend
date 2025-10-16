@@ -1,6 +1,6 @@
 import { FC, memo, useContext, useMemo } from 'react';
 import { PropsType } from './props.type.ts';
-import { useFileSize } from '../../common/hooks/use-file-size.ts';
+import { getFileSize } from '../../common/hooks/get-file-size.ts';
 import styles from './index.module.css';
 import { IoMusicalNotesSharp } from 'react-icons/io5';
 import { BsDownload } from 'react-icons/bs';
@@ -10,11 +10,18 @@ import { AudioPlayerContext } from '../../root/contexts/audio-player';
 import { FaPause, FaPlay } from 'react-icons/fa';
 import { MdDownloadForOffline } from 'react-icons/md';
 import { Envs } from '../../common/config/envs/envs.ts';
+import { useTranslation } from 'react-i18next';
 
 export const MessageMp3: FC<PropsType> = memo(({ file }) => {
+    const { t } = useTranslation();
     const r = 17;
     const strokeWidth = 3;
-    const size = useFileSize(file.size);
+
+    const size = useMemo(() => {
+        const [memory, unit] = getFileSize(file.size);
+        return `${memory} ${t(unit)}`;
+    }, [file.size]);
+
     const { downloadPercent, blob, clickFile, downloadOnDevice } = useDownloadFile(file);
     const { isPlaying, audio } = useContext(AudioPlayerContext)!;
 

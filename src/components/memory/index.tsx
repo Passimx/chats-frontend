@@ -5,7 +5,7 @@ import { TbLogs } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineClear } from 'react-icons/ai';
 import { Checkbox } from '../checkbox';
-import { useFileSize } from '../../common/hooks/use-file-size.ts';
+import { getFileSize } from '../../common/hooks/get-file-size.ts';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { getCacheMemory } from '../../common/cache/get-cache-memory.ts';
 import { deleteAllCache } from '../../common/cache/delete-chat-cache.ts';
@@ -17,12 +17,19 @@ export const Memory: FC = memo(() => {
     const { t } = useTranslation();
     const { setStateApp, changeSettings } = useAppAction();
 
-    const { settings, cacheMemory, totalMemory, indexedDBMemory } = useAppSelector((state) => state.app);
-    const cache = useFileSize(cacheMemory);
+    const { settings, cacheMemory, totalMemory, indexedDBMemory, categories } = useAppSelector((state) => state.app);
+
+    const cache = useMemo(() => {
+        const [memory, unit] = getFileSize(cacheMemory);
+        return `${memory} ${t(unit)}`;
+    }, [cacheMemory]);
 
     const deleteCache = useCallback(async () => {
         await deleteAllCache();
-        getCacheMemory().then((cacheMemory) => setStateApp({ cacheMemory }));
+
+        getCacheMemory().then(([cacheMemory, categories]) => {
+            setStateApp({ cacheMemory, categories });
+        });
     }, []);
 
     const cacheOptions: OptionType[] = [
@@ -31,14 +38,6 @@ export const Memory: FC = memo(() => {
         [t('30d'), 1000 * 60 * 60 * 24 * 30],
         [t('6m'), 1000 * 60 * 60 * 24 * 30 * 6],
         [t('always'), undefined],
-    ];
-
-    const cacheItems = [
-        { name: 'photos', precent: 5, size: 32143 },
-        { name: 'videos', precent: 5, size: 32143 },
-        { name: 'music', precent: 5, size: 32143 },
-        { name: 'files', precent: 5, size: 32143 },
-        { name: 'voice_messages', precent: 5, size: 32143 },
     ];
 
     const placePrecent = useMemo(() => {
@@ -62,13 +61,20 @@ export const Memory: FC = memo(() => {
                         )}
                     </div>
                     <div className={styles.cache_list}>
-                        {cacheItems.map(({ name, precent, size }, index) => (
-                            <div key={index} className={styles.cache_list_item}>
-                                <div className={`${styles.cache_list_item_text} text_translate`}>{t(name)}</div>
-                                <div className={styles.cache_list_item_precent}>{precent}%</div>
-                                <div className={styles.cache_list_item_size}>{size}</div>
-                            </div>
-                        ))}
+                        {categories &&
+                            Object.entries(categories)
+                                .sort(([, a], [, b]) => b.absoluteMemory - a.absoluteMemory) // сортируем по убыванию
+                                .map(([key, category]) => (
+                                    <div key={key} className={styles.cache_list_item}>
+                                        <div className={`${styles.cache_list_item_text} text_translate`}>{t(key)}</div>
+                                        <div className={styles.cache_list_item_precent}>
+                                            {((category.absoluteMemory / (cacheMemory ?? 1)) * 100).toFixed(1)} %
+                                        </div>
+                                        <div className={styles.cache_list_item_size}>
+                                            {category.unit.memory} {t(category.unit.unit)}
+                                        </div>
+                                    </div>
+                                ))}
                     </div>
                 </div>
                 <div className={styles.cache}>

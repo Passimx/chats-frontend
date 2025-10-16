@@ -6,6 +6,16 @@ export enum TabEnum {
     SERVICES = 'services',
 }
 
+export type CacheCategoryType = { absoluteMemory: number; unit: { memory: string; unit: string } };
+
+export type Categories = {
+    photos: CacheCategoryType;
+    videos: CacheCategoryType;
+    music: CacheCategoryType;
+    files: CacheCategoryType;
+    voice_messages: CacheCategoryType;
+};
+
 export type SettingsType = {
     lang?: string;
 
@@ -59,6 +69,8 @@ export type StateType = {
     batteryLevel?: number;
     batteryCharging?: boolean;
     batterySaverMode?: boolean;
+
+    categories?: Categories;
 
     settings: SettingsType;
 };

@@ -60,10 +60,6 @@ const AppSlice = createSlice({
             localStorage.setItem('settings', JSON.stringify(Envs.settings));
             state.settings = Envs.settings as SettingsType;
         },
-
-        addCache(state, { payload }: PayloadAction<number>) {
-            state.cacheMemory = (state.cacheMemory ?? 0) + payload;
-        },
     },
 });
 

@@ -10,7 +10,9 @@ export const useMemory = () => {
     useEffect(() => {
         if (!isLoadedChatsFromIndexDb) return;
 
-        getCacheMemory().then((cacheMemory) => setStateApp({ cacheMemory }));
+        getCacheMemory().then(([cacheMemory, categories]) => {
+            setStateApp({ cacheMemory, categories });
+        });
         getTotalMemory().then((totalMemory) => setStateApp({ totalMemory }));
         getIndexedDBMemory().then((indexedDBMemory) => setStateApp({ indexedDBMemory }));
     }, [isLoadedChatsFromIndexDb]);

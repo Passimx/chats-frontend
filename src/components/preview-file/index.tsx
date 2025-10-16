@@ -1,15 +1,22 @@
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { PropsType } from './props.type.ts';
 import styles from './index.module.css';
-import { useFileSize } from '../../common/hooks/use-file-size.ts';
+import { getFileSize } from '../../common/hooks/get-file-size.ts';
 import { CiFileOn } from 'react-icons/ci';
 import { MdDeleteOutline } from 'react-icons/md';
 import { ContextMedia } from '../preview-media-context';
 import { TbBrandOpenvpn } from 'react-icons/tb';
 import { FileTypeEnum } from '../../root/types/files/types.ts';
+import { useTranslation } from 'react-i18next';
 
 export const PreviewFile: FC<PropsType> = ({ file, number }) => {
-    const size = useFileSize(file.size);
+    const { t } = useTranslation();
+
+    const size = useMemo(() => {
+        const [memory, unit] = getFileSize(file.size);
+        return `${memory} ${t(unit)}`;
+    }, [file.size]);
+
     const [url, setUrl] = useState<string>('');
     const [type, setType] = useState<FileTypeEnum>();
     const { deleteFile } = useContext(ContextMedia)!;

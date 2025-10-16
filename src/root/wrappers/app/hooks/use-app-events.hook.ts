@@ -8,6 +8,7 @@ import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 import { getRawChat } from '../../../store/chats/chats.raw.ts';
 import { deleteChatCache } from '../../../../common/cache/delete-chat-cache.ts';
 import { useCallback } from 'react';
+import { getCacheMemory } from '../../../../common/cache/get-cache-memory.ts';
 
 export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
@@ -21,7 +22,6 @@ export const useAppEvents = () => {
         removeChat,
         update,
         changeSettings,
-        addCache,
     } = useAppAction();
 
     return useCallback((dataEvent: DataType) => {
@@ -66,7 +66,11 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.REMOVE_CHAT:
                 removeChat(data);
-                deleteChatCache(data).then((cache) => addCache(-cache));
+                deleteChatCache(data).then(() =>
+                    getCacheMemory().then(([cacheMemory, categories]) => {
+                        setStateApp({ cacheMemory, categories });
+                    }),
+                );
                 break;
             case EventsEnum.UPDATE_CHAT_ONLINE:
                 if (!data.success) break;

@@ -1,5 +1,7 @@
 import { Envs } from '../config/envs/envs.ts';
 import { FileExtensionEnum, FileTypeEnum } from '../../root/types/files/types.ts';
+import { CacheCategoryType, Categories } from '../../root/store/app/types/state.type.ts';
+import { getFileSize } from '../hooks/get-file-size.ts';
 
 export const getLocalStorageSize = () => {
     let total = 0;
@@ -110,10 +112,37 @@ export const canSaveCache = async (response: Response): Promise<boolean> => {
     return true;
 };
 
-export const getCacheMemory = async (): Promise<number> => {
+export const calculateCacheByTypes = async (cacheTypes: Categories, response: Response): Promise<void> => {
+    const contentType = response.headers.get('Content-Type')!;
+    const fileType = response.headers.get('X-File-Type')!;
+    const contentLength = Number(response.headers.get('Content-Length')!);
+
+    // изображение
+    if (contentType.includes(FileTypeEnum.IMAGE)) {
+        cacheTypes.photos.absoluteMemory += contentLength;
+    }
+    // видео
+    else if (contentType.includes(FileTypeEnum.VIDEO)) {
+        cacheTypes.videos.absoluteMemory += contentLength;
+    }
+    // голосовые
+    else if (fileType === FileExtensionEnum.IS_VOICE) {
+        cacheTypes.voice_messages.absoluteMemory += contentLength;
+    }
+    // музыка
+    else if (contentType.includes(FileTypeEnum.AUDIO)) {
+        cacheTypes.music.absoluteMemory += contentLength;
+    }
+    // файлы
+    else {
+        cacheTypes.files.absoluteMemory += contentLength;
+    }
+};
+
+export const getCacheMemory = async (): Promise<[number, Categories | undefined]> => {
     if (!('caches' in window)) {
         console.log('Cache API не поддерживается');
-        return 0;
+        return [0, undefined];
     }
 
     const cache = await caches.open(Envs.cache.files);
@@ -123,20 +152,39 @@ export const getCacheMemory = async (): Promise<number> => {
     // удаление всего кеша
     if (!Envs.settings?.cache) {
         await Promise.all(requests.map((request) => cache.delete(request)));
-        return 0;
+        return [0, undefined];
     }
+
+    let categories: Categories = {
+        photos: { absoluteMemory: 0, unit: { memory: '', unit: '' } },
+        videos: { absoluteMemory: 0, unit: { memory: '', unit: '' } },
+        music: { absoluteMemory: 0, unit: { memory: '', unit: '' } },
+        files: { absoluteMemory: 0, unit: { memory: '', unit: '' } },
+        voice_messages: { absoluteMemory: 0, unit: { memory: '', unit: '' } },
+    };
 
     for (const request of requests) {
         const response = await cache.match(request);
         if (response) {
             const size = Number(response.headers.get('Content-Length')!);
             const canSave = await canSaveCache(response);
-            if (!canSave) await cache.delete(request);
+            if (!canSave) {
+                await cache.delete(request);
+                continue;
+            }
 
+            await calculateCacheByTypes(categories, response);
             totalSize += size;
         }
     }
 
+    categories = Object.fromEntries(
+        Object.entries<CacheCategoryType>(categories).map(([key, category]) => {
+            const [memory, unit] = getFileSize(category.absoluteMemory);
+            return [key, { absoluteMemory: category.absoluteMemory, unit: { memory, unit } }];
+        }),
+    ) as Categories;
+
     // байт
-    return totalSize;
+    return [totalSize, categories];
 };
