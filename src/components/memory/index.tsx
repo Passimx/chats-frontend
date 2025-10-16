@@ -68,7 +68,9 @@ export const Memory: FC = memo(() => {
                                     <div key={key} className={styles.cache_list_item}>
                                         <div className={`${styles.cache_list_item_text} text_translate`}>{t(key)}</div>
                                         <div className={styles.cache_list_item_precent}>
-                                            {((category.absoluteMemory / (cacheMemory ?? 1)) * 100).toFixed(1)} %
+                                            {cacheMemory === 0
+                                                ? 0
+                                                : ((category.absoluteMemory * 100) / (cacheMemory ?? 1)).toFixed(2)}
                                         </div>
                                         <div className={styles.cache_list_item_size}>
                                             {category.unit.memory} {t(category.unit.unit)}
