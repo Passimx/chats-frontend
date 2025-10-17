@@ -144,9 +144,8 @@ export const useEnterHook = (): UseEnterHookType => {
 
         await createMessage({ message: text, chatId: chatOnPage.id, parentMessageId: chatOnPage?.answerMessage?.id });
 
-        isFocused;
-        element.innerText = '_';
-        // if (isFocused) element.focus();
+        if (isFocused) setTimeout(() => element.focus(), 300);
+
         setIsShowPlaceholder(true);
         setTextExist(false);
 
