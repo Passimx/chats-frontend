@@ -233,11 +233,12 @@ export const useEnterHook = (): UseEnterHookType => {
         };
 
         const mobileFocus = () => {
-            background.style.paddingBottom = '0px';
+            background;
+            // background.style.paddingBottom = '0px';
         };
 
         const mobileFocusOut = () => {
-            background.style.paddingBottom = 'env(safe-area-inset-bottom, 32px)';
+            // background.style.paddingBottom = 'env(safe-area-inset-bottom, 32px)';
         };
 
         const stopRecover = async () => {

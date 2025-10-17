@@ -1,6 +1,6 @@
 import { IData } from '../index.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
-import { Types, UploadResultType } from '../../types/files/types.ts';
+import { MimeToExt, Types, UploadResultType } from '../../types/files/types.ts';
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
 import { getRawChat } from '../../store/chats/chats.raw.ts';
 import { canSaveCache, getCacheMemory } from '../../../common/cache/get-cache-memory.ts';
@@ -30,7 +30,7 @@ export const DownloadFileWithPercents = async (
     const result = await cacheIsExist(`/${file.chatId}/${file.key}`);
     if (result) {
         setCountLoadParts(undefined);
-        return result;
+        return new Blob([result], { type: file.mimeType });
     }
 
     setCountLoadParts(0);
@@ -77,7 +77,7 @@ export const DownloadFileWithPercents = async (
                 }
 
                 cancelRequestMap.delete(file.id);
-                resolve(xhr.response);
+                resolve(new Blob([xhr.response], { type: file.mimeType }));
             } else {
                 cancelRequestMap.delete(file.id);
                 resolve(undefined);
@@ -96,10 +96,15 @@ export const DownloadFile = async (file: Types, blob?: Blob): Promise<Blob | und
 
     const filename = file.originalName;
     const url = window.URL.createObjectURL(blob);
+    const mimeToExt = MimeToExt.get(blob.type);
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename;
+
+    if (mimeToExt && !filename.endsWith(mimeToExt)) {
+        a.download = `${filename}.${mimeToExt}`;
+    } else a.download = filename;
+
     document.body.appendChild(a);
     a.click();
 
