@@ -42,7 +42,9 @@ export const SegmentSwitcher: FC<PropsType> = ({ options, value: valueOutside, o
             <div className={styles.options_background}>
                 {options.map(([text], index) => (
                     <div key={index} className={styles.options_item}>
-                        <div className={'text_translate'}>{text}</div>
+                        <div className={'text_translate'}>
+                            <pre>{text}</pre>
+                        </div>
                     </div>
                 ))}
             </div>

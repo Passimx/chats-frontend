@@ -32,13 +32,23 @@ export const Memory: FC = memo(() => {
         });
     }, []);
 
-    const cacheOptions: OptionType[] = [
-        [t('off'), 0],
-        [t('1d'), 1000 * 60 * 60 * 24],
-        [t('30d'), 1000 * 60 * 60 * 24 * 30],
-        [t('6m'), 1000 * 60 * 60 * 24 * 30 * 6],
-        [t('always'), undefined],
-    ];
+    const [cacheOptions, autoUploadOptions]: [OptionType[], OptionType[]] = useMemo(() => {
+        return [
+            [
+                [t('off'), 0],
+                [t('1d'), 1000 * 60 * 60 * 24],
+                [t('30d'), 1000 * 60 * 60 * 24 * 30],
+                [t('6m'), 1000 * 60 * 60 * 24 * 30 * 6],
+                [t('always'), undefined],
+            ],
+            [
+                [t('off'), 0],
+                [`16 ${t('mb')}`, 1024 * 1024 * 16],
+                [`128 ${t('mb')}`, 1024 * 1024 * 128],
+                [t('always'), undefined],
+            ],
+        ];
+    }, []);
 
     const placePrecent = useMemo(() => {
         if (cacheMemory !== undefined && !!totalMemory && indexedDBMemory !== undefined) {
@@ -82,7 +92,7 @@ export const Memory: FC = memo(() => {
                 </div>
                 <div className={styles.cache}>
                     <div className={styles.cache_item}>
-                        <div className={'text_translate'}>Кеширование</div>
+                        <div className={'text_translate'}>{t('caching')}</div>
                         <Checkbox
                             checked={!!settings.cache}
                             onChange={() => changeSettings({ cache: !settings.cache })}
@@ -139,6 +149,70 @@ export const Memory: FC = memo(() => {
                                     options={cacheOptions}
                                     value={settings.cacheVoiceTime}
                                     onChange={(cacheVoiceTime) => changeSettings({ cacheVoiceTime })}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.cache}>
+                    <div className={styles.cache_item}>
+                        <div className={'text_translate'}>{t('auto_download')}</div>
+                        <Checkbox
+                            checked={!!settings.autoUpload}
+                            onChange={() => changeSettings({ autoUpload: !settings.autoUpload })}
+                        />
+                    </div>
+                    <div
+                        className={styles.cache_menu}
+                        style={{ filter: !settings.autoUpload ? 'brightness(0.6)' : undefined }}
+                    >
+                        <div className={styles.cache_menu_item}>
+                            <div className={`${styles.cache_menu_item_text} text_translate`}>{t('photos')}</div>
+                            <div className={styles.cache_menu_item_select}>
+                                <SegmentSwitcher
+                                    options={autoUploadOptions}
+                                    value={settings.autoUploadImage}
+                                    onChange={(autoUploadImage) => changeSettings({ autoUploadImage })}
+                                />
+                            </div>
+                        </div>
+                        <div className={styles.cache_menu_item}>
+                            <div className={`${styles.cache_menu_item_text} text_translate`}>{t('videos')}</div>
+                            <div className={styles.cache_menu_item_select}>
+                                <SegmentSwitcher
+                                    options={autoUploadOptions}
+                                    value={settings.autoUploadVideo}
+                                    onChange={(autoUploadVideo) => changeSettings({ autoUploadVideo })}
+                                />
+                            </div>
+                        </div>
+                        <div className={styles.cache_menu_item}>
+                            <div className={`${styles.cache_menu_item_text} text_translate`}>{t('music')}</div>
+                            <div className={styles.cache_menu_item_select}>
+                                <SegmentSwitcher
+                                    options={autoUploadOptions}
+                                    value={settings.autoUploadMusic}
+                                    onChange={(autoUploadMusic) => changeSettings({ autoUploadMusic })}
+                                />
+                            </div>
+                        </div>
+                        <div className={styles.cache_menu_item}>
+                            <div className={`${styles.cache_menu_item_text} text_translate`}>{t('files')}</div>
+                            <div className={styles.cache_menu_item_select}>
+                                <SegmentSwitcher
+                                    options={autoUploadOptions}
+                                    value={settings.autoUploadFiles}
+                                    onChange={(autoUploadFiles) => changeSettings({ autoUploadFiles })}
+                                />
+                            </div>
+                        </div>
+                        <div className={styles.cache_menu_item}>
+                            <div className={`${styles.cache_menu_item_text} text_translate`}>{t('voice_messages')}</div>
+                            <div className={styles.cache_menu_item_select}>
+                                <SegmentSwitcher
+                                    options={autoUploadOptions}
+                                    value={settings.autoUploadVoice}
+                                    onChange={(autoUploadVoice) => changeSettings({ autoUploadVoice })}
                                 />
                             </div>
                         </div>
