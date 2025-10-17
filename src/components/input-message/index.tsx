@@ -107,9 +107,6 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                         </div>
                         <div
                             id={styles.button_input_block}
-                            onClick={(event) => {
-                                event.preventDefault();
-                            }}
                             onMouseDown={(event) => {
                                 event.preventDefault();
                             }}
