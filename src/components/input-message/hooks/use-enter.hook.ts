@@ -301,12 +301,11 @@ export const useEnterHook = (): UseEnterHookType => {
         element.addEventListener('input', onInput);
         microphoneButton?.addEventListener('mousedown', startRecover);
         buttonMicrophoneDelete?.addEventListener('mousedown', stopRecover);
+        sendMessageButton.removeEventListener('mousedown', sendMessage);
         if (isStandalone && isPhone) {
             element.addEventListener('focus', mobileFocus);
             element.addEventListener('focusout', mobileFocusOut);
-            sendMessageButton.addEventListener('touchend', sendMessage);
-        } else sendMessageButton.addEventListener('click', sendMessage);
-
+        }
         return () => {
             element.removeEventListener('keypress', preventDefault);
             element.removeEventListener('keyup', send);
@@ -314,12 +313,12 @@ export const useEnterHook = (): UseEnterHookType => {
             element.removeEventListener('input', onInput);
             microphoneButton?.removeEventListener('mousedown', startRecover);
             buttonMicrophoneDelete?.removeEventListener('mousedown', stopRecover);
+            sendMessageButton.removeEventListener('mousedown', sendMessage);
 
             if (isStandalone && isPhone) {
                 element.removeEventListener('focus', mobileFocus);
                 element.removeEventListener('focusout', mobileFocusOut);
-                sendMessageButton.removeEventListener('touchend', sendMessage);
-            } else sendMessageButton.removeEventListener('click', sendMessage);
+            }
         };
     }, [chatOnPage?.id, isPhone, sendMessage, isRecovering]);
 
