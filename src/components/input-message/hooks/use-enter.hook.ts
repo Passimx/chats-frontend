@@ -150,6 +150,21 @@ export const useEnterHook = (): UseEnterHookType => {
 
         if (getRawChat(chatOnPage.id)) update({ id: chatOnPage.id, inputMessage: undefined, answerMessage: undefined });
         else setChatOnPage({ answerMessage: undefined });
+
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'text';
+        hiddenInput.style.position = 'absolute';
+        hiddenInput.style.opacity = '0';
+        hiddenInput.style.height = '0';
+        hiddenInput.style.border = 'none';
+        document.body.appendChild(hiddenInput);
+
+        hiddenInput.focus();
+
+        setTimeout(() => {
+            document.body.removeChild(hiddenInput);
+            element.focus();
+        }, 100);
     }, [chatOnPage, isPhone, isOpenMobileKeyboard, chatOnPage?.answerMessage]);
 
     useEffect(() => {
