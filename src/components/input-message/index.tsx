@@ -105,12 +105,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                             <BsFillArrowUpCircleFill id={`${styles.bottom_button}`} />
                             {readMessages && <div id={styles.button_count}>{readMessages}</div>}
                         </div>
-                        <div
-                            id={styles.button_input_block}
-                            onMouseDown={(event) => {
-                                event.preventDefault();
-                            }}
-                        >
+                        <div id={styles.button_input_block}>
                             <BsFillArrowUpCircleFill id={styles.button} />
                         </div>
                         {navigator.mediaDevices && (
