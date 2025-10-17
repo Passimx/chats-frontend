@@ -109,7 +109,9 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                             id={styles.button_input_block}
                             onClick={(event) => {
                                 event.preventDefault();
-                                event.stopPropagation();
+                            }}
+                            onMouseDown={(event) => {
+                                event.preventDefault();
                             }}
                         >
                             <BsFillArrowUpCircleFill id={styles.button} />
