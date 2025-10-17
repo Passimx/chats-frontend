@@ -7,7 +7,6 @@ import { createMessage } from '../../../root/api/messages';
 import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 import { getIsFocused } from './get-is-focused.hook.ts';
 import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
-import { focusToEnd } from '../common/focus-to-end.ts';
 import moment from 'moment/min/moment-with-locales';
 import { uploadFile } from '../../../root/api/files/file.ts';
 import { FileExtensionEnum, MimetypeEnum } from '../../../root/types/files/types.ts';
@@ -36,15 +35,15 @@ export const useEnterHook = (): UseEnterHookType => {
     }, [chatOnPage?.type, t, isRecovering, recoveringTime]);
 
     useEffect(() => {
-        const el = document.getElementById(styles.new_message);
-        if (!el || !chatOnPage?.id) return;
-
-        if (el.innerText !== chatOnPage?.inputMessage) {
-            el.innerText = chatOnPage?.inputMessage ?? 'test';
-            const isText = !!el.innerText.replace(/^\n+|\n+$/g, '').trim()?.length;
-            setTextExist(isText);
-            setIsShowPlaceholder(!chatOnPage?.inputMessage?.length);
-        }
+        // const el = document.getElementById(styles.new_message);
+        // if (!el || !chatOnPage?.id) return;
+        //
+        // if (el.innerText !== chatOnPage?.inputMessage) {
+        //     el.innerText = chatOnPage?.inputMessage ?? '';
+        //     const isText = !!el.innerText.replace(/^\n+|\n+$/g, '').trim()?.length;
+        //     setTextExist(isText);
+        //     setIsShowPlaceholder(!chatOnPage?.inputMessage?.length);
+        // }
     }, [chatOnPage?.inputMessage]);
 
     useEffect(() => {
@@ -154,22 +153,22 @@ export const useEnterHook = (): UseEnterHookType => {
     }, [chatOnPage, isPhone, isOpenMobileKeyboard, chatOnPage?.answerMessage]);
 
     useEffect(() => {
-        if (!chatOnPage?.id) return;
-
-        const element = document.getElementById(styles.new_message)!;
-        const text = getRawChat(chatOnPage.id)?.inputMessage;
-
-        element.innerText = text ?? '';
-        setIsShowPlaceholder(!text);
-        setTextExist(!!text);
-
-        if (isRecovering && mediaRecorder) {
-            isDeleteVoiceMessage = true;
-            mediaRecorder.stop();
-        }
-
-        // 300 - время анимации, иначе быстро отрабатывает анимация
-        if (!isPhone) setTimeout(() => focusToEnd(element), 300);
+        // if (!chatOnPage?.id) return;
+        //
+        // const element = document.getElementById(styles.new_message)!;
+        // const text = getRawChat(chatOnPage.id)?.inputMessage;
+        //
+        // element.innerText = text ?? '';
+        // setIsShowPlaceholder(!text);
+        // setTextExist(!!text);
+        //
+        // if (isRecovering && mediaRecorder) {
+        //     isDeleteVoiceMessage = true;
+        //     mediaRecorder.stop();
+        // }
+        //
+        // // 300 - время анимации, иначе быстро отрабатывает анимация
+        // if (!isPhone) setTimeout(() => focusToEnd(element), 300);
     }, [chatOnPage?.id, isPhone]);
 
     useEffect(() => {
@@ -233,12 +232,11 @@ export const useEnterHook = (): UseEnterHookType => {
         };
 
         const mobileFocus = () => {
-            background;
-            // background.style.paddingBottom = '0px';
+            background.style.paddingBottom = '0px';
         };
 
         const mobileFocusOut = () => {
-            // background.style.paddingBottom = 'env(safe-area-inset-bottom, 32px)';
+            background.style.paddingBottom = 'env(safe-area-inset-bottom, 32px)';
         };
 
         const stopRecover = async () => {
