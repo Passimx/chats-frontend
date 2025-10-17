@@ -7,6 +7,7 @@ import { getRawChat } from '../../root/store/chats/chats.raw.ts';
 import { BsEmojiSmile, BsFillArrowUpCircleFill } from 'react-icons/bs';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import Emoji from '../emoji';
+import { useEnterHook } from './hooks/use-enter.hook.ts';
 import { PropsType } from './types/props.type.ts';
 import useVisibility from '../../common/hooks/use-visibility.ts';
 import { FaMicrophone } from 'react-icons/fa';
@@ -20,7 +21,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
     const { update, setChatOnPage } = useAppAction();
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
     const [isVisibleMediaMenu, setIsVisibleMediaMenu] = useState<boolean>();
-    // const [textExist, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
+    const [textExist, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
 
     const cancelAnswerMessage = useCallback(() => {
         if (!chatOnPage?.id) return;
@@ -48,7 +49,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                 )}
                 <div id={styles.inputs}>
                     <Emoji
-                        setEmoji={() => {}}
+                        setEmoji={setEmoji}
                         isVisibleOutside={isVisibleEmoji}
                         setIsVisibleOutside={setIsVisibleEmoji}
                     />
@@ -69,10 +70,10 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                     </div>
                     <div id={styles.new_message_block}>
                         <div
-                            className={`${styles.placeholder_text} ${useVisibility(styles.show_slowly, styles.hide_slowly, false)}`}
+                            className={`${styles.placeholder_text} ${useVisibility(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)}`}
                             dir="auto"
                         >
-                            <div className={'text_translate'}>{'placeholder'}</div>
+                            <div className={'text_translate'}>{placeholder}</div>
                         </div>
                         <div
                             id={styles.new_message}
@@ -114,7 +115,11 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                                 </div>
                                 <div
                                     id={styles.button_microphone_block}
-                                    className={visibility(styles.hide_recover_button, styles.show_recover_button, true)}
+                                    className={visibility(
+                                        styles.hide_recover_button,
+                                        styles.show_recover_button,
+                                        textExist,
+                                    )}
                                 >
                                     <FaMicrophone id={styles.microphone} />
                                 </div>

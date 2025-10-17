@@ -282,17 +282,26 @@ export const useEnterHook = (): UseEnterHookType => {
             mediaRecorder.start();
         };
 
+        const test = (e: MouseEvent) => {
+            e.preventDefault();
+            sendMessage();
+        };
+
         element.addEventListener('keypress', preventDefault);
         element.addEventListener('keyup', send);
         element.addEventListener('paste', paste);
         element.addEventListener('input', onInput);
         microphoneButton?.addEventListener('mousedown', startRecover);
         buttonMicrophoneDelete?.addEventListener('mousedown', stopRecover);
+
+        sendMessageButton.addEventListener('click', test);
+
         if (isStandalone && isPhone) {
             element.addEventListener('focus', mobileFocus);
             element.addEventListener('focusout', mobileFocusOut);
-            sendMessageButton.addEventListener('touchend', sendMessage);
-        } else sendMessageButton.addEventListener('click', sendMessage);
+        }
+        //     sendMessageButton.addEventListener('touchend', sendMessage);
+        // } else sendMessageButton.addEventListener('click', sendMessage);
 
         return () => {
             element.removeEventListener('keypress', preventDefault);
@@ -301,12 +310,14 @@ export const useEnterHook = (): UseEnterHookType => {
             element.removeEventListener('input', onInput);
             microphoneButton?.removeEventListener('mousedown', startRecover);
             buttonMicrophoneDelete?.removeEventListener('mousedown', stopRecover);
+            buttonMicrophoneDelete?.removeEventListener('click', test);
 
             if (isStandalone && isPhone) {
                 element.removeEventListener('focus', mobileFocus);
                 element.removeEventListener('focusout', mobileFocusOut);
-                sendMessageButton.removeEventListener('touchend', sendMessage);
-            } else sendMessageButton.removeEventListener('click', sendMessage);
+                //     sendMessageButton.removeEventListener('touchend', sendMessage);
+                // } else sendMessageButton.removeEventListener('click', sendMessage);
+            }
         };
     }, [chatOnPage?.id, isPhone, sendMessage, isRecovering]);
 
