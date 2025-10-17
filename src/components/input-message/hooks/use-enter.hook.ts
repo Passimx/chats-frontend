@@ -40,7 +40,7 @@ export const useEnterHook = (): UseEnterHookType => {
         if (!el || !chatOnPage?.id) return;
 
         if (el.innerText !== chatOnPage?.inputMessage) {
-            el.innerText = chatOnPage?.inputMessage ?? '';
+            el.innerText = chatOnPage?.inputMessage ?? 'test';
             const isText = !!el.innerText.replace(/^\n+|\n+$/g, '').trim()?.length;
             setTextExist(isText);
             setIsShowPlaceholder(!chatOnPage?.inputMessage?.length);
