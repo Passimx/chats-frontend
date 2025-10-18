@@ -19,12 +19,15 @@ export type Types = {
     id: string;
     key: string;
     chatId: string;
+    messageId: string;
     originalName: string;
     mimeType: MimetypeEnum;
     size: number;
     createdAt: Date;
     fileType: FileExtensionEnum;
     metadata: FileMetadataType;
+
+    cachedTime?: number;
 };
 
 export type UploadResultType = {

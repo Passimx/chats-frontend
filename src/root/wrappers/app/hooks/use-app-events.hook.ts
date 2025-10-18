@@ -24,7 +24,7 @@ export const useAppEvents = () => {
         changeSettings,
     } = useAppAction();
 
-    return useCallback((dataEvent: DataType) => {
+    return useCallback(async (dataEvent: DataType) => {
         const { event, data } = dataEvent;
 
         switch (event) {
@@ -66,11 +66,8 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.REMOVE_CHAT:
                 removeChat(data);
-                deleteChatCache(data).then(() =>
-                    getCacheMemory().then(([cacheMemory, categories]) => {
-                        setStateApp({ cacheMemory, categories });
-                    }),
-                );
+                await deleteChatCache(data);
+                setStateApp(await getCacheMemory());
                 break;
             case EventsEnum.UPDATE_CHAT_ONLINE:
                 if (!data.success) break;

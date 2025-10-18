@@ -1,4 +1,5 @@
 import { JSX } from 'react';
+import { Types } from '../../../types/files/types.ts';
 
 export enum TabEnum {
     CHATS = 'chats',
@@ -39,6 +40,7 @@ export type SettingsType = {
     cacheFilesTime?: number;
     cacheVideoTime?: number;
     cacheVoiceTime?: number;
+    cacheTotalMemory?: number;
 
     // auth
     isCheckVerified?: boolean;
@@ -71,6 +73,7 @@ export type StateType = {
     batterySaverMode?: boolean;
 
     categories?: Categories;
+    files?: Types[];
 
     settings: SettingsType;
 };

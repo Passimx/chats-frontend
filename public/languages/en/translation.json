@@ -58,6 +58,10 @@
   "files": "Files",
   "voice_messages": "Voice messages",
   "auto_download": "Auto-download",
+  "cache_duration": "How long the cache will be stored on the device",
+  "max_autodownload_size": "Maximum file size for auto-download",
+  "max_cache_size": "Maximum cache size",
+  "cache_limit_warning": "If the cache size exceeds the limit, the oldest files will be deleted",
 
   "all": "all",
   "always": "always",
@@ -133,5 +137,8 @@
   "emoji_symbols": "Symbols",
   "emoji_flags": "Flags & Countries",
 
-  "message_hello": "Hello! This is the Anonymous Messenger PassimX.\nWe have created this space where you can freely express your thoughts and ideas without worrying about your anonymity. Just write a message and press \"Send\"!\n\n📝 Some useful tips:\n- Connect with people from all over the world!\n- Remember, there are no rules here, only respect for your conversation partners!\n- All messages are anonymous, so you can be yourself!\n\n🔗 Feedback link:\n- https://github.com/orgs/Passimx/discussions"
+  "message_hello": "Hello! This is the Anonymous Messenger PassimX.\nWe have created this space where you can freely express your thoughts and ideas without worrying about your anonymity. Just write a message and press \"Send\"!\n\n📝 Some useful tips:\n- Connect with people from all over the world!\n- Remember, there are no rules here, only respect for your conversation partners!\n- All messages are anonymous, so you can be yourself!\n\n🔗 Feedback link:\n- https://github.com/orgs/Passimx/discussions",
+
+  "phrase_1": "uses",
+  "phrase_2": "free space"
 }

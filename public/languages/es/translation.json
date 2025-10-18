@@ -58,6 +58,10 @@
   "files": "archivos",
   "voice_messages": "mensajes de voz",
   "auto_download": "Inicio automático",
+  "cache_duration": "Cuánto tiempo se almacenará la caché en el dispositivo",
+  "max_autodownload_size": "Tamaño máximo de archivo para la descarga automática",
+  "max_cache_size": "Tamaño máximo de la caché",
+  "cache_limit_warning": "Si el tamaño de la caché supera el límite, se eliminarán los archivos más antiguos",
 
   "all": "todo",
   "always": "siempre",
@@ -133,5 +137,9 @@
   "emoji_symbols": "Símbolos",
   "emoji_flags": "Banderas y países",
 
-  "message_hello": "¡Hola! Este es el Mensajero Anónimo PassimX.\nHemos creado este espacio donde puedes expresar libremente tus pensamientos e ideas sin preocuparte por tu anonimato. Simplemente escribe un mensaje y pulsa \"Enviar\"!\n\n📝 Algunos consejos útiles:\n- ¡Conéctate con personas de todo el mundo!\n- Recuerda, aquí no hay reglas, solo respeto por los demás.\n- Todos los mensajes son anónimos, así que puedes ser tú mismo.\n\n🔗 Enlace de retroalimentación:\n- https://github.com/orgs/Passimx/discussions"
+  "message_hello": "¡Hola! Este es el Mensajero Anónimo PassimX.\nHemos creado este espacio donde puedes expresar libremente tus pensamientos e ideas sin preocuparte por tu anonimato. Simplemente escribe un mensaje y pulsa \"Enviar\"!\n\n📝 Algunos consejos útiles:\n- ¡Conéctate con personas de todo el mundo!\n- Recuerda, aquí no hay reglas, solo respeto por los demás.\n- Todos los mensajes son anónimos, así que puedes ser tú mismo.\n\n🔗 Enlace de retroalimentación:\n- https://github.com/orgs/Passimx/discussions",
+
+  "phrase_1": "ocupa",
+  "phrase_2": "espacio libre"
+
 }

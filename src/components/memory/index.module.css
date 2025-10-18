@@ -54,17 +54,25 @@
             }
         }
 
-        .cache{
+        .tab{
             border-radius: 8px;
             background-color: #0C3870;
 
             .cache_item{
-                font-weight: 700;
                 padding: 8px;
-                display: grid;
-                grid-template-columns: 1fr auto;
-                align-items: center;
                 border-bottom: 1px silver solid;
+
+                .cache_item_switcher{
+                    font-weight: 700;
+                    display: grid;
+                    grid-template-columns: 1fr auto;
+                    align-items: center;
+                }
+
+                .cache_item_description{
+                    opacity: 0.7;
+                    font-size: 12px;
+                }
             }
 
             .cache_menu{
@@ -75,6 +83,7 @@
 
                 .cache_menu_item{
                     .cache_menu_item_text{
+                        padding-left: 8px;
                         opacity: 0.7;
                     }
 

@@ -26,13 +26,10 @@ export const Memory: FC = memo(() => {
 
     const deleteCache = useCallback(async () => {
         await deleteAllCache();
-
-        getCacheMemory().then(([cacheMemory, categories]) => {
-            setStateApp({ cacheMemory, categories });
-        });
+        setStateApp(await getCacheMemory());
     }, []);
 
-    const [cacheOptions, autoUploadOptions]: [OptionType[], OptionType[]] = useMemo(() => {
+    const [cacheOptions, autoUploadOptions, cacheLimitOptions]: OptionType[][] = useMemo(() => {
         return [
             [
                 [t('off'), 0],
@@ -46,6 +43,12 @@ export const Memory: FC = memo(() => {
                 [`16 ${t('mb')}`, 1024 * 1024 * 16],
                 [`128 ${t('mb')}`, 1024 * 1024 * 128],
                 [t('always'), undefined],
+            ],
+            [
+                [`1 ${t('gb')}`, 1024 * 1024 * 1024],
+                [`8 ${t('gb')}`, 1024 * 1024 * 1024 * 8],
+                [`32 ${t('gb')}`, 1024 * 1024 * 1024 * 32],
+                [t('off'), undefined],
             ],
         ];
     }, []);
@@ -67,7 +70,7 @@ export const Memory: FC = memo(() => {
                         {placePrecent && (
                             <div
                                 className={`${styles.memory_usage_place} text_translate`}
-                            >{`${config.name} ${'занимает'} ${placePrecent}% свободного места`}</div>
+                            >{`${config.name} ${t('phrase_1')} ${placePrecent}% ${t('phrase_2')}`}</div>
                         )}
                     </div>
                     <div className={styles.cache_list}>
@@ -90,13 +93,40 @@ export const Memory: FC = memo(() => {
                                 ))}
                     </div>
                 </div>
-                <div className={styles.cache}>
+                <div className={styles.tab}>
                     <div className={styles.cache_item}>
-                        <div className={'text_translate'}>{t('caching')}</div>
-                        <Checkbox
-                            checked={!!settings.cache}
-                            onChange={() => changeSettings({ cache: !settings.cache })}
-                        />
+                        <div className={styles.cache_item_switcher}>
+                            <div className={'text_translate'}>{t('max_cache_size')}</div>
+                        </div>
+                        <div className={`${styles.cache_item_description} text_translate`}>
+                            {t('cache_limit_warning')}
+                        </div>
+                    </div>
+                    <div
+                        className={styles.cache_menu}
+                        style={{ filter: !settings.cache ? 'brightness(0.6)' : undefined }}
+                    >
+                        <div className={styles.cache_menu_item}>
+                            <div className={styles.cache_menu_item_select}>
+                                <SegmentSwitcher
+                                    options={cacheLimitOptions}
+                                    value={settings.cacheTotalMemory}
+                                    onChange={(cacheTotalMemory) => changeSettings({ cacheTotalMemory })}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.tab}>
+                    <div className={styles.cache_item}>
+                        <div className={styles.cache_item_switcher}>
+                            <div className={'text_translate'}>{t('caching')}</div>
+                            <Checkbox
+                                checked={!!settings.cache}
+                                onChange={() => changeSettings({ cache: !settings.cache })}
+                            />
+                        </div>
+                        <div className={`${styles.cache_item_description} text_translate`}>{t('cache_duration')}</div>
                     </div>
                     <div
                         className={styles.cache_menu}
@@ -154,13 +184,18 @@ export const Memory: FC = memo(() => {
                         </div>
                     </div>
                 </div>
-                <div className={styles.cache}>
+                <div className={styles.tab}>
                     <div className={styles.cache_item}>
-                        <div className={'text_translate'}>{t('auto_download')}</div>
-                        <Checkbox
-                            checked={!!settings.autoUpload}
-                            onChange={() => changeSettings({ autoUpload: !settings.autoUpload })}
-                        />
+                        <div className={styles.cache_item_switcher}>
+                            <div className={'text_translate'}>{t('auto_download')}</div>
+                            <Checkbox
+                                checked={!!settings.autoUpload}
+                                onChange={() => changeSettings({ autoUpload: !settings.autoUpload })}
+                            />
+                        </div>
+                        <div className={`${styles.cache_item_description} text_translate`}>
+                            {t('max_autodownload_size')}
+                        </div>
                     </div>
                     <div
                         className={styles.cache_menu}

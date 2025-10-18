@@ -60,19 +60,23 @@ export const DownloadFileWithPercents = async (
                     const cache = await caches.open(Envs.cache.files);
                     const response = new Response(xhr.response, {
                         headers: {
+                            'X-Id': file.id,
+                            'X-Key': file.key,
+                            'X-Chat-Id': file.chatId,
+                            'X-Message-Id': file.messageId,
                             'Content-Type': file.mimeType,
                             'Content-Length': `${file.size}`,
-                            'X-Cached-Time': `${Date.now()}`,
-                            'X-Chat-Id': file.chatId,
+                            'X-Created-At': `${file.createdAt}`,
                             'X-File-Type': file.fileType,
+                            'X-Preview-Id': file.metadata.previewId ?? '',
+                            'X-Cached-Time': `${Date.now()}`,
                         },
                     });
+
                     const canSave = await canSaveCache(response);
                     if (canSave) {
                         await cache.put(url, response);
-                        await getCacheMemory().then(([cacheMemory, categories]) => {
-                            setStateApp({ cacheMemory, categories });
-                        });
+                        setStateApp(await getCacheMemory());
                     }
                 }
 
