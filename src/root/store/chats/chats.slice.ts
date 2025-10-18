@@ -52,9 +52,14 @@ const ChatsSlice = createSlice({
 
         createMessage(state, { payload }: PayloadAction<MessageType>) {
             if (payload.chatId === state.chatOnPage?.id && payload.number > state.chatOnPage.message.number) {
+                // if (payload) {
+                //     state.chatOnPage.message = [...state.chatOnPage.message];
+                // }
+
                 state.chatOnPage.message = payload;
                 state.chatOnPage.countMessages++;
             }
+
             const chat = getRawChat(payload.chatId);
             if (!chat) return;
 
@@ -107,21 +112,12 @@ const ChatsSlice = createSlice({
         },
 
         setChatOnPage(state, { payload }: PayloadAction<Partial<ChatItemIndexDb> | null>) {
-            if (!payload) {
+            if (!payload) return;
+            if (state.chatOnPage?.id && payload?.id && payload?.id !== state.chatOnPage?.id)
                 state.chatOnPage = undefined;
-                return;
-            }
-
-            if (payload?.id && state.chatOnPage?.id && payload?.id !== state.chatOnPage?.id) {
-                delete state.chatOnPage.answerMessage;
-                delete state.chatOnPage.online;
-                delete state.chatOnPage.inputMessage;
-                delete state.chatOnPage.key;
-            }
 
             if (!state.chatOnPage) state.chatOnPage = payload as ChatItemIndexDb;
             if (state.chatOnPage) state.chatOnPage = { ...state.chatOnPage, ...payload };
-            else state.chatOnPage = undefined;
         },
 
         removeChat(state, { payload }: PayloadAction<string>) {

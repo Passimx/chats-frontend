@@ -11,7 +11,7 @@ export const useDownloadFile = (file: Types): Return => {
     const [downloadPercent, setDownloadPercent] = useState<number>();
     const [blob, setBlob] = useState<Blob>();
     const { addFile, play, pause, isPlaying, audio } = useContext(AudioPlayerContext)!;
-    const { addCache } = useAppAction();
+    const { setStateApp } = useAppAction();
     const { isPhone } = useAppSelector((state) => state.app);
 
     useEffect(() => {
@@ -25,7 +25,7 @@ export const useDownloadFile = (file: Types): Return => {
             e.stopPropagation();
             let duplicateBlob = blob;
             if (!duplicateBlob) {
-                duplicateBlob = await DownloadFileWithPercents(file, setDownloadPercent, addCache);
+                duplicateBlob = await DownloadFileWithPercents(file, setDownloadPercent, setStateApp);
                 if (!duplicateBlob) return;
                 setBlob(duplicateBlob);
             }
@@ -54,7 +54,7 @@ export const useDownloadFile = (file: Types): Return => {
 
         // Скачать
         if (!blob) {
-            const blob = await DownloadFileWithPercents(file, setDownloadPercent, addCache);
+            const blob = await DownloadFileWithPercents(file, setDownloadPercent, setStateApp);
             if (!blob) return;
             setBlob(blob);
 

@@ -51,6 +51,18 @@
   "messages_limit": "每个聊天在设备上保存多少条消息",
   "message_save_count": "每个聊天在设备上保存多少条消息",
   "message_save_time" : "每条消息在设备上保存多长时间",
+  "caching": "缓存",
+  "photos": "照片",
+  "videos": "视频",
+  "music": "音乐",
+  "files": "文件",
+  "voice_messages": "语音消息",
+  "auto_download": "自动下载",
+  "cache_duration": "缓存将在设备上保存多长时间",
+  "max_autodownload_size": "自动下载的最大文件大小",
+  "max_cache_size": "最大缓存大小",
+  "cache_limit_warning": "如果缓存大小超过限制，最旧的文件将被删除",
+
   "all": "全部",
   "always": "始终",
   "1d": "1天",
@@ -125,5 +137,8 @@
   "emoji_symbols": "符号",
   "emoji_flags": "旗帜与国家",
 
-  "message_hello": "你好！这是匿名聊天应用 PassimX。\n我们创建了这个空间，在这里您可以自由表达您的想法，而无需担心匿名性。只需输入消息并点击“发送”！\n\n📝 一些有用的提示:\n- 与世界各地的人建立联系！\n- 记住，这里没有规则，只有对话者之间的尊重！\n- 所有消息均为匿名，因此您可以畅所欲言！\n\n🔗 反馈链接:\n- https://github.com/orgs/Passimx/discussions"
+  "message_hello": "你好！这是匿名聊天应用 PassimX。\n我们创建了这个空间，在这里您可以自由表达您的想法，而无需担心匿名性。只需输入消息并点击“发送”！\n\n📝 一些有用的提示:\n- 与世界各地的人建立联系！\n- 记住，这里没有规则，只有对话者之间的尊重！\n- 所有消息均为匿名，因此您可以畅所欲言！\n\n🔗 反馈链接:\n- https://github.com/orgs/Passimx/discussions",
+
+  "phrase_1": "占用",
+  "phrase_2": "可用空间"
 }

@@ -1,7 +1,7 @@
 import styles from './index.module.css';
 import { useTranslation } from 'react-i18next';
 import { GrLanguage } from 'react-icons/gr';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { IoChatboxEllipsesOutline, IoRocketOutline, IoSettingsOutline } from 'react-icons/io5';
 import json from '../../../package.json';
@@ -11,13 +11,15 @@ import { MenuTitle } from '../../components/menu-title';
 import { Chats } from '../../components/chats';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
-import { useFileSize } from '../../common/hooks/use-file-size.ts';
+import { getFileSize } from '../../common/hooks/get-file-size.ts';
 import { MdBatteryCharging20, MdVpnLock } from 'react-icons/md';
 import { LogList } from '../../components/log-list';
 import { Vpn } from '../../components/vpn';
 import { EnvironmentEnum, Envs } from '../../common/config/envs/envs.ts';
 import { Memory } from '../../components/memory';
 import { BatterySaver } from '../../components/battery-saver';
+import { RiShieldKeyholeLine } from 'react-icons/ri';
+import { Privacy } from '../../components/privacy';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
@@ -25,7 +27,11 @@ export const Settings = memo(() => {
         useAppSelector((state) => state.app);
     const chatsLength = useAppSelector((state) => state.chats.chats.length);
     const { setStateApp } = useAppAction();
-    const cache = useFileSize(cacheMemory);
+
+    const cache = useMemo(() => {
+        const [memory, unit] = getFileSize(cacheMemory);
+        return `${memory} ${t(unit)}`;
+    }, [cacheMemory]);
 
     const navigate = useCustomNavigate();
 
@@ -42,15 +48,14 @@ export const Settings = memo(() => {
     return (
         <div id={styles.background}>
             <MenuTitle icon={<IoSettingsOutline />} title={'settings'} />
-            {/*<div className={styles.items}>*/}
-            {/*    <div className={styles.item}>*/}
-            {/*        <RiShieldKeyholeLine className={styles.item_logo} />*/}
-            {/*        <div className="text_translate">{t('privacy_policy')}</div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
+            <div className={styles.items}>
+                <div className={styles.item} onClick={() => selectMenu(<Privacy />)}>
+                    <RiShieldKeyholeLine className={styles.item_logo} />
+                    <div className="text_translate">{t('privacy_policy')}</div>
+                </div>
+            </div>
 
             {/*todo*/}
-
             {/*<div className={styles.items}>*/}
             {/*    <div className={styles.item}>*/}
             {/*        <IoWalletOutline className={styles.item_logo} />*/}

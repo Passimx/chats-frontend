@@ -1,9 +1,10 @@
 import { IData } from '../index.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
-import { Types, UploadResultType } from '../../types/files/types.ts';
+import { MimeToExt, Types, UploadResultType } from '../../types/files/types.ts';
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
 import { getRawChat } from '../../store/chats/chats.raw.ts';
-import { canSaveCache } from '../../../common/cache/get-cache-memory.ts';
+import { canSaveCache, getCacheMemory } from '../../../common/cache/get-cache-memory.ts';
+import { StateType } from '../../store/app/types/state.type.ts';
 
 export const uploadFile = async (body: FormData): Promise<IData<UploadResultType>> => {
     const response = await fetch(`${Envs.filesServiceUrl}/upload`, { method: 'POST', body }).then((response) =>
@@ -24,12 +25,12 @@ export const CancelDownload = (file: Types) => {
 export const DownloadFileWithPercents = async (
     file: Types,
     setCountLoadParts: (value?: number) => void,
-    addCache: (value: number) => void,
+    setStateApp: (value: Partial<StateType>) => void,
 ): Promise<Blob | undefined> => {
     const result = await cacheIsExist(`/${file.chatId}/${file.key}`);
     if (result) {
         setCountLoadParts(undefined);
-        return result;
+        return new Blob([result], { type: file.mimeType });
     }
 
     setCountLoadParts(0);
@@ -59,22 +60,28 @@ export const DownloadFileWithPercents = async (
                     const cache = await caches.open(Envs.cache.files);
                     const response = new Response(xhr.response, {
                         headers: {
+                            'X-Id': file.id,
+                            'X-Key': file.key,
+                            'X-Chat-Id': file.chatId,
+                            'X-Message-Id': file.messageId,
                             'Content-Type': file.mimeType,
                             'Content-Length': `${file.size}`,
-                            'X-Cached-Time': `${Date.now()}`,
-                            'X-Chat-Id': file.chatId,
+                            'X-Created-At': `${file.createdAt}`,
                             'X-File-Type': file.fileType,
+                            'X-Preview-Id': file.metadata.previewId ?? '',
+                            'X-Cached-Time': `${Date.now()}`,
                         },
                     });
+
                     const canSave = await canSaveCache(response);
                     if (canSave) {
-                        addCache(file.size);
                         await cache.put(url, response);
+                        setStateApp(await getCacheMemory());
                     }
                 }
 
                 cancelRequestMap.delete(file.id);
-                resolve(xhr.response);
+                resolve(new Blob([xhr.response], { type: file.mimeType }));
             } else {
                 cancelRequestMap.delete(file.id);
                 resolve(undefined);
@@ -93,10 +100,15 @@ export const DownloadFile = async (file: Types, blob?: Blob): Promise<Blob | und
 
     const filename = file.originalName;
     const url = window.URL.createObjectURL(blob);
+    const mimeToExt = MimeToExt.get(blob.type);
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename;
+
+    if (mimeToExt && !filename.endsWith(mimeToExt)) {
+        a.download = `${filename}.${mimeToExt}`;
+    } else a.download = filename;
+
     document.body.appendChild(a);
     a.click();
 

@@ -24,8 +24,9 @@ import { useUpdateStaticCache } from './hooks/use-update-static-cache.hook.ts';
 import { useIsIos } from './hooks/use-is-ios.hook.ts';
 import { useBattery } from './hooks/use-battery.hook.ts';
 import { useSettings } from './hooks/use-settings.hook.ts';
-import { useCatchLogs } from './hooks/use-catch-logs.hook.ts';
 import { useUpdateBadge } from './hooks/use-update-badge.hook.ts';
+import { useVerify } from './hooks/use-verify.hook.ts';
+import { useCatchLogs } from './hooks/use-catch-logs.hook.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -61,6 +62,8 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useSettings();
     // update badge
     useUpdateBadge();
+    // verity when open app
+    const [isAuth] = useVerify();
 
     const isLoaded = useTranslation();
     const { id } = useParams();
@@ -70,7 +73,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
         document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
     }, [id]);
 
-    if (isLoaded)
+    if (isLoaded && isAuth)
         return (
             <AudioPlayer>
                 <div id={styles.background}>

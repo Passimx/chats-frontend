@@ -51,23 +51,14 @@ const AppSlice = createSlice({
             }
         },
 
-        setLang(state, { payload }: PayloadAction<string>) {
-            state.settings.lang = payload;
-            localStorage.setItem('settings', JSON.stringify(state.settings));
-        },
-
         addLog(state, { payload }: PayloadAction<string>) {
             state.logs = [...(state.logs ?? []), payload];
         },
 
-        changeSettings(state, { payload }: PayloadAction<SettingsType>) {
-            localStorage.setItem('settings', JSON.stringify(payload));
-            Envs.settings = payload;
-            state.settings = payload;
-        },
-
-        addCache(state, { payload }: PayloadAction<number>) {
-            state.cacheMemory = (state.cacheMemory ?? 0) + payload;
+        changeSettings(state, { payload }: PayloadAction<Partial<SettingsType>>) {
+            Envs.settings = { ...Envs.settings, ...state.settings, ...payload };
+            localStorage.setItem('settings', JSON.stringify(Envs.settings));
+            state.settings = Envs.settings as SettingsType;
         },
     },
 });

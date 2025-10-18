@@ -4,13 +4,12 @@ import { leaveChats } from '../../../root/api/chats';
 import { EventsEnum } from '../../../root/types/events/events.enum.ts';
 import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 import { useCustomNavigate } from '../../../common/hooks/use-custom-navigate.hook.ts';
-import { MessageType } from '../../../root/types/chat/message.type.ts';
 import styles from '../index.module.css';
 import { ContextChat } from '../context/chat-context.tsx';
 
 type R = [() => void, (e: MouseEvent<unknown>) => void, (e: MouseEvent<unknown>) => void];
 
-export const useMethods = (messages: MessageType[]): R => {
+export const useMethods = (): R => {
     const isPhone = useAppSelector((state) => state.app.isPhone);
     const chatOnPage = useAppSelector((state) => state.chats.chatOnPage);
     const { postMessageToBroadCastChannel, setChatOnPage } = useAppAction();
@@ -18,14 +17,15 @@ export const useMethods = (messages: MessageType[]): R => {
     const navigate = useCustomNavigate();
 
     const addChat = useCallback(() => {
+        if (!chatOnPage) return;
         const el = document.getElementById(styles.messages)!;
         const scrollTop = el.scrollTop;
 
         postMessageToBroadCastChannel({
             event: EventsEnum.ADD_CHAT,
-            data: { ...chatOnPage!, messages: messages, readMessage: chatOnPage!.countMessages, scrollTop },
+            data: { ...chatOnPage!, messages: chatOnPage.messages, readMessage: chatOnPage.countMessages, scrollTop },
         });
-    }, [chatOnPage, messages]);
+    }, [chatOnPage]);
 
     const back = useCallback(
         (e: MouseEvent<unknown>) => {

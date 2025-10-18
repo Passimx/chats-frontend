@@ -19,9 +19,22 @@
 
 .log_item{
     background-color: black;
-    /*background-color: white;*/
     padding: 8px;
     border-radius: 8px;
+    cursor: pointer;
+}
+
+.log_item:active{
+    filter:  brightness(0.7)
+}
+
+.log_item_copy{
+    display: grid;
+    justify-content: right;
+}
+
+.log_item_logo{
+    font-size: 18px;
 }
 
 .background_clear{

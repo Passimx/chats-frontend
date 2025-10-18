@@ -189,8 +189,12 @@ export const useEnterHook = (): UseEnterHookType => {
         const microphoneButton = document.getElementById(styles.button_microphone_block);
         const buttonMicrophoneDelete = document.getElementById(styles.button_microphone_delete);
 
-        const preventDefault = (event: KeyboardEvent) => {
+        const preventDefaultEnter = (event: KeyboardEvent) => {
             if (event.code === 'Enter' && !isPhone && !event.shiftKey) event.preventDefault();
+        };
+
+        const preventDefault = (event: MouseEvent) => {
+            event.preventDefault();
         };
 
         const send = (event: KeyboardEvent) => {
@@ -281,12 +285,14 @@ export const useEnterHook = (): UseEnterHookType => {
             mediaRecorder.start();
         };
 
-        element.addEventListener('keypress', preventDefault);
+        element.addEventListener('keypress', preventDefaultEnter);
         element.addEventListener('keyup', send);
         element.addEventListener('paste', paste);
         element.addEventListener('input', onInput);
         microphoneButton?.addEventListener('mousedown', startRecover);
         buttonMicrophoneDelete?.addEventListener('mousedown', stopRecover);
+        sendMessageButton.addEventListener('mousedown', preventDefault);
+
         if (isStandalone && isPhone) {
             element.addEventListener('focus', mobileFocus);
             element.addEventListener('focusout', mobileFocusOut);
@@ -294,12 +300,13 @@ export const useEnterHook = (): UseEnterHookType => {
         } else sendMessageButton.addEventListener('click', sendMessage);
 
         return () => {
-            element.removeEventListener('keypress', preventDefault);
+            element.removeEventListener('keypress', preventDefaultEnter);
             element.removeEventListener('keyup', send);
             element.removeEventListener('paste', paste);
             element.removeEventListener('input', onInput);
             microphoneButton?.removeEventListener('mousedown', startRecover);
             buttonMicrophoneDelete?.removeEventListener('mousedown', stopRecover);
+            sendMessageButton.removeEventListener('mousedown', preventDefault);
 
             if (isStandalone && isPhone) {
                 element.removeEventListener('focus', mobileFocus);

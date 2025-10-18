@@ -8,6 +8,7 @@ import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 import { getRawChat } from '../../../store/chats/chats.raw.ts';
 import { deleteChatCache } from '../../../../common/cache/delete-chat-cache.ts';
 import { useCallback } from 'react';
+import { getCacheMemory } from '../../../../common/cache/get-cache-memory.ts';
 
 export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
@@ -20,11 +21,10 @@ export const useAppEvents = () => {
         createMessage,
         removeChat,
         update,
-        setLang,
-        addCache,
+        changeSettings,
     } = useAppAction();
 
-    return useCallback((dataEvent: DataType) => {
+    return useCallback(async (dataEvent: DataType) => {
         const { event, data } = dataEvent;
 
         switch (event) {
@@ -66,7 +66,8 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.REMOVE_CHAT:
                 removeChat(data);
-                deleteChatCache(data).then((cache) => addCache(-cache));
+                await deleteChatCache(data);
+                setStateApp(await getCacheMemory());
                 break;
             case EventsEnum.UPDATE_CHAT_ONLINE:
                 if (!data.success) break;
@@ -90,7 +91,7 @@ export const useAppEvents = () => {
                 playNotificationSound();
                 break;
             case EventsEnum.CHANGE_LANGUAGE:
-                setLang(data);
+                changeSettings({ lang: data });
                 break;
             case EventsEnum.ERROR:
                 console.log(`${'\x1B[31m'}error: ${data}${'\x1B[31m'}`);

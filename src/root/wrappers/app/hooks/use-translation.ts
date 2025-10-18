@@ -30,7 +30,7 @@ export const resources = {
 
 export const useTranslation = () => {
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
-    const { setLang } = useAppAction();
+    const { changeSettings } = useAppAction();
     const { settings } = useAppSelector((state) => state.app);
 
     useEffect(() => {
@@ -44,7 +44,7 @@ export const useTranslation = () => {
             const browserLang = navigator.language.slice(0, 2).toLowerCase();
             const langs = Object.keys(resources);
             const lang = langs.find((lang) => lang === browserLang) ?? 'en';
-            setLang(lang);
+            changeSettings({ lang });
 
             return;
         }

@@ -1,5 +1,13 @@
 import { Envs } from '../config/envs/envs.ts';
-import { FileExtensionEnum, FileTypeEnum } from '../../root/types/files/types.ts';
+import {
+    FileExtensionEnum,
+    FileMetadataType,
+    FileTypeEnum,
+    MimetypeEnum,
+    Types,
+} from '../../root/types/files/types.ts';
+import { CacheCategoryType, Categories, StateType } from '../../root/store/app/types/state.type.ts';
+import { getFileSize } from '../hooks/get-file-size.ts';
 
 export const getLocalStorageSize = () => {
     let total = 0;
@@ -12,14 +20,14 @@ export const getLocalStorageSize = () => {
     return total;
 };
 
-export const getIndexedDBSize = async () => {
-    let total = 0;
-    if (!('indexedDB' in window)) return total;
+export const getIndexedDBMemory = async (): Promise<Partial<StateType>> => {
+    let indexedDBMemory: number = 0;
+    if (!('indexedDB' in window)) return { indexedDBMemory: undefined };
 
-    return new Promise<number>((resolve) => {
+    return new Promise<Partial<StateType>>((resolve) => {
         const req = indexedDB.databases ? indexedDB.databases() : Promise.resolve([]);
         Promise.resolve(req).then((dbList: any) => {
-            if (!dbList) return resolve(total);
+            if (!dbList) return resolve({ indexedDBMemory: undefined });
 
             const tasks = dbList.map((dbInfo: any) => {
                 return new Promise<void>((res) => {
@@ -37,7 +45,7 @@ export const getIndexedDBSize = async () => {
                                     const data = getAllReq.result;
                                     try {
                                         const json = JSON.stringify(data);
-                                        total += new Blob([json]).size;
+                                        indexedDBMemory += new Blob([json]).size;
                                     } catch {
                                         return 0;
                                     }
@@ -56,7 +64,7 @@ export const getIndexedDBSize = async () => {
                 });
             });
 
-            Promise.all(tasks).then(() => resolve(total));
+            Promise.all(tasks).then(() => resolve({ indexedDBMemory }));
         });
     });
 };
@@ -110,33 +118,138 @@ export const canSaveCache = async (response: Response): Promise<boolean> => {
     return true;
 };
 
-export const getCacheMemory = async (): Promise<number> => {
+export const calculateFiles = (files: Types[], response: Response) => {
+    const id = response.headers.get('X-Id')!;
+    const key = response.headers.get('X-Key')!;
+    const chatId = response.headers.get('X-Chat-Id')!;
+    const messageId = response.headers.get('X-Message-Id')!;
+    const originalName = response.headers.get('X-Original-Name')!;
+    const mimeType = response.headers.get('Content-Type')! as MimetypeEnum;
+    const size = Number(response.headers.get('Content-Length')!);
+    const createdAt = new Date(response.headers.get('X-Created-At')!);
+    const fileType = response.headers.get('X-File-Type')! as FileExtensionEnum;
+    const metadata = {} as FileMetadataType;
+    const cachedTime = Number(response.headers.get('X-Cached-Time')!);
+
+    files.push({
+        id,
+        key,
+        chatId,
+        messageId,
+        originalName,
+        mimeType,
+        size,
+        createdAt,
+        fileType,
+        metadata,
+        cachedTime,
+    });
+};
+
+export const calculateCacheByTypes = async (
+    categories: Categories,
+    response: Response,
+    coefficient: number = 1,
+): Promise<void> => {
+    const contentType = response.headers.get('Content-Type')!;
+    const fileType = response.headers.get('X-File-Type')!;
+    const contentLength = Number(response.headers.get('Content-Length')!);
+
+    // изображение
+    if (contentType.includes(FileTypeEnum.IMAGE)) {
+        categories.photos.absoluteMemory += contentLength * coefficient;
+    }
+    // видео
+    else if (contentType.includes(FileTypeEnum.VIDEO)) {
+        categories.videos.absoluteMemory += contentLength * coefficient;
+    }
+    // голосовые
+    else if (fileType === FileExtensionEnum.IS_VOICE) {
+        categories.voice_messages.absoluteMemory += contentLength * coefficient;
+    }
+    // музыка
+    else if (contentType.includes(FileTypeEnum.AUDIO)) {
+        categories.music.absoluteMemory += contentLength * coefficient;
+    }
+    // файлы
+    else {
+        categories.files.absoluteMemory += contentLength * coefficient;
+    }
+};
+
+const clearOldCache = async (data: Partial<StateType>): Promise<number> => {
+    let cacheMemory = data.cacheMemory!;
+    const categories = data.categories!;
+    const files = data.files!.sort((a, b) => (a.cachedTime ?? 0) - (b.cachedTime ?? 0));
+
+    if (cacheMemory < Envs.settings!.cacheTotalMemory!) return cacheMemory;
+
+    const cache = await caches.open(Envs.cache.files);
+    const [file] = files;
+    const response = (await cache.match(`${Envs.filesServiceUrl}/${file.chatId}/${file.key}`))!;
+    await calculateCacheByTypes(categories, response, -1);
+    await cache.delete(`${Envs.filesServiceUrl}/${file.chatId}/${file.key}`);
+    cacheMemory -= file.size;
+    files.shift();
+
+    return clearOldCache({ cacheMemory, categories, files });
+};
+
+export const getCacheMemory = async (): Promise<Partial<StateType>> => {
+    let cacheMemory = 0;
+    const files: Types[] = [];
+
     if (!('caches' in window)) {
         console.log('Cache API не поддерживается');
-        return 0;
+        return { cacheMemory };
     }
 
     const cache = await caches.open(Envs.cache.files);
-    let totalSize = 0;
     const requests = await cache.keys();
 
     // удаление всего кеша
     if (!Envs.settings?.cache) {
         await Promise.all(requests.map((request) => cache.delete(request)));
-        return 0;
+        return { cacheMemory };
     }
+
+    let categories: Categories = {
+        photos: { absoluteMemory: 0, unit: { memory: '', unit: '' } },
+        videos: { absoluteMemory: 0, unit: { memory: '', unit: '' } },
+        music: { absoluteMemory: 0, unit: { memory: '', unit: '' } },
+        files: { absoluteMemory: 0, unit: { memory: '', unit: '' } },
+        voice_messages: { absoluteMemory: 0, unit: { memory: '', unit: '' } },
+    };
 
     for (const request of requests) {
         const response = await cache.match(request);
         if (response) {
             const size = Number(response.headers.get('Content-Length')!);
             const canSave = await canSaveCache(response);
-            if (!canSave) await cache.delete(request);
+            if (!canSave) {
+                await cache.delete(request);
+                continue;
+            }
 
-            totalSize += size;
+            calculateFiles(files, response);
+            await calculateCacheByTypes(categories, response);
+
+            cacheMemory += size;
         }
     }
 
+    // сброс лишнего кэша
+    if (Envs.settings.cacheTotalMemory !== undefined && cacheMemory > Envs.settings.cacheTotalMemory) {
+        cacheMemory = await clearOldCache({ cacheMemory, files, categories });
+    }
+
+    categories = Object.fromEntries(
+        Object.entries<CacheCategoryType>(categories).map(([key, category]) => {
+            const [memory, unit] = getFileSize(category.absoluteMemory);
+            return [key, { absoluteMemory: category.absoluteMemory, unit: { memory, unit } }];
+        }),
+    ) as Categories;
+
     // байт
-    return totalSize;
+    return { cacheMemory, categories };
 };

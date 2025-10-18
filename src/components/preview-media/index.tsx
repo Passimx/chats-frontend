@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { FileTypeEnum } from '../../root/types/files/types.ts';
 import { PreviewMusic } from '../preview-music';
 import { setThemeColor } from '../../common/hooks/set-theme-color.ts';
-import { useFileSize } from '../../common/hooks/use-file-size.ts';
+import { getFileSize } from '../../common/hooks/get-file-size.ts';
 
 export const PreviewMedia: FC = memo(() => {
     const visibility = useVisibility;
@@ -41,7 +41,10 @@ export const PreviewMedia: FC = memo(() => {
         return files?.reduce((prevSum, file) => prevSum + file.size, 0);
     }, [files?.length]);
 
-    const sizeName = useFileSize(size);
+    const sizeName = useMemo(() => {
+        const [memory, unit] = getFileSize(size);
+        return `${memory} ${t(unit)}`;
+    }, [size]);
 
     if (files?.length)
         return (

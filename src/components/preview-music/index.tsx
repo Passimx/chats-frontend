@@ -1,13 +1,20 @@
-import { FC, useContext } from 'react';
+import { FC, useContext, useMemo } from 'react';
 import { PropsType } from './props.type.ts';
 import styles from './index.module.css';
-import { useFileSize } from '../../common/hooks/use-file-size.ts';
+import { getFileSize } from '../../common/hooks/get-file-size.ts';
 import { MdDeleteOutline } from 'react-icons/md';
 import { ContextMedia } from '../preview-media-context';
 import { IoMusicalNotesSharp } from 'react-icons/io5';
+import { useTranslation } from 'react-i18next';
 
 export const PreviewMusic: FC<PropsType> = ({ file, number }) => {
-    const size = useFileSize(file.size);
+    const { t } = useTranslation();
+
+    const size = useMemo(() => {
+        const [memory, unit] = getFileSize(file.size);
+        return `${memory} ${t(unit)}`;
+    }, [file.size]);
+
     const { deleteFile } = useContext(ContextMedia)!;
 
     const previewId = file.metaData?.previewId;

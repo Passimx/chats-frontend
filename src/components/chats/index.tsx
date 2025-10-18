@@ -27,26 +27,17 @@ export const Chats: FC = memo(() => {
 
     const { settings } = useAppSelector((state) => state.app);
 
-    const changeMessageLimit = useCallback(
-        (value?: number) => {
-            if (value) changeSettings({ ...settings, messagesLimit: value });
-        },
-        [settings],
-    );
+    const changeMessageLimit = useCallback((value?: number) => {
+        if (value) changeSettings({ messagesLimit: value });
+    }, []);
 
-    const changeMessageSaveCount = useCallback(
-        (value?: number) => {
-            changeSettings({ ...settings, messageSaveCount: value });
-        },
-        [settings],
-    );
+    const changeMessageSaveCount = useCallback((value?: number) => {
+        changeSettings({ messageSaveCount: value });
+    }, []);
 
-    const changeMessageSaveTime = useCallback(
-        (value?: number) => {
-            changeSettings({ ...settings, messageSaveTime: value });
-        },
-        [settings],
-    );
+    const changeMessageSaveTime = useCallback((value?: number) => {
+        changeSettings({ messageSaveTime: value });
+    }, []);
 
     return (
         <div className={styles.background}>
