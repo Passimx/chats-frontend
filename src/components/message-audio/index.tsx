@@ -7,6 +7,7 @@ import { FaPause, FaPlay } from 'react-icons/fa';
 import { AudioPlayerContext } from '../../root/contexts/audio-player';
 import { LoudnessBars } from '../lound-data';
 import { getStringDuration } from '../../common/hooks/get-string-duration.hook.ts';
+import { useVisibility } from '../../common/hooks/use-visibility.hook.ts';
 
 export const AudioFile: FC<PropsType> = memo(({ file }) => {
     const r = 17;
@@ -14,6 +15,7 @@ export const AudioFile: FC<PropsType> = memo(({ file }) => {
     const { downloadPercent, clickFile } = useDownloadFile(file);
     const [time, setTime] = useState<string>(getStringDuration(file?.metadata?.duration));
     const { isPlaying, audio, progress } = useContext(AudioPlayerContext)!;
+    const [observerTarget] = useVisibility();
 
     const constDuration = useMemo(() => getStringDuration(file?.metadata?.duration), []);
 
@@ -30,7 +32,7 @@ export const AudioFile: FC<PropsType> = memo(({ file }) => {
     }, [audio?.file.id === file.id, constDuration, progress]);
 
     return (
-        <div className={styles.main}>
+        <div className={styles.main} ref={observerTarget}>
             <div className={styles.background} onClick={clickFile}>
                 <div className={styles.background_play}>
                     {downloadPercent === undefined && (!isPlaying || audio?.file.id !== file.id) && (

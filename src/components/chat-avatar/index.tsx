@@ -2,7 +2,7 @@ import styles from './index.module.css';
 import { FC, useEffect, useState } from 'react';
 
 import { PropsType } from './types/props.type.ts';
-import useVisibility from '../../common/hooks/use-visibility.ts';
+import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
 import { IconEnum } from './types/icon.enum.ts';
 import { FaUsers } from 'react-icons/fa';
 import { HiTrendingUp } from 'react-icons/hi';
@@ -13,7 +13,6 @@ import imageIcon from '../../../public/assets/icons/192.png';
 
 const ChatAvatar: FC<PropsType> = ({ onlineCount, maxUsersOnline, iconType, isChange = false, isSystem = false }) => {
     const { isListening, isOnline } = useAppSelector((state) => state.app);
-    const setClass = useVisibility;
     const [isShow, setIsShow] = useState<boolean>();
 
     useEffect(() => {
@@ -22,7 +21,7 @@ const ChatAvatar: FC<PropsType> = ({ onlineCount, maxUsersOnline, iconType, isCh
 
     return (
         <div
-            className={`${styles.background} ${useVisibility(styles.from_online_to_record, styles.from_record_to_online, isShow)}`}
+            className={`${styles.background} ${setVisibilityCss(styles.from_online_to_record, styles.from_record_to_online, isShow)}`}
             onClick={() => isChange && setIsShow(!isShow)}
             style={{ transform: iconType === IconEnum.RECORD ? 'rotateY(-180deg)' : 'rotateY(0deg)' }}
         >
@@ -44,14 +43,14 @@ const ChatAvatar: FC<PropsType> = ({ onlineCount, maxUsersOnline, iconType, isCh
                 <div className={`${styles.icon_number} ${styles.back}`}>{maxUsersOnline}</div>
                 <div className={styles.look}>
                     <FaUsers
-                        className={`${styles.look_svg_green} ${styles.look_svg} ${isShow !== undefined && setClass(styles.hide_slowly, styles.show_slowly, isShow)}`}
+                        className={`${styles.look_svg_green} ${styles.look_svg} ${isShow !== undefined && setVisibilityCss(styles.hide_slowly, styles.show_slowly, isShow)}`}
                         style={{
                             color: 'green',
                             visibility: isShow === undefined && iconType === IconEnum.ONLINE ? 'visible' : 'hidden',
                         }}
                     />
                     <HiTrendingUp
-                        className={`${styles.look_svg} ${isShow !== undefined && setClass(styles.hide_slowly, styles.show_slowly, !isShow)}`}
+                        className={`${styles.look_svg} ${isShow !== undefined && setVisibilityCss(styles.hide_slowly, styles.show_slowly, !isShow)}`}
                         style={{
                             color: 'goldenrod',
                             visibility: isShow === undefined && iconType === IconEnum.RECORD ? 'visible' : 'hidden',

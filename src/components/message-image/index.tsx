@@ -10,6 +10,7 @@ import { FaPause } from 'react-icons/fa';
 import { MdDownloadForOffline } from 'react-icons/md';
 import { Envs } from '../../common/config/envs/envs.ts';
 import { useTranslation } from 'react-i18next';
+import { useVisibility } from '../../common/hooks/use-visibility.hook.ts';
 
 export const MessageImage: FC<PropsType> = memo(({ file }) => {
     const { t } = useTranslation();
@@ -21,8 +22,9 @@ export const MessageImage: FC<PropsType> = memo(({ file }) => {
         return `${memory} ${t(unit)}`;
     }, [file.size]);
 
-    const { downloadPercent, blob, clickFile, downloadOnDevice } = useDownloadFile(file);
+    const [observerTarget] = useVisibility();
     const { isPlaying, audio } = useContext(AudioPlayerContext)!;
+    const { downloadPercent, blob, clickFile, downloadOnDevice } = useDownloadFile(file);
 
     const backgroundImage = useMemo(() => {
         if (file.metadata.previewId) return `url(${Envs.filesServiceUrl}/${file.chatId}/${file.metadata.previewId})`;
@@ -30,7 +32,11 @@ export const MessageImage: FC<PropsType> = memo(({ file }) => {
     }, [file.metadata.previewId]);
 
     return (
-        <div className={`${styles.background} ${!blob && styles.background_animation}`} onClick={clickFile}>
+        <div
+            onClick={clickFile}
+            ref={observerTarget}
+            className={`${styles.background} ${!blob && styles.background_animation}`}
+        >
             <div className={styles.file_background} style={{ backgroundImage }}>
                 {downloadPercent === undefined && (!isPlaying || audio?.file.id !== file.id) && (
                     <div className={styles.file_icon}>

@@ -12,7 +12,7 @@ import { useMessages } from './hooks/use-messages.hook.ts';
 import { useJoinChat } from './hooks/use-join-chat.hook.ts';
 import { CiMenuKebab } from 'react-icons/ci';
 import useClickOutside from '../../common/hooks/use-click-outside.ts';
-import useVisibility from '../../common/hooks/use-visibility.ts';
+import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
 import { MdExitToApp } from 'react-icons/md';
 import { IconEnum } from '../../components/chat-avatar/types/icon.enum.ts';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
@@ -31,7 +31,6 @@ const Chat: FC = memo(() => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
     useGetChat();
     useJoinChat();
-    const visibility = useVisibility;
     const { t } = useTranslation();
     const [isLoading, readMessage, showLastMessages, findMessage] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
@@ -91,7 +90,7 @@ const Chat: FC = memo(() => {
                 {/*вынести меню чата в отдельный компонент как эмодзи*/}
                 <div
                     id={styles.chat_menu}
-                    className={visibility(styles.show_slowly, styles.hide_slowly, isVisible)}
+                    className={setVisibilityCss(styles.show_slowly, styles.hide_slowly, isVisible)}
                     ref={wrapperRef}
                     onClick={() => setIsVisible(false)}
                 >
@@ -116,7 +115,7 @@ const Chat: FC = memo(() => {
                     <div id={styles.messages}>
                         {isLoading === LoadingType.OLD && <RotateLoading />}
                         {chatOnPage.messages?.map((message) => (
-                            <Message key={message.number} {...{ ...message, readMessage, findMessage }} />
+                            <Message key={message.id} {...{ ...message, readMessage, findMessage }} />
                         ))}
                         {isLoading === LoadingType.NEW && <RotateLoading />}
                     </div>

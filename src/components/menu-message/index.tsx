@@ -2,7 +2,7 @@ import { FC, memo, useCallback, useContext, useEffect, useRef } from 'react';
 import styles from './index.module.css';
 import { PiArrowBendUpLeftFill } from 'react-icons/pi';
 import { IoCopyOutline } from 'react-icons/io5';
-import useVisibility from '../../common/hooks/use-visibility.ts';
+import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
 import { GoLink } from 'react-icons/go';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { getRawChat } from '../../root/store/chats/chats.raw.ts';
@@ -12,7 +12,6 @@ import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { ContextChat } from '../../pages/chat/context/chat-context.tsx';
 
 export const MenuMessage: FC = memo(() => {
-    const visibility = useVisibility;
     const { t } = useTranslation();
     const ref = useRef<HTMLDivElement>(null);
     const { isPhone } = useAppSelector((state) => state.app);
@@ -76,7 +75,7 @@ export const MenuMessage: FC = memo(() => {
     return (
         <div
             id={styles.message_menu}
-            className={visibility(styles.show_slowly, styles.hide_slowly, isShowMessageMenu)}
+            className={setVisibilityCss(styles.show_slowly, styles.hide_slowly, isShowMessageMenu)}
             ref={ref}
         >
             {clickMessage?.type !== MessageTypeEnum.IS_SYSTEM && (

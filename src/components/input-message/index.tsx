@@ -9,14 +9,13 @@ import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import Emoji from '../emoji';
 import { useEnterHook } from './hooks/use-enter.hook.ts';
 import { PropsType } from './types/props.type.ts';
-import useVisibility from '../../common/hooks/use-visibility.ts';
+import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
 import { FaMicrophone } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { CgMenuGridO } from 'react-icons/cg';
 import { MediaMenu } from '../media-menu';
 
 export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomButton }) => {
-    const visibility = useVisibility;
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { update, setChatOnPage } = useAppAction();
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
@@ -70,7 +69,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                     </div>
                     <div id={styles.new_message_block}>
                         <div
-                            className={`${styles.placeholder_text} ${useVisibility(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)}`}
+                            className={`${styles.placeholder_text} ${setVisibilityCss(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)}`}
                             dir="auto"
                         >
                             <div className={'text_translate'}>{placeholder}</div>
@@ -99,7 +98,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                     <div id={styles.button_input_background}>
                         <div
                             id={styles.bottom_button_background}
-                            className={`${visibility(styles.show_bottom_button, styles.hide_bottom_button, isVisibleBottomButton)}`}
+                            className={`${setVisibilityCss(styles.show_bottom_button, styles.hide_bottom_button, isVisibleBottomButton)}`}
                             onClick={showLastMessages}
                         >
                             <BsFillArrowUpCircleFill id={`${styles.bottom_button}`} />
@@ -115,7 +114,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                                 </div>
                                 <div
                                     id={styles.button_microphone_block}
-                                    className={visibility(
+                                    className={setVisibilityCss(
                                         styles.hide_recover_button,
                                         styles.show_recover_button,
                                         textExist,

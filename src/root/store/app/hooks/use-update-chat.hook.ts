@@ -1,10 +1,11 @@
 import { useAppAction } from '../../index.ts';
 import { ChatItemIndexDb } from '../../../types/chat/chat.type.ts';
-import { getRawChats } from '../../chats/chats.raw.ts';
+import { getRawChat, getRawChats } from '../../chats/chats.raw.ts';
 import { useCallback } from 'react';
 
 export const useUpdateChat = () => {
-    const time = 200;
+    const timeUpdate = 200;
+
     const { addUpdatedChat, setToBegin, removeUpdatedChats, update } = useAppAction();
 
     return useCallback((payload: ChatItemIndexDb) => {
@@ -15,8 +16,10 @@ export const useUpdateChat = () => {
         addUpdatedChat(chat);
 
         setTimeout(() => {
-            setToBegin(chat);
-            removeUpdatedChats(chat);
-        }, time);
+            const data = getRawChat(chat.id);
+            if (!data) return;
+            setToBegin(data);
+            removeUpdatedChats(data);
+        }, timeUpdate);
     }, []);
 };

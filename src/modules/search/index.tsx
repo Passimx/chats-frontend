@@ -13,7 +13,7 @@ import OpenChatInfo from '../../components/chat-info/open-chat-info';
 import SharedChatInfo from '../../components/chat-info/shared-chat-info';
 import PublicChatInfo from '../../components/chat-info/public-chat-info';
 import PrivateChatInfo from '../../components/chat-info/private-chat-info';
-import useVisibility from '../../common/hooks/use-visibility.ts';
+import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
 import OpenChat from '../../components/create-chat/open-chat';
 import SharedChat from '../../components/create-chat/shared-chat';
 import PublicChat from '../../components/create-chat/public-chat';
@@ -46,14 +46,14 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
         <div id={styles.search}>
             <SearchInput onChange={setInput} value={input} isLoading={isLoading} placeholder={t('search')} />
             <IoIosAddCircleOutline
-                className={useVisibility(styles.show_cancel, styles.show_add, isVisible)}
+                className={setVisibilityCss(styles.show_cancel, styles.show_add, isVisible)}
                 id={styles.new_chat_icon}
                 onClick={() => setIsVisible(true)}
             />
             <div
                 id={styles.new_chats}
                 ref={wrapperRef}
-                className={useVisibility(styles.show_slowly, styles.hide_slowly, isVisible)}
+                className={setVisibilityCss(styles.show_slowly, styles.hide_slowly, isVisible)}
             >
                 <div className={styles.new_chats_item}>
                     <div className={styles.new_chats_item_click} onClick={() => changePage(<OpenChat />)}>

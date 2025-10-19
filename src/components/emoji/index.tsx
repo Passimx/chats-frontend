@@ -1,6 +1,6 @@
 import styles from './index.module.css';
 import { FC, useCallback, useEffect, useMemo } from 'react';
-import useVisibility from '../../common/hooks/use-visibility.ts';
+import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
 import useClickOutside from '../../common/hooks/use-click-outside.ts';
 import { PropsType } from './props.type.ts';
 import { emojiList } from './common/array.ts';
@@ -13,7 +13,6 @@ import { AiOutlineBulb } from 'react-icons/ai';
 
 const Emoji: FC<PropsType> = ({ isVisibleOutside, setIsVisibleOutside, setEmoji }) => {
     const iconSize = 24;
-    const visibility = useVisibility;
     const { t } = useTranslation();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
 
@@ -70,7 +69,7 @@ const Emoji: FC<PropsType> = ({ isVisibleOutside, setIsVisibleOutside, setEmoji 
         <div
             ref={wrapperRef}
             id={styles.background}
-            className={visibility(styles.show_slowly, styles.hide_slowly, isVisible)}
+            className={setVisibilityCss(styles.show_slowly, styles.hide_slowly, isVisible)}
         >
             <div id={styles.emoji_rows}>
                 {Object.entries(emojiList).map(([key, array], index) => (
