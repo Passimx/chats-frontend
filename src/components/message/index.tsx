@@ -5,8 +5,6 @@ import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { RenderMessage } from '../render-message';
 import { ParentMessage } from '../parent-message';
 import { useAppAction, useAppSelector } from '../../root/store';
-// import styles2 from '../menu-message/index.module.css';
-// import { ContextChat } from '../../pages/chat/context/chat-context.tsx';
 import { MessageFile } from '../message-file';
 import { AudioFile } from '../message-audio';
 import { FileExtensionEnum, FileTypeEnum } from '../../root/types/files/types.ts';
@@ -17,13 +15,14 @@ import moment from 'moment/min/moment-with-locales';
 import { useTranslation } from 'react-i18next';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { useVisibility } from '../../common/hooks/use-visibility.hook.ts';
+import { useMessageMenu } from './hooks/use-message-menu.hook.ts';
 
 const Message: FC<PropsType> = memo((props) => {
     const { postMessageToBroadCastChannel } = useAppAction();
     const { t } = useTranslation();
-    const { number, type, findMessage } = props;
+    const { type, findMessage } = props;
     const { chatOnPage } = useAppSelector((state) => state.chats);
-    const elementId = useMemo(() => `message-${number}`, [number]);
+    const [elementId] = useMessageMenu(props);
     const [observerTarget, visible] = useVisibility();
 
     useEffect(() => {
