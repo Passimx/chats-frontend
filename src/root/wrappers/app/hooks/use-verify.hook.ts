@@ -34,7 +34,7 @@ export const useVerify = () => {
                         displayName: 'noname',
                     },
                     pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
-                    authenticatorSelection: { userVerification: 'required' },
+                    authenticatorSelection: { userVerification: 'required', authenticatorAttachment: 'platform' },
                 },
             };
             const verificationKey = await navigator.credentials.create(regOptions);

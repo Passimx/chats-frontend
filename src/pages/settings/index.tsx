@@ -12,19 +12,15 @@ import { Chats } from '../../components/chats';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import { getFileSize } from '../../common/hooks/get-file-size.ts';
-import { MdBatteryCharging20, MdVpnLock } from 'react-icons/md';
 import { LogList } from '../../components/log-list';
-import { Vpn } from '../../components/vpn';
 import { EnvironmentEnum, Envs } from '../../common/config/envs/envs.ts';
 import { Memory } from '../../components/memory';
-import { BatterySaver } from '../../components/battery-saver';
 import { RiShieldKeyholeLine } from 'react-icons/ri';
 import { Privacy } from '../../components/privacy';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
-    const { cacheMemory, pages, batteryLevel, batterySaverMode, activeTab, systemChatId, isStandalone, logs } =
-        useAppSelector((state) => state.app);
+    const { cacheMemory, pages, activeTab, systemChatId, logs } = useAppSelector((state) => state.app);
     const chatsLength = useAppSelector((state) => state.chats.chats.length);
     const { setStateApp } = useAppAction();
 
@@ -87,17 +83,6 @@ export const Settings = memo(() => {
                         <div className={styles.item_value}>&nbsp;{cache}</div>
                     </div>
                 </div>
-                {batteryLevel && (
-                    <div className={styles.item} onClick={() => selectMenu(<BatterySaver />)}>
-                        <MdBatteryCharging20 className={styles.item_logo} />
-                        <div className="text_translate">
-                            {t('battery_saver_mode')}
-                            {batteryLevel && (
-                                <div className={styles.item_value}>&nbsp;{batterySaverMode ? t('on') : t('off')}</div>
-                            )}
-                        </div>
-                    </div>
-                )}
                 {Envs.environment !== EnvironmentEnum.PRODUCTION && (
                     <div className={styles.item} onClick={() => selectMenu(<LogList />)}>
                         <TbLogs className={styles.item_logo} />
@@ -107,12 +92,23 @@ export const Settings = memo(() => {
                         </div>
                     </div>
                 )}
-                {!isStandalone && (
-                    <div className={styles.item} onClick={() => selectMenu(<Vpn />)}>
-                        <MdVpnLock className={styles.item_logo} />
-                        <div className="text_translate">{t('vpn')}</div>
-                    </div>
-                )}
+                {/*{batteryLevel && (*/}
+                {/*    <div className={styles.item} onClick={() => selectMenu(<BatterySaver />)}>*/}
+                {/*        <MdBatteryCharging20 className={styles.item_logo} />*/}
+                {/*        <div className="text_translate">*/}
+                {/*            {t('battery_saver_mode')}*/}
+                {/*            {batteryLevel && (*/}
+                {/*                <div className={styles.item_value}>&nbsp;{batterySaverMode ? t('on') : t('off')}</div>*/}
+                {/*            )}*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*)}*/}
+                {/*{isStandalone && (*/}
+                {/*    <div className={styles.item} onClick={() => selectMenu(<Vpn />)}>*/}
+                {/*        <MdVpnLock className={styles.item_logo} />*/}
+                {/*        <div className="text_translate">{t('vpn')}</div>*/}
+                {/*    </div>*/}
+                {/*)}*/}
             </div>
 
             <div className={styles.items}>
