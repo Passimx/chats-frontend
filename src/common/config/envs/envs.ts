@@ -37,7 +37,7 @@ export const Envs: EnvsType = {
     chats: {
         limit: 250,
     },
-    catchLogs: Boolean(import.meta.env.VITE_CATCH_LOGS ?? true),
+    catchLogs: import.meta.env.VITE_CATCH_LOGS !== 'false',
     cache: {
         files: 'files-cache-name',
         static: `static-v-${json.version}`,

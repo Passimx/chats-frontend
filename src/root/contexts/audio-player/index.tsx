@@ -1,42 +1,58 @@
 import { createContext, FC, memo, ReactElement, useCallback, useEffect, useState } from 'react';
 import { AudioType, ContextType } from './types/context.type.ts';
-import { FileExtensionEnum } from '../../types/files/types.ts';
-import image from '../../../../public/assets/icons/256.png';
-import { useTranslation } from 'react-i18next';
-import json from '../../../../package.json';
-import { Envs } from '../../../common/config/envs/envs.ts';
+import { FileExtensionEnum, FileMap } from '../../types/files/types.ts';
+import { UpdateMediaSession } from './components/update-media-session.hook.tsx';
 
 export const AudioPlayerContext = createContext<ContextType | null>(null);
 
-let audioEl: HTMLAudioElement | null = null;
+let audioFile: AudioType | null = null;
+export let audioMusic: HTMLAudioElement | null = null;
+export let audioVoice: HTMLAudioElement | null = null;
 
 export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) => {
     const [audio, setAudio] = useState<AudioType>();
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [progress, setProgress] = useState<number>();
-    const { t } = useTranslation();
 
     const play = async () => {
         setIsPlaying(true);
     };
 
-    const pause = useCallback(() => setIsPlaying(false), []);
+    const pause = useCallback(() => {
+        setIsPlaying(false);
+    }, []);
+
+    const endedMusic = useCallback(() => {
+        audioMusic?.play();
+    }, []);
+
+    const endedVoice = useCallback(() => {
+        audioVoice = null;
+
+        if (audioFile) {
+            setAudio(audioFile);
+            audioMusic?.play();
+        } else setIsPlaying(false);
+    }, []);
 
     const timeupdate = useCallback(() => {
-        if (!audioEl) return;
-        const current = audioEl.currentTime;
-        const total = audioEl.duration;
+        const audioElement: HTMLAudioElement | null = audioVoice ?? audioMusic;
+
+        if (!audioElement) return;
+        const current = audioElement.currentTime;
+        const total = audioElement.duration;
 
         const progress = current / total;
         if (progress == 1) {
             setProgress(undefined);
-            setAudio(undefined);
         } else setProgress(progress);
     }, []);
 
     const seek = useCallback((progress: number) => {
-        if (!audioEl) return;
-        audioEl.currentTime = audioEl.duration * progress;
+        const audioElement: HTMLAudioElement | null = audioVoice ?? audioMusic;
+
+        if (!audioElement) return;
+        audioElement.currentTime = audioElement.duration * progress;
     }, []);
 
     const addFile = useCallback(
@@ -44,90 +60,43 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
             if (value.file.id && value.file.id !== audio?.file.id) {
                 setAudio(value);
                 setProgress(undefined);
-                audioEl?.pause();
-                audioEl?.removeEventListener('ended', pause);
-                audioEl?.removeEventListener('timeupdate', timeupdate);
-                audioEl = null;
+                audioMusic?.pause();
+                audioVoice?.pause();
+                const element: HTMLAudioElement = new Audio(URL.createObjectURL(value.blob));
 
-                const url = URL.createObjectURL(value.blob);
-                audioEl = new Audio(url);
-
-                audioEl.addEventListener('ended', pause);
-                audioEl.addEventListener('timeupdate', timeupdate);
-
-                if ('mediaSession' in navigator) {
-                    let artwork = [{ src: image, sizes: '512x512', type: 'image/png' }];
-                    let title = value.file.originalName;
-                    let artist = json.name;
-
-                    if (value.file.metadata.title) title = value.file.metadata.title;
-                    else if (value.file.fileType === FileExtensionEnum.IS_VOICE) title = t('voice_message');
-
-                    if (value.file.metadata.artist) artist = value.file.metadata.artist;
-
-                    if (value.file.metadata.previewId)
-                        artwork = [
-                            {
-                                src: `${Envs.filesServiceUrl}/${value.file.chatId}/${value.file.metadata.previewId}`,
-                                sizes: '512x512',
-                                type: value.file.metadata.previewMimeType as string,
-                            },
-                        ];
-
-                    navigator.mediaSession.metadata = new MediaMetadata({
-                        title,
-                        artist,
-                        album: value.file.metadata.album,
-                        artwork,
-                    });
-
-                    navigator.mediaSession.setActionHandler('play', play);
-                    navigator.mediaSession.setActionHandler('pause', pause);
-
-                    navigator.mediaSession.setActionHandler('seekto', (details) => {
-                        if (!audioEl) return;
-                        const originalVolume = audioEl.volume;
-                        const wasPaused = audioEl.paused;
-                        if (wasPaused) {
-                            audioEl.volume = 0;
-                            audioEl?.play().then(() => {
-                                audioEl!.currentTime = details.seekTime!;
-                                if (wasPaused) audioEl!.pause();
-                                audioEl!.volume = originalVolume;
-                            });
-                        } else audioEl.currentTime = details.seekTime!;
-                    });
-
-                    navigator.mediaSession.setActionHandler('previoustrack', () => {
-                        if (audioEl) audioEl.currentTime = 0;
-
-                        console.log('⬅️ предыдущая');
-                        // switchToPreviousTrack();
-                    });
-
-                    navigator.mediaSession.setActionHandler('nexttrack', () => {
-                        console.log('➡️ следующая');
-                        // switchToNextTrack();
-                    });
+                if (value.file.fileType === FileExtensionEnum.IS_VOICE) {
+                    audioVoice = element;
+                    audioVoice.addEventListener('ended', endedVoice);
+                } else {
+                    audioMusic = element;
+                    audioMusic.addEventListener('ended', endedMusic);
                 }
+
+                element.addEventListener('timeupdate', timeupdate);
             }
         },
         [audio],
     );
 
     useEffect(() => {
-        if (isPlaying && audio) {
-            audioEl?.play().catch(() => setIsPlaying(false));
-        }
+        const audioElement: HTMLAudioElement | null = audioVoice ?? audioMusic;
+        if (!audioElement) return;
 
-        if (!isPlaying && audio) {
-            audioEl?.pause();
-        }
+        if (isPlaying) audioElement.play().catch(() => setIsPlaying(false));
+        if (!isPlaying) audioElement.pause();
     }, [isPlaying, audio]);
+
+    /** сохранение музыки в кеше */
+    /** На случай после голосового вернуть mp3 */
+    useEffect(() => {
+        if (!audio) return;
+        if (FileMap.get('MP3')?.includes(audio?.file.mimeType) && audio.file.fileType === FileExtensionEnum.IS_MEDIA)
+            audioFile = audio;
+    }, [audio]);
 
     return (
         <AudioPlayerContext.Provider value={{ audio, isPlaying, progress, addFile, play, pause, seek }}>
-            <>{children}</>
+            <UpdateMediaSession>{children}</UpdateMediaSession>
         </AudioPlayerContext.Provider>
     );
 });
