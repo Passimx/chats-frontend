@@ -20,7 +20,8 @@ export const PageItem: FC<PropsType> = memo(({ children, name }) => {
                 <div
                     key={index}
                     style={{
-                        height: 'calc(100% - env(safe-area-inset-bottom, 32px) - env(safe-area-inset-bottom, 32px))',
+                        height: 'calc(100% - env(safe-area-inset-bottom, 32px))',
+                        paddingBottom: 'env(safe-area-inset-bottom, 32px)',
                     }}
                 >
                     {page}
