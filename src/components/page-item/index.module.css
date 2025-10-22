@@ -2,7 +2,6 @@
     width: 100%;
     height: calc(100% - env(safe-area-inset-bottom, 32px));
     position: absolute;
-    overflow: hidden;
     visibility: hidden;
     background-color: var(--menu-color);
     @media(width < 600px) {

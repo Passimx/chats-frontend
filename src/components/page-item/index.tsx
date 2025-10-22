@@ -15,7 +15,17 @@ export const PageItem: FC<PropsType> = memo(({ children, name }) => {
 
     return (
         <div className={`${setVisibilityCss(styles.show_slowly, styles.hide_slowly, visible)} ${styles.item}`}>
-            {pages?.map((page, index) => ({ ...page, key: `${index}` }))}
+            {/*{pages?.map((page, index) => ({ ...page, key: `${index}` }))}*/}
+            {pages?.map((page, index) => (
+                <div
+                    key={index}
+                    style={{
+                        height: 'calc(100% + env(safe-area-inset-bottom, 32px))',
+                    }}
+                >
+                    {page}
+                </div>
+            ))}
             {children}
         </div>
     );
