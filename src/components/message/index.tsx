@@ -1,73 +1,48 @@
-import { FC, memo, useContext, useEffect, useMemo } from 'react';
+import { FC, memo, useEffect, useMemo } from 'react';
 import styles from './index.module.css';
 import { PropsType } from './types/props.type.ts';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
-import { useVisibility } from './hooks/use-visibility.hook.ts';
 import { RenderMessage } from '../render-message';
 import { ParentMessage } from '../parent-message';
-import styles2 from '../menu-message/index.module.css';
-import { useAppSelector } from '../../root/store';
-import { ContextChat } from '../../pages/chat/context/chat-context.tsx';
+import { useAppAction, useAppSelector } from '../../root/store';
 import { MessageFile } from '../message-file';
 import { AudioFile } from '../message-audio';
 import { FileExtensionEnum, FileTypeEnum } from '../../root/types/files/types.ts';
 import { MessageImage } from '../message-image';
 import { MessageMp3 } from '../message-mp3';
 import { CanPlayAudio } from '../../common/hooks/can-play-audio.hook.ts';
+import moment from 'moment/min/moment-with-locales';
+import { useTranslation } from 'react-i18next';
+import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { useVisibility } from '../../common/hooks/use-visibility.hook.ts';
+import { useMessageMenu } from './hooks/use-message-menu.hook.ts';
+import { MessageVideo } from '../message-video';
 
 const Message: FC<PropsType> = memo((props) => {
-    const { number, type, findMessage } = props;
-    const elementId = useMemo(() => `message-${number}`, [number]);
-    const [observerTarget, visibleMessage, time] = useVisibility(props);
-    const { setClickMessage, setIsShowMessageMenu, isShowMessageMenu } = useContext(ContextChat)!;
-    const { isPhone } = useAppSelector((state) => state.app);
+    const { postMessageToBroadCastChannel } = useAppAction();
+    const { t } = useTranslation();
+    const { type } = props;
+    const { chatOnPage } = useAppSelector((state) => state.chats);
+    const [elementId] = useMessageMenu(props);
+    const [observerTarget, visible] = useVisibility();
 
     useEffect(() => {
-        let longPressTimer: NodeJS.Timeout;
-        const messageDiv = document.getElementById(elementId)!;
+        if (visible && chatOnPage?.readMessage !== undefined && props.number > chatOnPage.readMessage)
+            postMessageToBroadCastChannel({
+                event: EventsEnum.READ_MESSAGE,
+                data: { id: chatOnPage.id, readMessage: props.number },
+            });
+    }, [visible, chatOnPage?.readMessage]);
 
-        const setMenuPosition = (event: MouseEvent | TouchEvent) => {
-            const y: number = event instanceof MouseEvent ? event.y : event.touches[0].clientY;
+    const [visibleMessage, time] = useMemo(() => {
+        const time = moment(props.createdAt).format('LT');
+        let message;
+        if (type === MessageTypeEnum.IS_CREATED_CHAT) message = `${t(props.message)} «${chatOnPage?.title}»`;
+        else if (type === MessageTypeEnum.IS_SYSTEM) message = t(props.message);
+        else message = props.message;
 
-            event.preventDefault();
-            if (props.type === MessageTypeEnum.IS_CREATED_CHAT) {
-                if (isShowMessageMenu) setIsShowMessageMenu(false);
-                return;
-            }
-            setTimeout(() => setIsShowMessageMenu(true), 10);
-            const element = document.getElementById(styles2.message_menu)!;
-            const gap = '16px';
-
-            setClickMessage(props);
-
-            if (window.innerHeight / 2 > y) element.style.marginTop = `calc(${y}px + ${gap})`;
-            else element.style.marginTop = `calc(${y}px - ${element.clientHeight}px - ${gap})`;
-
-            if (isPhone) element.style.marginLeft = `calc(${window.innerWidth - element.clientWidth}px / 2)`;
-            else
-                element.style.marginLeft = `calc((${window.innerWidth - element.clientWidth}px + (var(--menu-margin) - var(--menu-width)) / 2) / 2)`;
-        };
-
-        const appleFunc = (e: TouchEvent) => {
-            if (e.touches.length > 1) return;
-            longPressTimer = setTimeout(() => setMenuPosition(e), 600);
-        };
-
-        const clearTimeOut = () => clearTimeout(longPressTimer);
-
-        if (isPhone) {
-            messageDiv.addEventListener('touchstart', appleFunc);
-            messageDiv.addEventListener('touchend', clearTimeOut);
-            messageDiv.addEventListener('touchmove', clearTimeOut);
-        } else messageDiv.addEventListener('contextmenu', setMenuPosition);
-        return () => {
-            if (isPhone) {
-                messageDiv.removeEventListener('touchstart', appleFunc);
-                messageDiv.removeEventListener('touchend', clearTimeOut);
-                messageDiv.removeEventListener('touchmove', clearTimeOut);
-            } else messageDiv.removeEventListener('contextmenu', setMenuPosition);
-        };
-    }, [isPhone, isShowMessageMenu]);
+        return [message, time];
+    }, [t]);
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
@@ -79,11 +54,12 @@ const Message: FC<PropsType> = memo((props) => {
     return (
         <>
             <div ref={observerTarget} id={elementId} className={`${styles.background}`}>
-                {!!props.parentMessage && <ParentMessage {...{ ...props.parentMessage, findMessage }} />}
+                {!!props.parentMessage && <ParentMessage {...{ ...props.parentMessage }} />}
                 <div className={styles.file_list}>
                     {props?.files?.map((file, index) => {
                         if (file.fileType === FileExtensionEnum.IS_VOICE) return <AudioFile key={index} file={file} />;
                         if (file.mimeType.includes(FileTypeEnum.IMAGE)) return <MessageImage key={index} file={file} />;
+                        if (file.mimeType.includes(FileTypeEnum.VIDEO)) return <MessageVideo key={index} file={file} />;
                         if (CanPlayAudio(file)) return <MessageMp3 key={index} file={file} />;
                         return <MessageFile key={index} file={file} />;
                     })}

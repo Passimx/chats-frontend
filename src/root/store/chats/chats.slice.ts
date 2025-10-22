@@ -5,7 +5,6 @@ import rawChats, { deleteChat, getRawChat, updateRawChat } from './chats.raw.ts'
 import { deleteChatIndexDb, updateChatIndexDb, upsertChatIndexDb } from './index-db/hooks.ts';
 import { MessageType } from '../../types/chat/message.type.ts';
 import { UpdateChat } from './types/update-chat.type.ts';
-import { UpdateReadChatType } from '../../types/chat/update-read-chat.type.ts';
 import { deleteCacheOne } from '../../../common/cache/delete-chat-cache.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 
@@ -24,6 +23,12 @@ const ChatsSlice = createSlice({
             if (!chat) return;
             const updatedChat = { ...chat, ...payload };
             if (chat.id === state.chatOnPage?.id) state.chatOnPage = { ...state.chatOnPage, ...updatedChat };
+
+            if (updatedChat.readMessage && updatedChat.readMessage !== chat.readMessage) {
+                const diff = updatedChat.readMessage - chat.readMessage;
+                state.messageCount -= diff;
+            }
+
             upsertChatIndexDb(updatedChat, chat.key);
             updateRawChat(updatedChat);
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
@@ -45,19 +50,33 @@ const ChatsSlice = createSlice({
 
         addUpdatedChat(state, { payload }: PayloadAction<ChatItemIndexDb>) {
             const updatedChat = payload;
+            const chat = getRawChat(payload.id);
+
+            // чат был только что добавлен
+            if (!chat) {
+                const diff = payload.countMessages - payload.readMessage;
+                state.messageCount += diff;
+            }
+
             rawChats.updatedChats.delete(updatedChat.id);
             rawChats.updatedChats.set(updatedChat.id, updatedChat);
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
         },
 
         createMessage(state, { payload }: PayloadAction<MessageType>) {
+            // обновление страницы чата
             if (payload.chatId === state.chatOnPage?.id && payload.number > state.chatOnPage.message.number) {
-                // if (payload) {
-                //     state.chatOnPage.message = [...state.chatOnPage.message];
-                // }
-
                 state.chatOnPage.message = payload;
                 state.chatOnPage.countMessages++;
+
+                const messages = state.chatOnPage.messages;
+                const count = messages.length;
+                const lastMessage = messages[count - 1];
+
+                if (payload.number - 1 === lastMessage.number) {
+                    messages.push(payload);
+                    state.chatOnPage.messages = messages;
+                }
             }
 
             const chat = getRawChat(payload.chatId);
@@ -136,16 +155,6 @@ const ChatsSlice = createSlice({
             for (const [key, value] of Object.entries(payload) as [keyof StateType, StateType[keyof StateType]][]) {
                 state[key] = value as never;
             }
-        },
-
-        calculateMessageCount(state, { payload: { id, readMessage } }: PayloadAction<UpdateReadChatType>) {
-            const chat = getRawChat(id)!;
-            const diff = readMessage - chat.readMessage;
-            state.messageCount = state.messageCount - diff;
-        },
-
-        addMessageCount(state, { payload }: PayloadAction<number>) {
-            state.messageCount += payload;
         },
     },
 });

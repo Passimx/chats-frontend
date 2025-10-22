@@ -55,8 +55,6 @@ html{
 
 #pages{
     overflow: hidden;
-    position: absolute;
-    height: calc(100% - var(--menu-height) - env(safe-area-inset-bottom, 32px));
     width: 100%;
     background-color: var(--menu-color);
 }

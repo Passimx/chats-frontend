@@ -8,6 +8,7 @@ import ChatItem from '../../components/chat-item';
 import rawChats from '../../root/store/chats/chats.raw.ts';
 import { ChatType } from '../../root/types/chat/chat.type.ts';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
+import { MenuPadding } from '../../components/menu/compenents/menu-padding';
 
 const Chats: FC = memo(() => {
     const navigate = useCustomNavigate();
@@ -61,6 +62,7 @@ const Chats: FC = memo(() => {
                         ),
                     )}
                     <SearchGlobalChats input={input} changeIsLoading={setIsLoading} />
+                    <MenuPadding />
                 </div>
             </div>
             <div id={styles.page_block}>

@@ -22,6 +22,7 @@ type EnvsType = {
         files: string;
         static: string;
     };
+    catchLogs?: boolean;
     settings?: Partial<SettingsType>;
 };
 
@@ -36,6 +37,7 @@ export const Envs: EnvsType = {
     chats: {
         limit: 250,
     },
+    catchLogs: import.meta.env.VITE_CATCH_LOGS !== 'false',
     cache: {
         files: 'files-cache-name',
         static: `static-v-${json.version}`,

@@ -1,19 +1,25 @@
 html {
-    --menu-height: 50px;
-}
-
-#menu{
-    display: grid;
-    background-color: #0a4375;
-    grid-template-columns: 1fr 1fr;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: var(--menu-height);
+    --menu-height: calc(50px + env(safe-area-inset-bottom, 32px));
+    --menu-bottom: 8px;
 
     @media(width < 600px) {
-        padding-bottom: env(safe-area-inset-bottom, 32px);
+        --menu-bottom: 8px;
     }
+}
+
+#background{
+    position: absolute;
+    bottom: calc(var(--menu-bottom) + env(safe-area-inset-bottom, 32px));
+    width: 240px;
+    left: calc((var(--menu-width) - 240px) / 2);
+    display: grid;
+    grid-template-columns: 50% 50%;
+    border-radius: 16px;
+    background-color: rgb(255, 255, 255, 8%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 }
 
 .menu_item{
@@ -94,4 +100,14 @@ html {
     color: white;
     font-size: 10px;
     transition: all .3s ease;
+}
+
+.hide{
+    opacity: 0;
+    visibility: hidden;
+}
+
+.show{
+    opacity: 1;
+    visibility: visible;
 }

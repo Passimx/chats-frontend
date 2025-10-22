@@ -1,4 +1,4 @@
 export type RawAppType = {
     isMainTab: boolean;
-    tabs: string[];
+    tabs: number[];
 };

@@ -9,9 +9,9 @@ import { MdDownloadForOffline } from 'react-icons/md';
 import { Envs } from '../../common/config/envs/envs.ts';
 import { useTranslation } from 'react-i18next';
 import { useVisibility } from '../../common/hooks/use-visibility.hook.ts';
-import { CiImageOn } from 'react-icons/ci';
+import { GoVideo } from 'react-icons/go';
 
-export const MessageImage: FC<PropsType> = memo(({ file }) => {
+export const MessageVideo: FC<PropsType> = memo(({ file }) => {
     const { t } = useTranslation();
     const r = 17;
     const strokeWidth = 3;
@@ -38,7 +38,7 @@ export const MessageImage: FC<PropsType> = memo(({ file }) => {
             <div className={styles.file_background} style={{ backgroundImage }}>
                 {downloadPercent === undefined && (
                     <div className={styles.file_icon}>
-                        <CiImageOn className={styles.file_logo} />
+                        <GoVideo className={styles.file_logo} />
                         <BsDownload className={styles.download_logo} />
                     </div>
                 )}

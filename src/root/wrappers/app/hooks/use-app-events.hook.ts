@@ -13,16 +13,7 @@ import { getCacheMemory } from '../../../../common/cache/get-cache-memory.ts';
 export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
     const [playNotificationSound] = useLoadSoundsHooks();
-    const {
-        updateMany,
-        setStateApp,
-        addMessageCount,
-        calculateMessageCount,
-        createMessage,
-        removeChat,
-        update,
-        changeSettings,
-    } = useAppAction();
+    const { updateMany, setStateApp, createMessage, removeChat, update, changeSettings } = useAppAction();
 
     return useCallback(async (dataEvent: DataType) => {
         const { event, data } = dataEvent;
@@ -35,9 +26,7 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.ADD_CHAT:
                 setToBegin(data);
-
                 if (data.type === ChatEnum.IS_SYSTEM) setStateApp({ systemChatId: data.id });
-                addMessageCount(data.countMessages - data.readMessage);
                 playNotificationSound();
                 break;
             case EventsEnum.CREATE_CHAT:
@@ -45,7 +34,7 @@ export const useAppEvents = () => {
                 setToBegin({
                     ...data.data,
                     messages: [],
-                    readMessage: 1,
+                    readMessage: 0,
                     online: '1',
                     maxUsersOnline: '1',
                     scrollTop: 0,
@@ -61,7 +50,6 @@ export const useAppEvents = () => {
 
                 break;
             case EventsEnum.READ_MESSAGE:
-                calculateMessageCount(data);
                 update(data);
                 break;
             case EventsEnum.REMOVE_CHAT:
@@ -81,7 +69,6 @@ export const useAppEvents = () => {
                     if (!chat) return;
                     if (Number(maxUsersOnline) > Number(chat.maxUsersOnline)) update({ id, maxUsersOnline });
                 });
-
                 break;
             case EventsEnum.CLOSE_SOCKET:
                 setStateApp({ socketId: undefined });

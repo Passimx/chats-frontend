@@ -4,12 +4,11 @@ import { GoFileMedia } from 'react-icons/go';
 import { CiFileOn } from 'react-icons/ci';
 import { useOpenMedia } from './hooks/use-open-media.hook.ts';
 import { PropsType } from './types.ts';
-import useVisibility from '../../common/hooks/use-visibility.ts';
+import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
 import useClickOutside from '../../common/hooks/use-click-outside.ts';
 import { useTranslation } from 'react-i18next';
 
 export const MediaMenu: FC<PropsType> = memo(({ isVisibleMediaMenuOutside, setIsVisibleMediaMenuOutside }) => {
-    const visibility = useVisibility;
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const [openMedia, openFiles] = useOpenMedia(setIsVisible);
     const { t } = useTranslation();
@@ -27,7 +26,7 @@ export const MediaMenu: FC<PropsType> = memo(({ isVisibleMediaMenuOutside, setIs
     return (
         <div
             ref={wrapperRef}
-            className={`${styles.background} ${visibility(styles.show_slowly, styles.hide_slowly, isVisible)}`}
+            className={`${styles.background} ${setVisibilityCss(styles.show_slowly, styles.hide_slowly, isVisible)}`}
         >
             <div className={styles.menu_item} onClick={openMedia}>
                 <GoFileMedia className={styles.menu_item_icon} />

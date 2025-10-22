@@ -7,7 +7,7 @@ import { PreviewFile } from '../preview-file';
 import { BsFillArrowUpCircleFill } from 'react-icons/bs';
 import { useSendMessage } from './hooks/use-send-message.hook.ts';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
-import useVisibility from '../../common/hooks/use-visibility.ts';
+import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
 import { useTranslation } from 'react-i18next';
 import { FileTypeEnum } from '../../root/types/files/types.ts';
 import { PreviewMusic } from '../preview-music';
@@ -15,7 +15,6 @@ import { setThemeColor } from '../../common/hooks/set-theme-color.ts';
 import { getFileSize } from '../../common/hooks/get-file-size.ts';
 
 export const PreviewMedia: FC = memo(() => {
-    const visibility = useVisibility;
     const [isShowPlaceholder] = useSendMessage();
     const { t } = useTranslation();
     const { files, setFiles } = useContext(ContextMedia)!;
@@ -75,7 +74,7 @@ export const PreviewMedia: FC = memo(() => {
                         </div>
                         <div id={styles.new_message_block}>
                             <div
-                                className={`${styles.placeholder_text} ${visibility(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)} text_translate`}
+                                className={`${styles.placeholder_text} ${setVisibilityCss(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)} text_translate`}
                                 dir="auto"
                             >
                                 {t('chats_enter_message')}
