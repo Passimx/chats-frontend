@@ -3,7 +3,7 @@ html {
     --menu-bottom: 8px;
 
     @media(width < 600px) {
-        --menu-bottom: 16px;
+        --menu-bottom: 8px;
     }
 }
 
