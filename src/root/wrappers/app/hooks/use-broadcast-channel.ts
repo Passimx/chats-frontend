@@ -14,7 +14,7 @@ export const useBroadcastChannel = () => {
     useEffect(() => {
         const channel = new BroadcastChannel('ws-channel');
 
-        const instanceId = crypto.randomUUID();
+        const instanceId = Date.now();
         rawApp.tabs = [instanceId];
 
         const getMain = () => {
@@ -36,16 +36,16 @@ export const useBroadcastChannel = () => {
             }
         };
 
-        const createTab = (tab: string) => {
+        const createTab = (tab: number) => {
             rawApp.tabs = Array.from(new Set([...rawApp.tabs, tab])).sort();
             channelSend.postMessage({ event: TabEvents.SYNC_TAB, data: rawApp.tabs });
         };
 
-        const syncTabs = (tabs: string[]) => {
+        const syncTabs = (tabs: number[]) => {
             rawApp.tabs = Array.from(new Set([...rawApp.tabs, ...tabs])).sort();
         };
 
-        const deleteTab = (tab: string) => {
+        const deleteTab = (tab: number) => {
             const set = new Set(rawApp.tabs);
             set.delete(tab);
             rawApp.tabs = Array.from(set).sort();
