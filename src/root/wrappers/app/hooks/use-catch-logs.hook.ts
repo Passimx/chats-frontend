@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
 import { useAppAction } from '../../../store';
+import { Envs } from '../../../../common/config/envs/envs.ts';
 
 export const useCatchLogs = () => {
     const { addLog } = useAppAction();
 
     useEffect(() => {
+        if (!Envs.catchLogs) return;
+
         const methods: (keyof Console)[] = ['log', 'warn', 'error', 'info', 'debug'];
         const originals: Partial<Record<keyof Console, unknown>> = {};
 

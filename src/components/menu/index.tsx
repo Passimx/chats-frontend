@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { IoSettingsOutline } from 'react-icons/io5';
 import { TabEnum } from '../../root/store/app/types/state.type.ts';
+import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
 
 export const Menu = memo(() => {
     const { t } = useTranslation();
@@ -26,7 +27,10 @@ export const Menu = memo(() => {
     );
 
     return (
-        <div id={styles.menu}>
+        <div
+            id={styles.background}
+            className={`${setVisibilityCss(styles.show, styles.hide, !pages.get(activeTab)?.length)}`}
+        >
             {/*<div*/}
             {/*    className={`${styles.menu_item} ${activeTab === TabEnum.SERVICES && styles.menu_item_active}`}*/}
             {/*    onClick={() => onClickMenuTab(TabEnum.SERVICES)}*/}
