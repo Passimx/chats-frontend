@@ -1,6 +1,7 @@
 .item{
     width: 100%;
     position: absolute;
+    height: calc(100% - env(safe-area-inset-bottom, 32px));
     visibility: hidden;
     background-color: var(--menu-color);
     @media(width < 600px) {
@@ -8,7 +9,6 @@
         user-select: none;
     }
 
-    height: calc(100% - env(safe-area-inset-bottom, 32px));
 }
 
 .item_inside{
