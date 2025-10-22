@@ -180,6 +180,7 @@ export const MimeToExt = new Map<string, string>([
     ['image/bmp', 'bmp'],
     ['image/gif', 'gif'],
     ['image/jpeg', 'jpg'],
+    ['image/jpeg', 'jpeg'],
     ['image/png', 'png'],
     ['image/svg+xml', 'svg'],
     ['image/tiff', 'tiff'],

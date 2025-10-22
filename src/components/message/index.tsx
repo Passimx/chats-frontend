@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { useVisibility } from '../../common/hooks/use-visibility.hook.ts';
 import { useMessageMenu } from './hooks/use-message-menu.hook.ts';
+import { MessageVideo } from '../message-video';
 
 const Message: FC<PropsType> = memo((props) => {
     const { postMessageToBroadCastChannel } = useAppAction();
@@ -58,6 +59,7 @@ const Message: FC<PropsType> = memo((props) => {
                     {props?.files?.map((file, index) => {
                         if (file.fileType === FileExtensionEnum.IS_VOICE) return <AudioFile key={index} file={file} />;
                         if (file.mimeType.includes(FileTypeEnum.IMAGE)) return <MessageImage key={index} file={file} />;
+                        if (file.mimeType.includes(FileTypeEnum.VIDEO)) return <MessageVideo key={index} file={file} />;
                         if (CanPlayAudio(file)) return <MessageMp3 key={index} file={file} />;
                         return <MessageFile key={index} file={file} />;
                     })}
