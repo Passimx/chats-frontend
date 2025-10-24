@@ -2,6 +2,7 @@ import { useAppAction, useAppSelector } from '../../../store';
 import { useEffect } from 'react';
 import { getSystemChat, listenChats } from '../../../api/chats';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
+import { rawApp } from '../../../store/app/app.raw.ts';
 
 export const useCheckSystemChat = () => {
     const { postMessageToBroadCastChannel } = useAppAction();
@@ -24,7 +25,7 @@ export const useCheckSystemChat = () => {
     };
 
     useEffect(() => {
-        if (systemChatId || !isLoadedChatsFromIndexDb || !isListening) return;
+        if (systemChatId || !isLoadedChatsFromIndexDb || !isListening || !rawApp.isMainTab) return;
         setSystemChat();
     }, [systemChatId, isLoadedChatsFromIndexDb, isListening]);
 };

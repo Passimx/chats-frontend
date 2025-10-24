@@ -20,7 +20,6 @@ import { PageItem } from '../../../components/page-item';
 import { TabEnum } from '../../store/app/types/state.type.ts';
 import { PreviewMedia } from '../../../components/preview-media';
 import { PreviewMediaContext } from '../../../components/preview-media-context';
-import { useUpdateStaticCache } from './hooks/use-update-static-cache.hook.ts';
 import { useIsIos } from './hooks/use-is-ios.hook.ts';
 import { useBattery } from './hooks/use-battery.hook.ts';
 import { useSettings } from './hooks/use-settings.hook.ts';
@@ -50,8 +49,6 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     // todo
     // перенести на сервер
     useEffect(changeHead, []);
-    // update cache files
-    useUpdateStaticCache();
     // catch all app log-list
     useCatchLogs();
     // calculate ios device
