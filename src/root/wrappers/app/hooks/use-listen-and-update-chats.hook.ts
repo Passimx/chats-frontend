@@ -1,4 +1,4 @@
-import { useAppAction, useAppSelector } from '../../../store';
+import { store, useAppAction, useAppSelector } from '../../../store';
 import { useCallback, useEffect } from 'react';
 import { listenChats } from '../../../api/chats';
 import { ChatListenRequestType } from '../../../types/chat/chat-listen-request.type.ts';
@@ -7,9 +7,8 @@ import { ChatItemIndexDb, ChatType } from '../../../types/chat/chat.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 
 export const useListenAndUpdateChats = () => {
-    const { setStateApp, setToBegin, postMessageToBroadCastChannel } = useAppAction();
+    const { setStateApp, setToBegin, postMessageToBroadCastChannel, setStateChat } = useAppAction();
     const { socketId, isLoadedChatsFromIndexDb, isOnline } = useAppSelector((state) => state.app);
-
     const compareFn = useCallback((chat1: ChatType, chat2: ChatType) => {
         const firstDate = new Date(chat1.message.createdAt).getTime();
         const secondDate = new Date(chat2.message.createdAt).getTime();
@@ -19,6 +18,7 @@ export const useListenAndUpdateChats = () => {
     }, []);
 
     useEffect(() => {
+        let messageCount = store.getState().chats.messageCount;
         if (!socketId) setStateApp({ isListening: false });
         if (!socketId || !isLoadedChatsFromIndexDb || !isOnline) return;
         if (!getRawChats().length) {
@@ -49,8 +49,11 @@ export const useListenAndUpdateChats = () => {
                     const updatedChat: ChatItemIndexDb = { ...chatFromRaw, ...chat };
 
                     if (updatedChat.countMessages > chatFromRaw.countMessages) {
+                        const diff = updatedChat.countMessages - chatFromRaw.countMessages;
+                        messageCount += diff;
                         isPlayNotification = true;
                         setToBegin(updatedChat);
+                        setStateChat({ messageCount });
                     }
                 });
 
