@@ -22,8 +22,8 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
         setIsPlaying(false);
     }, []);
 
-    const endedMusic = useCallback(() => {
-        audioMusic?.play();
+    const ended = useCallback(() => {
+        setIsPlaying(false);
     }, []);
 
     const endedVoice = useCallback(() => {
@@ -68,8 +68,9 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
                     audioVoice = element;
                     audioVoice.addEventListener('ended', endedVoice);
                 } else {
+                    element.loop = true;
                     audioMusic = element;
-                    audioMusic.addEventListener('ended', endedMusic);
+                    audioMusic.addEventListener('ended', ended);
                 }
 
                 element.addEventListener('timeupdate', timeupdate);

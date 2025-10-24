@@ -5,7 +5,7 @@ import { ChatListenRequestType } from '../../../types/chat/chat-listen-request.t
 import rawChats, { getRawChat, getRawChats } from '../../../store/chats/chats.raw.ts';
 import { ChatItemIndexDb, ChatType } from '../../../types/chat/chat.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
-import { rawApp } from '../../../store/app/app.raw.ts';
+// import { rawApp } from '../../../store/app/app.raw.ts';
 
 export const useListenAndUpdateChats = () => {
     const { setStateApp, setToBegin, postMessageToBroadCastChannel, setStateChat } = useAppAction();
@@ -19,7 +19,9 @@ export const useListenAndUpdateChats = () => {
     }, []);
 
     useEffect(() => {
-        if (!rawApp.isMainTab) return;
+        // todo
+        // вернуть
+        // if (!rawApp.isMainTab) return;
         if (!socketId) setStateApp({ isListening: false });
         if (!socketId || !isLoadedChatsFromIndexDb || !isOnline) return;
         if (!getRawChats().length) {
@@ -54,7 +56,7 @@ export const useListenAndUpdateChats = () => {
 
                         // todo
                         // доработать логику с join - чтобы это было в одной вкладке
-                        // и ретраснлировалось другим вкладкам и вновь открывшимся вкладкам
+                        // и ретранслировалось другим вкладкам и вновь открывшимся вкладкам
                         // data.map((chat) => ({ id: chat.id, maxUsersOnline: chat.maxUsersOnline }));
 
                         // postMessageToBroadCastChannel({
