@@ -9,11 +9,15 @@ export const useListenScroll = (): [boolean | undefined] => {
     const [isVisibleBottomButton, setIsVisibleBottomButton] = useState<boolean>();
     const messages = chatOnPage?.messages;
 
-    /** проверка нужно ли показывать кнопку прокрутки сообщений */
+    /** проверка нужно ли показывать кнопку прокрутки сообщений при открытии чата*/
     useEffect(() => {
         if (!chatOnPage?.id) return;
+
+        const el = document.getElementById(styles.messages)!;
+        const scrollTop = chatOnPage.scrollTop - (el.scrollHeight - el.clientHeight);
+
         const chat = getRawChat(chatOnPage.id);
-        if (!chat || !(chat.scrollTop < -200)) setIsVisibleBottomButton(undefined);
+        if (!chat || !(scrollTop < -200)) setIsVisibleBottomButton(undefined);
         else setIsVisibleBottomButton(true);
     }, [chatOnPage?.id]);
 

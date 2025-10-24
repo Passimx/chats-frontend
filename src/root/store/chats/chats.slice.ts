@@ -19,10 +19,11 @@ const ChatsSlice = createSlice({
     initialState,
     reducers: {
         update(state, { payload }: PayloadAction<UpdateChat>) {
+            if (payload.id === state.chatOnPage?.id) state.chatOnPage = { ...state.chatOnPage, ...payload };
+
             const chat = getRawChat(payload.id);
             if (!chat) return;
             const updatedChat = { ...chat, ...payload };
-            if (chat.id === state.chatOnPage?.id) state.chatOnPage = { ...state.chatOnPage, ...updatedChat };
 
             if (updatedChat.readMessage && updatedChat.readMessage !== chat.readMessage) {
                 const diff = updatedChat.readMessage - chat.readMessage;
@@ -85,7 +86,8 @@ const ChatsSlice = createSlice({
             const countMessages = Math.max(payload.number, chat.countMessages);
             const messages = [...chat.messages];
 
-            if (chat.message.number + 1 === payload.number) messages.push({ ...payload, saveAt: Date.now() });
+            if (chat.messages[chat.messages.length - 1].number + 1 === payload.number)
+                messages.push({ ...payload, saveAt: Date.now() });
 
             const updatedChat: ChatItemIndexDb = {
                 ...chat,

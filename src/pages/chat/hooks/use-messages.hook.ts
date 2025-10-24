@@ -13,23 +13,14 @@ import { useLocation } from 'react-router-dom';
 export const useMessages = (): UseMessagesType => {
     const location = useLocation();
     const { update, setChatOnPage } = useAppAction();
-    const [messageId, setMessageId] = useState<string>();
     const [isLoading, setIsLoading] = useState<LoadingType>();
+    const [messageNumber, setMessageNumber] = useState<number>();
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
-    // const { postMessageToBroadCastChannel, update } = useAppAction();
 
-    // /** сообщение которое нужно найти */
-    // const searchMessageNumber = useMemo(() => {
-    //     setIsLoading(undefined);
-    //     const params = new URL(document.location.toString()).searchParams;
-    //     const messageParam = params.get('message');
-    //     console.log(messageParam);
-    //     return messageParam ? Number(messageParam) : null;
-    // }, [chatOnPage?.id]);
-
-    const showLastMessages = useCallback(() => {
+    const showLastMessages = useCallback(async () => {
         if (!chatOnPage?.messages?.length) return;
+        if (isLoading) return;
         const el = document.getElementById(styles.messages)!;
 
         if (chatOnPage.messages[chatOnPage.messages.length - 1]?.number === chatOnPage.countMessages) {
@@ -38,47 +29,65 @@ export const useMessages = (): UseMessagesType => {
         } else {
             setChatOnPage({ messages: [chatOnPage.message] });
             setIsLoading(LoadingType.OLD);
-            //     requestAnimationFrame(() => {
-            //         setTimeout(() => {
-            //             el.scrollTo({ behavior: 'instant', top: el.scrollHeight });
-            //             update({ id: chatOnPage.id, scrollTop: el.scrollHeight });
-            //         });
-            //     });
+            const limit = Envs.settings?.messagesLimit ?? 250;
+
+            const response = await getMessages({
+                offset: Math.max(0, chatOnPage.countMessages - limit),
+                chatId: chatOnPage.id,
+                limit,
+            });
+
+            setIsLoading(undefined);
+            if (!response.success) return;
+            update({ id: chatOnPage.id, messages: response.data });
+
+            const el = document.getElementById(styles.messages)!;
+            const ro = new ResizeObserver(() => {
+                el.scrollTo({ behavior: 'instant', top: el.scrollHeight });
+                ro.disconnect();
+            });
+            ro.observe(el);
         }
-    }, [chatOnPage?.messages]);
+    }, [chatOnPage?.message, isLoading]);
 
-    const findMessage = useCallback(async () => {
-        if (!chatOnPage) return;
-        // const el = document.getElementById(styles.messages)!;
-        //         const offset =
-        //             chatOnPage.countMessages - number > 250
-        //                 ? chatOnPage.countMessages - number - Envs.messages.limit + 1
-        //                 : 0;
-        //         const limit =
-        //             chatOnPage.countMessages - number > 250 ? Envs.messages.limit : chatOnPage.countMessages - number + 1;
-        setChatOnPage({ messages: [] });
-        setIsLoading(LoadingType.OLD);
-        //         const response = await getMessages(chatOnPage.id, limit, offset);
-        //         if (!response.success) return;
-        //         bottomMessage = number;
-        //         setIsLoading(undefined);
-        //         setMessages(response.data);
-        //         requestAnimationFrame(() => {
-        //             setTimeout(() => {
-        //                 el.scrollTo({ behavior: 'instant', top: -el.scrollHeight });
-        //                 update({ id: chatOnPage.id, messages: response.data, scrollTop: el.scrollTop });
-        //             });
-        //         });
-    }, [chatOnPage?.id, messageId]);
+    const findMessage = useCallback(
+        async (number: number) => {
+            if (!chatOnPage) return;
+            setChatOnPage({ messages: [] });
+            setIsLoading(LoadingType.OLD);
+            setMessageNumber(undefined);
 
-    /** загрузка первых сообщений */
+            const response = await getMessages({
+                offset: Math.max(0, number - 10),
+                chatId: chatOnPage.id,
+                limit: Envs.settings?.messagesLimit ?? 250,
+            });
+
+            if (!response.success) return;
+            setIsLoading(undefined);
+            update({ id: chatOnPage.id, messages: response.data });
+
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    const element = document.getElementById(`message-${number}`);
+                    element?.scrollIntoView();
+                });
+            });
+        },
+        [chatOnPage?.id],
+    );
+
+    // /** загрузка первых сообщений */
     useEffect(() => {
         if (!isLoadedChatsFromIndexDb) return;
         if (!chatOnPage?.id) return;
-        const el = document.getElementById(styles.messages)!;
+        setIsLoading(undefined);
+
+        const params = new URLSearchParams(location.search);
+        const number = params.get('number');
 
         /** загрузка сообщений с сервера */
-        if (!chatOnPage?.messages?.length) {
+        if (!chatOnPage?.messages?.length && !number) {
             setIsLoading(LoadingType.OLD);
             setChatOnPage({ messages: [chatOnPage.message] });
 
@@ -90,30 +99,31 @@ export const useMessages = (): UseMessagesType => {
                 if (!success) return;
 
                 update({ id: chatOnPage.id, messages: data });
-                setChatOnPage({ messages: data });
-                requestAnimationFrame(() => {
-                    setTimeout(() => {
-                        /** смещается на 0.5, чтобы не было моментальной загрузки новых сообщений */
-                        el.scrollTo({ behavior: 'instant', top: el.scrollHeight - 0.5 });
-                    });
+                const el = document.getElementById(styles.messages)!;
+                const ro = new ResizeObserver(() => {
+                    el.scrollTo({ behavior: 'instant', top: el.scrollHeight });
+                    ro.disconnect();
                 });
+                ro.observe(el);
             });
         }
     }, [chatOnPage?.id, isLoadedChatsFromIndexDb]);
 
     /** обновление параметра из адресной строки */
     useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const message = params.get('message');
-        if (message && message !== messageId) setMessageId(message);
-    }, [location, messageId]);
+        if (!chatOnPage?.id) return;
 
-    useEffect(() => {
-        if (!messageId) return;
-        const element = document.getElementById(`message-${messageId}`);
-        if (element) element.scrollIntoView();
-        else findMessage();
-    }, [messageId]);
+        const params = new URLSearchParams(location.search);
+        const number = params.get('number');
+
+        if (number) {
+            setMessageNumber(Number(number));
+            const element = document.getElementById(`message-${number}`);
+
+            if (element) element.scrollIntoView();
+            else findMessage(Number(number));
+        }
+    }, [location, messageNumber, chatOnPage?.id]);
 
     // /** загрузка сообщений */
     // const loadMessages = useCallback(
