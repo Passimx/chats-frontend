@@ -27,13 +27,13 @@ import { MenuMessage } from '../../components/menu-message';
 import { InputMessage } from '../../components/input-message';
 
 const Chat: FC = memo(() => {
-    const { chatOnPage } = useAppSelector((state) => state.chats);
     useGetChat();
     useJoinChat();
     const { t } = useTranslation();
+    const [addChat, leave, back] = useMethods();
     const [isLoading, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
-    const [addChat, leave, back] = useMethods();
+    const { chatOnPage } = useAppSelector((state) => state.chats);
 
     if (!chatOnPage) return <></>;
 
@@ -112,7 +112,7 @@ const Chat: FC = memo(() => {
                     <div></div>
                     <div id={styles.messages}>
                         {isLoading === LoadingType.OLD && <RotateLoading />}
-                        {chatOnPage.messages?.map((message) => <Message key={message.id} {...message} />)}
+                        {chatOnPage?.messages?.map((message) => <Message key={message.id} {...message} />)}
                         {isLoading === LoadingType.NEW && <RotateLoading />}
                     </div>
                 </div>
