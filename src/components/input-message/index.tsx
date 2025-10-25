@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useMemo, useState } from 'react';
 import styles from './index.module.css';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { ParentMessage } from '../parent-message';
@@ -14,10 +14,12 @@ import { FaMicrophone } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { CgMenuGridO } from 'react-icons/cg';
 import { MediaMenu } from '../media-menu';
+import { ContextChat } from '../../pages/chat/context/chat-context.tsx';
 
-export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomButton }) => {
+export const InputMessage: FC<PropsType> = ({ showLastMessages }) => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { update, setChatOnPage } = useAppAction();
+    const { isShowLastMessagesButton } = useContext(ContextChat)!;
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
     const [isVisibleMediaMenu, setIsVisibleMediaMenu] = useState<boolean>();
     const [textExist, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
@@ -98,7 +100,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages, isVisibleBottomB
                     <div id={styles.button_input_background}>
                         <div
                             id={styles.bottom_button_background}
-                            className={`${setVisibilityCss(styles.show_bottom_button, styles.hide_bottom_button, isVisibleBottomButton)}`}
+                            className={`${setVisibilityCss(styles.show_bottom_button, styles.hide_bottom_button, isShowLastMessagesButton)}`}
                             onClick={showLastMessages}
                         >
                             <BsFillArrowUpCircleFill id={`${styles.bottom_button}`} />

@@ -21,7 +21,6 @@ import { LiaEyeSolid } from 'react-icons/lia';
 import { RxLockClosed, RxLockOpen1 } from 'react-icons/rx';
 import { useMethods } from './hooks/use-methods.hooks.ts';
 import { RotateLoading } from '../../components/rotate-loading';
-import { useListenScroll } from './hooks/use-listen-scroll.hook.ts';
 import { FaStar } from 'react-icons/fa';
 import { LoadingType } from './types/loading.type.ts';
 import { MenuMessage } from '../../components/menu-message';
@@ -35,7 +34,6 @@ const Chat: FC = memo(() => {
     const [isLoading, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const [addChat, leave, back] = useMethods();
-    const [isVisibleBottomButton] = useListenScroll();
 
     if (!chatOnPage) return <></>;
 
@@ -119,7 +117,7 @@ const Chat: FC = memo(() => {
                     </div>
                 </div>
             </div>
-            <InputMessage {...{ isVisibleBottomButton, showLastMessages }} />
+            <InputMessage {...{ showLastMessages }} />
         </div>
     );
 });

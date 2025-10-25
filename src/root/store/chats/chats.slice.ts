@@ -107,8 +107,11 @@ const ChatsSlice = createSlice({
         setToBegin(state, { payload }: PayloadAction<ChatItemIndexDb>) {
             const chat = getRawChat(payload.id);
             const updatedChat: ChatItemIndexDb = {
+                ...chat,
                 ...payload,
             };
+
+            if (state.chatOnPage?.id === payload.id) state.chatOnPage = { ...state.chatOnPage, ...payload };
 
             upsertChatIndexDb(updatedChat, chat?.key);
             rawChats.chats.delete(payload.id);
