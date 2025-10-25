@@ -23,12 +23,20 @@ export const useListenScroll = () => {
         const messagesBlock = document.getElementById(styles.messages)!;
         if (!messagesBlock) return;
         if (!chatOnPage?.id) return;
+        let scrollTimeout: NodeJS.Timeout;
 
         const scrollEnd = () => {
-            update({ id: chatOnPage.id, scrollTop: messagesBlock.scrollTop });
+            clearTimeout(scrollTimeout);
+
+            scrollTimeout = setTimeout(() => {
+                update({ id: chatOnPage.id, scrollTop: messagesBlock.scrollTop });
+            }, 150);
         };
 
-        messagesBlock.addEventListener('scrollend', scrollEnd);
-        return () => messagesBlock.removeEventListener('scrollend', scrollEnd);
+        messagesBlock.addEventListener('scroll', scrollEnd);
+        return () => {
+            clearTimeout(scrollTimeout);
+            messagesBlock.removeEventListener('scroll', scrollEnd);
+        };
     }, [chatOnPage?.id, messages?.length]);
 };
