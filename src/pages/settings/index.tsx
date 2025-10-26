@@ -15,8 +15,6 @@ import { getFileSize } from '../../common/hooks/get-file-size.ts';
 import { LogList } from '../../components/log-list';
 import { EnvironmentEnum, Envs } from '../../common/config/envs/envs.ts';
 import { Memory } from '../../components/memory';
-import { RiShieldKeyholeLine } from 'react-icons/ri';
-import { Privacy } from '../../components/privacy';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
@@ -44,12 +42,12 @@ export const Settings = memo(() => {
     return (
         <div id={styles.background}>
             <MenuTitle icon={<IoSettingsOutline />} title={'settings'} />
-            <div className={styles.items}>
-                <div className={styles.item} onClick={() => selectMenu(<Privacy />)}>
-                    <RiShieldKeyholeLine className={styles.item_logo} />
-                    <div className="text_translate">{t('privacy_policy')}</div>
-                </div>
-            </div>
+            {/*<div className={styles.items}>*/}
+            {/*    <div className={styles.item} onClick={() => selectMenu(<Privacy />)}>*/}
+            {/*        <RiShieldKeyholeLine className={styles.item_logo} />*/}
+            {/*        <div className="text_translate">{t('privacy_policy')}</div>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
 
             {/*todo*/}
             {/*<div className={styles.items}>*/}

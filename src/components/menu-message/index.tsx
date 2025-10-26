@@ -56,7 +56,7 @@ export const MenuMessage: FC = memo(() => {
         url.search = ''; // удаляем query-параметры
         setIsShowMessageMenu(false);
 
-        navigator.clipboard.writeText(`${url}?message=${clickMessage?.number}`);
+        navigator.clipboard.writeText(`${url}?number=${clickMessage?.number}`);
     }, [clickMessage]);
 
     useEffect(() => {

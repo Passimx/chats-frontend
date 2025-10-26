@@ -12,8 +12,8 @@ export const ParentMessage: FC<PropsType> = (props) => {
     const navigate = useCustomNavigate();
 
     const click = useCallback(() => {
-        navigate(`/${props.chatId}?message=${props.id}`);
-        const element = document.getElementById(`message-${props.id}`);
+        navigate(`/${props.chatId}?number=${props.number}`);
+        const element = document.getElementById(`message-${props.number}`);
         if (element) element.scrollIntoView();
     }, []);
 

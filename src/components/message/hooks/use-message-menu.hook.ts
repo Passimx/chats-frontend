@@ -6,8 +6,8 @@ import { MessageTypeEnum } from '../../../root/types/chat/message-type.enum.ts';
 import styles2 from '../../menu-message/index.module.css';
 
 export const useMessageMenu = (message: MessageType) => {
-    const { id, type } = message;
-    const elementId = useMemo(() => `message-${id}`, [id]);
+    const { type, number } = message;
+    const elementId = useMemo(() => `message-${number}`, [number]);
     const { setClickMessage, setIsShowMessageMenu, isShowMessageMenu } = useContext(ContextChat)!;
     const { isPhone } = useAppSelector((state) => state.app);
 

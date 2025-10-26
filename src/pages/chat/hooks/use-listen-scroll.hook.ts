@@ -1,49 +1,42 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import styles from '../index.module.css';
 import { useAppAction, useAppSelector } from '../../../root/store';
-import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
 
-export const useListenScroll = (): [boolean | undefined] => {
+export const useListenScroll = () => {
     const { update } = useAppAction();
     const { chatOnPage } = useAppSelector((state) => state.chats);
-    const [isVisibleBottomButton, setIsVisibleBottomButton] = useState<boolean>();
-    const messages = chatOnPage?.messages;
+    const messages = useMemo(() => chatOnPage?.messages, [chatOnPage?.messages]);
 
-    /** проверка нужно ли показывать кнопку прокрутки сообщений */
+    /** отмотка сохраненного значения полосы прокрутки при открытии чата */
     useEffect(() => {
-        if (!chatOnPage?.id) return;
-        const chat = getRawChat(chatOnPage.id);
-        if (!chat || !(chat.scrollTop < -200)) setIsVisibleBottomButton(undefined);
-        else setIsVisibleBottomButton(true);
+        const messagesBlock = document.getElementById(styles.messages);
+        if (!messagesBlock) return;
+        const ro = new ResizeObserver(() => {
+            messagesBlock.scrollTo({ behavior: 'instant', top: chatOnPage?.scrollTop });
+            ro.disconnect();
+        });
+        ro.observe(messagesBlock);
     }, [chatOnPage?.id]);
 
-    /** сохранение скрола вместе с сообщениями */
-    /** проверка нужно ли показывать кнопку прокрутки сообщений */
+    /** сохранение состояния полосы прокрутки */
     useEffect(() => {
-        if (!messages?.length || chatOnPage?.id !== messages[0]?.chatId) return;
-        const el = document.getElementById(styles.messages)!;
+        const messagesBlock = document.getElementById(styles.messages)!;
+        if (!messagesBlock) return;
+        if (!chatOnPage?.id) return;
         let scrollTimeout: NodeJS.Timeout;
 
-        const scroll = () => {
+        const scrollEnd = () => {
             clearTimeout(scrollTimeout);
-            const scrollTop = el.scrollTop - (el.scrollHeight - el.clientHeight);
-
-            if (scrollTop < -200) setIsVisibleBottomButton(true);
-            else if (isVisibleBottomButton !== undefined) setIsVisibleBottomButton(false);
 
             scrollTimeout = setTimeout(() => {
-                const scrollTop = el.scrollTop;
-                if (chatOnPage?.id !== messages[0]?.chatId) return;
-                update({ id: chatOnPage.id, scrollTop });
+                update({ id: chatOnPage.id, scrollTop: messagesBlock.scrollTop });
             }, 150);
         };
 
-        el.addEventListener('scroll', scroll);
+        messagesBlock.addEventListener('scroll', scrollEnd);
         return () => {
             clearTimeout(scrollTimeout);
-            el.removeEventListener('scroll', scroll);
+            messagesBlock.removeEventListener('scroll', scrollEnd);
         };
-    }, [chatOnPage?.id, messages, isVisibleBottomButton]);
-
-    return [isVisibleBottomButton];
+    }, [chatOnPage?.id, messages?.length]);
 };
