@@ -87,23 +87,7 @@ export const useMessages = (): UseMessagesType => {
         }
     }, [location, messageNumber, chatOnPage?.id]);
 
-    const getNewMessages = () => {};
-    const getOldMessages = async (limit: number, offset: number) => {
-        if (!chatOnPage?.id) return;
-
-        const response = await getMessages({
-            chatId: chatOnPage.id,
-            limit,
-            offset,
-        });
-
-        setIsLoading(undefined);
-        if (!response.success) return;
-        const messages = [...response.data, ...chatOnPage.messages];
-        update({ id: chatOnPage.id, messages });
-    };
-
-    /** обновление сообщений */
+    /** загрузка сообщений при прокрутке */
     useEffect(() => {
         const el = document.getElementById(styles.messages);
         if (!el) return;
@@ -112,6 +96,7 @@ export const useMessages = (): UseMessagesType => {
             const firstMessage = chatOnPage?.messages[0];
             const lastMessage = chatOnPage?.messages[chatOnPage?.messages.length - 1];
 
+            // получение старых сообщений
             if (firstMessage && firstMessage.number !== 1) {
                 const element = document.getElementById(`message-${firstMessage.number}`);
                 if (!element) return;
@@ -119,41 +104,50 @@ export const useMessages = (): UseMessagesType => {
                 const observer = new IntersectionObserver(
                     (entries) => {
                         const entry = entries[0];
-                        if (entry.isIntersecting) {
-                            const offset = Math.max(
-                                Math.min(
-                                    firstMessage.number - (Envs.settings?.messagesLimit ?? 250) - 1,
-                                    firstMessage.number - 1,
-                                ),
-                                0,
-                            );
+                        if (!entry.isIntersecting) return;
 
-                            const limit = Math.min(Envs.settings?.messagesLimit ?? 250, firstMessage.number - 1);
+                        const offset = Math.max(
+                            Math.min(
+                                firstMessage.number - (Envs.settings?.messagesLimit ?? 250) - 1,
+                                firstMessage.number - 1,
+                            ),
+                            0,
+                        );
+                        const limit = Math.min(Envs.settings?.messagesLimit ?? 250, firstMessage.number - 1);
+                        const chatId = chatOnPage.id;
 
-                            const el = document.getElementById(styles.messages)!;
-                            const oldScrollHeight = el.scrollHeight;
+                        const el = document.getElementById(styles.messages)!;
+                        const oldScrollHeight = el.scrollHeight;
 
-                            setIsLoading(LoadingType.OLD);
-                            getOldMessages(limit, offset).then(() => {
-                                setIsLoading(undefined);
+                        setIsLoading(LoadingType.OLD);
+                        getMessages({
+                            chatId,
+                            limit,
+                            offset,
+                        }).then((response) => {
+                            setIsLoading(undefined);
+                            if (!response.success) return;
+                            const messages = [...response.data, ...chatOnPage.messages];
+                            update({ id: chatId, messages });
 
-                                const ro2 = new ResizeObserver(() => {
-                                    // 40px - длина компонента <RotateLoading />
-                                    const top = el.scrollHeight - oldScrollHeight - 40;
+                            const ro2 = new ResizeObserver(() => {
+                                // 40px - длина компонента <RotateLoading />
+                                const top = el.scrollHeight - oldScrollHeight - 40;
 
-                                    el.scrollTo({ behavior: 'instant', top });
-                                    ro2.disconnect();
-                                });
-                                ro2.observe(el);
-
-                                observer.disconnect();
+                                el.scrollTo({ behavior: 'instant', top });
+                                ro2.disconnect();
                             });
-                        }
+                            ro2.observe(el);
+
+                            observer.disconnect();
+                        });
                     },
                     { threshold: 0.001 },
                 );
                 observer.observe(element);
             }
+
+            // получение новых сообщений
             if (lastMessage && lastMessage.number !== chatOnPage.countMessages) {
                 const element = document.getElementById(`message-${lastMessage.number}`);
                 if (!element) return;
@@ -161,10 +155,27 @@ export const useMessages = (): UseMessagesType => {
                 const observer = new IntersectionObserver(
                     (entries) => {
                         const entry = entries[0];
-                        if (entry.isIntersecting) {
-                            getNewMessages();
+                        if (!entry.isIntersecting) return;
+
+                        const offset = lastMessage.number;
+                        const limit = Math.min(
+                            Envs.settings?.messagesLimit ?? 250,
+                            chatOnPage.countMessages - lastMessage.number,
+                        );
+                        const chatId = chatOnPage.id;
+
+                        setIsLoading(LoadingType.NEW);
+                        getMessages({
+                            chatId,
+                            limit,
+                            offset,
+                        }).then((response) => {
+                            setIsLoading(undefined);
+                            if (!response.success) return;
+                            const messages = [...chatOnPage.messages, ...response.data];
+                            update({ id: chatId, messages });
                             observer.disconnect();
-                        }
+                        });
                     },
                     { threshold: 0.001 },
                 );
