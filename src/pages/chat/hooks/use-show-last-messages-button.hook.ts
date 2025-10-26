@@ -27,6 +27,7 @@ export const useShowLastMessagesButton = (): [boolean | undefined] => {
             setIsShowLastMessagesButton(true);
         };
 
+        check();
         messagesBlock.addEventListener('scroll', check);
         return () => messagesBlock.removeEventListener('scroll', check);
     }, [messages, chatOnPage?.message]);
