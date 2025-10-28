@@ -6,7 +6,7 @@ import { Checkbox } from '../checkbox';
 import { useAppAction, useAppSelector } from '../../root/store';
 
 export const Privacy: FC = () => {
-    const { isCheckVerified } = useAppSelector((state) => state.app.settings);
+    const isCheckVerified = useAppSelector((state) => state.app.settings?.isCheckVerified);
     const { changeSettings } = useAppAction();
 
     return (

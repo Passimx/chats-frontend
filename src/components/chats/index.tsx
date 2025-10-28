@@ -54,7 +54,7 @@ export const Chats: FC = memo(() => {
                                     [750, 750],
                                     [1000, 1000],
                                 ]}
-                                value={settings.messagesLimit}
+                                value={settings?.messagesLimit}
                                 onChange={changeMessageLimit}
                             />
                         </div>
@@ -70,7 +70,7 @@ export const Chats: FC = memo(() => {
                                     [`10${t('k')}`, 10000],
                                     [t('all'), undefined],
                                 ]}
-                                value={settings.messageSaveCount}
+                                value={settings?.messageSaveCount}
                                 onChange={changeMessageSaveCount}
                             />
                         </div>
@@ -86,7 +86,7 @@ export const Chats: FC = memo(() => {
                                     [t('1y'), 1000 * 60 * 60 * 24 * 30 * 6 * 2],
                                     [t('always'), undefined],
                                 ]}
-                                value={settings.messageSaveTime}
+                                value={settings?.messageSaveTime}
                                 onChange={changeMessageSaveTime}
                             />
                         </div>

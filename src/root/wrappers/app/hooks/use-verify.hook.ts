@@ -14,7 +14,8 @@ function base64UrlToBuffer(base64url: string) {
 
 export const useVerify = () => {
     const { changeSettings } = useAppAction();
-    const { verificationKey, isCheckVerified } = useAppSelector((state) => state.app.settings);
+    const isCheckVerified = useAppSelector((state) => state.app.settings?.isCheckVerified);
+    const verificationKey = useAppSelector((state) => state.app.settings?.verificationKey);
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
 
     const [isVerified, setIsVerified] = useState<boolean>(false);

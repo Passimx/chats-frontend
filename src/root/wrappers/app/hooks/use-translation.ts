@@ -8,7 +8,7 @@ import CH from '../../../../../public/languages/zh/translation.json';
 import EN from '../../../../../public/languages/en/translation.json';
 import ES from '../../../../../public/languages/es/translation.json';
 import RU from '../../../../../public/languages/ru/translation.json';
-import { useAppAction, useAppSelector } from '../../../store';
+import { useAppSelector } from '../../../store';
 
 export const resources = {
     ar: {
@@ -30,24 +30,15 @@ export const resources = {
 
 export const useTranslation = () => {
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
-    const { changeSettings } = useAppAction();
     const { settings } = useAppSelector((state) => state.app);
 
     useEffect(() => {
+        if (!settings) return;
         const elements = document.querySelectorAll<HTMLDivElement>('.text_translate');
         elements.forEach((el) => {
             el.style.animation = 'none';
             el.style.filter = 'blur(4px)';
         });
-
-        if (!settings.lang) {
-            const browserLang = navigator.language.slice(0, 2).toLowerCase();
-            const langs = Object.keys(resources);
-            const lang = langs.find((lang) => lang === browserLang) ?? 'en';
-            changeSettings({ lang });
-
-            return;
-        }
 
         moment.locale(settings.lang);
         i18n.use(initReactI18next)
@@ -71,7 +62,7 @@ export const useTranslation = () => {
                     }, time);
                 });
             });
-    }, [settings.lang]);
+    }, [settings?.lang]);
 
     return isLoaded;
 };

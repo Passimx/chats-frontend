@@ -11,7 +11,7 @@ export const ChangeLanguage: FC = memo(() => {
     const { t } = useTranslation();
     const languages = Object.keys(resources);
     const { postMessageToBroadCastChannel } = useAppAction();
-    const { lang } = useAppSelector((state) => state.app.settings);
+    const lang = useAppSelector((state) => state.app.settings?.lang);
 
     return (
         <div id={styles.background}>

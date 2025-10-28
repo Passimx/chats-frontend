@@ -6,19 +6,12 @@ import { Envs } from '../../../common/config/envs/envs.ts';
 
 const channel = new BroadcastChannel('ws-channel');
 
-const settings: SettingsType = {
-    cache: true,
-    autoUpload: true,
-    messagesLimit: 250,
-};
-
 const initialState: StateType = {
     isOpenPage: false,
     activeTab: TabEnum.CHATS,
     isOnline: navigator.onLine,
     pages: new Map<TabEnum, JSX.Element[]>(),
     isStandalone: window.matchMedia('(display-mode: standalone)').matches,
-    settings,
 };
 
 const AppSlice = createSlice({
