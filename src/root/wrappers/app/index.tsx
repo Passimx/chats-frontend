@@ -61,6 +61,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     // verity when open app
     // const [isAuth] = useVerify();
 
+    // set language
     const isLoaded = useTranslation();
     const { id } = useParams();
 

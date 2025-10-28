@@ -37,7 +37,6 @@ export const useDownloadFile = (file: Types): Return => {
                     .share({
                         files: [myFile],
                     })
-                    .then(() => console.log('Успешно!'))
                     .catch((error) => console.log('Ошибка при обмене:', error));
             } else await DownloadFile(file, duplicateBlob);
         },

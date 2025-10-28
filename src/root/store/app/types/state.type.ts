@@ -75,5 +75,5 @@ export type StateType = {
     categories?: Categories;
     files?: Types[];
 
-    settings: SettingsType;
+    settings?: SettingsType;
 };

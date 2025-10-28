@@ -102,15 +102,12 @@ export const Memory: FC = memo(() => {
                             {t('cache_limit_warning')}
                         </div>
                     </div>
-                    <div
-                        className={styles.cache_menu}
-                        style={{ filter: !settings.cache ? 'brightness(0.6)' : undefined }}
-                    >
+                    <div className={styles.cache_menu}>
                         <div className={styles.cache_menu_item}>
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={cacheLimitOptions}
-                                    value={settings.cacheTotalMemory}
+                                    value={settings?.cacheTotalMemory}
                                     onChange={(cacheTotalMemory) => changeSettings({ cacheTotalMemory })}
                                 />
                             </div>
@@ -122,22 +119,22 @@ export const Memory: FC = memo(() => {
                         <div className={styles.cache_item_switcher}>
                             <div className={'text_translate'}>{t('caching')}</div>
                             <Checkbox
-                                checked={!!settings.cache}
-                                onChange={() => changeSettings({ cache: !settings.cache })}
+                                checked={!!settings?.cache}
+                                onChange={() => changeSettings({ cache: !settings?.cache })}
                             />
                         </div>
                         <div className={`${styles.cache_item_description} text_translate`}>{t('cache_duration')}</div>
                     </div>
                     <div
                         className={styles.cache_menu}
-                        style={{ filter: !settings.cache ? 'brightness(0.6)' : undefined }}
+                        style={{ filter: !settings?.cache ? 'brightness(0.6)' : undefined }}
                     >
                         <div className={styles.cache_menu_item}>
                             <div className={`${styles.cache_menu_item_text} text_translate`}>{t('photos')}</div>
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={cacheOptions}
-                                    value={settings.cacheImageTime}
+                                    value={settings?.cacheImageTime}
                                     onChange={(cacheImageTime) => changeSettings({ cacheImageTime })}
                                 />
                             </div>
@@ -147,7 +144,7 @@ export const Memory: FC = memo(() => {
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={cacheOptions}
-                                    value={settings.cacheVideoTime}
+                                    value={settings?.cacheVideoTime}
                                     onChange={(cacheVideoTime) => changeSettings({ cacheVideoTime })}
                                 />
                             </div>
@@ -157,7 +154,7 @@ export const Memory: FC = memo(() => {
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={cacheOptions}
-                                    value={settings.cacheMusicTime}
+                                    value={settings?.cacheMusicTime}
                                     onChange={(cacheMusicTime) => changeSettings({ cacheMusicTime })}
                                 />
                             </div>
@@ -167,7 +164,7 @@ export const Memory: FC = memo(() => {
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={cacheOptions}
-                                    value={settings.cacheFilesTime}
+                                    value={settings?.cacheFilesTime}
                                     onChange={(cacheFilesTime) => changeSettings({ cacheFilesTime })}
                                 />
                             </div>
@@ -177,7 +174,7 @@ export const Memory: FC = memo(() => {
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={cacheOptions}
-                                    value={settings.cacheVoiceTime}
+                                    value={settings?.cacheVoiceTime}
                                     onChange={(cacheVoiceTime) => changeSettings({ cacheVoiceTime })}
                                 />
                             </div>
@@ -189,8 +186,8 @@ export const Memory: FC = memo(() => {
                         <div className={styles.cache_item_switcher}>
                             <div className={'text_translate'}>{t('auto_download')}</div>
                             <Checkbox
-                                checked={!!settings.autoUpload}
-                                onChange={() => changeSettings({ autoUpload: !settings.autoUpload })}
+                                checked={!!settings?.autoUpload}
+                                onChange={() => changeSettings({ autoUpload: !settings?.autoUpload })}
                             />
                         </div>
                         <div className={`${styles.cache_item_description} text_translate`}>
@@ -199,14 +196,14 @@ export const Memory: FC = memo(() => {
                     </div>
                     <div
                         className={styles.cache_menu}
-                        style={{ filter: !settings.autoUpload ? 'brightness(0.6)' : undefined }}
+                        style={{ filter: !settings?.autoUpload ? 'brightness(0.6)' : undefined }}
                     >
                         <div className={styles.cache_menu_item}>
                             <div className={`${styles.cache_menu_item_text} text_translate`}>{t('photos')}</div>
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={autoUploadOptions}
-                                    value={settings.autoUploadImage}
+                                    value={settings?.autoUploadImage}
                                     onChange={(autoUploadImage) => changeSettings({ autoUploadImage })}
                                 />
                             </div>
@@ -216,7 +213,7 @@ export const Memory: FC = memo(() => {
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={autoUploadOptions}
-                                    value={settings.autoUploadVideo}
+                                    value={settings?.autoUploadVideo}
                                     onChange={(autoUploadVideo) => changeSettings({ autoUploadVideo })}
                                 />
                             </div>
@@ -226,7 +223,7 @@ export const Memory: FC = memo(() => {
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={autoUploadOptions}
-                                    value={settings.autoUploadMusic}
+                                    value={settings?.autoUploadMusic}
                                     onChange={(autoUploadMusic) => changeSettings({ autoUploadMusic })}
                                 />
                             </div>
@@ -236,7 +233,7 @@ export const Memory: FC = memo(() => {
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={autoUploadOptions}
-                                    value={settings.autoUploadFiles}
+                                    value={settings?.autoUploadFiles}
                                     onChange={(autoUploadFiles) => changeSettings({ autoUploadFiles })}
                                 />
                             </div>
@@ -246,7 +243,7 @@ export const Memory: FC = memo(() => {
                             <div className={styles.cache_menu_item_select}>
                                 <SegmentSwitcher
                                     options={autoUploadOptions}
-                                    value={settings.autoUploadVoice}
+                                    value={settings?.autoUploadVoice}
                                     onChange={(autoUploadVoice) => changeSettings({ autoUploadVoice })}
                                 />
                             </div>
