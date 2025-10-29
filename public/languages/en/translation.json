@@ -62,6 +62,7 @@
   "max_autodownload_size": "Maximum file size for auto-download",
   "max_cache_size": "Maximum cache size",
   "cache_limit_warning": "If the cache size exceeds the limit, the oldest files will be deleted",
+  "without_name": "Untitled",
 
   "all": "all",
   "always": "always",

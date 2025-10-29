@@ -62,8 +62,8 @@ export const PreviewMedia: FC = memo(() => {
                         {filesArray.map(
                             (file, key) =>
                                 (file.type.includes(FileTypeEnum.AUDIO) && (
-                                    <PreviewMusic key={key} file={file} number={key} />
-                                )) || <PreviewFile key={key} file={file} number={key} />,
+                                    <PreviewMusic key={file.randomId} file={file} number={key} />
+                                )) || <PreviewFile key={file.randomId} file={file} number={key} />,
                         )}
                     </div>
                     <div className={styles.message_input}>

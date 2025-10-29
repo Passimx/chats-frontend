@@ -48,3 +48,21 @@ html,body, #root{
     from { filter: blur(4px); }
     to { filter: none }
 }
+
+.content_editable, .content_editable *{
+    outline: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    font-style: normal !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', Arial, Tahoma, Verdana, sans-serif !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-user-select: text !important;
+    user-select: text !important;
+    cursor: text;
+
+    font-weight: 490 !important;
+    font-size: 15px !important;
+    color: white !important;
+}

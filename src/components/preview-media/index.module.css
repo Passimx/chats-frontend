@@ -161,6 +161,11 @@
     color: white !important;
 }
 
+#new_message::selection {
+    background-color: #439fef;
+    color: white;
+}
+
 .show_slowly{
     animation: show_slowly 0.2s linear forwards;
 }

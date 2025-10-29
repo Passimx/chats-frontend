@@ -1,22 +1,13 @@
-import { FC, useContext, useMemo } from 'react';
+import { FC, memo, useContext } from 'react';
 import { PropsType } from './props.type.ts';
 import styles from './index.module.css';
-import { getFileSize } from '../../common/hooks/get-file-size.ts';
 import { MdDeleteOutline } from 'react-icons/md';
 import { ContextMedia } from '../preview-media-context';
 import { IoMusicalNotesSharp } from 'react-icons/io5';
-import { useTranslation } from 'react-i18next';
+import { EditFileName } from '../edit-file-name';
 
-export const PreviewMusic: FC<PropsType> = ({ file, number }) => {
-    const { t } = useTranslation();
-
-    const size = useMemo(() => {
-        const [memory, unit] = getFileSize(file.size);
-        return `${memory} ${t(unit)}`;
-    }, [file.size]);
-
+export const PreviewMusic: FC<PropsType> = memo(({ file, number }) => {
     const { deleteFile } = useContext(ContextMedia)!;
-
     const previewId = file.metaData?.previewId;
 
     return (
@@ -29,13 +20,10 @@ export const PreviewMusic: FC<PropsType> = ({ file, number }) => {
                     </div>
                 )}
             </div>
-            <div className={`${styles.file_inf} text_translate`}>
-                <div className={styles.file_name}>{file.name}</div>
-                <div className={styles.file_size}>{size}</div>
-            </div>
+            <EditFileName {...{ file, number }} />
             <div className={styles.styles_background} onClick={() => deleteFile(number)}>
                 <MdDeleteOutline className={styles.logo_delete} />
             </div>
         </div>
     );
-};
+});

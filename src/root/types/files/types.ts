@@ -13,6 +13,7 @@ export type FileMetadataType = {
 
 export interface FilesType extends File {
     metaData?: FileMetadataType;
+    randomId?: string;
 }
 
 export type Types = {
