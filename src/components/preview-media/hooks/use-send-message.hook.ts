@@ -17,10 +17,10 @@ export const useSendMessage = () => {
     const sendMessage = useCallback(async () => {
         if (!files?.length) return;
 
-        const fileArray: Partial<Types>[] = [];
+        const fileArray: Partial<Types>[] = Array.from({ length: files.length });
 
         await Promise.all(
-            files.map(async (file) => {
+            files.map(async (file, index) => {
                 const myFile = new File([await file.arrayBuffer()], file.name, { type: file.type });
 
                 const data: Partial<Types> = {
@@ -57,7 +57,7 @@ export const useSendMessage = () => {
                 data.key = response.data.fileId;
                 if (response?.data?.previewId) data.metadata!.previewId = response?.data?.previewId;
 
-                fileArray.push(data);
+                fileArray[index] = data;
             }),
         );
 
