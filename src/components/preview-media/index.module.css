@@ -1,5 +1,4 @@
 .background{
-    --padding_background: 16px;
     position: fixed; /* фиксируем на весь экран */
     top: 0;
     left: 0;
@@ -8,11 +7,10 @@
     background-color: rgba(0, 0, 0, 0.6); /* полупрозрачный тёмный фон */
     backdrop-filter: blur(4px); /* размытие фона */
     z-index: 1000;
-    padding-top: var(--padding_background);
     display: flex;
     overflow: hidden;
     justify-content: center;
-    align-items: start;
+    align-items: center;
     cursor: pointer;
 }
 
@@ -32,7 +30,7 @@
     gap: 8px;
     grid-template-rows: auto 1fr auto;
     cursor: auto;
-    max-height: calc(100% - var(--padding_background) * 2 - env(safe-area-inset-bottom, 32px));
+    max-height: calc(100% - env(safe-area-inset-bottom, 32px) * 2 - 30px);
 
     @media(width < 600px) {
         width: calc(100% - 30px);
