@@ -1,0 +1,61 @@
+.background{
+
+    .file_name_background{
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 4px;
+
+        .file_name{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -moz-box;
+            -moz-box-orient: vertical;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            line-clamp: 1;
+            word-break: break-all;
+            overflow-wrap: anywhere;
+            -webkit-user-modify: read-write-plaintext-only;
+            display: inline-block;
+            white-space: nowrap;
+            vertical-align: middle;
+            border-radius: 6px;
+            transition: background 0.2s;
+            padding: 4px 2px 4px 2px;
+        }
+
+        .file_name::selection {
+            background-color: #439fef;
+            color: white;
+        }
+
+        .file_name:focus {
+            background-color: #0a4375;
+            text-overflow: clip;
+            overflow-x: auto;
+        }
+
+        .file_name::-webkit-scrollbar {
+            height: 0;
+        }
+
+        .edit_button_background{
+            cursor: pointer;
+            border-radius: 8px;
+            display: grid;
+            align-items: center;
+            background-color: #0a4375;
+            padding: 2px;
+
+            .edit_button{
+                font-size: 20px;
+            }
+        }
+    }
+
+    .file_size{
+        opacity: 0.6;
+    }
+}

@@ -62,6 +62,7 @@
   "max_autodownload_size": "Tamaño máximo de archivo para la descarga automática",
   "max_cache_size": "Tamaño máximo de la caché",
   "cache_limit_warning": "Si el tamaño de la caché supera el límite, se eliminarán los archivos más antiguos",
+  "without_name": "Sin título",
 
   "all": "todo",
   "always": "siempre",

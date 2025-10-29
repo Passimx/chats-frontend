@@ -1,22 +1,14 @@
-import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, memo, useContext, useEffect, useState } from 'react';
 import { PropsType } from './props.type.ts';
 import styles from './index.module.css';
-import { getFileSize } from '../../common/hooks/get-file-size.ts';
 import { CiFileOn } from 'react-icons/ci';
 import { MdDeleteOutline } from 'react-icons/md';
 import { ContextMedia } from '../preview-media-context';
 import { TbBrandOpenvpn } from 'react-icons/tb';
 import { FileTypeEnum } from '../../root/types/files/types.ts';
-import { useTranslation } from 'react-i18next';
+import { EditFileName } from '../edit-file-name';
 
-export const PreviewFile: FC<PropsType> = ({ file, number }) => {
-    const { t } = useTranslation();
-
-    const size = useMemo(() => {
-        const [memory, unit] = getFileSize(file.size);
-        return `${memory} ${t(unit)}`;
-    }, [file.size]);
-
+export const PreviewFile: FC<PropsType> = memo(({ file, number }) => {
     const [url, setUrl] = useState<string>('');
     const [type, setType] = useState<FileTypeEnum>();
     const { deleteFile } = useContext(ContextMedia)!;
@@ -61,13 +53,10 @@ export const PreviewFile: FC<PropsType> = ({ file, number }) => {
                     </div>
                 )}
             </div>
-            <div className={`${styles.file_inf} text_translate`}>
-                <div className={styles.file_name}>{file.name}</div>
-                <div className={styles.file_size}>{size}</div>
-            </div>
+            <EditFileName {...{ file, number }} />
             <div className={styles.styles_background} onClick={() => deleteFile(number)}>
                 <MdDeleteOutline className={styles.logo_delete} />
             </div>
         </div>
     );
-};
+});

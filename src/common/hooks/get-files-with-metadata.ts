@@ -4,6 +4,7 @@ import * as mm from 'music-metadata-browser';
 export const getFilesWithMetadata = async (files: FilesType[]): Promise<FilesType[]> => {
     const data = await Promise.all(
         files.map(async (file) => {
+            file.randomId = window.crypto.randomUUID();
             // обработка MP3
             if (FileMap.get('MP3')?.find((type) => type === file.type)) {
                 const arrayBuffer = await file.arrayBuffer();
@@ -48,5 +49,6 @@ export const getFilesWithMetadata = async (files: FilesType[]): Promise<FilesTyp
         }),
     );
 
+    data.forEach((file) => (file.randomId = window.crypto.randomUUID()));
     return data;
 };

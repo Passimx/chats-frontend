@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { ContextMedia } from '../../preview-media-context';
 import { getFilesWithMetadata } from '../../../common/hooks/get-files-with-metadata.ts';
 
@@ -13,23 +13,31 @@ export const useOpenMedia = (setIsVisible: (value: boolean) => void) => {
             input.multiple = true;
             if (accept) input.accept = accept;
 
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            input.onchange = async (e: ChangeEvent<HTMLInputElement>) => {
-                const payload = e.target.files;
-                if (!payload?.length) return resolve(false);
+            document.body.appendChild(input);
+
+            input.onchange = async (e: Event) => {
+                const target = e.target as HTMLInputElement;
+                const payload = target.files;
+                if (!payload?.length) {
+                    document.body.removeChild(input);
+                    return resolve(false);
+                }
 
                 const files = await getFilesWithMetadata(Array.from(payload));
                 setFiles(files);
+                document.body.removeChild(input);
                 resolve(true);
             };
-            input.click();
-            setIsVisible(false);
+
+            setTimeout(() => {
+                input.click();
+                setIsVisible(false);
+            }, 0);
         });
     };
 
     const openMedia = useCallback(() => getFiles('image/*,video/*'), []);
     const openFiles = useCallback(() => getFiles(), []);
 
-    return [openMedia, openFiles];
+    return { openMedia, openFiles };
 };
