@@ -1,4 +1,4 @@
-import { CreateRsaKeysType } from '../types/create-rsa-keys.type.ts';
+import { CreateRsaKeysType, RsaKeysStringType } from '../types/create-rsa-keys.type.ts';
 import { WordsService } from './words-service/words.service.ts';
 import { IKeys } from '../types/keys.type.ts';
 
@@ -6,7 +6,27 @@ const iterations = 1000;
 const keyLength = 256;
 
 export class CryptoService {
-    public static async generateAndExportRSAKeys(passphrase: string | CryptoKey): Promise<CreateRsaKeysType> {
+    public static async generateExportRSAKeys(): Promise<RsaKeysStringType> {
+        const { publicKey, privateKey } = await window.crypto.subtle.generateKey(
+            {
+                name: 'RSA-OAEP',
+                modulusLength: 4096,
+                publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+                hash: 'SHA-512',
+            },
+            true,
+            ['encrypt', 'decrypt'],
+        );
+
+        const [publicExportedKey, privateExportedKey] = await Promise.all([
+            this.exportKey(publicKey),
+            this.exportKey(privateKey),
+        ]);
+
+        return { publicKey: publicExportedKey, privateKey: privateExportedKey };
+    }
+
+    public static async generateExportEncryptRSAKeys(passphrase: string | CryptoKey): Promise<CreateRsaKeysType> {
         const { publicKey, privateKey } = await window.crypto.subtle.generateKey(
             {
                 name: 'RSA-OAEP',
@@ -70,7 +90,16 @@ export class CryptoService {
         ]);
     }
 
-    public static async importRSAKeys(
+    public static async importRSAKeys({ publicKey, privateKey }: RsaKeysStringType): Promise<CryptoKeyPair> {
+        const [importedPublicKey, importedPrivateKey] = await Promise.all([
+            this.importRSAKey(publicKey, ['encrypt']),
+            this.importRSAKey(privateKey, ['decrypt']),
+        ]);
+
+        return { publicKey: importedPublicKey, privateKey: importedPrivateKey };
+    }
+
+    public static async importDecryptRSAKeys(
         { publicKey, privateKey }: IKeys,
         passphrase: string | CryptoKey,
     ): Promise<CryptoKeyPair> {

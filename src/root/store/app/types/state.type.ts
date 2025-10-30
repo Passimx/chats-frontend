@@ -75,5 +75,7 @@ export type StateType = {
     categories?: Categories;
     files?: Types[];
 
+    RASKeys?: CryptoKeyPair;
+
     settings?: SettingsType;
 };
