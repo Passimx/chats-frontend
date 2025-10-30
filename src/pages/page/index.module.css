@@ -1,0 +1,27 @@
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    background-color: rgb(0, 0, 0, 0.7);
+}
+
+.cancel_background{
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.cancel_button{
+    color: white;
+    font-weight: bold;
+    font-size: 30px;
+}

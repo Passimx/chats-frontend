@@ -18,6 +18,8 @@ import OpenChat from '../../components/create-chat/open-chat';
 import SharedChat from '../../components/create-chat/shared-chat';
 import PublicChat from '../../components/create-chat/public-chat';
 import PrivateChat from '../../components/create-chat/private-chat';
+import { MdOutlineQrCodeScanner } from 'react-icons/md';
+import { ScanQrCode } from '../../components/scan-qr-code';
 
 const Search: FC<PropsType> = ({ isLoading, onChange }) => {
     const { t } = useTranslation();
@@ -35,7 +37,7 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
             newPages.set(activeTab, [page]);
             setStateApp({ pages: newPages });
         },
-        [activeTab],
+        [activeTab, pages],
     );
 
     useEffect(() => {
@@ -55,6 +57,18 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
                 ref={wrapperRef}
                 className={setVisibilityCss(styles.show_slowly, styles.hide_slowly, isVisible)}
             >
+                <div className={styles.new_chats_item}>
+                    <div
+                        className={styles.new_chats_item_click}
+                        onClick={() => {
+                            setIsVisible(false);
+                            setStateApp({ page: <ScanQrCode /> });
+                        }}
+                    >
+                        <MdOutlineQrCodeScanner className={styles.new_chats_item_logo} color="var(--menu-color)" />
+                        <div className={'text_translate'}>Сканировать qr-код</div>
+                    </div>
+                </div>
                 <div className={styles.new_chats_item}>
                     <div className={styles.new_chats_item_click} onClick={() => changePage(<OpenChat />)}>
                         <AiOutlineGlobal className={styles.new_chats_item_logo} color="green" />
