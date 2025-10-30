@@ -1,7 +1,6 @@
 .background{
     height: 100%;
     overflow: hidden;
-    /*display: grid;*/
-    /*grid-template-rows: auto 1fr;*/
-    /*color: white;*/
+    display: grid;
+    grid-template-rows: auto 1fr;
 }

@@ -21,12 +21,13 @@ export const useKeys = () => {
     }, []);
 
     const checkKeys = useCallback(async () => {
-        let keysString: RsaKeysStringType;
+        let RASKeysString: RsaKeysStringType;
         const payloadKeys = localStorage.getItem('keys');
-        if (payloadKeys) keysString = JSON.parse(payloadKeys) as RsaKeysStringType;
-        else keysString = await generateKeys();
+        if (payloadKeys) RASKeysString = JSON.parse(payloadKeys) as RsaKeysStringType;
+        else RASKeysString = await generateKeys();
+        setStateApp({ RASKeysString });
 
-        const RASKeys = await CryptoService.importRSAKeys(keysString);
+        const RASKeys = await CryptoService.importRSAKeys(RASKeysString);
         setStateApp({ RASKeys });
     }, []);
 

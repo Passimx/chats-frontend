@@ -1,5 +1,6 @@
 import { JSX } from 'react';
 import { Types } from '../../../types/files/types.ts';
+import { RsaKeysStringType } from '../../../types/create-rsa-keys.type.ts';
 
 export enum TabEnum {
     CHATS = 'chats',
@@ -76,6 +77,7 @@ export type StateType = {
     files?: Types[];
 
     RASKeys?: CryptoKeyPair;
+    RASKeysString?: RsaKeysStringType;
 
     settings?: SettingsType;
 };
