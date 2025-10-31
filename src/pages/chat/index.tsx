@@ -36,6 +36,7 @@ const Chat: FC = memo(() => {
     const [isLoading, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const { chatOnPage } = useAppSelector((state) => state.chats);
+
     if (!chatOnPage) return <></>;
 
     return (
@@ -96,7 +97,7 @@ const Chat: FC = memo(() => {
                     <div
                         className={styles.chat_menu_item}
                         onClick={() => {
-                            setStateApp({ page: <QrCode value={window.location.href} /> });
+                            setStateApp({ page: <QrCode value={window.location.origin + window.location.pathname} /> });
                         }}
                     >
                         <MdQrCode2 className={styles.chat_menu_item_icon} />
@@ -105,7 +106,7 @@ const Chat: FC = memo(() => {
                     <div
                         className={styles.chat_menu_item}
                         onClick={() => {
-                            navigator.clipboard.writeText(window.location.href);
+                            navigator.clipboard.writeText(window.location.origin + window.location.pathname);
                         }}
                     >
                         <IoCopyOutline className={styles.chat_menu_item_icon} />

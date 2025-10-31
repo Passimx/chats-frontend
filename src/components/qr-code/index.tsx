@@ -6,11 +6,11 @@ import styles from './index.module.css';
 export const QrCode: FC<PropsType> = memo(({ value }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    const size = Math.min(window.innerWidth, window.innerHeight, 400) - 16;
+    const size = Math.min(window.innerWidth, window.innerHeight, 400) - 8;
 
     useEffect(() => {
         if (canvasRef.current) {
-            QRCode.toCanvas(canvasRef.current, JSON.stringify(value), {
+            QRCode.toCanvas(canvasRef.current, typeof value === 'string' ? value : JSON.stringify(value), {
                 errorCorrectionLevel: 'H',
                 width: size,
                 color: {

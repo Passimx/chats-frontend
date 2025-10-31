@@ -4,33 +4,30 @@ import { Scanner, useDevices } from '@yudiel/react-qr-scanner';
 import { useAppAction } from '../../root/store';
 import type { IDetectedBarcode } from '@yudiel/react-qr-scanner/dist/types';
 import { useTranslation } from 'react-i18next';
-
-function isSameSiteURL(urlString: string) {
-    if (urlString.startsWith('/') && !urlString.startsWith('//')) {
-        return true;
-    }
-
-    try {
-        const destinationUrl = new URL(urlString);
-        console.log([destinationUrl.host, window.location.host]);
-        return destinationUrl.host === window.location.host;
-    } catch (e) {
-        console.log(123);
-        return false;
-    }
-}
+import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 
 export const ScanQrCode: FC = () => {
     const { t } = useTranslation();
     const { setStateApp } = useAppAction();
     const devices = useDevices();
     const [isPaused, setIsPaused] = useState<boolean>(false);
+    const navigate = useCustomNavigate();
 
-    const onScan = useCallback(([result]: IDetectedBarcode[]) => {
+    const onScan = useCallback(([{ rawValue }]: IDetectedBarcode[]) => {
         setIsPaused(true);
         setStateApp({ page: undefined });
-        console.log(result.rawValue);
-        console.log(isSameSiteURL(result.rawValue));
+        try {
+            const object = JSON.parse(rawValue);
+            console.log(object);
+        } catch (e) {
+            if (rawValue.startsWith(window.location.origin)) {
+                setTimeout(() => {
+                    const destinationUrl = new URL(rawValue);
+                    const path = destinationUrl.pathname + destinationUrl.search;
+                    navigate(path);
+                }, 100);
+            }
+        }
     }, []);
 
     if (devices.length)
