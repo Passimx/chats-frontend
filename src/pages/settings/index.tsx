@@ -15,14 +15,15 @@ import { getFileSize } from '../../common/hooks/get-file-size.ts';
 import { LogList } from '../../components/log-list';
 import { EnvironmentEnum, Envs } from '../../common/config/envs/envs.ts';
 import { Memory } from '../../components/memory';
-import { RiShieldKeyholeLine } from 'react-icons/ri';
-import { Privacy } from '../../components/privacy';
+import { MdQrCode2 } from 'react-icons/md';
+import QRGenerator from '../../components/privacy/delete.tsx';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
+    const { setStateApp } = useAppAction();
     const { cacheMemory, pages, activeTab, systemChatId, logs } = useAppSelector((state) => state.app);
     const chatsLength = useAppSelector((state) => state.chats.chats.length);
-    const { setStateApp } = useAppAction();
+    const RASKeysString = useAppSelector((state) => state.app.RASKeysString);
 
     const cache = useMemo(() => {
         const [memory, unit] = getFileSize(cacheMemory);
@@ -45,11 +46,29 @@ export const Settings = memo(() => {
         <div id={styles.background}>
             <MenuTitle icon={<IoSettingsOutline />} title={'settings'} />
             <div className={styles.items}>
-                <div className={styles.item} onClick={() => selectMenu(<Privacy />)}>
-                    <RiShieldKeyholeLine className={styles.item_logo} />
-                    <div className="text_translate">{t('privacy_policy')}</div>
+                <div className={styles.inf}>
+                    <div
+                        className={styles.inf_qr_code_background}
+                        onClick={() => {
+                            setStateApp({ page: <QRGenerator value={{ publicKey: RASKeysString?.publicKey }} /> });
+                        }}
+                    >
+                        <MdQrCode2 className={styles.inf_qr_code} />
+                    </div>
+                    <div className={styles.inf_text_background}></div>
                 </div>
+                {/*<div className={styles.item} onClick={() => selectMenu(<Privacy />)}>*/}
+                {/*    <RiShieldKeyholeLine className={styles.item_logo} />*/}
+                {/*    <div className="text_translate">{t('privacy_policy')}</div>*/}
+                {/*</div>*/}
             </div>
+
+            {/*<div className={styles.items}>*/}
+            {/*    <div className={styles.item} onClick={() => selectMenu(<Privacy />)}>*/}
+            {/*        <RiShieldKeyholeLine className={styles.item_logo} />*/}
+            {/*        <div className="text_translate">{t('privacy_policy')}</div>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
 
             {/*todo*/}
             {/*<div className={styles.items}>*/}
