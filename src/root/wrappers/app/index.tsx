@@ -25,6 +25,8 @@ import { useBattery } from './hooks/use-battery.hook.ts';
 import { useSettings } from './hooks/use-settings.hook.ts';
 import { useUpdateBadge } from './hooks/use-update-badge.hook.ts';
 import { useCatchLogs } from './hooks/use-catch-logs.hook.ts';
+import { useKeys } from './hooks/keys.hook.ts';
+import { Page } from '../../../pages/page';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -58,6 +60,8 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useSettings();
     // update badge
     useUpdateBadge();
+    // get RSA keys
+    useKeys();
     // verity when open app
     // const [isAuth] = useVerify();
 
@@ -76,6 +80,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
                 <div id={styles.background}>
                     <PreviewMediaContext>
                         <PreviewMedia />
+                        <Page />
                         <div id={styles.menu}>
                             <div id={styles.pages}>
                                 {/*<PageItem name={TabEnum.SERVICES}>*/}

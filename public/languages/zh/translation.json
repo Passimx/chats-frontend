@@ -63,6 +63,9 @@
   "max_cache_size": "最大缓存大小",
   "cache_limit_warning": "如果缓存大小超过限制，最旧的文件将被删除",
   "without_name": "无标题",
+  "qr_code": "二维码",
+  "scan_qr_code": "扫描二维码",
+  "point_camera_at_qr_code": "将相机对准二维码",
 
   "all": "全部",
   "always": "始终",

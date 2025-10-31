@@ -1,7 +1,0 @@
-version: "3.4"
-services:
-  chats-frontend:
-    image: passimx/chats-frontend
-    restart: unless-stopped
-    ports:
-      - 3006:2223

@@ -1,0 +1,46 @@
+.background {
+    position: fixed; /* фиксируем на весь экран */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* полупрозрачный тёмный фон */
+    backdrop-filter: blur(4px); /* размытие фона */
+    z-index: 1000;
+    display: flex;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    .page{
+        cursor: auto;
+        padding: 4px;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+
+        @media(width >= 600px){
+            width: 400px;
+        }
+    }
+
+    .cancel_background{
+        top: 0;
+        left: 0;
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+
+        .cancel_button{
+            color: white;
+            font-weight: bold;
+            font-size: 30px;
+        }
+    }
+}

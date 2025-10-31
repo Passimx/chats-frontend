@@ -2,7 +2,6 @@ import { FC, useCallback, useContext, useMemo, useState } from 'react';
 import styles from './index.module.css';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { ParentMessage } from '../parent-message';
-import { GiCancel } from 'react-icons/gi';
 import { getRawChat } from '../../root/store/chats/chats.raw.ts';
 import { BsEmojiSmile, BsFillArrowUpCircleFill } from 'react-icons/bs';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
@@ -11,7 +10,7 @@ import { useEnterHook } from './hooks/use-enter.hook.ts';
 import { PropsType } from './types/props.type.ts';
 import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
 import { FaMicrophone } from 'react-icons/fa';
-import { MdDelete } from 'react-icons/md';
+import { MdDelete, MdOutlineClose } from 'react-icons/md';
 import { CgMenuGridO } from 'react-icons/cg';
 import { MediaMenu } from '../media-menu';
 import { ContextChat } from '../../pages/chat/context/chat-context.tsx';
@@ -44,7 +43,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages }) => {
                     <div id={styles.answer_block}>
                         <ParentMessage {...chatOnPage?.answerMessage} />
                         <div id={styles.answer_block_cancel} onClick={cancelAnswerMessage}>
-                            <GiCancel id={styles.answer_block_cancel_icon} />
+                            <MdOutlineClose id={styles.answer_block_cancel_icon} />
                         </div>
                     </div>
                 )}

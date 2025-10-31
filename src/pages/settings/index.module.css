@@ -15,7 +15,7 @@
     overflow-x: hidden;
 }
 
-.item{
+.item, .inf{
     padding: 12px;
     background-color: #08365e;
     border-bottom: 1px solid #0c518d;
@@ -36,7 +36,7 @@
     font-size: 16px;
 }
 
-.item:hover{
+.item:hover, .inf:hover{
     background-color: #0a4375;
 }
 
@@ -56,4 +56,31 @@
 .item::after {
     content: "▶";
     font-weight: bold;
+}
+
+.inf{
+    padding: 0;
+    border-radius: 8px;
+    border-bottom:none;
+
+    .inf_qr_code_background:hover{
+        background-color: #0e5ea4;;
+    }
+
+    .inf_qr_code_background{
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+
+        .inf_qr_code{
+            font-size: 80px;
+            opacity: 0.8;
+        }
+    }
+
+    .inf_text_background{
+        /*background-color: teal;*/
+        height: 100%;
+    }
 }

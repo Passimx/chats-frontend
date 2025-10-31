@@ -21,7 +21,7 @@ const useClickOutside = (
     useEffect(() => {
         if (isVisible) document.addEventListener('mouseup', handleClickOutside, false);
         else document.removeEventListener('mouseup', handleClickOutside, false);
-    }, [isVisible]);
+    }, [isVisible, ref]);
 
     return [ref, isVisible, setIsVisible];
 };

@@ -1,0 +1,29 @@
+.background{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+
+
+    .container{
+        overflow: hidden;
+        border-radius: 16px;
+        width: 100%;
+
+        .qr_hint {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            color: #e5faff;
+            font-size: 1rem;
+            font-weight: 600;
+            text-shadow: 0 0 8px rgba(0,255,255,0.6);
+            letter-spacing: 0.3px;
+            z-index: 40;
+            display: grid;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+}
