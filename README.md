@@ -4,18 +4,21 @@
 
 > Designed for privacy-first chat systems that anyone can self-host.
 
+
 # License
 
-PassimX Chats Frontend is released under the terms of the MIT
+PassimX Chats Frontend is released under the terms of the MIT license.  
+See https://opensource.org/license/MIT for more information.
+
 
 ## Features
-
 
 - 🔒 Messaging **without authentication** or any personal identifiers
 - 🌐 **Self-hostable** — deploy your own secure server
 - 💬 Supports both private and group chats
 - 📱 Responsive design (SPA / PWA ready)
 - ⚙️ Simple integration with the backend API
+
 
 ## Technologies
 
@@ -24,6 +27,7 @@ PassimX Chats Frontend is released under the terms of the MIT
 | API          | Fetch / WebSocket / XHR                |
 | Encryption   | RSA-OAEP SHA-512 / AES-GCM SHA-256     |
 | Caching      | Cache Storage / IndexedDB / LocalStorage |
+
 
 ## Project Structure
 
@@ -72,6 +76,8 @@ chats-frontend/
 ├── tsconfig.node.json    # TypeScript config for Node environment
 └── vite.config.ts        # Vite build configuration
 ```
+
+
 ## Getting Started
 
 ### Run locally with Node.js
