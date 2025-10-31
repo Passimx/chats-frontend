@@ -9,14 +9,7 @@
 .container{
     overflow: hidden;
     border-radius: 16px;
-
-    @media(width >= 600px){
-        width: 300px;
-    }
-
-    @media(width < 600px){
-        width: 100%;
-    }
+    width: 100%;
 }
 
 .qr_hint {

@@ -19,7 +19,7 @@
         display: grid;
         align-items: center;
         justify-content: center;
-
+        overflow: hidden;
 
         @media(width >= 600px){
             width: 400px;
