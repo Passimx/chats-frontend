@@ -14,7 +14,7 @@ const QRGenerator: React.FC<Props> = ({ value }) => {
         if (canvasRef.current) {
             QRCode.toCanvas(canvasRef.current, JSON.stringify(value), {
                 errorCorrectionLevel: 'H',
-                width: 350,
+                width: Math.min(window.innerWidth, window.innerHeight, 400) - 16,
                 margin: 2,
                 color: {
                     light: '#ffffff',
