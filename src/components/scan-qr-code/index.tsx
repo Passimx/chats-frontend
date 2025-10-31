@@ -40,6 +40,10 @@ export const ScanQrCode: FC = () => {
                         scanDelay={1000}
                         components={{ torch: true, zoom: true, finder: true }}
                         sound={false}
+                        styles={{
+                            container: { width: '100%' },
+                            video: { width: '100%' },
+                        }}
                     >
                         <div className={`${styles.qr_hint} ${styles.show} text_translate`}>
                             {t('point_camera_at_qr_code')}
