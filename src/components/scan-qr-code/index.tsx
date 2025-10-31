@@ -19,9 +19,8 @@ export const ScanQrCode: FC = () => {
     }, []);
 
     const changeDevice = () => {
-        const index = selectedDevice + 1;
-        if (index === devices.length) setSelectedDevice(0);
-        else setSelectedDevice(index);
+        if (selectedDevice === 0) setSelectedDevice(devices.length - 1);
+        else setSelectedDevice(0);
     };
 
     if (devices.length)
