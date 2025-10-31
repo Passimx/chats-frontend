@@ -12,22 +12,31 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
-}
 
-.cancel_background{
-    top: 0;
-    left: 0;
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-}
+    .page{
+        cursor: auto;
+        padding: 4px;
+        background-color: #439fef;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+    }
 
-.cancel_button{
-    color: white;
-    font-weight: bold;
-    font-size: 30px;
+    .cancel_background{
+        top: 0;
+        left: 0;
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+
+        .cancel_button{
+            color: white;
+            font-weight: bold;
+            font-size: 30px;
+        }
+    }
 }

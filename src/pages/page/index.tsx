@@ -34,7 +34,7 @@ export const Page: FC = memo(() => {
     if (page)
         return (
             <div className={styles.background}>
-                <div ref={ref} style={{ cursor: 'auto' }}>
+                <div ref={ref} className={styles.page}>
                     {page}
                 </div>
                 <div className={styles.cancel_background}>
