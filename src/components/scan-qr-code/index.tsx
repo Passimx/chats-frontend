@@ -10,42 +10,23 @@ export const ScanQrCode: FC = () => {
     const { setStateApp } = useAppAction();
     const devices = useDevices();
 
-    const [selectedDevice, setSelectedDevice] = useState<number>(0);
-
     const onScan = useCallback(([result]: IDetectedBarcode[]) => {
         setIsPaused(true);
         setStateApp({ page: undefined });
         console.log(result.rawValue);
     }, []);
 
-    const changeDevice = () => {
-        if (selectedDevice === 0) setSelectedDevice(devices.length - 1);
-        else setSelectedDevice(0);
-    };
-
     if (devices.length)
         return (
             <div className={styles.background}>
                 <div className={styles.container}>
-                    <Scanner
-                        onScan={onScan}
-                        paused={isPaused}
-                        scanDelay={1000}
-                        constraints={{
-                            deviceId: devices[selectedDevice].deviceId,
-                        }}
-                    >
+                    <Scanner onScan={onScan} paused={isPaused} scanDelay={1000}>
                         <div className={`${styles.qr_hint} ${styles.show}`}>Наведи камеру на QR-код</div>
-                        {devices.length > 1 && (
-                            <div className={`${styles.camera_background} ${styles.show}`}>
-                                <div
-                                    className={`${styles.show} ${styles.camera_change_background}`}
-                                    onClick={changeDevice}
-                                >
-                                    <MdCameraswitch className={`${styles.show} ${styles.camera_change_button}`} />
-                                </div>
+                        <div className={`${styles.camera_background} ${styles.show}`}>
+                            <div className={`${styles.show} ${styles.camera_change_background}`}>
+                                <MdCameraswitch className={`${styles.show} ${styles.camera_change_button}`} />
                             </div>
-                        )}
+                        </div>
                     </Scanner>
                 </div>
                 {/*<button onClick={() => setIsPaused(!isPaused)}>{isPaused ? 'Resume' : 'Pause'} Scanning</button>*/}
