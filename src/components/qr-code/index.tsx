@@ -1,21 +1,18 @@
-import React, { useEffect, useRef } from 'react';
+import { FC, memo, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
+import { PropsType } from './types.ts';
+import styles from './index.module.css';
 
-type ScanValueType = { publicKey?: string };
-
-type Props = {
-    value: ScanValueType;
-};
-
-const QRGenerator: React.FC<Props> = ({ value }) => {
+export const QrCode: FC<PropsType> = memo(({ value }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    const size = Math.min(window.innerWidth, window.innerHeight, 400) - 16;
 
     useEffect(() => {
         if (canvasRef.current) {
             QRCode.toCanvas(canvasRef.current, JSON.stringify(value), {
                 errorCorrectionLevel: 'H',
-                width: Math.min(window.innerWidth, window.innerHeight, 400) - 16,
-                margin: 2,
+                width: size,
                 color: {
                     light: '#ffffff',
                     dark: '#062846',
@@ -26,7 +23,9 @@ const QRGenerator: React.FC<Props> = ({ value }) => {
         }
     }, [value]);
 
-    return <canvas ref={canvasRef}></canvas>;
-};
-
-export default QRGenerator;
+    return (
+        <div className={styles.background} style={{ height: size, width: size }}>
+            <canvas ref={canvasRef}></canvas>
+        </div>
+    );
+});

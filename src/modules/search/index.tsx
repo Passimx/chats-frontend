@@ -66,7 +66,7 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
                         }}
                     >
                         <MdOutlineQrCodeScanner className={styles.new_chats_item_logo} color="var(--menu-color)" />
-                        <div className={'text_translate'}>Сканировать qr-код</div>
+                        <div className={'text_translate'}>{t('scan_qr_code')}</div>
                     </div>
                 </div>
                 <div className={styles.new_chats_item}>

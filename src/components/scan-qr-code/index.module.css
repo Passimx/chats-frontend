@@ -4,18 +4,19 @@
     display: grid;
     justify-items: center;
     align-items: center;
+    padding: 4px;
 }
 
 .container{
+    overflow: hidden;
+    border-radius: 16px;
 
     @media(width >= 600px){
         width: 300px;
-        border-radius: 16px;
         overflow: hidden;
     }
 
     @media(width < 600px){
-        width: 100%;
     }
 }
 

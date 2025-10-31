@@ -7,13 +7,13 @@ import Message from '../../components/message';
 import { useTranslation } from 'react-i18next';
 import { getRawChat } from '../../root/store/chats/chats.raw.ts';
 import { IoIosAddCircleOutline } from 'react-icons/io';
-import { useAppSelector } from '../../root/store';
+import { useAppAction, useAppSelector } from '../../root/store';
 import { useMessages } from './hooks/use-messages.hook.ts';
 import { useJoinChat } from './hooks/use-join-chat.hook.ts';
 import { CiMenuKebab } from 'react-icons/ci';
 import useClickOutside from '../../common/hooks/use-click-outside.ts';
 import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
-import { MdExitToApp } from 'react-icons/md';
+import { MdExitToApp, MdQrCode2 } from 'react-icons/md';
 import { IconEnum } from '../../components/chat-avatar/types/icon.enum.ts';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { AiOutlineGlobal } from 'react-icons/ai';
@@ -25,16 +25,17 @@ import { FaStar } from 'react-icons/fa';
 import { LoadingType } from './types/loading.type.ts';
 import { MenuMessage } from '../../components/menu-message';
 import { InputMessage } from '../../components/input-message';
+import { QrCode } from '../../components/qr-code';
 
 const Chat: FC = memo(() => {
     useGetChat();
     useJoinChat();
     const { t } = useTranslation();
+    const { setStateApp } = useAppAction();
     const [addChat, leave, back] = useMethods();
     const [isLoading, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const { chatOnPage } = useAppSelector((state) => state.chats);
-
     if (!chatOnPage) return <></>;
 
     return (
@@ -92,6 +93,15 @@ const Chat: FC = memo(() => {
                     ref={wrapperRef}
                     onClick={() => setIsVisible(false)}
                 >
+                    <div
+                        className={styles.chat_menu_item}
+                        onClick={() => {
+                            setStateApp({ page: <QrCode value={window.location.href} /> });
+                        }}
+                    >
+                        <MdQrCode2 className={styles.chat_menu_item_icon} />
+                        <div className={'text_translate'}>{t('qr_code')}</div>
+                    </div>
                     <div
                         className={styles.chat_menu_item}
                         onClick={() => {

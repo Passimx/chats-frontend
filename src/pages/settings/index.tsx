@@ -16,7 +16,7 @@ import { LogList } from '../../components/log-list';
 import { EnvironmentEnum, Envs } from '../../common/config/envs/envs.ts';
 import { Memory } from '../../components/memory';
 import { MdQrCode2 } from 'react-icons/md';
-import QRGenerator from '../../components/privacy/delete.tsx';
+import { QrCode } from '../../components/qr-code';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
@@ -50,7 +50,7 @@ export const Settings = memo(() => {
                     <div
                         className={styles.inf_qr_code_background}
                         onClick={() => {
-                            setStateApp({ page: <QRGenerator value={{ publicKey: RASKeysString?.publicKey }} /> });
+                            setStateApp({ page: <QrCode value={{ publicKey: RASKeysString?.publicKey }} /> });
                         }}
                     >
                         <MdQrCode2 className={styles.inf_qr_code} />

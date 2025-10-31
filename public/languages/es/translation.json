@@ -63,6 +63,9 @@
   "max_cache_size": "Tamaño máximo de la caché",
   "cache_limit_warning": "Si el tamaño de la caché supera el límite, se eliminarán los archivos más antiguos",
   "without_name": "Sin título",
+  "qr_code": "Código QR",
+  "scan_qr_code": "Escanear un código QR",
+  "point_camera_at_qr_code": "Apunta la cámara al código QR",
 
   "all": "todo",
   "always": "siempre",
