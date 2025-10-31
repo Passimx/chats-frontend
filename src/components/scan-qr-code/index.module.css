@@ -9,14 +9,13 @@
 .container{
     overflow: hidden;
     border-radius: 16px;
-    width: 100%;
 
     @media(width >= 600px){
         width: 300px;
-        overflow: hidden;
     }
 
     @media(width < 600px){
+        width: 100%;
     }
 }
 
