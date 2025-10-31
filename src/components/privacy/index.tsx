@@ -13,7 +13,7 @@ export const Privacy: FC = () => {
             <div className={styles.background}>
                 <MenuTitle icon={<RiShieldKeyholeLine />} title={'privacy_policy'} />
                 <div style={{ overflow: 'auto' }}>
-                    <QRGenerator value={RASKeysString.publicKey} />
+                    <QRGenerator value={{ publicKey: RASKeysString.publicKey }} />
                 </div>
 
                 {/*<div>Добавить пароль при входе в приложение</div>*/}

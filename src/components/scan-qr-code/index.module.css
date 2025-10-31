@@ -18,11 +18,11 @@
         width: 100%;
     }
 
-    div{
-        * :not(video) :not(.show) :not(svg){
-            opacity: 0;
-        }
-    }
+    /*div{*/
+    /*    * :not(video) :not(.show) :not(svg){*/
+    /*        opacity: 0;*/
+    /*    }*/
+    /*}*/
 }
 
 .qr_hint {
