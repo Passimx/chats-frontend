@@ -11,6 +11,7 @@
     overflow: hidden;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
 .cancel_background{
