@@ -1,4 +1,4 @@
-# Passimx Chats Frontend
+# PassimX Chats Frontend
 
 > A modern open-source frontend client for anonymous communication — no registration, no personal data, no phone numbers.  
 
@@ -6,7 +6,6 @@
 
 ## Features
 
----
 
 - 🔒 Messaging **without authentication** or any personal identifiers
 - 🌐 **Self-hostable** — deploy your own secure server
@@ -14,11 +13,7 @@
 - 📱 Responsive design (SPA / PWA ready)
 - ⚙️ Simple integration with the backend API
 
----
-
 ## Technologies
-
----
 
 | Area        | Technologies Used                      |
 |--------------|----------------------------------------|
@@ -28,7 +23,6 @@
 
 ## Project Structure
 
----
 ```
 chats-frontend/
 │
@@ -74,10 +68,7 @@ chats-frontend/
 ├── tsconfig.node.json    # Типизация
 └── vite.config.ts        # Конфигурация VITE
 ```
----
 ## Getting Started
-
----
 
 ### Run locally with Node.js
 
