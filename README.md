@@ -4,6 +4,10 @@
 
 > Designed for privacy-first chat systems that anyone can self-host.
 
+# License
+
+PassimX Chats Frontend is released under the terms of the MIT
+
 ## Features
 
 
@@ -26,47 +30,47 @@
 ```
 chats-frontend/
 │
-├── .github/              # Конфигурация для CI/CD
-├── .husky/               # Git хуки
-├── nginx/                # Настройка nginx для Докер образа
-├── public/               # Статические файлы (словарь, иконки, манифест файл для pwa, воркеры)
+├── .github/              # CI/CD configuration
+├── .husky/               # Git hooks
+├── nginx/                # Nginx configuration for Docker build
+├── public/               # Static files (dictionary, icons, manifest, workers)
 ├── src/
-│   ├── common/           # Кастомные React-хуки, функции и сервисы
-│   ├── components/       # Компоненты    
-│   ├── modules/          # Модули
-│   ├── pages/            # Главные страницы 
+│   ├── common/           # Custom React hooks, utilities, and services
+│   ├── components/       # UI components    
+│   ├── modules/          # Application modules
+│   ├── pages/            # Main app pages
 │   ├── root/
 │   │   │
-│   │   ├── api/          # Все API находится в папке api
+│   │   ├── api/          # All backend API logic
 │   │   │   │
-│   │   │   ├── chats/    # Эндпоинты для чатов
-│   │   │   ├── files/    # Эндпоинты для файлов
-│   │   │   ├── messages/ # Эндпоинты для сообщений
-│   │   │   └── index.ts  # Конфигурация API-клиента
+│   │   │   ├── chats/    # Chat-related endpoints
+│   │   │   ├── files/    # File management endpoints
+│   │   │   ├── messages/ # Message endpoints
+│   │   │   └── index.ts  # API client configuration
 │   │   │
-│   │   ├── contexts      # Компоненты, влияющие на все приложение
-│   │   ├── routes        # Навигация приложения относительно url
-│   │   ├── store         # Глобальное состояние (Redux)
-│   │   ├── types         # Общие типы TypeScript
-│   │   └── wrappers      # Компоненты, влияющие на все приложение
+│   │   ├── contexts      # Global React contexts
+│   │   ├── routes        # Application routing
+│   │   ├── store         # Global state (Redux)
+│   │   ├── types         # Shared TypeScript types
+│   │   └── wrappers      # High-level wrappers affecting the whole app
 │   │
-│   ├── app.tsx           # Главный компонент приложения
-│   ├── index.css         # Общие стили для приложения
-│   └── main.tsx          # Точка входа
+│   ├── app.tsx           # Root application component
+│   ├── index.css         # Global styles
+│   └── main.tsx          # Entry point
 │
-├── .env.example          # Пример конфигурации переменных окружения
-├── .eslintrc.cjs         # Анализатор кода кода 
-├── .gitignore            # Ограничения для git
-├── .prettierrc           # Форматирование кода 
-├── Dockerfile            # Докер образ
-├── index.html            # Главная страница веб-сайта
-├── LICENSE               # Лицензия
-├── package.json          # Файл сборки проекта
-├── package-lock.json     # Файл установки пакетов
-├── README.md             # Файл информации о проектке
-├── tsconfig.json         # Типизация
-├── tsconfig.node.json    # Типизация
-└── vite.config.ts        # Конфигурация VITE
+├── .env.example          # Example environment configuration
+├── .eslintrc.cjs         # ESLint configuration 
+├── .gitignore            # Git ignore rules
+├── .prettierrc           # Prettier code style config
+├── Dockerfile            # Docker build definition
+├── index.html            # Base HTML entry
+├── LICENSE               # License file
+├── package.json          # Project dependencies and scripts
+├── package-lock.json     # Locked dependency tree
+├── README.md             # Project documentation
+├── tsconfig.json         # TypeScript config
+├── tsconfig.node.json    # TypeScript config for Node environment
+└── vite.config.ts        # Vite build configuration
 ```
 ## Getting Started
 
