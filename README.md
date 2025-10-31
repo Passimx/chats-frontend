@@ -1,9 +1,20 @@
+![License](https://img.shields.io/badge/license-MIT-blue)
+![Status](https://img.shields.io/badge/status-active-success)
+![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen)
+![Docker Automated build](https://img.shields.io/docker/automated/passimx/chats-frontend?label=docker)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/passimx/chats-frontend/github-actions.yml)
+
 # PassimX Chats Frontend
 
 > A modern open-source frontend client for anonymous communication — no registration, no personal data, no phone numbers.  
 
 > Designed for privacy-first chat systems that anyone can self-host.
 
+## Overview
+
+PassimX is built to redefine privacy in online communication.  
+Unlike traditional messengers, it doesn’t collect personal data or require phone/email verification — giving organizations and individuals full control over their communication.
 
 # License
 
@@ -103,3 +114,68 @@ npm run dev
 # Build for production
 npm run build
 ```
+
+## Environment Variables
+
+The project uses a `.env` file to configure backend endpoints.
+
+| Variable | Description                          | Example                       |
+|-----------|--------------------------------------|-------------------------------|
+| `VITE_SALT` | Salt for generation crypto keys      | `eXaMpLe_SaLt`                |
+| `VITE_CATCH_LOGS` | Show logs at app or not              | `true`                        |
+| `VITE_CHATS_SERVICE_URL` | Chats service connection URL         | `https://api.passimx.chat`    |
+| `VITE_FILES_SERVICE_URL` | Files service connection URL         | `http://localhost:6030/files` |
+| `VITE_NOTIFICATIONS_SERVICE_URL` | Notifications service connection URL | `ws://localhost:7022`         |
+
+## Backend Repositories
+
+See the backend source here: 
+
+[Chats Service Backend](https://github.com/Passimx/chats-service)
+
+[Files Service Backend](https://github.com/Passimx/files-service)
+
+[Notifications Service Backend](https://github.com/Passimx/notifications-service)
+
+## Branch Structure
+
+| Branch | Description | Stability |
+|:-------|:-------------|:-----------|
+| **`main`** | Development branch. Contains experimental and in-progress features — code here may be unstable. | ⚠️ Unstable |
+| **`test`** | Pre-release branch. Used for integration testing and QA before going to production. | ⚠️ Semi-stable |
+| **`relis`** | Production branch. Contains only tested and approved code. | ✅ Stable |
+
+
+### Branch Workflow
+
+1. **All new features and fixes** are developed in separate feature branches (e.g. `feature/chat-encryption`, `bugfix/message-scroll`).
+2. When ready, they are merged into **`main`** for integration.
+3. Periodically, `main` is merged into **`test`** for pre-release testing.
+4. Once verified, `test` is merged into **`relis`** for production deployment.
+
+> 🔒 The `main`, `test` and `relis` branches are protected — direct pushes are not allowed.  
+> All changes must go through a **Pull Request (PR)**.
+
+
+# Contributing
+
+We welcome contributions from the community!  
+If you want to help improve **Passimx**, please follow these guidelines:
+
+## How to Contribute
+
+1. **Fork** this repository to your own GitHub account.
+2. Create a new branch for your changes:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. Make your changes and commit them with clear messages:
+   ```bash
+   git commit -m "feature: chat encryption module"
+   ```
+4. Push your branch and open a Pull Request to the `main` branch.
+
+Thank You!
+
+Every contribution — big or small — helps make Passimx Chats better for everyone.
+Thank you for your time and effort
