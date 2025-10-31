@@ -1,7 +1,7 @@
 import { FC, memo, useEffect } from 'react';
 import styles from './index.module.css';
 import { useAppAction, useAppSelector } from '../../root/store';
-import { ImCancelCircle } from 'react-icons/im';
+import { MdOutlineClose } from 'react-icons/md';
 
 export const Page: FC = memo(() => {
     const page = useAppSelector((state) => state.app.page);
@@ -23,7 +23,7 @@ export const Page: FC = memo(() => {
             <div className={styles.background}>
                 {page}
                 <div className={styles.cancel_background} onClick={() => setStateApp({ page: undefined })}>
-                    <ImCancelCircle className={styles.cancel_button} />
+                    <MdOutlineClose className={styles.cancel_button} />
                 </div>
             </div>
         );

@@ -17,12 +17,6 @@
     @media(width < 600px){
         width: 100%;
     }
-
-    /*div{*/
-    /*    * :not(video) :not(.show) :not(svg){*/
-    /*        opacity: 0;*/
-    /*    }*/
-    /*}*/
 }
 
 .qr_hint {
@@ -42,7 +36,6 @@
 
 .camera_background{
     position: absolute;
-    /*background-color: red;*/
     bottom: 0;
     right: 25%;
     left: 25%;
