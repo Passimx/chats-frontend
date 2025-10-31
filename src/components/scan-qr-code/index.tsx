@@ -48,11 +48,6 @@ export const ScanQrCode: FC = () => {
                         <div className={`${styles.qr_hint} ${styles.show} text_translate`}>
                             {t('point_camera_at_qr_code')}
                         </div>
-                        {/*<div className={`${styles.camera_background} ${styles.show}`}>*/}
-                        {/*    <div className={`${styles.show} ${styles.camera_change_background}`}>*/}
-                        {/*        <MdCameraswitch className={`${styles.show} ${styles.camera_change_button}`} />*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
                     </Scanner>
                 </div>
             </div>

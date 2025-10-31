@@ -24,11 +24,6 @@
         @media(width >= 600px){
             width: 400px;
         }
-
-        @media(width < 600px){
-            width: 100%;
-        }
-
     }
 
     .cancel_background{
