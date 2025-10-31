@@ -1,6 +1,6 @@
-import { CreateRsaKeysType, RsaKeysStringType } from '../types/create-rsa-keys.type.ts';
+import { CreateRsaKeysType, RsaKeysStringType } from '../../root/types/create-rsa-keys.type.ts';
 import { WordsService } from './words-service/words.service.ts';
-import { IKeys } from '../types/keys.type.ts';
+import { IKeys } from '../../root/types/keys.type.ts';
 
 const iterations = 1000;
 const keyLength = 256;

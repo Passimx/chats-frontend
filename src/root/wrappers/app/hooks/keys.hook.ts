@@ -1,6 +1,6 @@
-import { CryptoService } from '../../../services/crypto.service.ts';
+import { CryptoService } from '../../../../common/services/crypto.service.ts';
 import { useCallback, useEffect } from 'react';
-import { WordsService } from '../../../services/words-service/words.service.ts';
+import { WordsService } from '../../../../common/services/words-service/words.service.ts';
 import { RsaKeysStringType } from '../../../types/create-rsa-keys.type.ts';
 import { useAppAction } from '../../../store';
 
