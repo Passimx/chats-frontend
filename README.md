@@ -171,6 +171,7 @@ If you want to help improve **Passimx**, please follow these guidelines:
    ```
 3. Make your changes and commit them with clear messages:
    ```bash
+   git add .
    git commit -m "feature: chat encryption module"
    ```
 4. Push your branch and open a Pull Request to the `main` branch.
