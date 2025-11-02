@@ -66,6 +66,8 @@
   "qr_code": "QR code",
   "scan_qr_code": "Scan a QR code",
   "point_camera_at_qr_code": "Point your camera at the QR code",
+  "pin": "Pin",
+  "unpin": "Unpin",
 
   "all": "all",
   "always": "always",

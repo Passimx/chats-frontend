@@ -8,13 +8,15 @@ html {
 }
 
 #background{
+    --local-width-menu: 200px;
     position: absolute;
     bottom: calc(var(--menu-bottom) + env(safe-area-inset-bottom, 32px));
-    width: 240px;
-    left: calc((var(--menu-width) - 240px) / 2);
+    width: var(--local-width-menu);
+    left: calc((var(--menu-width) - var(--local-width-menu)) / 2 - 2px);
     display: grid;
     grid-template-columns: 50% 50%;
-    border-radius: 16px;
+    border-radius: var(--local-width-menu);
+    overflow: hidden;
     background-color: rgb(255, 255, 255, 8%);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -24,7 +26,7 @@ html {
 
 .menu_item{
     transition: all .3s ease;
-    border-radius: 10px;
+    border-radius: var(--local-width-menu);
     display: grid;
     justify-content: center;
     align-items: center;

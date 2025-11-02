@@ -25,7 +25,7 @@ ENV VITE_FILES_SERVICE_URL=${VITE_FILES_SERVICE_URL}
 ENV VITE_NOTIFICATIONS_SERVICE_URL=${VITE_NOTIFICATIONS_SERVICE_URL}
 ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 
-RUN npm run build
+RUN npm run verify:build
 RUN npm config set ignore-scripts true
 RUN npm prune --omit=dev
 
