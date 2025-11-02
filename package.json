@@ -58,8 +58,5 @@
       "prettier --write"
     ],
     "*.--write": "prettier --write"
-  },
-  "engines": {
-    "node": "20.x"
   }
 }
