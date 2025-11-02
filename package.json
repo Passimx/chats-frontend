@@ -12,7 +12,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "prepare": "husky install",
-    "verify:build": "vite build && sha256sum -b dist/**/* > dist.sha256"
+    "verify:build": "vite build && tar -czf dist.tar.gz dist && sha256sum dist.tar.gz > dist.sha256"
   },
   "dependencies": {
     "@types/qrcode": "^1.5.6",
