@@ -45,7 +45,6 @@ RUN npm prune --omit=dev
 # Stage 4: final (nginx)
 FROM nginx:stable-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY --from=build /app/dist.tar.gz /usr/share/nginx/html/dist.tar.gz
 COPY --from=build /app/dist.sha256 /usr/share/nginx/html/dist.sha256
 COPY --from=build /app/dist.sha256.asc /usr/share/nginx/html/dist.sha256.asc
 COPY --from=build /app/nginx/nginx.conf /etc/nginx/nginx.conf
