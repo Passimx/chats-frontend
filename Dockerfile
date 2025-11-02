@@ -35,7 +35,7 @@ RUN npm run verify:build
 
 # Импортируем GPG-ключ и подписываем артефакт
 RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
-    tar -czf dist.tar.gz dist && \
+    tar --sort=name --mtime='UTC 2024-09-29' --owner=0 --group=0 --numeric-owner -czf dist.tar.gz dist && \
     sha256sum dist.tar.gz > dist.sha256 && \
     gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --sign dist.sha256
 
