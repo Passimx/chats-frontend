@@ -28,7 +28,7 @@ ENV VITE_NOTIFICATIONS_SERVICE_URL=${VITE_NOTIFICATIONS_SERVICE_URL}
 ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 
 # Устанавливаем необходимые пакеты для подписи
-RUN apk add --no-cache gnupg tar bash
+RUN apk add --no-cache bash gcompat coreutils tar gzip
 
 # Собираем проект
 RUN npm run verify:build
