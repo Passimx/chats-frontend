@@ -11,7 +11,8 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "verify:build": "vite build && sha256sum -b dist/**/* > dist.sha256"
   },
   "dependencies": {
     "@types/qrcode": "^1.5.6",
@@ -57,5 +58,8 @@
       "prettier --write"
     ],
     "*.--write": "prettier --write"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }

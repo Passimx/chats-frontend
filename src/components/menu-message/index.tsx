@@ -1,6 +1,6 @@
 import { FC, memo, useCallback, useContext, useEffect, useRef } from 'react';
 import styles from './index.module.css';
-import { PiArrowBendUpLeftFill } from 'react-icons/pi';
+import { PiArrowBendUpLeftFill, PiPushPinSimpleSlashThin, PiPushPinSimpleThin } from 'react-icons/pi';
 import { IoCopyOutline } from 'react-icons/io5';
 import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
 import { GoLink } from 'react-icons/go';
@@ -93,6 +93,14 @@ export const MenuMessage: FC = memo(() => {
             <div className={styles.message_menu_item} onClick={copyMessageWithChat}>
                 <GoLink className={styles.message_menu_item_icon} />
                 {t('copy_message_link')}
+            </div>
+            <div className={styles.message_menu_item} onClick={copyMessageWithChat}>
+                <PiPushPinSimpleThin className={styles.message_menu_item_icon} />
+                {t('pin')}
+            </div>
+            <div className={styles.message_menu_item} onClick={copyMessageWithChat}>
+                <PiPushPinSimpleSlashThin className={styles.message_menu_item_icon} />
+                {t('unpin')}
             </div>
             {/*<div className={styles.message_menu_item}>*/}
             {/*    <MdOutlinePlaylistAddCheck className={styles.message_menu_item_icon} />*/}

@@ -66,6 +66,8 @@
   "qr_code": "二维码",
   "scan_qr_code": "扫描二维码",
   "point_camera_at_qr_code": "将相机对准二维码",
+  "pin": "置顶",
+  "unpin": "取消置顶",
 
   "all": "全部",
   "always": "始终",

@@ -10,12 +10,22 @@ export default defineConfig({
         port: 3006,
     },
     build: {
+        sourcemap: true,
+        manifest: true,
         rollupOptions: {
             input: {
-                main: resolve(__dirname, 'index.html'), // основное SPA
-                iframe: resolve(__dirname, 'iframe.html'), // дополнительная точка входа
+                main: resolve(__dirname, 'index.html'),
+                iframe: resolve(__dirname, 'iframe.html'),
+            },
+            output: {
+                entryFileNames: 'assets/[name].js',
+                chunkFileNames: 'assets/[name].js',
+                assetFileNames: 'assets/[name].[ext]',
             },
         },
         outDir: 'dist',
+    },
+    define: {
+        'process.env.BUILD_DATE': JSON.stringify('2024-09-29'),
     },
 });
