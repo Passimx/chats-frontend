@@ -9,6 +9,7 @@ import { HiTrendingUp } from 'react-icons/hi';
 import { useAppSelector } from '../../root/store';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { RiWifiOffLine } from 'react-icons/ri';
+import imageIcon from '../../../public/assets/icons/192.png';
 
 const ChatAvatar: FC<PropsType> = ({ onlineCount, maxUsersOnline, iconType, isChange = false, isSystem = false }) => {
     const { isListening, isOnline } = useAppSelector((state) => state.app);
@@ -27,7 +28,7 @@ const ChatAvatar: FC<PropsType> = ({ onlineCount, maxUsersOnline, iconType, isCh
             <div className={styles.cube}>
                 <div className={`${styles.icon_number} ${styles.front}`}>
                     {isSystem ? (
-                        <img src="/public/assets/icons/192.png" className={styles.img_icon} alt={'icon'} />
+                        <img src={imageIcon} className={styles.img_icon} alt={'icon'} />
                     ) : isListening && onlineCount ? (
                         onlineCount
                     ) : (
