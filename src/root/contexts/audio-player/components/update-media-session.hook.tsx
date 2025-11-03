@@ -1,6 +1,5 @@
 import { FC, memo, useContext, useEffect } from 'react';
 import { audioMusic, AudioPlayerContext, audioVoice } from '../index.tsx';
-import image from '../../../../../public/assets/icons/256.png';
 import json from '../../../../../package.json';
 import { FileExtensionEnum } from '../../../types/files/types.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
@@ -14,7 +13,7 @@ export const UpdateMediaSession: FC<{ children: any }> = memo(({ children }) => 
         if ('mediaSession' in navigator) {
             if (!audio) return;
             const { file } = audio;
-            let artwork = [{ src: image, sizes: '512x512', type: 'image/png' }];
+            let artwork = [{ src: '/public/assets/icons/256.png', sizes: '512x512', type: 'image/png' }];
             let title = file.originalName;
             let artist = json.name;
 

@@ -10,17 +10,17 @@ export default defineConfig({
         port: 3006,
     },
     build: {
-        sourcemap: true,
-        manifest: true,
+        sourcemap: false,
+        manifest: false,
         rollupOptions: {
             input: {
                 main: resolve(__dirname, 'index.html'),
                 iframe: resolve(__dirname, 'iframe.html'),
             },
             output: {
-                entryFileNames: 'assets/[name].js',
-                chunkFileNames: 'assets/[name].js',
-                assetFileNames: 'assets/[name].[ext]',
+                entryFileNames: '[name].js',
+                chunkFileNames: '[name].js',
+                assetFileNames: '[name].[ext]',
             },
         },
         outDir: 'dist',
