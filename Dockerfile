@@ -1,5 +1,5 @@
 # Stage 1: base
-FROM node:20.11-alpine AS base
+FROM node:20.11.1-slim AS base
 WORKDIR /app
 RUN npm install -g npm@10.4.0
 

@@ -3,17 +3,21 @@ import react from '@vitejs/plugin-react';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { resolve } from 'path';
 
-// https://vitejs.dev/config/
 export default defineConfig({
     plugins: [react(), nodePolyfills()],
     server: {
         port: 3006,
     },
+    resolve: {
+        preserveSymlinks: true,
+    },
     build: {
         sourcemap: false,
         manifest: false,
+        outDir: 'dist',
         rollupOptions: {
             preserveEntrySignatures: false,
+            treeshake: true,
             input: {
                 main: resolve(__dirname, 'index.html'),
                 iframe: resolve(__dirname, 'iframe.html'),
@@ -25,6 +29,8 @@ export default defineConfig({
                 sourcemapPathTransform: () => '',
             },
         },
-        outDir: 'dist',
+    },
+    define: {
+        'process.env.BUILD_DATE': JSON.stringify('2024-09-29'),
     },
 });
