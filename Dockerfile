@@ -31,7 +31,10 @@ ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 RUN apk add --no-cache bash gcompat coreutils tar gzip gnu-tar
 
 # Собираем проект
-RUN npm run verify:build
+RUN npm run build
+RUN tar --sort=name --mtime='UTC 2024-09-29' --owner=0 --group=0 --numeric-owner -cf dist.tar dist
+RUN gzip -n dist.tar
+RUN sha256sum dist.tar.gz > dist.sha256
 
 # Импортируем GPG-ключ и подписываем артефакт
 RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
