@@ -37,8 +37,8 @@ RUN npm run verify:build
 #RUN sha256sum dist.tar.gz > dist.sha256
 
 ## Импортируем GPG-ключ и подписываем артефакт
-RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
-    gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output project.sha256.asc --detach-sign project.sha256
+#RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
+#    gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output project.sha256.asc --detach-sign project.sha256
 
 # Очищаем dev-зависимости
 RUN npm config set ignore-scripts true
