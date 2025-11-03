@@ -27,6 +27,8 @@ ENV VITE_FILES_SERVICE_URL=${VITE_FILES_SERVICE_URL}
 ENV VITE_NOTIFICATIONS_SERVICE_URL=${VITE_NOTIFICATIONS_SERVICE_URL}
 ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 
+RUN apk add --no-cache bash gcompat coreutils gnupg tar gzip
+
 # Собираем проект
 RUN npm run verify:build
 
