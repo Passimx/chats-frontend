@@ -20,7 +20,7 @@ export default defineConfig({
             treeshake: true,
             input: {
                 main: resolve(__dirname, 'index.html'),
-                iframe: resolve(__dirname, 'iframe.html'),
+                // iframe: resolve(__dirname, 'iframe.html'),
             },
             output: {
                 entryFileNames: '[name].js',
@@ -29,8 +29,5 @@ export default defineConfig({
                 sourcemapPathTransform: () => '',
             },
         },
-    },
-    define: {
-        'process.env.BUILD_DATE': JSON.stringify('2024-09-29'),
     },
 });
