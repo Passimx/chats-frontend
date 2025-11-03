@@ -13,6 +13,7 @@ export default defineConfig({
         sourcemap: false,
         manifest: false,
         rollupOptions: {
+            preserveEntrySignatures: false,
             input: {
                 main: resolve(__dirname, 'index.html'),
                 iframe: resolve(__dirname, 'iframe.html'),
@@ -21,11 +22,9 @@ export default defineConfig({
                 entryFileNames: '[name].js',
                 chunkFileNames: '[name].js',
                 assetFileNames: '[name].[ext]',
+                sourcemapPathTransform: () => '',
             },
         },
         outDir: 'dist',
-    },
-    define: {
-        'process.env.BUILD_DATE': JSON.stringify('2024-09-29'),
     },
 });
