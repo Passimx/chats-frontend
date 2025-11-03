@@ -31,15 +31,14 @@ ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 #RUN apk add --no-cache bash gcompat coreutils  tar gzip gnupg
 #
 # Собираем проект
-RUN npm run build
-RUN find dist -type f -print0 | sort -z | xargs -0 sha256sum > dist.sha256
+RUN npm run verify:build
 #RUN tar --sort=name --mtime='UTC 2024-09-29' --owner=0 --group=0 --numeric-owner -cf dist.tar dist
 #RUN gzip -n dist.tar
 #RUN sha256sum dist.tar.gz > dist.sha256
 
 ## Импортируем GPG-ключ и подписываем артефакт
-#RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
-#    gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output dist.sha256.asc --detach-sign dist.sha256
+RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
+    gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output project.sha256.asc --detach-sign project.sha256
 
 # Очищаем dev-зависимости
 RUN npm config set ignore-scripts true
@@ -49,7 +48,7 @@ RUN npm prune --omit=dev
 FROM nginx:stable-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 #COPY --from=build /app/dist.tar.gz /usr/share/nginx/html/dist.tar.gz
-COPY --from=build /app/dist.sha256 /usr/share/nginx/html/dist.sha256
+COPY --from=build /app/project.sha256 /usr/share/nginx/html/project.sha256
 #COPY --from=build /app/dist.sha256.asc /usr/share/nginx/html/dist.sha256.asc
 COPY --from=build /app/nginx/nginx.conf /etc/nginx/nginx.conf
 
