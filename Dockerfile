@@ -28,8 +28,7 @@ ENV VITE_NOTIFICATIONS_SERVICE_URL=${VITE_NOTIFICATIONS_SERVICE_URL}
 ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 
 # Устанавливаем необходимые пакеты для подписи
-RUN apk add --no-cache bash gcompat coreutils tar gzip
-
+RUN apk add --no-cache bash coreutils tar gzip gnupg
 # Собираем проект
 RUN npm run build
 RUN tar --sort=name --mtime='UTC 2024-09-29' --owner=0 --group=0 --numeric-owner -cf dist.tar dist
