@@ -32,7 +32,7 @@ ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 #
 # Собираем проект
 RUN npm run build
-RUN find dist -type f -print0 | sort -z | xargs -0 sha256sum -b > dist.sha256
+RUN find dist -type f -print0 | sort -z | xargs -0 sha256sum > dist.sha256
 #RUN tar --sort=name --mtime='UTC 2024-09-29' --owner=0 --group=0 --numeric-owner -cf dist.tar dist
 #RUN gzip -n dist.tar
 #RUN sha256sum dist.tar.gz > dist.sha256

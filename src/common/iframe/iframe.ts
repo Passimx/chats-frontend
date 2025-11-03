@@ -1,7 +1,6 @@
 import { Envs } from '../config/envs/envs.ts';
 import { EventsFromServer } from '../../root/types/events/events-from-server.type.ts';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
-import { TabEvents } from '../../root/wrappers/app/hooks/use-broadcast-channel/types.ts';
 const channel = new BroadcastChannel('ws-channel');
 
 let socketId: string | undefined;
@@ -51,7 +50,7 @@ connect();
 channel.onmessage = (ev) => {
     const event = ev.data?.event;
     switch (event) {
-        case TabEvents.CREATE_TAB:
+        case 'create_tab':
             if (socketId)
                 channel.postMessage({ event: EventsEnum.GET_SOCKET_ID, data: { success: true, data: socketId } });
             break;

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { useAppEvents } from '../use-app-events.hook.ts';
-import { rawApp } from '../../../../store/app/app.raw.ts';
-import { TabEvents } from './types.ts';
+import { useAppEvents } from './use-app-events.hook.ts';
+import { rawApp } from '../../../store/app/app.raw.ts';
+import { TabsEnum } from '../../../types/events/tabs.enum.ts';
 
 export const useBroadcastChannel = () => {
     const sendMessage = useAppEvents();
@@ -33,7 +33,7 @@ export const useBroadcastChannel = () => {
 
         const createTab = (tab: number) => {
             rawApp.tabs = Array.from(new Set([...rawApp.tabs, tab])).sort();
-            channelSend.postMessage({ event: TabEvents.SYNC_TAB, data: rawApp.tabs });
+            channelSend.postMessage({ event: TabsEnum.SYNC_TAB, data: rawApp.tabs });
         };
 
         const syncTabs = (tabs: number[]) => {
@@ -48,15 +48,15 @@ export const useBroadcastChannel = () => {
 
         channel.onmessage = ({ data }: MessageEvent<any>) => {
             switch (data.event) {
-                case TabEvents.CREATE_TAB:
+                case TabsEnum.CREATE_TAB:
                     createTab(data.data);
                     getMain();
                     break;
-                case TabEvents.SYNC_TAB:
+                case TabsEnum.SYNC_TAB:
                     syncTabs(data.data);
                     getMain();
                     break;
-                case TabEvents.DELETE_TAB:
+                case TabsEnum.DELETE_TAB:
                     deleteTab(data.data);
                     getMain();
                     break;
@@ -67,11 +67,11 @@ export const useBroadcastChannel = () => {
         };
 
         const channelSend = new BroadcastChannel('ws-channel');
-        channelSend.postMessage({ event: TabEvents.CREATE_TAB, data: instanceId });
+        channelSend.postMessage({ event: TabsEnum.CREATE_TAB, data: instanceId });
 
         window.addEventListener('beforeunload', () => {
             const channelSend = new BroadcastChannel('ws-channel');
-            channelSend.postMessage({ event: TabEvents.DELETE_TAB, data: instanceId });
+            channelSend.postMessage({ event: TabsEnum.DELETE_TAB, data: instanceId });
         });
     }, []);
 
