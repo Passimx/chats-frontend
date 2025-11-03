@@ -34,7 +34,7 @@ RUN npm run verify:build
 
 ## Импортируем GPG-ключ и подписываем артефакт
 RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
-    gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output project.sha256.asc --detach-sign project.sha256
+    gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output dist.sha256.asc --detach-sign dist.sha256
 
 # Очищаем dev-зависимости
 RUN npm config set ignore-scripts true
@@ -43,8 +43,8 @@ RUN npm prune --omit=dev
 # Stage 4: final (nginx)
 FROM nginx:stable-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY --from=build /app/project.sha256 /usr/share/nginx/html/project.sha256
-COPY --from=build /app/project.sha256.asc /usr/share/nginx/html/project.sha256.asc
+COPY --from=build /app/dist.sha256 /usr/share/nginx/html/dist.sha256
+COPY --from=build /app/dist.sha256.asc /usr/share/nginx/html/dist.sha256.asc
 COPY --from=build /app/nginx/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 2223
