@@ -27,18 +27,17 @@ ENV VITE_FILES_SERVICE_URL=${VITE_FILES_SERVICE_URL}
 ENV VITE_NOTIFICATIONS_SERVICE_URL=${VITE_NOTIFICATIONS_SERVICE_URL}
 ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 
-## Устанавливаем необходимые пакеты для подписи
-#RUN apk add --no-cache bash gcompat coreutils  tar gzip gnupg
-#
+# 🧩 Устанавливаем всё, что нужно для подписи
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gnupg \
+    rm -rf /var/lib/apt/lists/*
+
 # Собираем проект
 RUN npm run verify:build
-#RUN tar --sort=name --mtime='UTC 2024-09-29' --owner=0 --group=0 --numeric-owner -cf dist.tar dist
-#RUN gzip -n dist.tar
-#RUN sha256sum dist.tar.gz > dist.sha256
 
 ## Импортируем GPG-ключ и подписываем артефакт
-#RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
-#    gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output project.sha256.asc --detach-sign project.sha256
+RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
+    gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output project.sha256.asc --detach-sign project.sha256
 
 # Очищаем dev-зависимости
 RUN npm config set ignore-scripts true

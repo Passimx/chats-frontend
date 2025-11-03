@@ -8,16 +8,10 @@ export default defineConfig({
     server: {
         port: 3006,
     },
-    resolve: {
-        preserveSymlinks: true,
-    },
     build: {
-        sourcemap: false,
-        manifest: false,
+        sourcemap: true,
         outDir: 'dist',
         rollupOptions: {
-            preserveEntrySignatures: false,
-            treeshake: true,
             input: {
                 main: resolve(__dirname, 'index.html'),
                 // iframe: resolve(__dirname, 'iframe.html'),
@@ -26,7 +20,6 @@ export default defineConfig({
                 entryFileNames: '[name].js',
                 chunkFileNames: '[name].js',
                 assetFileNames: '[name].[ext]',
-                sourcemapPathTransform: () => '',
             },
         },
     },
