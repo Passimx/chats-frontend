@@ -1,12 +1,7 @@
 import { useEffect } from 'react';
-import { useAppEvents } from './use-app-events.hook.ts';
-import { rawApp } from '../../../store/app/app.raw.ts';
-
-export enum TabEvents {
-    CREATE_TAB = 'create_tab',
-    SYNC_TAB = 'sync_tab',
-    DELETE_TAB = 'delete_tab',
-}
+import { useAppEvents } from '../use-app-events.hook.ts';
+import { rawApp } from '../../../../store/app/app.raw.ts';
+import { TabEvents } from './types.ts';
 
 export const useBroadcastChannel = () => {
     const sendMessage = useAppEvents();
