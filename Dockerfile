@@ -1,5 +1,5 @@
 # Stage 1: base
-FROM node:20.11.1-slim AS base
+FROM node:20.11.1-alpine AS base
 WORKDIR /app
 RUN npm install -g npm@10.4.0
 
@@ -26,11 +26,6 @@ ENV VITE_CHATS_SERVICE_URL=${VITE_CHATS_SERVICE_URL}
 ENV VITE_FILES_SERVICE_URL=${VITE_FILES_SERVICE_URL}
 ENV VITE_NOTIFICATIONS_SERVICE_URL=${VITE_NOTIFICATIONS_SERVICE_URL}
 ENV VITE_ENVIRONMENT=${ENVIRONMENT}
-
-# 🧩 Устанавливаем всё, что нужно для подписи
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gnupg \
-    rm -rf /var/lib/apt/lists/*
 
 # Собираем проект
 RUN npm run verify:build
