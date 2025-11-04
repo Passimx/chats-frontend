@@ -29,8 +29,8 @@ ENV VITE_NOTIFICATIONS_SERVICE_URL=${VITE_NOTIFICATIONS_SERVICE_URL}
 ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 
 # Build project
-RUN npm run verify:build
-
+RUN npm run build
+RUN cd dist && find . -type f -not -name "*.map" -print0 | sort -z | xargs -0 sha256sum | sed 's|^\(.*\)\ \./|\1\ |' > ../dist.sha256
 ## Импортируем GPG-ключ и подписываем артефакт
 RUN apk add --no-cache bash gcompat coreutils gnupg tar gzip
 RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
