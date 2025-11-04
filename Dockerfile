@@ -8,6 +8,7 @@ FROM base AS dependencies
 WORKDIR /app
 COPY ./package.json package-lock.json ./
 RUN npm ci
+RUN apk add --no-cache bash gcompat coreutils gnupg tar gzip
 
 # Stage 3: build + verify + sign
 FROM base AS build
@@ -28,10 +29,10 @@ ENV VITE_NOTIFICATIONS_SERVICE_URL=${VITE_NOTIFICATIONS_SERVICE_URL}
 ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 
 # Собираем проект
-RUN npm run verify:build
+RUN npm run build
 
 ## Импортируем GPG-ключ и подписываем артефакт
-RUN apk add --no-cache bash gcompat coreutils gnupg tar gzip
+RUN cd dist && find . -type f -not -name "*.map" -print0 | sort -z | xargs -0 sha256sum | sed 's|^\(.*\)\ \./|\1\ |' > dist.sha256
 RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
     gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output dist.sha256.asc --detach-sign dist.sha256
 
@@ -42,8 +43,6 @@ RUN npm prune --omit=dev
 # Stage 4: final (nginx)
 FROM nginx:stable-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY --from=build /app/dist.sha256 /usr/share/nginx/html/dist.sha256
-COPY --from=build /app/dist.sha256.asc /usr/share/nginx/html/dist.sha256.asc
 COPY --from=build /app/nginx/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 2223
