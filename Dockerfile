@@ -8,7 +8,6 @@ FROM base AS dependencies
 WORKDIR /app
 COPY ./package.json package-lock.json ./
 RUN npm ci
-RUN apk add --no-cache bash gcompat coreutils gnupg tar gzip
 
 # Stage 3: build + verify + sign
 FROM base AS build
@@ -31,7 +30,8 @@ ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 # Build project
 RUN npm run build
 RUN cd dist && find . -type f -not -name "*.map" -print0 | sort -z | xargs -0 sha256sum | sed 's|^\(.*\)\ \./|\1\ |' > dist.sha256
-## Импортируем GPG-ключ и подписываем артефакт
+
+# Importing a GPG key and signing an artifact
 RUN apk add --no-cache bash gcompat coreutils gnupg tar gzip
 RUN cd dist && \
     echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
