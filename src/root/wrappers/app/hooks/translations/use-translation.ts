@@ -3,12 +3,12 @@ import moment from 'moment/min/moment-with-locales';
 
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import AR from '../../../../../public/languages/ar/translation.json';
-import CH from '../../../../../public/languages/zh/translation.json';
-import EN from '../../../../../public/languages/en/translation.json';
-import ES from '../../../../../public/languages/es/translation.json';
-import RU from '../../../../../public/languages/ru/translation.json';
-import { useAppSelector } from '../../../store';
+import AR from './languages/ar/translation.json';
+import CH from './languages/zh/translation.json';
+import EN from './languages/en/translation.json';
+import ES from './languages/es/translation.json';
+import RU from './languages/ru/translation.json';
+import { useAppSelector } from '../../../../store';
 
 export const resources = {
     ar: {

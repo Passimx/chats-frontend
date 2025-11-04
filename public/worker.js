@@ -3,10 +3,7 @@ function isStaticAsset(request) {
     const url = new URL(request.url);
 
     return (
-        url.pathname.startsWith('/assets/') ||
-        url.pathname.startsWith('/languages/') ||
-        url.pathname.endsWith('.html') ||
-        url.pathname.endsWith('.webmanifest')
+        url.pathname.startsWith('/assets/') || url.pathname.endsWith('.html') || url.pathname.endsWith('.webmanifest')
     );
 }
 

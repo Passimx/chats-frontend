@@ -12,7 +12,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "prepare": "husky install",
-    "verify:build": "vite build && gtar --sort=name --mtime='UTC 2024-09-29' --owner=0 --group=0 --numeric-owner -cf dist.tar dist && gzip -n dist.tar && sha256sum dist.tar.gz > dist.sha256"
+    "dist:sha256": "cd dist && find . -type f -not -name \"*.map\" -print0 | sort -z | xargs -0 sha256sum | sed 's|^\\(.*\\)\\ \\./|\\1\\ |' > ../verify/dist.sha256",
+    "verify": "cd verify && node verify-from-server.js"
   },
   "dependencies": {
     "@types/qrcode": "^1.5.6",

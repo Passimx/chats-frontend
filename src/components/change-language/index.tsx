@@ -1,7 +1,7 @@
 import { FC, memo } from 'react';
 import styles from './index.module.css';
 import { useAppAction, useAppSelector } from '../../root/store';
-import { resources } from '../../root/wrappers/app/hooks/use-translation.ts';
+import { resources } from '../../root/wrappers/app/hooks/translations/use-translation.ts';
 import { useTranslation } from 'react-i18next';
 import { MenuTitle } from '../menu-title';
 import { GrLanguage } from 'react-icons/gr';

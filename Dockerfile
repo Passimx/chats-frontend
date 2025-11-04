@@ -1,5 +1,5 @@
 # Stage 1: base
-FROM node:20.11-alpine AS base
+FROM node:20.11.1-alpine AS base
 WORKDIR /app
 RUN npm install -g npm@10.4.0
 
@@ -27,29 +27,25 @@ ENV VITE_FILES_SERVICE_URL=${VITE_FILES_SERVICE_URL}
 ENV VITE_NOTIFICATIONS_SERVICE_URL=${VITE_NOTIFICATIONS_SERVICE_URL}
 ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 
-# Устанавливаем необходимые пакеты для подписи
-RUN apk add --no-cache bash gcompat coreutils tar gzip
-
-# Собираем проект
+# Build project
 RUN npm run build
-RUN tar --sort=name --mtime='UTC 2024-09-29' --owner=0 --group=0 --numeric-owner -cf dist.tar dist
-RUN gzip -n dist.tar
-RUN sha256sum dist.tar.gz > dist.sha256
 
-# Импортируем GPG-ключ и подписываем артефакт
-RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
+# Importing a GPG key and signing an artifact
+RUN npm run dist:sha256
+RUN apk add --no-cache bash gcompat coreutils gnupg tar gzip
+RUN cd verify && \
+    echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
     gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output dist.sha256.asc --detach-sign dist.sha256
 
-# Очищаем dev-зависимости
+# Clear dev dependecies
 RUN npm config set ignore-scripts true
 RUN npm prune --omit=dev
 
 # Stage 4: final (nginx)
 FROM nginx:stable-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY --from=build /app/dist.tar.gz /usr/share/nginx/html/dist.tar.gz
-COPY --from=build /app/dist.sha256 /usr/share/nginx/html/dist.sha256
-COPY --from=build /app/dist.sha256.asc /usr/share/nginx/html/dist.sha256.asc
+COPY --from=build /app/verify/dist.sha256 /usr/share/nginx/html/dist.sha256
+COPY --from=build /app/verify/dist.sha256.asc /usr/share/nginx/html/dist.sha256.asc
 COPY --from=build /app/nginx/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 2223

@@ -162,6 +162,47 @@ See the backend source here:
 We welcome contributions from the community!  
 If you want to help improve **Passimx**, please follow these guidelines:
 
+
+# Verify Frontend Build Integrity
+
+Every person can verify that the code deployed on the production server **matches exactly** what’s published on GitHub.
+
+### What “Frontend Build Integrity” means
+
+When you open a website, all the JavaScript, HTML, and CSS you get from the server could, in theory, be **modified** — either accidentally, by malware, or by a compromised server.
+This verification step ensures that the files actually running in production are **bit-for-bit identical** to the trusted version built and signed by the developer.
+
+### Why the GPG key matters
+
+The ```GPG``` (GNU Privacy Guard) signature acts like a **digital seal**.
+Only the developer who owns the private key can create a valid signature for ```dist.sha256``` (dist.sha256.asc).
+If anyone tampers with the files or their hashes, the signature check will fail — letting you know the build was altered.
+
+### How to run the verification
+   ```bash
+   npm run verify -- https://example.com
+   ```
+
+The script will:
+1. Download the ```dist.sha256``` file from the server (list of file hashes);
+2. Fetch all files listed there and compute their local SHA256 checksums;
+3. Compare them against the server’s checksums;
+4. Verify server ```dist.sha256.asc``` signature for computed dist.sha256 using GPG and the local ```public.key```
+
+### Example of successful output
+   ```text
+   🔗 Using dist.sha256: https://example.com/dist.sha256
+   🌍 Base URL: https://example.com
+   ⬇️  Downloading dist.sha256...
+   ...
+   ✅ All computed hashes match server dist.sha256
+   ✅ Signature verified.
+   ```
+### Requirements
+- Node.js ≥ ***18.0*** (support native ```fetch```)
+- ***GPG*** (for signature verification)
+
+
 ## How to Contribute
 
 1. **Fork** this repository to your own GitHub account.
@@ -176,7 +217,6 @@ If you want to help improve **Passimx**, please follow these guidelines:
    ```
 4. Push your branch and open a Pull Request to the `main` branch.
 
-Thank You!
-
 Every contribution — big or small — helps make Passimx Chats better for everyone.
 Thank you for your time and effort
+
