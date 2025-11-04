@@ -29,11 +29,11 @@ ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 
 # Build project
 RUN npm run build
-RUN cd dist && find . -type f -not -name "*.map" -print0 | sort -z | xargs -0 sha256sum | sed 's|^\(.*\)\ \./|\1\ |' > dist.sha256
 
 # Importing a GPG key and signing an artifact
+RUN npm run dist:sha256
 RUN apk add --no-cache bash gcompat coreutils gnupg tar gzip
-RUN cd dist && \
+RUN cd verify && \
     echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
     gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output dist.sha256.asc --detach-sign dist.sha256
 
@@ -45,6 +45,8 @@ RUN npm prune --omit=dev
 FROM nginx:stable-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY --from=build /app/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --from=build /app/nginx/verify/dist.sha256 /etc/nginx/dist.sha256
+COPY --from=build /app/nginx/verify/dist.sha256.asc /etc/nginx/dist.sha256.asc
 
 EXPOSE 2223
 CMD ["nginx", "-g", "daemon off;"]
