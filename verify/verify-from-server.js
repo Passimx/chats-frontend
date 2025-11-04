@@ -79,7 +79,6 @@ async function main() {
         console.log('\n ❌ Hashes mismatch!');
     }
 
-    // --- optional signature check
     const sigUrl = `${distUrl}.asc`;
     const sigPath = path.join(tmpDir, 'dist.sha256.asc');
     console.log(`\n 🔐 Checking signature: ${sigUrl}`);
