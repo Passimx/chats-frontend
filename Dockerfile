@@ -45,8 +45,8 @@ RUN npm prune --omit=dev
 FROM nginx:stable-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY --from=build /app/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --from=build /app/nginx/verify/dist.sha256 /etc/nginx/dist.sha256
-COPY --from=build /app/nginx/verify/dist.sha256.asc /etc/nginx/dist.sha256.asc
+COPY --from=build /app/verify/dist.sha256 /etc/nginx/dist.sha256
+COPY --from=build /app/verify/dist.sha256.asc /etc/nginx/dist.sha256.asc
 
 EXPOSE 2223
 CMD ["nginx", "-g", "daemon off;"]
