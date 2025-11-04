@@ -27,12 +27,11 @@ ENV VITE_FILES_SERVICE_URL=${VITE_FILES_SERVICE_URL}
 ENV VITE_NOTIFICATIONS_SERVICE_URL=${VITE_NOTIFICATIONS_SERVICE_URL}
 ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 
-RUN apk add --no-cache bash gcompat coreutils gnupg tar gzip
-
 # Собираем проект
 RUN npm run verify:build
 
 ## Импортируем GPG-ключ и подписываем артефакт
+RUN apk add --no-cache bash gcompat coreutils gnupg tar gzip
 RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
     gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output dist.sha256.asc --detach-sign dist.sha256
 
