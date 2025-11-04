@@ -5,7 +5,7 @@
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/passimx/chats-frontend/github-actions.yml)
 
-# PassimX Chats Frontend
+# Passimx Chats Frontend
 
 > A modern open-source frontend client for anonymous communication — no registration, no personal data, no phone numbers.  
 
@@ -13,12 +13,12 @@
 
 ## Overview
 
-PassimX is built to redefine privacy in online communication.  
+Passimx is built to redefine privacy in online communication.  
 Unlike traditional messengers, it doesn’t collect personal data or require phone/email verification — giving organizations and individuals full control over their communication.
 
 # License
 
-PassimX Chats Frontend is released under the terms of the MIT license.  
+Passimx Chats Frontend is released under the terms of the MIT license.  
 See https://opensource.org/license/MIT for more information.
 
 
@@ -72,6 +72,10 @@ chats-frontend/
 │   ├── app.tsx           # Root application component
 │   ├── index.css         # Global styles
 │   └── main.tsx          # Entry point
+│
+├── verify/
+│   ├── public.key        # Public GPG key
+│   ├── verify.js         # Verification script
 │
 ├── .env.example          # Example environment configuration
 ├── .eslintrc.cjs         # ESLint configuration 
@@ -148,19 +152,13 @@ See the backend source here:
 
 ### Branch Workflow
 
-1. **All new features and fixes** are developed in separate feature branches (e.g. `feature/chat-encryption`, `bugfix/message-scroll`).
-2. When ready, they are merged into **`main`** for integration.
-3. Periodically, `main` is merged into **`test`** for pre-release testing.
-4. Once verified, `test` is merged into **`relis`** for production deployment.
+1. **All new features and fixes** are developed in separate feature branches (e.g. `feature/chat-encryption`, `bugfix/message-scroll`)
+2. When ready, they are merged into **`main`** for integration
+3. Periodically, `main` is merged into **`test`** for pre-release testing
+4. Once verified, `test` is merged into **`relis`** for production deployment
 
 > 🔒 The `main`, `test` and `relis` branches are protected — direct pushes are not allowed.  
 > All changes must go through a **Pull Request (PR)**.
-
-
-# Contributing
-
-We welcome contributions from the community!  
-If you want to help improve **Passimx**, please follow these guidelines:
 
 
 # Verify Frontend Build Integrity
@@ -177,6 +175,15 @@ This verification step ensures that the files actually running in production are
 The ```GPG``` (GNU Privacy Guard) signature acts like a **digital seal**.
 Only the developer who owns the private key can create a valid signature for ```dist.sha256``` (dist.sha256.asc).
 If anyone tampers with the files or their hashes, the signature check will fail — letting you know the build was altered.
+
+### Important
+The files
+```text
+/dist.sha256
+/dist.sha256.asc
+```
+**must always remain publicly accessible** on production site.
+These files are essential for allowing anyone to verify the integrity and authenticity of the deployed build.
 
 ### How to run the verification
    ```bash
@@ -203,7 +210,13 @@ The script will:
 - ***GPG*** (for signature verification)
 
 
-## How to Contribute
+# Contributing
+
+We welcome contributions!
+Every contribution — big or small — helps make **Passimx** better for everyone.
+Thank you for your time and effort.
+
+### How to Contribute
 
 1. **Fork** this repository to your own GitHub account.
 2. Create a new branch for your changes:
@@ -216,7 +229,4 @@ The script will:
    git commit -m "feature: chat encryption module"
    ```
 4. Push your branch and open a Pull Request to the `main` branch.
-
-Every contribution — big or small — helps make Passimx Chats better for everyone.
-Thank you for your time and effort
 

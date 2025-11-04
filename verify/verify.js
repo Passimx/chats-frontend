@@ -9,7 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 async function main() {
     const args = process.argv.slice(2);
     if (args.length < 1) {
-        console.log('Usage: node verify-from-server.js <https://HOST> [--no-verify-signature]');
+        console.log('Usage: node verify.js <https://HOST> [--no-verify-signature]');
         process.exit(1);
     }
 
