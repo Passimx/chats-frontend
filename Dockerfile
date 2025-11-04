@@ -29,10 +29,9 @@ ENV VITE_NOTIFICATIONS_SERVICE_URL=${VITE_NOTIFICATIONS_SERVICE_URL}
 ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 
 # Build project
-RUN npm run build
+RUN npm run verify:build
 
 ## Импортируем GPG-ключ и подписываем артефакт
-RUN cd dist && find . -type f -not -name "*.map" -print0 | sort -z | xargs -0 sha256sum | sed 's|^\(.*\)\ \./|\1\ |' > ../dist.sha256
 RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
     gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output dist.sha256.asc --detach-sign dist.sha256
 
