@@ -2,7 +2,7 @@ import { FC, useCallback, useEffect } from 'react';
 import styles from './index.module.css';
 import Chats from '../../../modules/chats';
 import { useBroadcastChannel } from './hooks/use-broadcast-channel.ts';
-import { useTranslation } from './hooks/use-translation.ts';
+import { useTranslation } from './hooks/translations/use-translation.ts';
 import { useOnline } from './hooks/use-online.ts';
 import { useParams } from 'react-router-dom';
 import { useIndexDbHook } from './hooks/use-index-db.hook.ts';

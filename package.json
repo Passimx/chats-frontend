@@ -12,7 +12,6 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "prepare": "husky install",
-    "verify:build2": "vite build && find nginx public src Dockerfile package.json package-lock.json public.key -type f -print0 | sort -z | xargs -0 sha256sum > project.sha256",
     "verify:build": "vite build && find dist -type f -print0 | sort -z | xargs -0 sha256sum > dist.sha256"
   },
   "dependencies": {
