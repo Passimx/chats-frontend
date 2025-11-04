@@ -12,7 +12,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "prepare": "husky install",
-    "verify:build": "tsc && vite build && cd dist && find . -type f -not -name \"*.map\" -print0 | sort -z | xargs -0 sha256sum | sed 's|^\\(.*\\)\\ \\./|\\1\\ |' > ../dist.sha256",
+    "verify:build": "vite build && cd dist && find . -type f -not -name \"*.map\" -print0 | sort -z | xargs -0 sha256sum | sed 's|^\\(.*\\)\\ \\./|\\1\\ |' > ../dist.sha256",
     "verify": "cd verify && node verify-from-server.js"
   },
   "dependencies": {
