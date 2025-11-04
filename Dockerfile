@@ -30,10 +30,11 @@ ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 
 # Build project
 RUN npm run build
-RUN cd dist && find . -type f -not -name "*.map" -print0 | sort -z | xargs -0 sha256sum | sed 's|^\(.*\)\ \./|\1\ |' > ../dist.sha256
+RUN cd dist && find . -type f -not -name "*.map" -print0 | sort -z | xargs -0 sha256sum | sed 's|^\(.*\)\ \./|\1\ |' > dist.sha256
 ## Импортируем GPG-ключ и подписываем артефакт
 RUN apk add --no-cache bash gcompat coreutils gnupg tar gzip
-RUN echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
+RUN cd dist && \
+    echo "$GPG_PRIVATE_KEY" | gpg --batch --import && \
     gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --output dist.sha256.asc --detach-sign dist.sha256
 
 # Clear dev dependecies
