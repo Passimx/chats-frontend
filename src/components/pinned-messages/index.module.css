@@ -1,1 +1,42 @@
-.background{}
+.background{
+    background-color: var(--menu-color);
+    border-top: 1px solid rgb(255, 255, 255, 0.2);
+    display: grid;
+    cursor: pointer;
+    grid-template-columns: 1fr auto;
+    padding: 4px;
+
+    .title{
+        font-weight: bold;
+        color: #439fef;
+    }
+
+    .background_messages{
+        .visible_message{
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: white;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 4px;
+
+            .visible_message_index{
+                font-weight: 700;
+            }
+        }
+    };
+
+    .background_icon{
+        padding: 8px;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+
+        .icon{
+            font-size: 20px;
+            color: var(--menu-color);
+        }
+    }
+}

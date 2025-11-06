@@ -4,13 +4,17 @@ import moment from 'moment/min/moment-with-locales';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../../../root/store';
 import { getVisibleMessage } from './use-visible-message.hook.ts';
+import { usePinned } from '../../../common/hooks/use-pinned.hook.ts';
 
-export const useMessage = (chat: ChatItemIndexDb): (string | undefined)[] => {
+type ReturnType = [string | undefined, string | undefined, string | undefined, boolean];
+
+export const useMessage = (chat: ChatItemIndexDb): ReturnType => {
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
     const { t } = useTranslation();
     const [message, setMessage] = useState<string>();
     const [countMessages, setCountMessages] = useState<string>();
     const [time, setTime] = useState<string>();
+    const isPinned = usePinned(chat.message?.id, chat.pinnedMessages);
 
     const updateTime = useCallback((data: Date) => {
         const now = new Date();
@@ -52,5 +56,5 @@ export const useMessage = (chat: ChatItemIndexDb): (string | undefined)[] => {
         changeCountMessages();
     }, [chat.countMessages - chat.readMessage]);
 
-    return [message, time, countMessages];
+    return [message, time, countMessages, isPinned];
 };
