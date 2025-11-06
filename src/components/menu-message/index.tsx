@@ -1,4 +1,4 @@
-import { FC, memo, useCallback, useContext, useEffect, useRef } from 'react';
+import { FC, memo, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import styles from './index.module.css';
 import { PiArrowBendUpLeftFill, PiPushPinSimpleSlashThin, PiPushPinSimpleThin } from 'react-icons/pi';
 import { IoCopyOutline } from 'react-icons/io5';
@@ -17,6 +17,29 @@ export const MenuMessage: FC = memo(() => {
     const { isPhone } = useAppSelector((state) => state.app);
     const { clickMessage, isShowMessageMenu, setIsShowMessageMenu } = useContext(ContextChat)!;
     const { update, setChatOnPage } = useAppAction();
+    const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
+
+    useEffect(() => {
+        if (isShowMessageMenu) setIsShowMessageMenu(false);
+    }, [isPhone]);
+
+    useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (isShowMessageMenu && event && ref.current && !ref.current.contains(event.target)) {
+                setTimeout(() => setIsShowMessageMenu(false), 50);
+            }
+        };
+
+        if (isShowMessageMenu) document.addEventListener('click', handleClickOutside, false);
+        return () => {
+            if (isShowMessageMenu) document.removeEventListener('click', handleClickOutside, false);
+        };
+    }, [isShowMessageMenu]);
+
+    const isPin = useMemo(
+        () => !!pinnedMessages?.find((message) => message.id === clickMessage?.id),
+        [pinnedMessages?.length, clickMessage?.id],
+    );
 
     const answerMessage = useCallback(() => {
         setIsShowMessageMenu(false);
@@ -39,38 +62,38 @@ export const MenuMessage: FC = memo(() => {
         else setChatOnPage({ answerMessage });
     }, [clickMessage]);
 
-    useEffect(() => {
-        if (isShowMessageMenu) setIsShowMessageMenu(false);
-    }, [isPhone]);
-
     const copyMessage = useCallback(() => {
-        if (!clickMessage) return;
         setIsShowMessageMenu(false);
+        if (!clickMessage) return;
         const element = document.getElementById(`message-${clickMessage.number}`)!;
         const text = element.getElementsByTagName('pre')[0].innerText;
         navigator.clipboard.writeText(text);
     }, [clickMessage]);
 
     const copyMessageWithChat = useCallback(() => {
+        setIsShowMessageMenu(false);
         const url = new URL(window.location.href);
         url.search = ''; // удаляем query-параметры
-        setIsShowMessageMenu(false);
-
         navigator.clipboard.writeText(`${url}?number=${clickMessage?.number}`);
     }, [clickMessage]);
 
-    useEffect(() => {
-        const handleClickOutside = (event: any) => {
-            if (isShowMessageMenu && event && ref.current && !ref.current.contains(event.target)) {
-                setTimeout(() => setIsShowMessageMenu(false), 50);
-            }
-        };
+    const pin = useCallback(() => {
+        setIsShowMessageMenu(false);
+        if (!clickMessage) return;
 
-        if (isShowMessageMenu) document.addEventListener('click', handleClickOutside, false);
-        return () => {
-            if (isShowMessageMenu) document.removeEventListener('click', handleClickOutside, false);
-        };
-    }, [isShowMessageMenu]);
+        const messages = [...(pinnedMessages ?? []), clickMessage].sort(
+            (message1, message2) => message1.number - message2.number,
+        );
+        update({ id: clickMessage.chatId, pinnedMessages: messages });
+    }, [clickMessage?.id, pinnedMessages?.length]);
+
+    const unpin = useCallback(() => {
+        setIsShowMessageMenu(false);
+        if (!clickMessage) return;
+
+        const messages = [...(pinnedMessages ?? [])].filter((message) => message.id !== clickMessage.id);
+        update({ id: clickMessage.chatId, pinnedMessages: messages });
+    }, [clickMessage?.id, pinnedMessages?.length]);
 
     return (
         <div
@@ -94,14 +117,19 @@ export const MenuMessage: FC = memo(() => {
                 <GoLink className={styles.message_menu_item_icon} />
                 {t('copy_message_link')}
             </div>
-            <div className={styles.message_menu_item} onClick={copyMessageWithChat}>
-                <PiPushPinSimpleThin className={styles.message_menu_item_icon} />
-                {t('pin')}
-            </div>
-            <div className={styles.message_menu_item} onClick={copyMessageWithChat}>
-                <PiPushPinSimpleSlashThin className={styles.message_menu_item_icon} />
-                {t('unpin')}
-            </div>
+
+            {!isPin ? (
+                <div className={styles.message_menu_item} onClick={pin}>
+                    <PiPushPinSimpleThin className={styles.message_menu_item_icon} />
+                    {t('pin')}
+                </div>
+            ) : (
+                <div className={styles.message_menu_item} onClick={unpin}>
+                    <PiPushPinSimpleSlashThin className={styles.message_menu_item_icon} />
+                    {t('unpin')}
+                </div>
+            )}
+
             {/*<div className={styles.message_menu_item}>*/}
             {/*    <MdOutlinePlaylistAddCheck className={styles.message_menu_item_icon} />*/}
             {/*    Выбрать*/}

@@ -16,6 +16,8 @@ import { useTranslation } from 'react-i18next';
 import { useMessageMenu } from './hooks/use-message-menu.hook.ts';
 import { MessageVideo } from '../message-video';
 import { useReadMessage } from '../../common/hooks/use-read-message.hook.ts';
+import { BsPinAngleFill } from 'react-icons/bs';
+import { usePinned } from '../../common/hooks/use-pinned.hook.ts';
 
 const Message: FC<PropsType> = memo((props) => {
     const { type, number } = props;
@@ -26,6 +28,8 @@ const Message: FC<PropsType> = memo((props) => {
     // переписать так как из-за внутреннего контекста ререндерятся все сообщения
     const [elementId] = useMessageMenu(props);
     const title = useAppSelector((state) => state.chats.chatOnPage?.title);
+    const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
+    const isPinned = usePinned(props.id, pinnedMessages);
 
     const [visibleMessage, time] = useMemo(() => {
         const time = moment(props.createdAt).format('LT');
@@ -58,7 +62,10 @@ const Message: FC<PropsType> = memo((props) => {
                     })}
                 </div>
                 <RenderMessage message={visibleMessage} type={type} />
-                <div className={`${styles.left_div2} text_translate`}>{time}</div>
+                <div className={`${styles.left_div2} text_translate`}>
+                    {isPinned && <BsPinAngleFill className={styles.pin} />}
+                    <div className={styles.time}>{time}</div>
+                </div>
             </div>
         </>
     );
