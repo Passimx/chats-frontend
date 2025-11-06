@@ -2,13 +2,16 @@ import { useEffect } from 'react';
 import { useAppEvents } from './use-app-events.hook.ts';
 import { rawApp } from '../../../store/app/app.raw.ts';
 import { TabsEnum } from '../../../types/events/tabs.enum.ts';
+import { useAppSelector } from '../../../store';
 
 export const useBroadcastChannel = () => {
     const sendMessage = useAppEvents();
+    const RASKeysString = useAppSelector((state) => state.app.RASKeysString);
 
     useEffect(() => {
-        const channel = new BroadcastChannel('ws-channel');
+        if (!RASKeysString?.publicKey) return;
 
+        const channel = new BroadcastChannel('ws-channel');
         const instanceId = Date.now();
         rawApp.tabs = [instanceId];
 
@@ -73,7 +76,7 @@ export const useBroadcastChannel = () => {
             const channelSend = new BroadcastChannel('ws-channel');
             channelSend.postMessage({ event: TabsEnum.DELETE_TAB, data: instanceId });
         });
-    }, []);
+    }, [RASKeysString?.publicKey]);
 
     useEffect(() => {
         if (navigator.serviceWorker) {

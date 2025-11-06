@@ -26,7 +26,9 @@ export class CryptoService {
         return { publicKey: publicExportedKey, privateKey: privateExportedKey };
     }
 
-    public static async generateExportEncryptRSAKeys(passphrase: string | CryptoKey): Promise<CreateRsaKeysType> {
+    public static async generateExportEncryptRSAKeys(
+        passphrase: string | CryptoKey,
+    ): Promise<CreateRsaKeysType | undefined> {
         const { publicKey, privateKey } = await window.crypto.subtle.generateKey(
             {
                 name: 'RSA-OAEP',
@@ -45,6 +47,7 @@ export class CryptoService {
 
         const aesKey = typeof passphrase === 'string' ? await this.generateAESKey(passphrase) : passphrase;
         const encryptPrivateKey = await this.encryptByAESKey(aesKey, privateExportedKey);
+        if (!encryptPrivateKey) return undefined;
 
         return { publicKey: publicExportedKey, encryptPrivateKey };
     }
@@ -90,11 +93,15 @@ export class CryptoService {
         ]);
     }
 
-    public static async importRSAKeys({ publicKey, privateKey }: RsaKeysStringType): Promise<CryptoKeyPair> {
+    public static async importRSAKeys({
+        publicKey,
+        privateKey,
+    }: RsaKeysStringType): Promise<CryptoKeyPair | undefined> {
         const [importedPublicKey, importedPrivateKey] = await Promise.all([
             this.importRSAKey(publicKey, ['encrypt']),
             this.importRSAKey(privateKey, ['decrypt']),
         ]);
+        if (!importedPublicKey || !importedPrivateKey) return;
 
         return { publicKey: importedPublicKey, privateKey: importedPrivateKey };
     }
@@ -102,81 +109,108 @@ export class CryptoService {
     public static async importDecryptRSAKeys(
         { publicKey, privateKey }: IKeys,
         passphrase: string | CryptoKey,
-    ): Promise<CryptoKeyPair> {
+    ): Promise<CryptoKeyPair | undefined> {
         const myAESKey = typeof passphrase === 'string' ? await this.generateAESKey(passphrase) : passphrase;
         const importPrivateKey = await this.decryptByAESKey(myAESKey, privateKey);
+
+        if (!importPrivateKey) return undefined;
 
         const [importedPublicKey, importedPrivateKey] = await Promise.all([
             this.importRSAKey(publicKey, ['encrypt']),
             this.importRSAKey(importPrivateKey, ['decrypt']),
         ]);
 
+        if (!importedPublicKey || !importedPrivateKey) return;
+
         return { publicKey: importedPublicKey, privateKey: importedPrivateKey };
     }
 
-    public static importRSAKey(key: JsonWebKey | string, keyUsages: ReadonlyArray<KeyUsage>): Promise<CryptoKey> {
-        const jsonWebKey = typeof key === 'string' ? (JSON.parse(key) as JsonWebKey) : key;
-        return window.crypto.subtle.importKey(
-            'jwk',
-            jsonWebKey,
-            {
-                name: 'RSA-OAEP',
-                hash: 'SHA-512',
-            },
-            true,
-            keyUsages,
-        );
+    public static importRSAKey(
+        key: JsonWebKey | string,
+        keyUsages: ReadonlyArray<KeyUsage>,
+    ): Promise<CryptoKey> | undefined {
+        try {
+            const jsonWebKey = typeof key === 'string' ? (JSON.parse(key) as JsonWebKey) : key;
+            return window.crypto.subtle.importKey(
+                'jwk',
+                jsonWebKey,
+                {
+                    name: 'RSA-OAEP',
+                    hash: 'SHA-512',
+                },
+                true,
+                keyUsages,
+            );
+        } catch (error) {
+            return undefined;
+        }
     }
 
-    public static async encryptByRSAKey(key: CryptoKey, payload: unknown): Promise<string> {
-        const encryptedData = await window.crypto.subtle.encrypt(
-            {
-                name: 'RSA-OAEP',
-            },
-            key,
-            new TextEncoder().encode(JSON.stringify(payload)),
-        );
-        return exportEncryptedPayload(encryptedData);
+    public static async encryptByRSAKey(key: CryptoKey, payload: unknown): Promise<string | undefined> {
+        try {
+            const encryptedData = await window.crypto.subtle.encrypt(
+                {
+                    name: 'RSA-OAEP',
+                },
+                key,
+                new TextEncoder().encode(JSON.stringify(payload)),
+            );
+            return exportEncryptedPayload(encryptedData);
+        } catch (error) {
+            return undefined;
+        }
     }
 
-    public static async encryptByAESKey(key: CryptoKey, payload: unknown): Promise<string> {
-        const data = new TextEncoder().encode(JSON.stringify(payload));
-        const encryptedData = await window.crypto.subtle.encrypt(
-            {
-                name: 'AES-GCM',
-                iv: new Uint8Array(16),
-            },
-            key,
-            data,
-        );
-        return exportEncryptedPayload(encryptedData);
+    public static async encryptByAESKey(key: CryptoKey, payload: unknown): Promise<string | undefined> {
+        try {
+            const data = new TextEncoder().encode(JSON.stringify(payload));
+            const encryptedData = await window.crypto.subtle.encrypt(
+                {
+                    name: 'AES-GCM',
+                    iv: new Uint8Array(16),
+                },
+                key,
+                data,
+            );
+            return exportEncryptedPayload(encryptedData);
+        } catch (error) {
+            return undefined;
+        }
     }
 
-    public static async decryptByAESKey<T = string>(key: CryptoKey, payload: string): Promise<T> {
-        const decryptedPayload = importEncryptedPayload(payload);
-        const decryptedData = await window.crypto.subtle.decrypt(
-            {
-                name: 'AES-GCM',
-                iv: new Uint8Array(16),
-            },
-            key,
-            decryptedPayload,
-        );
-        const string = new TextDecoder().decode(decryptedData);
-        return JSON.parse(string) as T;
+    public static async decryptByAESKey<T = string>(key: CryptoKey, payload: string): Promise<T | undefined> {
+        try {
+            const decryptedPayload = importEncryptedPayload(payload);
+            const decryptedData = await window.crypto.subtle.decrypt(
+                {
+                    name: 'AES-GCM',
+                    iv: new Uint8Array(16),
+                },
+                key,
+                decryptedPayload,
+            );
+            const string = new TextDecoder().decode(decryptedData);
+            return JSON.parse(string) as T;
+        } catch (error) {
+            return undefined;
+        }
     }
 
-    public static async decryptByRSAKey<T = string>(key: CryptoKey, payload: string): Promise<T> {
-        const decryptedPayload = importEncryptedPayload(payload);
-        const decryptedData = await window.crypto.subtle.decrypt(
-            {
-                name: 'RSA-OAEP',
-            },
-            key,
-            decryptedPayload,
-        );
-        const string = new TextDecoder().decode(decryptedData);
-        return JSON.parse(string) as T;
+    public static async decryptByRSAKey<T = string>(key: CryptoKey, payload: string): Promise<T | undefined> {
+        try {
+            const decryptedPayload = importEncryptedPayload(payload);
+            const decryptedData = await window.crypto.subtle.decrypt(
+                {
+                    name: 'RSA-OAEP',
+                },
+                key,
+                decryptedPayload,
+            );
+            const string = new TextDecoder().decode(decryptedData);
+            return JSON.parse(string) as T;
+        } catch (e) {
+            return undefined;
+        }
     }
 }
 

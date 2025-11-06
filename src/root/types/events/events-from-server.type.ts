@@ -35,4 +35,16 @@ type Pong = {
     readonly data: IData<unknown>;
 };
 
-export type EventsFromServer = GetSocketId | UpdateChatOnline | MaxUsersOnline | CreateChat | CreateMessage | Pong;
+type VERIFY = {
+    readonly event: EventsEnum.VERIFY;
+    readonly data: string;
+};
+
+export type EventsFromServer =
+    | GetSocketId
+    | UpdateChatOnline
+    | MaxUsersOnline
+    | CreateChat
+    | CreateMessage
+    | Pong
+    | VERIFY;

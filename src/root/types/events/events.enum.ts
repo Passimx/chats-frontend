@@ -12,5 +12,6 @@ export enum EventsEnum {
     CLOSE_SOCKET = 'close_socket',
     PLAY_NOTIFICATION = 'play_notification',
     PONG = 'pong',
+    VERIFY = 'verify',
     ERROR = 'error',
 }
