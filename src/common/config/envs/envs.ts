@@ -1,4 +1,3 @@
-import json from '../../../../package.json';
 import { SettingsType } from '../../../root/store/app/types/state.type.ts';
 
 export enum EnvironmentEnum {
@@ -40,6 +39,6 @@ export const Envs: EnvsType = {
     catchLogs: import.meta.env.VITE_CATCH_LOGS !== 'false',
     cache: {
         files: 'files-cache-name',
-        static: `static-v-${json.version}`,
+        static: 'static-files',
     },
 };

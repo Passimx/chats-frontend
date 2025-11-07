@@ -45,51 +45,54 @@ See https://opensource.org/license/MIT for more information.
 ```
 chats-frontend/
 │
-├── .github/              # CI/CD configuration
-├── .husky/               # Git hooks
-├── nginx/                # Nginx configuration for Docker build
-├── public/               # Static files (dictionary, icons, manifest, workers)
+├── .github/                    # CI/CD configuration
+├── .husky/                     # Git hooks
+├── nginx/                      # Nginx configuration for Docker build
+├── public/                     # Static files (dictionary, icons, manifest, workers)
 ├── src/
-│   ├── common/           # Custom React hooks, utilities, and services
-│   ├── components/       # UI components    
-│   ├── modules/          # Application modules
-│   ├── pages/            # Main app pages
+│   │
+│   ├── common/                 # Custom React hooks, utilities, and services
+│   ├── components/             # UI components    
+│   ├── modules/                # Application modules
+│   ├── pages/                  # Main app pages
 │   ├── root/
 │   │   │
-│   │   ├── api/          # All backend API logic
+│   │   ├── api/                # All backend API logic
 │   │   │   │
-│   │   │   ├── chats/    # Chat-related endpoints
-│   │   │   ├── files/    # File management endpoints
-│   │   │   ├── messages/ # Message endpoints
-│   │   │   └── index.ts  # API client configuration
+│   │   │   ├── chats/          # Chat-related endpoints
+│   │   │   ├── files/          # File management endpoints
+│   │   │   ├── messages/       # Message endpoints
+│   │   │   ├── notifications/  # Notifications Service connection
+│   │   │   └── index.ts        # API client configuration
 │   │   │
-│   │   ├── contexts      # Global React contexts
-│   │   ├── routes        # Application routing
-│   │   ├── store         # Global state (Redux)
-│   │   ├── types         # Shared TypeScript types
-│   │   └── wrappers      # High-level wrappers affecting the whole app
+│   │   ├── contexts            # Global React contexts
+│   │   ├── routes              # Application routing
+│   │   ├── store               # Global state (Redux)
+│   │   ├── types               # Shared TypeScript types
+│   │   └── wrappers            # High-level wrappers affecting the whole app
 │   │
-│   ├── app.tsx           # Root application component
-│   ├── index.css         # Global styles
-│   └── main.tsx          # Entry point
+│   ├── app.tsx                 # Root application component
+│   ├── index.css               # Global styles
+│   └── main.tsx                # Entry point
 │
 ├── verify/
-│   ├── public.key        # Public GPG key
-│   ├── verify.js         # Verification script
+│   │
+│   ├── public.key              # Public GPG key
+│   ├── verify.js               # Verification script
 │
-├── .env.example          # Example environment configuration
-├── .eslintrc.cjs         # ESLint configuration 
-├── .gitignore            # Git ignore rules
-├── .prettierrc           # Prettier code style config
-├── Dockerfile            # Docker build definition
-├── index.html            # Base HTML entry
-├── LICENSE               # License file
-├── package.json          # Project dependencies and scripts
-├── package-lock.json     # Locked dependency tree
-├── README.md             # Project documentation
-├── tsconfig.json         # TypeScript config
-├── tsconfig.node.json    # TypeScript config for Node environment
-└── vite.config.ts        # Vite build configuration
+├── .env.example                # Example environment configuration
+├── .eslintrc.cjs               # ESLint configuration 
+├── .gitignore                  # Git ignore rules
+├── .prettierrc                 # Prettier code style config
+├── Dockerfile                  # Docker build definition
+├── index.html                  # Base HTML entry
+├── LICENSE                     # License file
+├── package.json                # Project dependencies and scripts
+├── package-lock.json           # Locked dependency tree
+├── README.md                   # Project documentation
+├── tsconfig.json               # TypeScript config
+├── tsconfig.node.json          # TypeScript config for Node environment
+└── vite.config.ts              # Vite build configuration
 ```
 
 

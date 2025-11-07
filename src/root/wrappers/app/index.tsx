@@ -27,6 +27,7 @@ import { useUpdateBadge } from './hooks/use-update-badge.hook.ts';
 import { useCatchLogs } from './hooks/use-catch-logs.hook.ts';
 import { useKeys } from './hooks/keys.hook.ts';
 import { Page } from '../../../pages/page';
+import { useUpdateStaticCache } from './hooks/use-update-static-cache.hook.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -62,6 +63,8 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useUpdateBadge();
     // get RSA keys
     useKeys();
+    // update static files
+    useUpdateStaticCache();
     // verity when open app
     // const [isAuth] = useVerify();
 

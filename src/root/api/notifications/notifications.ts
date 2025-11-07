@@ -1,9 +1,10 @@
-import { Envs } from '../config/envs/envs.ts';
-import { EventsFromServer } from '../../root/types/events/events-from-server.type.ts';
-import { EventsEnum } from '../../root/types/events/events.enum.ts';
-import { TabsEnum } from '../../root/types/events/tabs.enum.ts';
-import { RsaKeysStringType } from '../../root/types/create-rsa-keys.type.ts';
-import { CryptoService } from '../services/crypto.service.ts';
+import { RsaKeysStringType } from '../../types/create-rsa-keys.type.ts';
+import { Envs } from '../../../common/config/envs/envs.ts';
+import { CryptoService } from '../../../common/services/crypto.service.ts';
+import { EventsFromServer } from '../../types/events/events-from-server.type.ts';
+import { EventsEnum } from '../../types/events/events.enum.ts';
+import { TabsEnum } from '../../types/events/tabs.enum.ts';
+
 const channel = new BroadcastChannel('ws-channel');
 
 let socketId: string | undefined;
