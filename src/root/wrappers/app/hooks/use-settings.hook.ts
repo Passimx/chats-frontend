@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { SettingsType } from '../../../store/app/types/state.type.ts';
 import { useAppAction } from '../../../store';
 import { Envs } from '../../../../common/config/envs/envs.ts';
-import { resources } from './use-translation.ts';
+import { resources } from './translations/use-translation.ts';
 
 export const useSettings = () => {
     const { changeSettings } = useAppAction();

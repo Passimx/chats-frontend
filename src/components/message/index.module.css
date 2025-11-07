@@ -43,13 +43,25 @@
     width: fit-content;
 }
 
-.left_div2 {
+.left_div2{
     float: right;
-    opacity: 0.5;
     padding-left: 5px;
     font-size: 13px;
+    display: inline-block;
+
+    .pin{
+        display: inline-block;
+        font-size: 14px;
+        color: #0098ea;
+        padding-right: 4px;
+    }
+
+    .time{
+        display: inline-block;
+        opacity: 0.5;
+    }
 }
 
-.file_list {
+.file_list{
     display: grid;
 }

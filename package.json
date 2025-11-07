@@ -11,7 +11,9 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "dist:sha256": "cd dist && find . -type f -not -name \"*.map\" -print0 | sort -z | xargs -0 sha256sum | sed 's|^\\(.*\\)\\ \\./|\\1\\ |' > ../verify/dist.sha256",
+    "verify": "cd verify && node verify.js"
   },
   "dependencies": {
     "@types/qrcode": "^1.5.6",
@@ -57,5 +59,8 @@
       "prettier --write"
     ],
     "*.--write": "prettier --write"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }

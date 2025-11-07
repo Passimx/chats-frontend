@@ -86,7 +86,7 @@ const ChatsSlice = createSlice({
             const countMessages = Math.max(payload.number, chat.countMessages);
             const messages = [...chat.messages];
 
-            if (chat.messages[chat.messages.length - 1].number + 1 === payload.number)
+            if ((chat.messages[chat.messages.length - 1]?.number ?? 1) + 1 === payload.number)
                 messages.push({ ...payload, saveAt: Date.now() });
 
             const updatedChat: ChatItemIndexDb = {

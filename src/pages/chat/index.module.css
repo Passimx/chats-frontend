@@ -135,10 +135,12 @@
     justify-content: center;
     align-items: center;
     font-size: 0.5cm;
-    background-color: rgb(255, 255, 255, 60%);
-    backdrop-filter: blur(1px);
-    color: black;
-    font-weight: 600;
+    border-top: 1px solid rgb(255, 255, 255, 0.2);
+    background-color: var(--menu-color);
+    font-weight: bold;
+    color: #439fef;
+    padding: 4px;
+
     z-index: 2;
     grid-template-columns: auto auto;
     gap: 5px;
