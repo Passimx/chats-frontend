@@ -7,6 +7,22 @@
     overflow: hidden;
     padding-left: 8px;
     padding-right: 8px;
+    position: relative;
+
+    .border{
+        content: "";
+        background-color: rgba(255, 255, 255, 0.2);
+        width: calc(100% - 50px - 16px - 16px);
+        height: 1px;
+
+        position: absolute;
+        top: 0;
+        left: 66px;
+    }
+}
+
+.chat_item:first-child .border {
+    display: none;
 }
 
 .chat_item:active {
@@ -66,6 +82,17 @@
     color:#a6a6a6;
     -webkit-user-select: none;
     user-select: none;
+    display: inline-block;
+
+    .pin{
+        width: auto;
+        font-size: 12px;
+        padding-right: 4px;
+    }
+
+    .time_text{
+        display: inline-block;
+    }
 }
 
 .time::first-letter {

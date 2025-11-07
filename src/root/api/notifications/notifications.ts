@@ -1,7 +1,10 @@
-import { Envs } from '../config/envs/envs.ts';
-import { EventsFromServer } from '../../root/types/events/events-from-server.type.ts';
-import { EventsEnum } from '../../root/types/events/events.enum.ts';
-import { TabEvents } from '../../root/wrappers/app/hooks/use-broadcast-channel.ts';
+import { RsaKeysStringType } from '../../types/create-rsa-keys.type.ts';
+import { Envs } from '../../../common/config/envs/envs.ts';
+import { CryptoService } from '../../../common/services/crypto.service.ts';
+import { EventsFromServer } from '../../types/events/events-from-server.type.ts';
+import { EventsEnum } from '../../types/events/events.enum.ts';
+import { TabsEnum } from '../../types/events/tabs.enum.ts';
+
 const channel = new BroadcastChannel('ws-channel');
 
 let socketId: string | undefined;
@@ -9,6 +12,8 @@ let ws: WebSocket;
 let handlerDisconnect: NodeJS.Timeout | undefined;
 let handlerPing: NodeJS.Timeout | undefined;
 let handleCloseSocket: NodeJS.Timeout | undefined;
+let RASKeysString: RsaKeysStringType;
+let RASKeys: CryptoKeyPair;
 
 function ping() {
     clearTimeout(handleCloseSocket);
@@ -16,20 +21,34 @@ function ping() {
     handlerDisconnect = setTimeout(() => ws?.close(), Envs.waitPong);
 }
 
-function connect() {
-    ws = new WebSocket(Envs.notificationsServiceUrl);
+async function connect() {
+    if (!RASKeysString) {
+        const payloadKeys = localStorage.getItem('keys');
+        if (!payloadKeys) return;
+        RASKeysString = JSON.parse(payloadKeys) as RsaKeysStringType;
+        const keys = await CryptoService.importRSAKeys(RASKeysString);
+        if (keys) RASKeys = keys;
+    }
 
+    ws = new WebSocket(`${Envs.notificationsServiceUrl}?publicKey=${RASKeysString.publicKey}`);
     ws.onopen = ping;
-
     ws.onmessage = (event: MessageEvent<string>) => {
         const payload = JSON.parse(event.data) as EventsFromServer;
         if (payload.event === EventsEnum.GET_SOCKET_ID) socketId = payload.data.data;
-        else if (payload.event === EventsEnum.PONG) {
-            clearTimeout(handlerPing);
-            clearTimeout(handlerDisconnect);
-            handlerPing = setTimeout(ping, Envs.intervalPing);
+        switch (payload.event) {
+            case EventsEnum.PONG:
+                clearTimeout(handlerPing);
+                clearTimeout(handlerDisconnect);
+                handlerPing = setTimeout(ping, Envs.intervalPing);
+                break;
+            case EventsEnum.VERIFY:
+                CryptoService.decryptByRSAKey(RASKeys.privateKey, payload.data).then((result) =>
+                    ws.send(JSON.stringify({ event: EventsEnum.VERIFY, data: result })),
+                );
+                break;
+            default:
+                channel.postMessage(payload);
         }
-        channel.postMessage(payload);
     };
 
     ws.onclose = () => {
@@ -51,7 +70,7 @@ connect();
 channel.onmessage = (ev) => {
     const event = ev.data?.event;
     switch (event) {
-        case TabEvents.CREATE_TAB:
+        case TabsEnum.CREATE_TAB:
             if (socketId)
                 channel.postMessage({ event: EventsEnum.GET_SOCKET_ID, data: { success: true, data: socketId } });
             break;

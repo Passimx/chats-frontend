@@ -5,7 +5,7 @@ export const deleteCacheOne = async (key: string): Promise<void> => {
     await cache.delete(`${Envs.filesServiceUrl}${key}`);
 };
 
-// возращает размер удаленного кеша
+// возвращает размер удаленного кеша
 export const deleteChatCache = async (chatId: string): Promise<number> => {
     let totalSize = 0;
     const cache = await caches.open(Envs.cache.files);

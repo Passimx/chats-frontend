@@ -4,8 +4,8 @@
     z-index: 1;
     box-shadow: 0 0 2px 0.1px black;
     padding: 2px;
-    background-color: rgb(255, 255, 255, 80%);
-    backdrop-filter: blur(1px);
+    background-color: rgb(255, 255, 255, 50%);
+    backdrop-filter: blur(4px);
     display: grid;
     visibility: hidden;
 }

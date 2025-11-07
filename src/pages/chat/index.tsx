@@ -26,6 +26,7 @@ import { LoadingType } from './types/loading.type.ts';
 import { MenuMessage } from '../../components/menu-message';
 import { InputMessage } from '../../components/input-message';
 import { QrCode } from '../../components/qr-code';
+import { PinnedMessages } from '../../components/pinned-messages';
 
 const Chat: FC = memo(() => {
     useGetChat();
@@ -78,6 +79,7 @@ const Chat: FC = memo(() => {
                         </div>
                     </div>
                 </div>
+                <PinnedMessages />
                 {!getRawChat(chatOnPage.id) && (
                     <div className={`${styles.add_chat_block} text_translate`} onClick={addChat}>
                         <IoIosAddCircleOutline id={styles.new_chat_icon} />

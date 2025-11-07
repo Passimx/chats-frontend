@@ -14,7 +14,7 @@
   "create_private_chat": "Закрытый чат",
   "back": "Назад",
   "global_search": "ГЛОБАЛЬНЫЙ ПОИСК",
-  "add_chat": "добавить чат",
+  "add_chat": "Добавить чат",
   "copy_link": "Скопировать ссылку",
   "leave_chat": "Покинуть чат",
   "draft": "черновик",
@@ -66,6 +66,9 @@
   "qr_code": "QR код",
   "scan_qr_code": "Сканировать QR код",
   "point_camera_at_qr_code": "Наведи камеру на QR код",
+  "pin": "Закрепить",
+  "unpin": "Открепить",
+  "pinned_messages": "Закрепленные сообщения",
 
   "all": "все",
   "always": "всегда",

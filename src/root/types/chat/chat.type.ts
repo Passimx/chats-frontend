@@ -32,4 +32,5 @@ export type ChatItemIndexDb = ChatType & {
     online?: string;
     inputMessage?: string;
     answerMessage?: MessageType;
+    pinnedMessages?: MessageType[];
 };

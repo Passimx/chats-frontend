@@ -23,7 +23,7 @@ export const Settings = memo(() => {
     const { setStateApp } = useAppAction();
     const { cacheMemory, pages, activeTab, systemChatId, logs } = useAppSelector((state) => state.app);
     const chatsLength = useAppSelector((state) => state.chats.chats.length);
-    const RASKeysString = useAppSelector((state) => state.app.RASKeysString);
+    const socketId = useAppSelector((state) => state.app.socketId);
 
     const cache = useMemo(() => {
         const [memory, unit] = getFileSize(cacheMemory);
@@ -47,10 +47,13 @@ export const Settings = memo(() => {
             <MenuTitle icon={<IoSettingsOutline />} title={'settings'} />
             <div className={styles.items}>
                 <div className={styles.inf}>
+                    {/*todo*/}
+                    {/*Если соединение не установлено то что показывать?*/}
+                    {/*Нужно сделать сохранение publicKeyHash*/}
                     <div
                         className={styles.inf_qr_code_background}
                         onClick={() => {
-                            setStateApp({ page: <QrCode value={{ publicKey: RASKeysString?.publicKey }} /> });
+                            setStateApp({ page: <QrCode value={{ publicKeyHash: socketId }} /> });
                         }}
                     >
                         <MdQrCode2 className={styles.inf_qr_code} />
@@ -70,7 +73,6 @@ export const Settings = memo(() => {
             {/*    </div>*/}
             {/*</div>*/}
 
-            {/*todo*/}
             {/*<div className={styles.items}>*/}
             {/*    <div className={styles.item}>*/}
             {/*        <IoWalletOutline className={styles.item_logo} />*/}
