@@ -68,6 +68,7 @@
   "point_camera_at_qr_code": "Apunta la cámara al código QR",
   "pin": "Fijar",
   "unpin": "Desanclar",
+  "pinned_messages": "Mensajes fijados",
 
   "all": "todo",
   "always": "siempre",

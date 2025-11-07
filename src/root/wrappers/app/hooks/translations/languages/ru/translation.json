@@ -67,6 +67,8 @@
   "scan_qr_code": "Сканировать QR код",
   "point_camera_at_qr_code": "Наведи камеру на QR код",
   "pin": "Закрепить",
+  "unpin": "Открепить",
+  "pinned_messages": "Закрепленные сообщения",
 
   "all": "все",
   "always": "всегда",
