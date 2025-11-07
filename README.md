@@ -7,7 +7,7 @@
 
 # Passimx Chats Frontend
 
-> A modern open-source frontend client for anonymous communication — no registration, no personal data, no phone numbers.  
+> A modern open-source frontend client for anonymous communication — no registration, no personal data, no phone numbers.
 
 > Designed for privacy-first chat systems that anyone can self-host.
 
@@ -136,7 +136,7 @@ The project uses a `.env` file to configure backend endpoints.
 
 ## Backend Repositories
 
-See the backend source here: 
+See the backend source here:
 
 [Chats Service Backend](https://github.com/Passimx/chats-service)
 
