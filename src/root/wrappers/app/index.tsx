@@ -63,7 +63,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useUpdateBadge();
     // get RSA keys
     useKeys();
-    // update static files
+    // update static files in cache storage
     useUpdateStaticCache();
     // verity when open app
     // const [isAuth] = useVerify();
