@@ -13,10 +13,6 @@
 
     .background_messages{
         .visible_message{
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
             color: white;
             display: grid;
             grid-template-columns: auto 1fr;
@@ -24,6 +20,13 @@
 
             .visible_message_index{
                 font-weight: 700;
+            }
+
+            .visible_message_text{
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
             }
         }
     };

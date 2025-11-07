@@ -68,6 +68,7 @@
   "point_camera_at_qr_code": "Point your camera at the QR code",
   "pin": "Pin",
   "unpin": "Unpin",
+  "pinned_messages": "Pinned messages",
 
   "all": "all",
   "always": "always",

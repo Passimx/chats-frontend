@@ -34,6 +34,7 @@ html {
     cursor: pointer;
     color: white;
     padding-top: 6px;
+    position: relative;
 }
 
 .menu_item:hover {
@@ -81,7 +82,7 @@ html {
 #message_count{
     display: grid;
     justify-content: center;
-    width: calc(var(--menu-width) / 3);
+    width: 100%;
     top:0;
     position: absolute;
 }

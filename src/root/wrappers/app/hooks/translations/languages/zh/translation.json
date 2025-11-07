@@ -68,6 +68,7 @@
   "point_camera_at_qr_code": "将相机对准二维码",
   "pin": "置顶",
   "unpin": "取消置顶",
+  "pinned_messages": "置顶消息",
 
   "all": "全部",
   "always": "始终",

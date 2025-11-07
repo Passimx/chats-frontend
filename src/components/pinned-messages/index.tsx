@@ -39,16 +39,18 @@ export const PinnedMessages: FC = memo(() => {
 
         const visibleMessage: string = getVisibleMessage(pinnedMessages[index], t);
         setVisibleMessage(visibleMessage);
-    }, [index, pinnedMessages]);
+    }, [index, pinnedMessages, t]);
 
     if (pinnedMessages?.length && index !== undefined)
         return (
             <div className={styles.background} onClick={click}>
-                <div className={styles.background_messages}>
-                    <div className={styles.title}>Закрепленные сообщения ({pinnedMessages?.length})</div>
+                <div className={`${styles.background_messages} text_translate`}>
+                    <div className={styles.title}>
+                        {t('pinned_messages')}&nbsp;({pinnedMessages?.length})
+                    </div>
                     <div className={styles.visible_message}>
                         <div className={styles.visible_message_index}>{index + 1})</div>
-                        <div>{visibleMessage}</div>
+                        <div className={styles.visible_message_text}>{visibleMessage}</div>
                     </div>
                 </div>
                 <div className={styles.background_icon}>
