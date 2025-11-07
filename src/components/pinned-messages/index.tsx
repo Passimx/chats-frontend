@@ -49,7 +49,7 @@ export const PinnedMessages: FC = memo(() => {
                         {t('pinned_messages')}&nbsp;({pinnedMessages?.length})
                     </div>
                     <div className={styles.visible_message}>
-                        <div className={styles.visible_message_index}>{index + 1})</div>
+                        <div className={styles.visible_message_index}>#{index + 1}</div>
                         <div className={styles.visible_message_text}>{visibleMessage}</div>
                     </div>
                 </div>

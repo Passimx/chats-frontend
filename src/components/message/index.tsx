@@ -24,8 +24,6 @@ const Message: FC<PropsType> = memo((props) => {
 
     const [ref] = useReadMessage(number);
     const { t } = useTranslation();
-    // todo
-    // переписать так как из-за внутреннего контекста ререндерятся все сообщения
     const [elementId] = useMessageMenu(props);
     const title = useAppSelector((state) => state.chats.chatOnPage?.title);
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
