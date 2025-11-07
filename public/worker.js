@@ -1,6 +1,15 @@
 const CACHE_NAME = 'static-files';
 
-const OFFLINE_ASSETS = ['/', '/index.html', '/iframe.html', '/manifest.webmanifest', '/assets/'];
+const OFFLINE_ASSETS = [
+    '/',
+    '/index.html',
+    '/iframe.html',
+    '/manifest.webmanifest',
+    '/main.css',
+    '/main.js',
+    '/iframe.js',
+    '/worker.js',
+];
 
 // Определяем, является ли запрос статическим файлом
 function isStaticAsset(request) {
