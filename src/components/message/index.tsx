@@ -41,7 +41,7 @@ const Message: FC<PropsType> = memo((props) => {
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
-            <div id={elementId} className={styles.system_background}>
+            <div id={elementId} ref={ref} className={styles.system_background}>
                 <div className={`${styles.background} ${styles.system_message} text_translate`}>{visibleMessage}</div>
             </div>
         );
