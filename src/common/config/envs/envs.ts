@@ -21,14 +21,13 @@ type EnvsType = {
         files: string;
         static: string;
     };
-    catchLogs?: boolean;
     settings?: Partial<SettingsType>;
 };
 
 export const Envs: EnvsType = {
-    chatsServiceUrl: import.meta.env.VITE_CHATS_SERVICE_URL,
-    notificationsServiceUrl: import.meta.env.VITE_NOTIFICATIONS_SERVICE_URL,
-    filesServiceUrl: import.meta.env.VITE_FILES_SERVICE_URL,
+    chatsServiceUrl: `https://${import.meta.env.VITE_API_URL}/api`,
+    notificationsServiceUrl: `wss://${import.meta.env.VITE_API_URL}/api/notifications`,
+    filesServiceUrl: `https://${import.meta.env.VITE_API_URL}/api/files`,
     intervalPing: 4 * 1000,
     waitPong: 4 * 1000,
     salt: import.meta.env.VITE_SALT,
@@ -36,7 +35,6 @@ export const Envs: EnvsType = {
     chats: {
         limit: 250,
     },
-    catchLogs: import.meta.env.VITE_CATCH_LOGS !== 'false',
     cache: {
         files: 'files-cache-name',
         static: 'static-files',

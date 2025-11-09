@@ -89,7 +89,7 @@ chats-frontend/
 ├── LICENSE                     # License file
 ├── package.json                # Project dependencies and scripts
 ├── package-lock.json           # Locked dependency tree
-├── README.md                   # Project documentation
+├── README.md                   # Project files roadmap
 ├── tsconfig.json               # TypeScript config
 ├── tsconfig.node.json          # TypeScript config for Node environment
 └── vite.config.ts              # Vite build configuration

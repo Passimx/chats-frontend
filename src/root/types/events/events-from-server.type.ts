@@ -32,7 +32,7 @@ type CreateMessage = {
 
 type Pong = {
     readonly event: EventsEnum.PONG;
-    readonly data: IData<unknown>;
+    readonly data: unknown;
 };
 
 type VERIFY = {
