@@ -78,6 +78,7 @@ export const useBroadcastChannel = () => {
         });
     }, [RASKeysString?.publicKey]);
 
+    /** Service worker registration */
     useEffect(() => {
         if (navigator.serviceWorker) {
             navigator.serviceWorker?.register('/worker.js', { scope: '/' });
