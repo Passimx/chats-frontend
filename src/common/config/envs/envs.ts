@@ -25,9 +25,10 @@ type EnvsType = {
 };
 
 export const Envs: EnvsType = {
-    chatsServiceUrl: `https://${import.meta.env.VITE_API_URL}/api`,
-    notificationsServiceUrl: `wss://${import.meta.env.VITE_API_URL}/api/notifications`,
-    filesServiceUrl: `https://${import.meta.env.VITE_API_URL}/api/files`,
+    chatsServiceUrl: import.meta.env.VITE_CHATS_SERVICE_URL ?? `https://${import.meta.env.VITE_API_URL}/api`,
+    notificationsServiceUrl:
+        import.meta.env.VITE_NOTIFICATIONS_SERVICE_URL ?? `wss://${import.meta.env.VITE_API_URL}/api/notifications`,
+    filesServiceUrl: import.meta.env.VITE_FILES_SERVICE_URL ?? `https://${import.meta.env.VITE_API_URL}/api/files`,
     intervalPing: 4 * 1000,
     waitPong: 4 * 1000,
     salt: import.meta.env.VITE_SALT,
