@@ -69,6 +69,7 @@
   "pin": "تثبيت",
   "unpin": "إلغاء التثبيت",
   "pinned_messages": "الرسائل المثبتة",
+  "favorites": "المفضلة",
 
   "all": "الكل",
   "always": "دائمًا",
@@ -133,6 +134,7 @@
   "invalid_title_chat": "تنسيق العنوان غير صالح.",
 
   "chat_is_create": "تم إنشاء الدردشة",
+  "dialogue_is_create": "حوار تم إنشاؤه",
   "avatar_is_create": "تمت إضافة صورة الدردشة",
 
   "emoji_emotions": "المشاعر",

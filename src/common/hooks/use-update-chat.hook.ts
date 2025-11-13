@@ -1,14 +1,15 @@
-import { useAppAction } from '../../index.ts';
-import { ChatItemIndexDb } from '../../../types/chat/chat.type.ts';
-import { getRawChat, getRawChats } from '../../chats/chats.raw.ts';
 import { useCallback } from 'react';
+import { useAppAction } from '../../root/store';
+import { ChatItemIndexDb } from '../../root/types/chat/chat.type.ts';
+import { getRawChat, getRawChats } from '../../root/store/chats/chats.raw.ts';
 
 export const useUpdateChat = () => {
     const timeUpdate = 200;
 
     const { addUpdatedChat, setToBegin, removeUpdatedChats, update } = useAppAction();
 
-    return useCallback((payload: ChatItemIndexDb) => {
+    return useCallback((payload?: ChatItemIndexDb) => {
+        if (!payload) return;
         const chat: ChatItemIndexDb = { ...payload, key: Date.now() };
 
         if (getRawChats()[0]?.id === payload.id) return update(chat);

@@ -69,6 +69,7 @@
   "pin": "Pin",
   "unpin": "Unpin",
   "pinned_messages": "Pinned messages",
+  "favorites": "Favorites",
 
   "all": "all",
   "always": "always",
@@ -133,6 +134,7 @@
   "invalid_title_chat": "Invalid title format.",
 
   "chat_is_create": "Chat created",
+  "dialogue_is_create": "Dialogue created",
   "avatar_is_create": "Chat photo added",
 
   "emoji_emotions": "Emotions",

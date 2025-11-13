@@ -3,6 +3,7 @@ import { useAppAction } from '../../../store';
 import rawChats from '../../../store/chats/chats.raw.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 import { ChatItemIndexDb } from '../../../types/chat/chat.type.ts';
+import { CryptoService } from '../../../../common/services/crypto.service.ts';
 
 export const useIndexDbHook = () => {
     const { setToEnd, setStateApp, setStateChat } = useAppAction();
@@ -15,18 +16,23 @@ export const useIndexDbHook = () => {
             rawChats.indexDb = IndexDb;
 
             const request = IndexDb.transaction('chats', 'readonly').objectStore('chats').getAll();
-            request.onsuccess = () => {
-                setToEnd([...request.result].reverse());
+            request.onsuccess = async () => {
                 setStateApp({ isLoadedChatsFromIndexDb: true });
 
                 let systemChat: ChatItemIndexDb | undefined;
                 let messageCount = 0;
 
-                request.result.forEach((chat) => {
+                const tasks = request.result.map(async (chat: ChatItemIndexDb) => {
                     messageCount += chat.countMessages - chat.readMessage;
                     if (chat.type === ChatEnum.IS_SYSTEM) systemChat = chat;
+
+                    if (chat.aesKeyString) chat.aesKey = await CryptoService.importEASKey(chat.aesKeyString);
+
+                    return chat;
                 });
 
+                const chats = await Promise.all(tasks);
+                setToEnd(chats.reverse());
                 if (messageCount) setStateChat({ messageCount });
 
                 if (systemChat) setStateApp({ systemChatId: systemChat.id });

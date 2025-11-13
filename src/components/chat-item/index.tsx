@@ -9,9 +9,11 @@ import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { FaStar } from 'react-icons/fa';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { BsPinAngleFill } from 'react-icons/bs';
+import { useGetChatTitle } from '../../common/hooks/use-get-chat-title.hook.ts';
 
 const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redirect }) => {
     const { t } = useTranslation();
+    const title = useGetChatTitle(chat);
     const elementId = useMemo(() => `chat-${chat.id}`, [chat.id]);
     const [message, time, countMessages, isPinned] = useMessage(chat);
 
@@ -40,7 +42,7 @@ const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redir
             <div className={styles.main_inf}>
                 <div className={styles.title_block}>
                     <div>{chat.type === ChatEnum.IS_SYSTEM && <FaStar className={styles.icon_star} />}</div>
-                    <div className={styles.title}>{chat.title}</div>
+                    <div className={`${styles.title} text_translate`}>{title}</div>
                     <div className={`${styles.time} text_translate`}>
                         {isPinned && <BsPinAngleFill className={styles.pin} />}
                         <div className={styles.time_text}>{time}</div>

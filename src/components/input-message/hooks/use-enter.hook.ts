@@ -14,6 +14,7 @@ import { FileExtensionEnum, MimetypeEnum } from '../../../root/types/files/types
 import { getAudioDurationFromBlob } from '../../../common/hooks/get-audio-duration-from-blob.hook.ts';
 import { getAudioWaveform } from '../../../common/hooks/get-sound-bar.hook.ts';
 import { getBetterVoice } from '../../../common/hooks/get-better-voice.hook.ts';
+import { CryptoService } from '../../../common/services/crypto.service.ts';
 
 let mediaRecorder: MediaRecorder | undefined;
 let chunks: Blob[] = [];
@@ -139,8 +140,13 @@ export const useEnterHook = (): UseEnterHookType => {
         const element = document.getElementById(styles.new_message)!;
         const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
 
-        const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
+        let text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
+
+        if (chatOnPage.aesKey) {
+            const decryptText = await CryptoService.encryptByAESKey(chatOnPage.aesKey, text);
+            if (decryptText) text = decryptText;
+        }
 
         await createMessage({ message: text, chatId: chatOnPage.id, parentMessageId: chatOnPage?.answerMessage?.id });
 

@@ -3,6 +3,7 @@ import { CreateChatType } from '../../types/chat/create-chat.type.ts';
 import { ChatType } from '../../types/chat/chat.type.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import { ChatListenRequestType } from '../../types/chat/chat-listen-request.type.ts';
+import { BodyCreateDialogueType } from '../../types/chat/create-dialogue.type.ts';
 
 export const getChats = async (
     title?: string,
@@ -69,4 +70,8 @@ export const leaveChats = (chatIds: string[]) => {
 
 export const getSystemChat = (): Promise<IData<ChatType[]>> => {
     return Api<ChatType[]>('/chats/system_chats');
+};
+
+export const createDialogue = (body: BodyCreateDialogueType) => {
+    return Api<ChatType>('/dialogues', { method: 'POST', body });
 };

@@ -126,13 +126,14 @@ npm run build
 
 The project uses a `.env` file to configure backend endpoints.
 
-| Variable | Description                          | Example                     |
-|-----------|--------------------------------------|-----------------------------|
-| `VITE_SALT` | Salt for generation crypto keys      | `eXaMpLe_SaLt`              |
-| `VITE_CATCH_LOGS` | Show logs at app or not              | `true`                      |
-| `VITE_CHATS_SERVICE_URL` | Chats service connection URL         | `http://localhost:80/chats` |
-| `VITE_FILES_SERVICE_URL` | Files service connection URL         | `http://localhost:80/files` |
-| `VITE_NOTIFICATIONS_SERVICE_URL` | Notifications service connection URL | `ws://localhost:80/ws`      |
+| Variable | Description                            | Example                     |
+|-----------|----------------------------------------|-----------------------------|
+| `VITE_SALT` | Salt for generation crypto keys        | `eXaMpLe_SaLt`              |
+| `VITE_CATCH_LOGS` | Show logs at app or not                | `true`                      |
+| `VITE_API_URL` | Api host or you can use next variables | `exmaple.com`               |
+| `VITE_CHATS_SERVICE_URL` | Chats service connection URL           | `http://localhost:80/chats` |
+| `VITE_FILES_SERVICE_URL` | Files service connection URL           | `http://localhost:80/files` |
+| `VITE_NOTIFICATIONS_SERVICE_URL` | Notifications service connection URL   | `ws://localhost:80/ws`      |
 
 ## Backend Repositories
 

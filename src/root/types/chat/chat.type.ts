@@ -1,9 +1,10 @@
 import { ChatEnum } from './chat.enum.ts';
 import { MessageType } from './message.type.ts';
+import { ChatKeyType } from '../keys/chat-key.type.ts';
 
-type ChatItemType = {
+type InnerChatItemType = {
     id: string;
-    title: string;
+    title?: string;
     type: ChatEnum;
     createdAt: Date;
     countMessages: number;
@@ -11,18 +12,12 @@ type ChatItemType = {
     message: MessageType;
 };
 
-// type EncryptChatItemType = {
-//     id: string;
-//     title: string;
-//     type: ChatEnum.IS_PRIVATE;
-//     countMessages: number;
-//     createdAt: Date;
-//     messages: EncryptChatType[];
-//     // encryptAesKey: string;
-//     // lastMessage: null | EncryptMessageType;
-//     // countIsNotReadMessages: number;
-// };
-export type ChatType = ChatItemType;
+type InnerDialogueType = InnerChatItemType & {
+    keys: ChatKeyType[];
+};
+
+export type ChatType = InnerChatItemType;
+export type DialogueType = InnerDialogueType;
 
 export type ChatItemIndexDb = ChatType & {
     key?: number;
@@ -33,4 +28,7 @@ export type ChatItemIndexDb = ChatType & {
     inputMessage?: string;
     answerMessage?: MessageType;
     pinnedMessages?: MessageType[];
+
+    aesKeyString?: string;
+    aesKey?: CryptoKey;
 };

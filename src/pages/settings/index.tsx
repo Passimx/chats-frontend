@@ -53,7 +53,9 @@ export const Settings = memo(() => {
                     <div
                         className={styles.inf_qr_code_background}
                         onClick={() => {
-                            setStateApp({ page: <QrCode value={{ publicKeyHash: socketId }} /> });
+                            setStateApp({
+                                page: <QrCode data={`${window.location.origin}/create-dialogue/${socketId}`} />,
+                            });
                         }}
                     >
                         <MdQrCode2 className={styles.inf_qr_code} />

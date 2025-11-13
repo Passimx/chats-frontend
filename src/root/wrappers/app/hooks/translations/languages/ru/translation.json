@@ -69,6 +69,7 @@
   "pin": "Закрепить",
   "unpin": "Открепить",
   "pinned_messages": "Закрепленные сообщения",
+  "favorites": "Избранное",
 
   "all": "все",
   "always": "всегда",
@@ -133,6 +134,7 @@
   "invalid_title_chat": "Неверный формат названия.",
 
   "chat_is_create": "Создан чат",
+  "dialogue_is_create": "Создан диалог",
   "avatar_is_create": "Добавлена фотография чата",
 
   "emoji_emotions": "Эмоции",

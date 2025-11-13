@@ -2,6 +2,7 @@ export enum EventsEnum {
     GET_SOCKET_ID = 'get_socket_id',
     ADD_CHAT = 'add_chat',
     CREATE_CHAT = 'create_chat',
+    CREATE_DIALOGUE = 'create_dialogue',
     CHANGE_LANGUAGE = 'CHANGE_LANGUAGE',
     CREATE_MESSAGE = 'create_message',
     READ_MESSAGE = 'read_message',

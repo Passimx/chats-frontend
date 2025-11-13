@@ -19,6 +19,7 @@ export const useUpdateStaticCache = () => {
             const cache = await caches.open(Envs.cache.static);
             const dist = await cache.match(request);
             const networkResponse = await fetch(request);
+            const networkResponseClone = networkResponse.clone();
 
             if (!networkResponse || networkResponse.status !== 200) return;
             if (!dist) {
@@ -50,7 +51,7 @@ export const useUpdateStaticCache = () => {
                 await fetch(file.name);
             }
 
-            await cache.put(request, networkResponse.clone());
+            await cache.put(request, networkResponseClone);
         };
 
         window.addEventListener('load', update);

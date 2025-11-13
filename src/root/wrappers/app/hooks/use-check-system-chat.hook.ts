@@ -12,6 +12,7 @@ export const useCheckSystemChat = () => {
         const response = await getSystemChat();
 
         if (response.success) {
+            if (!response.data.length) return;
             const [chat] = response.data;
 
             postMessageToBroadCastChannel({
@@ -19,7 +20,7 @@ export const useCheckSystemChat = () => {
                 data: { ...chat, readMessage: 0, messages: [], scrollTop: 0, key: Date.now() },
             });
             listenChats([
-                { chatId: chat.id, lastMessage: chat.countMessages, maxUsersOnline: Number(chat.maxUsersOnline) },
+                { chatId: chat?.id, lastMessage: chat?.countMessages, maxUsersOnline: Number(chat?.maxUsersOnline) },
             ]);
         }
     };

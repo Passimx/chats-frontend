@@ -69,6 +69,7 @@
   "pin": "Fijar",
   "unpin": "Desanclar",
   "pinned_messages": "Mensajes fijados",
+  "favorites": "Favoritos",
 
   "all": "todo",
   "always": "siempre",
@@ -133,6 +134,7 @@
   "invalid_title_chat": "Formato de nombre no válido.",
 
   "chat_is_create": "Chat creado",
+  "dialogue_is_create": "Dialogue created",
   "avatar_is_create": "Foto de chat añadida",
 
   "emoji_emotions": "Emociones",
