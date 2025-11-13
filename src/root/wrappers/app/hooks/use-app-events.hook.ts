@@ -27,12 +27,14 @@ export const useAppEvents = () => {
                 Envs.socketId = data.data;
                 break;
             case EventsEnum.ADD_CHAT:
+                if (getRawChat(data.id)) break;
                 setToBegin(data);
                 if (data.type === ChatEnum.IS_SYSTEM) setStateApp({ systemChatId: data.id });
                 playNotificationSound();
                 break;
             case EventsEnum.CREATE_CHAT:
                 if (!data.success) break;
+                if (getRawChat(data.data.id)) break;
                 setToBegin({
                     ...data.data,
                     messages: [data.data.message],
@@ -45,6 +47,7 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.CREATE_DIALOGUE:
                 if (!data.success) break;
+                if (getRawChat(data.data.id)) break;
                 setToBegin(await prepareDialogue(data.data));
                 playNotificationSound();
                 break;
