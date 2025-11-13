@@ -19,7 +19,7 @@ export const usePrepareDialogue = () => {
         const myChatKey = keys?.find((key) => key.publicKeyHash === Envs.socketId);
         const anotherChatKey = keys?.find((key) => key.publicKeyHash !== Envs.socketId);
 
-        payload.title = anotherChatKey?.publicKeyHash;
+        if (!payload.title) payload.title = anotherChatKey?.publicKeyHash;
 
         if (!myChatKey || !Envs.RASKeys?.privateKey) return;
 

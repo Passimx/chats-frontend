@@ -27,6 +27,7 @@ import { MenuMessage } from '../../components/menu-message';
 import { InputMessage } from '../../components/input-message';
 import { QrCode } from '../../components/qr-code';
 import { PinnedMessages } from '../../components/pinned-messages';
+import { useGetChatTitle } from '../../common/hooks/use-get-chat-title.hook.ts';
 
 const Chat: FC = memo(() => {
     useGetChat();
@@ -37,6 +38,7 @@ const Chat: FC = memo(() => {
     const [isLoading, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const { chatOnPage } = useAppSelector((state) => state.chats);
+    const title = useGetChatTitle(chatOnPage);
 
     if (!chatOnPage) return <></>;
 
@@ -54,9 +56,9 @@ const Chat: FC = memo(() => {
                             isChange={chatOnPage.type !== ChatEnum.IS_SYSTEM}
                             isSystem={chatOnPage.type === ChatEnum.IS_SYSTEM}
                         />
-                        <div className={styles.title_block}>
+                        <div className={`${styles.title_block} text_translate`}>
                             {chatOnPage.type === ChatEnum.IS_SYSTEM && <FaStar className={styles.icon_star} />}
-                            <div id={styles.title}>{chatOnPage.title}</div>
+                            <div id={styles.title}>{title}</div>
                         </div>
                         <div className={styles.icon}>
                             {chatOnPage.type === ChatEnum.IS_OPEN && (

@@ -20,8 +20,10 @@ const useGetChat = (): void => {
         if (!isLoadedChatsFromIndexDb) return;
 
         if (state) {
+            // todo
+            // то что ниже закомментил - надо ли
             // чтобы при обновлении страницы обнулялся state и делался запрос на сервер
-            window.history.replaceState({}, '');
+            // window.history.replaceState({}, '');
             setIsLoading(false);
             setChatOnPage(state);
             return;
