@@ -2,6 +2,7 @@ import { CryptoService } from '../../../../common/services/crypto.service.ts';
 import { useCallback, useEffect } from 'react';
 import { RsaKeysStringType } from '../../../types/create-rsa-keys.type.ts';
 import { useAppAction } from '../../../store';
+import { Envs } from '../../../../common/config/envs/envs.ts';
 
 export const useKeys = () => {
     const { setStateApp } = useAppAction();
@@ -21,6 +22,7 @@ export const useKeys = () => {
         setStateApp({ RASKeysString });
 
         const RASKeys = await CryptoService.importRSAKeys(RASKeysString);
+        Envs.RASKeys = RASKeys;
         setStateApp({ RASKeys });
     }, []);
 

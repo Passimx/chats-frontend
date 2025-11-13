@@ -99,7 +99,7 @@ const Chat: FC = memo(() => {
                     <div
                         className={styles.chat_menu_item}
                         onClick={() => {
-                            setStateApp({ page: <QrCode value={window.location.origin + window.location.pathname} /> });
+                            setStateApp({ page: <QrCode data={window.location.origin + window.location.pathname} /> });
                         }}
                     >
                         <MdQrCode2 className={styles.chat_menu_item_icon} />

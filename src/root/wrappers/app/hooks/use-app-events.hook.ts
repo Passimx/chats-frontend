@@ -1,5 +1,4 @@
 import { useAppAction } from '../../../store';
-import { useUpdateChat } from '../../../store/app/hooks/use-update-chat.hook.ts';
 import { DataType } from '../../../types/events/event-data.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
@@ -9,9 +8,12 @@ import { getRawChat } from '../../../store/chats/chats.raw.ts';
 import { deleteChatCache } from '../../../../common/cache/delete-chat-cache.ts';
 import { useCallback } from 'react';
 import { getCacheMemory } from '../../../../common/cache/get-cache-memory.ts';
+import { useUpdateChat } from '../../../../common/hooks/use-update-chat.hook.ts';
+import { usePrepareDialogue } from '../../../../common/hooks/use-prepare-dialogue.ts';
 
 export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
+    const prepareDialogue = usePrepareDialogue();
     const [playNotificationSound] = useLoadSoundsHooks();
     const { updateMany, setStateApp, createMessage, removeChat, update, changeSettings } = useAppAction();
 
@@ -33,12 +35,17 @@ export const useAppEvents = () => {
                 if (!data.success) break;
                 setToBegin({
                     ...data.data,
-                    messages: [],
+                    messages: [data.data.message],
                     readMessage: 0,
                     online: '1',
                     maxUsersOnline: '1',
                     scrollTop: 0,
                 });
+                playNotificationSound();
+                break;
+            case EventsEnum.CREATE_DIALOGUE:
+                if (!data.success) break;
+                setToBegin(await prepareDialogue(data.data));
                 playNotificationSound();
                 break;
             case EventsEnum.CREATE_MESSAGE:
@@ -82,8 +89,6 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.ERROR:
                 console.log(`${'\x1B[31m'}error: ${data}${'\x1B[31m'}`);
-                break;
-            default:
                 break;
         }
     }, []);

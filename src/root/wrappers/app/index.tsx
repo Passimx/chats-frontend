@@ -25,7 +25,7 @@ import { useBattery } from './hooks/use-battery.hook.ts';
 import { useSettings } from './hooks/use-settings.hook.ts';
 import { useUpdateBadge } from './hooks/use-update-badge.hook.ts';
 import { useCatchLogs } from './hooks/use-catch-logs.hook.ts';
-import { useKeys } from './hooks/keys.hook.ts';
+import { useKeys } from './hooks/use-keys.hook.ts';
 import { Page } from '../../../pages/page';
 import { useUpdateStaticCache } from './hooks/use-update-static-cache.hook.ts';
 

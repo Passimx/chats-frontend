@@ -2,7 +2,7 @@ import { EventsEnum } from './events.enum.ts';
 import { IData } from '../../api';
 import { ChatUpdateOnlineType } from '../chat/chat-update-online.type.ts';
 import { ChatUpdateMaxUsersOnline } from '../chat/chat-update-max-users-online.type.ts';
-import { ChatType } from '../chat/chat.type.ts';
+import { ChatType, DialogueType } from '../chat/chat.type.ts';
 import { MessageType } from '../chat/message.type.ts';
 
 type GetSocketId = {
@@ -25,6 +25,11 @@ type CreateChat = {
     readonly data: IData<ChatType>;
 };
 
+type CreateDialogue = {
+    readonly event: EventsEnum.CREATE_DIALOGUE;
+    readonly data: IData<DialogueType>;
+};
+
 type CreateMessage = {
     readonly event: EventsEnum.CREATE_MESSAGE;
     readonly data: IData<MessageType>;
@@ -45,6 +50,7 @@ export type EventsFromServer =
     | UpdateChatOnline
     | MaxUsersOnline
     | CreateChat
+    | CreateDialogue
     | CreateMessage
     | Pong
     | VERIFY;

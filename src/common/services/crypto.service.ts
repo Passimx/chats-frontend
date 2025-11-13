@@ -1,8 +1,8 @@
 import { CreateRsaKeysType, RsaKeysStringType } from '../../root/types/create-rsa-keys.type.ts';
 import { WordsService } from './words-service/words.service.ts';
-import { IKeys } from '../../root/types/keys.type.ts';
+import { IKeys } from '../../root/types/keys/keys.type.ts';
 
-const iterations = 1000;
+const iterations = 1000000;
 const keyLength = 256;
 
 export class CryptoService {
@@ -10,7 +10,7 @@ export class CryptoService {
         const { publicKey, privateKey } = await window.crypto.subtle.generateKey(
             {
                 name: 'RSA-OAEP',
-                modulusLength: 4096,
+                modulusLength: 8192,
                 publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
                 hash: 'SHA-512',
             },
@@ -142,6 +142,7 @@ export class CryptoService {
                 keyUsages,
             );
         } catch (error) {
+            console.log(error);
             return undefined;
         }
     }

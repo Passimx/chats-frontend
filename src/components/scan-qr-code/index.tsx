@@ -13,21 +13,15 @@ export const ScanQrCode: FC = () => {
     const [isPaused, setIsPaused] = useState<boolean>(false);
     const navigate = useCustomNavigate();
 
-    const onScan = useCallback(([{ rawValue }]: IDetectedBarcode[]) => {
+    const onScan = useCallback(async ([{ rawValue }]: IDetectedBarcode[]) => {
         setIsPaused(true);
         setStateApp({ page: undefined });
-        try {
-            const object = JSON.parse(rawValue);
-            console.log(object);
-        } catch (e) {
-            if (rawValue.startsWith(window.location.origin)) {
-                setTimeout(() => {
-                    const destinationUrl = new URL(rawValue);
-                    const path = destinationUrl.pathname + destinationUrl.search;
-                    navigate(path);
-                }, 100);
-            }
-        }
+
+        setTimeout(() => {
+            const destinationUrl = new URL(rawValue);
+            const path = destinationUrl.pathname + destinationUrl.search;
+            navigate(path);
+        }, 100);
     }, []);
 
     if (devices.length)

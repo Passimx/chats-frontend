@@ -22,6 +22,8 @@ type EnvsType = {
         static: string;
     };
     settings?: Partial<SettingsType>;
+
+    RASKeys?: CryptoKeyPair;
 };
 
 export const Envs: EnvsType = {

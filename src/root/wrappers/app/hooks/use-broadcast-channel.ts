@@ -23,7 +23,7 @@ export const useBroadcastChannel = () => {
                 const iframeExist = document.querySelector('iframe[data-main-iframe]');
                 if (!iframeExist) {
                     const iframe = document.createElement('iframe');
-                    iframe.src = 'iframe.html';
+                    iframe.src = '/iframe.html';
                     iframe.style.display = 'none';
                     iframe.setAttribute('data-main-iframe', 'true'); // для надёжного поиска
                     document.body.appendChild(iframe);
@@ -65,7 +65,6 @@ export const useBroadcastChannel = () => {
                     break;
                 default:
                     sendMessage(data);
-                    break;
             }
         };
 

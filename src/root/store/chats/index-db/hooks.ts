@@ -8,6 +8,7 @@ export const upsertChatIndexDb = (payload: ChatItemIndexDb, oldKey?: number) => 
 
     const chat = { ...payload };
     delete chat.online;
+    delete chat.aesKey;
 
     const tx = IndexDb.transaction(['chats'], 'readwrite'); // Единая транзакция
     const chatsStore = tx.objectStore('chats');
@@ -29,6 +30,7 @@ export const updateChatIndexDb = (payload: ChatItemIndexDb) => {
 
     const chat = { ...payload };
     delete chat.online;
+    delete chat.aesKey;
 
     IndexDb.transaction(['chats'], 'readwrite').objectStore('chats').put(chat, chat.key);
 };
