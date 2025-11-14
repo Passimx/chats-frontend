@@ -18,6 +18,7 @@ import { MessageVideo } from '../message-video';
 import { useReadMessage } from '../../common/hooks/use-read-message.hook.ts';
 import { BsPinAngleFill } from 'react-icons/bs';
 import { usePinned } from '../../common/hooks/use-pinned.hook.ts';
+import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 
 const Message: FC<PropsType> = memo((props) => {
     const { type, number } = props;
@@ -32,8 +33,10 @@ const Message: FC<PropsType> = memo((props) => {
     const [visibleMessage, time] = useMemo(() => {
         const time = moment(props.createdAt).format('LT');
         let message;
-        if (type === MessageTypeEnum.IS_CREATED_CHAT) message = `${t(props.message)} «${title}»`;
-        else if (type === MessageTypeEnum.IS_SYSTEM) message = t(props.message);
+        if (type === MessageTypeEnum.IS_CREATED_CHAT) {
+            message = `${t(props.message)} «${title}»`;
+            if (props.chat?.type === ChatEnum.IS_DIALOGUE) message = t(props.message);
+        } else if (type === MessageTypeEnum.IS_SYSTEM) message = t(props.message);
         else message = props.message;
 
         return [message, time];

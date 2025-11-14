@@ -127,7 +127,9 @@ const Chat: FC = memo(() => {
                     <div></div>
                     <div id={styles.messages}>
                         {isLoading === LoadingType.OLD && <RotateLoading />}
-                        {chatOnPage?.messages?.map((message) => <Message key={message.id} {...message} />)}
+                        {chatOnPage?.messages?.map((message) => (
+                            <Message key={message.id} {...{ ...message, chat: { type: chatOnPage.type } }} />
+                        ))}
                         {isLoading === LoadingType.NEW && <RotateLoading />}
                     </div>
                 </div>
