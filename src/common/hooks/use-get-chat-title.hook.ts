@@ -7,10 +7,10 @@ export const useGetChatTitle = (chat?: ChatItemIndexDb) => {
     const { t } = useTranslation();
 
     return useMemo(() => {
-        if (!chat?.title) return;
+        if (!chat) return;
 
         let title = chat.title;
-        if (chat.type === ChatEnum.IS_FAVORITES) title = t(chat.title);
+        if (chat.type === ChatEnum.IS_FAVORITES && chat.title) title = t(chat.title);
         return title;
     }, [t, chat?.title, chat?.type]);
 };

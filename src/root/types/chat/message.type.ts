@@ -1,5 +1,6 @@
 import { MessageTypeEnum } from './message-type.enum.ts';
 import { Types } from '../files/types.ts';
+import { ChatType } from './chat.type.ts';
 
 export type MessageFromServerType = {
     id: string;
@@ -11,6 +12,7 @@ export type MessageFromServerType = {
     createdAt: Date;
     parentMessage?: MessageType;
     files: Types[];
+    chat?: Partial<ChatType>;
 };
 
 type SaveTimeMessageType = {
