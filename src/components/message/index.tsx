@@ -31,11 +31,13 @@ const Message: FC<PropsType> = memo((props) => {
     const isPinned = usePinned(props.id, pinnedMessages);
 
     const [visibleMessage, time] = useMemo(() => {
+        console.log([type, props.chat?.type]);
         const time = moment(props.createdAt).format('LT');
         let message;
         if (type === MessageTypeEnum.IS_CREATED_CHAT) {
             message = `${t(props.message)} «${title}»`;
-            if (props.chat?.type === ChatEnum.IS_DIALOGUE) message = t(props.message);
+            if (props.chat?.type && [ChatEnum.IS_FAVORITES, ChatEnum.IS_DIALOGUE].includes(props.chat?.type))
+                message = t(props.message);
         } else if (type === MessageTypeEnum.IS_SYSTEM) message = t(props.message);
         else message = props.message;
 
