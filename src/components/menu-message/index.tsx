@@ -10,7 +10,6 @@ import { MessageType } from '../../root/types/chat/message.type.ts';
 import { useTranslation } from 'react-i18next';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { ContextChat } from '../../pages/chat/context/chat-context.tsx';
-import { MdOutlinePlaylistAddCheck } from 'react-icons/md';
 
 export const MenuMessage: FC = memo(() => {
     const { t } = useTranslation();
@@ -130,11 +129,10 @@ export const MenuMessage: FC = memo(() => {
                     {t('unpin')}
                 </div>
             )}
-
-            <div className={styles.message_menu_item}>
-                <MdOutlinePlaylistAddCheck className={styles.message_menu_item_icon} />
-                Выбрать
-            </div>
+            {/*<div className={styles.message_menu_item}>*/}
+            {/*    <MdOutlinePlaylistAddCheck className={styles.message_menu_item_icon} />*/}
+            {/*    Выбрать*/}
+            {/*</div>*/}
             {/*<div className={styles.message_menu_item}>*/}
             {/*    <FiExternalLink className={styles.message_menu_item_icon} />*/}
             {/*    Переслать*/}

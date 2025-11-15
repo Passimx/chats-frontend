@@ -5,9 +5,12 @@ import { useAppAction, useAppSelector } from '../../../root/store';
 import { getRawChat } from '../../../root/store/raw/chats.raw.ts';
 import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 import { useCustomNavigate } from '../../../common/hooks/use-custom-navigate.hook.ts';
+import { useTranslation } from 'react-i18next';
+import { ChatEnum } from '../../../root/types/chat/chat.enum.ts';
 
 const useGetChat = (): void => {
     const { id } = useParams();
+    const { t } = useTranslation();
     const { setChatOnPage } = useAppAction();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useCustomNavigate();
@@ -44,14 +47,16 @@ const useGetChat = (): void => {
             return navigate('/');
         }
 
-        if (!isLoading && chatOnPage) {
+        if (!isLoading && chatOnPage?.title) {
+            let title = chatOnPage.title;
             const countMessages = chatOnPage.countMessages - chatOnPage.readMessage;
 
-            if (countMessages > 0) changeHead(`${chatOnPage?.title} (${countMessages})`);
-            else changeHead(chatOnPage?.title);
+            if (chatOnPage.type === ChatEnum.IS_FAVORITES) title = t(chatOnPage.title);
+            if (countMessages > 0) changeHead(`${title} (${countMessages})`);
+            else changeHead(title);
             document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
         }
-    }, [isLoading, chatOnPage?.id, chatOnPage?.countMessages, chatOnPage?.readMessage]);
+    }, [isLoading, chatOnPage?.id, chatOnPage?.countMessages, chatOnPage?.readMessage, t]);
 };
 
 export default useGetChat;
