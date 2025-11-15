@@ -154,7 +154,7 @@ export const DownloadFileOnDevice = async (file: Types, blob?: Blob): Promise<Bl
     const a = document.createElement('a');
     a.href = url;
 
-    if (mimeToExt && !filename.endsWith(mimeToExt)) {
+    if (mimeToExt && !filename.endsWith(mimeToExt) && !filename.endsWith('.jpg')) {
         a.download = `${filename}.${mimeToExt}`;
     } else a.download = filename;
 

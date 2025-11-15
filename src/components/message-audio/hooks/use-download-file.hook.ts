@@ -31,13 +31,24 @@ export const useDownloadFile = (file: Types): Return => {
             }
 
             if (isPhone) {
+                // todo
+                // надо чтобы показывалось изображение
+                // const previewBlob = await convertToJpeg(blob);
+                // await shareFile(new File([previewBlob], "preview.jpg", { type: "image/jpeg" }));
                 const myFile = new File([duplicateBlob], file.originalName, { type: file.mimeType });
+                const canShare = navigator.canShare && navigator.canShare({ files: [myFile] });
 
-                await navigator
-                    .share({
-                        files: [myFile],
-                    })
-                    .catch((error) => console.log('Ошибка при обмене:', error));
+                if (canShare) {
+                    try {
+                        await navigator.share({
+                            files: [myFile],
+                        });
+                    } catch (e) {
+                        console.error(e);
+                    }
+                } else {
+                    DownloadFileOnDevice(file, duplicateBlob);
+                }
             } else await DownloadFileOnDevice(file, duplicateBlob);
         },
         [file, blob, isPhone],

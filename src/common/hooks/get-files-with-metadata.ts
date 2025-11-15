@@ -28,7 +28,7 @@ export const getFilesWithMetadata = async (files: FilesType[]): Promise<FilesTyp
                     const previewFile = await FilesService.resizeImage(newFile);
 
                     metadata.previewId = URL.createObjectURL(previewFile);
-                    metadata.previewMimeType = picture.format as MimetypeEnum;
+                    metadata.previewMimeType = previewFile.type as MimetypeEnum;
                     metadata.previewSize = previewFile.size;
                 }
 
@@ -47,12 +47,17 @@ export const getFilesWithMetadata = async (files: FilesType[]): Promise<FilesTyp
                 const previewFile = await FilesService.resizeImage(file);
 
                 metadata.previewId = URL.createObjectURL(previewFile);
-                metadata.previewMimeType = file.type as MimetypeEnum;
+                metadata.previewMimeType = previewFile.type as MimetypeEnum;
                 metadata.previewSize = previewFile.size;
             }
-            // // обработка видео
-            // if (FileMap.get('VIDEO')?.find((type) => type === file.type)) {
-            // }
+            // обработка видео
+            if (FileMap.get('VIDEO')?.find((type) => type === file.type)) {
+                const previewFile = await FilesService.getVideoPreview(file);
+
+                metadata.previewId = URL.createObjectURL(previewFile);
+                metadata.previewMimeType = previewFile.type as MimetypeEnum;
+                metadata.previewSize = previewFile.size;
+            }
 
             if (Object.keys(metadata)?.length) file.metaData = metadata;
 

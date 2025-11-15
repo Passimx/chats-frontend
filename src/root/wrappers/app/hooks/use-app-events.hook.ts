@@ -49,6 +49,7 @@ export const useAppEvents = () => {
             case EventsEnum.CREATE_DIALOGUE:
                 if (!data.success) break;
                 if (getRawChat(data.data.id)) break;
+                if (data.data.type === ChatEnum.IS_FAVORITES) setStateApp({ favoritesChatId: data.data.id });
                 setToBegin(await prepareDialogue(data.data));
                 playNotificationSound();
                 break;

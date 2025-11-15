@@ -17,23 +17,14 @@ export const PreviewFile: FC<PropsType> = memo(({ file, number }) => {
         if (file.type.includes(FileTypeEnum.IMAGE)) setType(FileTypeEnum.IMAGE);
         else if (file.type.includes(FileTypeEnum.VIDEO)) setType(FileTypeEnum.VIDEO);
         else if (file.type.includes(FileTypeEnum.VPN)) setType(FileTypeEnum.VPN);
-        // todo
-        // добавить превью для видео
-        // const element: HTMLVideoElement = document.createElement('video');
-        // element.src = url;
-        // element.onloadeddata = () => {
-        //     setUrl(url);
-        //     setType(FileTypeEnum.VIDEO);
-        // };
-
-        // return () => URL.revokeObjectURL(url);
     }, [file]);
 
     return (
         <div className={styles.background}>
             <div>
-                {type === FileTypeEnum.IMAGE && <img src={previewId} className={styles.file_preview_image} />}
-                {type === FileTypeEnum.VIDEO && <video src={previewId} className={styles.file_preview_image} />}
+                {type && [FileTypeEnum.IMAGE, FileTypeEnum.VIDEO].includes(type) && (
+                    <img src={previewId} className={styles.file_preview_image} alt={'image'} />
+                )}
                 {type === FileTypeEnum.VPN && (
                     <div className={styles.file_logo_background}>
                         <TbBrandOpenvpn className={styles.file_logo} strokeWidth={1} />

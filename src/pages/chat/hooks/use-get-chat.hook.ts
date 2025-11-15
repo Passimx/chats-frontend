@@ -7,12 +7,14 @@ import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 import { useCustomNavigate } from '../../../common/hooks/use-custom-navigate.hook.ts';
 
 const useGetChat = (): void => {
+    const { id } = useParams();
     const { setChatOnPage } = useAppAction();
-    const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
-    const { chatOnPage } = useAppSelector((state) => state.chats);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useCustomNavigate();
-    const { id } = useParams();
+    const { chatOnPage } = useAppSelector((state) => state.chats);
+    const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
+    const socketId = useAppSelector((state) => state.app.socketId);
+    const privateKey = useAppSelector((state) => state.app.RASKeys?.privateKey);
 
     useEffect(() => {
         if (!isLoadedChatsFromIndexDb) return;
@@ -24,6 +26,8 @@ const useGetChat = (): void => {
             return;
         }
 
+        if (!socketId || !privateKey) return;
+
         setIsLoading(true);
         getChatById(id!).then((result) => {
             setIsLoading(false);
@@ -31,7 +35,7 @@ const useGetChat = (): void => {
             if (result.success && result.data) setChatOnPage(result.data);
             else setChatOnPage(null);
         });
-    }, [id, isLoadedChatsFromIndexDb]);
+    }, [id, isLoadedChatsFromIndexDb, socketId, privateKey]);
 
     useEffect(() => {
         if (!chatOnPage && !isLoading) {

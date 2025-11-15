@@ -10,7 +10,7 @@ import { useListenAndUpdateChats } from './hooks/use-listen-and-update-chats.hoo
 import { useIsPhone } from './hooks/use-is-phone.hook.ts';
 import { PropsType } from './types/props.type.ts';
 import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
-import { useCheckSystemChat } from './hooks/use-check-system-chat.hook.ts';
+import { useRequiredChats } from './hooks/use-required-chats.hook.ts';
 import { Menu } from '../../../components/menu';
 import { useMobileKeyboard } from './hooks/use-mobile-keyboard.hook.ts';
 import { AudioPlayer } from '../../contexts/audio-player';
@@ -28,12 +28,8 @@ import { useCatchLogs } from './hooks/use-catch-logs.hook.ts';
 import { useKeys } from './hooks/use-keys.hook.ts';
 import { Page } from '../../../pages/page';
 import { useUpdateStaticCache } from './hooks/use-update-static-cache.hook.ts';
-import { useAppSelector } from '../../store';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
-    const socketId = useAppSelector((state) => state.app.socketId);
-    const privateKey = useAppSelector((state) => state.app.RASKeys?.privateKey);
-
     // updating chat information
     useListenAndUpdateChats();
     // add broadcast channel and iframe with Websocket connection
@@ -44,8 +40,8 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useOnline();
     // updating window size
     useIsPhone();
-    // add system chat if not exists
-    useCheckSystemChat();
+    // add required chat
+    useRequiredChats();
     // logic for Telegram App
     // useTelegram();
     // logic for mobile keyboard
@@ -103,7 +99,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
                             <Menu />
                         </div>
                         <div id={styles.chat} onClick={hideMenu}>
-                            {privateKey && socketId && children}
+                            {children}
                         </div>
                     </PreviewMediaContext>
                 </div>

@@ -20,11 +20,13 @@ export const useIndexDbHook = () => {
                 setStateApp({ isLoadedChatsFromIndexDb: true });
 
                 let systemChat: ChatItemIndexDb | undefined;
+                let favoritesChat: ChatItemIndexDb | undefined;
                 let messageCount = 0;
 
                 const tasks = request.result.map(async (chat: ChatItemIndexDb) => {
                     messageCount += chat.countMessages - chat.readMessage;
                     if (chat.type === ChatEnum.IS_SYSTEM) systemChat = chat;
+                    if (chat.type === ChatEnum.IS_FAVORITES) favoritesChat = chat;
 
                     if (chat.aesKeyString) {
                         const aesKey = await CryptoService.importEASKey(chat.aesKeyString);
@@ -39,6 +41,7 @@ export const useIndexDbHook = () => {
                 if (messageCount) setStateChat({ messageCount });
 
                 if (systemChat) setStateApp({ systemChatId: systemChat.id });
+                if (favoritesChat) setStateApp({ favoritesChatId: favoritesChat.id });
                 else setStateApp({ systemChatId: undefined });
             };
         };
