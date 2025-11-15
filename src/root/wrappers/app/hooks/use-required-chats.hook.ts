@@ -6,6 +6,8 @@ import { rawApp } from '../../../store/app/app.raw.ts';
 import { CryptoService } from '../../../../common/services/crypto.service.ts';
 import { DialogueKey } from '../../../types/chat/create-dialogue.type.ts';
 
+let isLoading: boolean = false;
+
 export const useRequiredChats = () => {
     const { postMessageToBroadCastChannel } = useAppAction();
     const { systemChatId, favoritesChatId, isLoadedChatsFromIndexDb, isListening, socketId, RASKeys } = useAppSelector(
@@ -42,7 +44,8 @@ export const useRequiredChats = () => {
     };
 
     useEffect(() => {
-        if (!isLoadedChatsFromIndexDb || !isListening || !rawApp.isMainTab) return;
+        if (!isLoadedChatsFromIndexDb || !isListening || !rawApp.isMainTab || !isLoading) return;
+        isLoading = true;
         if (!systemChatId) setSystemChat();
         if (!favoritesChatId) setFavoritesChat();
     }, [systemChatId, isLoadedChatsFromIndexDb, isListening]);
