@@ -1,4 +1,4 @@
-import { Types } from '../../../root/types/files/types.ts';
+import { MimeToExt, Types } from '../../../root/types/files/types.ts';
 import { MouseEvent, useCallback, useContext, useEffect, useState } from 'react';
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
 import { Return } from '../types.ts';
@@ -35,7 +35,14 @@ export const useDownloadFile = (file: Types): Return => {
                 // надо чтобы показывалось изображение
                 // const previewBlob = await convertToJpeg(blob);
                 // await shareFile(new File([previewBlob], "preview.jpg", { type: "image/jpeg" }));
-                const myFile = new File([duplicateBlob], file.originalName, { type: file.mimeType });
+
+                let filename = file.originalName;
+                const mimeToExt = MimeToExt.get(file.mimeType);
+
+                if (mimeToExt && !filename.endsWith(mimeToExt) && !filename.endsWith('.jpg'))
+                    filename = `${filename}.${mimeToExt}`;
+
+                const myFile = new File([duplicateBlob], filename, { type: file.mimeType });
                 const canShare = navigator.canShare && navigator.canShare({ files: [myFile] });
 
                 if (canShare) {
