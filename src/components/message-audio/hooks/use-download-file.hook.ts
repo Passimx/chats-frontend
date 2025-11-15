@@ -31,11 +31,6 @@ export const useDownloadFile = (file: Types): Return => {
             }
 
             if (isPhone) {
-                // todo
-                // надо чтобы показывалось изображение
-                // const previewBlob = await convertToJpeg(blob);
-                // await shareFile(new File([previewBlob], "preview.jpg", { type: "image/jpeg" }));
-
                 let filename = file.originalName;
                 const mimeToExt = MimeToExt.get(file.mimeType);
 

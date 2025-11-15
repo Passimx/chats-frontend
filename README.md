@@ -57,10 +57,11 @@ chats-frontend/
 │   ├── pages/                  # Main app pages
 │   ├── root/
 │   │   │
-│   │   ├── api/                # All backend API logic
+│   │   ├── api/                # All backend API logic (with encrypt / decrypt logic)
 │   │   │   │
 │   │   │   ├── chats/          # Chat-related endpoints
 │   │   │   ├── files/          # File management endpoints
+│   │   │   ├── keys/           # Keys endpoints
 │   │   │   ├── messages/       # Message endpoints
 │   │   │   ├── notifications/  # Notifications Service connection
 │   │   │   └── index.ts        # API client configuration
