@@ -2,7 +2,7 @@ import { store, useAppAction, useAppSelector } from '../../../store';
 import { useCallback, useEffect } from 'react';
 import { listenChats } from '../../../api/chats';
 import { ChatListenRequestType } from '../../../types/chat/chat-listen-request.type.ts';
-import rawChats, { getRawChat, getRawChats } from '../../../store/chats/chats.raw.ts';
+import rawChats, { getRawChat, getRawChats } from '../../../store/raw/chats.raw.ts';
 import { ChatItemIndexDb, ChatType } from '../../../types/chat/chat.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 // import { rawApp } from '../../../store/app/app.raw.ts';

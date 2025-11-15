@@ -9,39 +9,31 @@ import { FileTypeEnum } from '../../root/types/files/types.ts';
 import { EditFileName } from '../edit-file-name';
 
 export const PreviewFile: FC<PropsType> = memo(({ file, number }) => {
-    const [url, setUrl] = useState<string>('');
+    const previewId = file.metaData?.previewId;
     const [type, setType] = useState<FileTypeEnum>();
     const { deleteFile } = useContext(ContextMedia)!;
 
     useEffect(() => {
-        const url = URL.createObjectURL(file);
+        if (file.type.includes(FileTypeEnum.IMAGE)) setType(FileTypeEnum.IMAGE);
+        else if (file.type.includes(FileTypeEnum.VIDEO)) setType(FileTypeEnum.VIDEO);
+        else if (file.type.includes(FileTypeEnum.VPN)) setType(FileTypeEnum.VPN);
+        // todo
+        // добавить превью для видео
+        // const element: HTMLVideoElement = document.createElement('video');
+        // element.src = url;
+        // element.onloadeddata = () => {
+        //     setUrl(url);
+        //     setType(FileTypeEnum.VIDEO);
+        // };
 
-        if (file.type.includes(FileTypeEnum.IMAGE)) {
-            const element: HTMLImageElement = document.createElement('img');
-            element.src = url;
-            element.onload = () => {
-                setType(FileTypeEnum.IMAGE);
-                setUrl(url);
-            };
-        } else if (file.type.includes(FileTypeEnum.VIDEO)) {
-            const element: HTMLVideoElement = document.createElement('video');
-            element.src = url;
-            element.onloadeddata = () => {
-                setUrl(url);
-                setType(FileTypeEnum.VIDEO);
-            };
-        } else if (file.type.includes(FileTypeEnum.VPN)) {
-            setType(FileTypeEnum.VPN);
-        }
-
-        return () => URL.revokeObjectURL(url);
+        // return () => URL.revokeObjectURL(url);
     }, [file]);
 
     return (
         <div className={styles.background}>
             <div>
-                {type === FileTypeEnum.IMAGE && <img src={url} className={styles.file_preview_image} />}
-                {type === FileTypeEnum.VIDEO && <video src={url} className={styles.file_preview_image} />}
+                {type === FileTypeEnum.IMAGE && <img src={previewId} className={styles.file_preview_image} />}
+                {type === FileTypeEnum.VIDEO && <video src={previewId} className={styles.file_preview_image} />}
                 {type === FileTypeEnum.VPN && (
                     <div className={styles.file_logo_background}>
                         <TbBrandOpenvpn className={styles.file_logo} strokeWidth={1} />

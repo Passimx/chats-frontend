@@ -2,6 +2,8 @@ import { ChatItemIndexDb, DialogueType } from '../../root/types/chat/chat.type.t
 import { useCallback } from 'react';
 import { Envs } from '../config/envs/envs.ts';
 import { CryptoService } from '../services/crypto.service.ts';
+import { setRawCryptoKey } from '../../root/store/raw/chats.raw.ts';
+import { MessagesService } from '../services/messages.service.ts';
 
 export const usePrepareDialogue = () => {
     return useCallback(async (data: DialogueType) => {
@@ -27,9 +29,10 @@ export const usePrepareDialogue = () => {
         if (!aesKeyString) return;
 
         const aesKey = await CryptoService.importEASKey(aesKeyString);
+        setRawCryptoKey(payload.id, aesKey, aesKeyString);
 
         payload.aesKeyString = aesKeyString;
-        payload.aesKey = aesKey;
+        payload.message = await MessagesService.decryptMessage(payload.message);
 
         return payload;
     }, []);

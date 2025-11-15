@@ -36,26 +36,14 @@
     backface-visibility: hidden;
 }
 
-/*noinspection CssInvalidPropertyValue*/
 .front {
     background-color: white;
     color: black;
-    -webkit-mask-image: radial-gradient(
-            circle at calc(40px) calc(10px),
-            transparent 10px,
-            #000 0
-    );
 }
 
-/*noinspection CssInvalidPropertyValue*/
 .back {
     transform: rotateY(180deg);
     color: white;
-    -webkit-mask-image: radial-gradient(
-            circle at calc(10px) calc(10px),
-            transparent 10px,
-            #000 0
-    );
 }
 
 #logos_block{

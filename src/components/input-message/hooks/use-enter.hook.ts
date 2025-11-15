@@ -4,17 +4,16 @@ import { useAppAction, useAppSelector } from '../../../root/store';
 import { ChatEnum } from '../../../root/types/chat/chat.enum.ts';
 import { useTranslation } from 'react-i18next';
 import { createMessage } from '../../../root/api/messages';
-import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
+import { getRawChat } from '../../../root/store/raw/chats.raw.ts';
 import { getIsFocused } from './get-is-focused.hook.ts';
 import { UseEnterHookType } from '../types/use-enter-hook.type.ts';
 import { focusToEnd } from '../common/focus-to-end.ts';
 import moment from 'moment/min/moment-with-locales';
-import { uploadFile } from '../../../root/api/files/file.ts';
+import { uploadFile } from '../../../root/api/files';
 import { FileExtensionEnum, MimetypeEnum } from '../../../root/types/files/types.ts';
 import { getAudioDurationFromBlob } from '../../../common/hooks/get-audio-duration-from-blob.hook.ts';
 import { getAudioWaveform } from '../../../common/hooks/get-sound-bar.hook.ts';
 import { getBetterVoice } from '../../../common/hooks/get-better-voice.hook.ts';
-import { CryptoService } from '../../../common/services/crypto.service.ts';
 
 let mediaRecorder: MediaRecorder | undefined;
 let chunks: Blob[] = [];
@@ -114,7 +113,6 @@ export const useEnterHook = (): UseEnterHookType => {
                     metadata: {
                         duration,
                         loudnessData,
-                        previewId: response.data.previewId,
                     },
                 },
             ],
@@ -140,13 +138,8 @@ export const useEnterHook = (): UseEnterHookType => {
         const element = document.getElementById(styles.new_message)!;
         const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
 
-        let text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
+        const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
         if (!text.length) return;
-
-        if (chatOnPage.aesKey) {
-            const decryptText = await CryptoService.encryptByAESKey(chatOnPage.aesKey, text);
-            if (decryptText) text = decryptText;
-        }
 
         await createMessage({ message: text, chatId: chatOnPage.id, parentMessageId: chatOnPage?.answerMessage?.id });
 

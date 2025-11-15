@@ -41,7 +41,11 @@ const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redir
             />
             <div className={styles.main_inf}>
                 <div className={styles.title_block}>
-                    <div>{chat.type === ChatEnum.IS_SYSTEM && <FaStar className={styles.icon_star} />}</div>
+                    <div>
+                        {[ChatEnum.IS_FAVORITES, ChatEnum.IS_SYSTEM].includes(chat.type) && (
+                            <FaStar className={styles.icon_star} />
+                        )}
+                    </div>
                     <div className={`${styles.title} text_translate`}>{title}</div>
                     <div className={`${styles.time} text_translate`}>
                         {isPinned && <BsPinAngleFill className={styles.pin} />}

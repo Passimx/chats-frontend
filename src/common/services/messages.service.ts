@@ -1,0 +1,109 @@
+import { MessageFromServerType, MessageType } from '../../root/types/chat/message.type.ts';
+import { IData } from '../../root/api';
+import { getRawCryptoKey, setRawCryptoKey } from '../../root/store/raw/chats.raw.ts';
+import { CryptoService } from './crypto.service.ts';
+import { ChatType } from '../../root/types/chat/chat.type.ts';
+import { Envs } from '../config/envs/envs.ts';
+import { CreateMessageType } from '../../root/types/messages/create-message.type.ts';
+import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
+import { FilesType } from '../../root/types/files/types.ts';
+
+export class MessagesService {
+    public static async setSaveTime(request: Promise<IData<MessageFromServerType[]>>) {
+        const response = await request;
+        if (!response.success) return response;
+
+        const data = response.data.map<MessageType>((message) => ({ ...message, saveAt: Date.now() }));
+        return { ...response, data };
+    }
+
+    public static async decryptMessages(
+        chatId: string,
+        request: Promise<IData<MessageFromServerType[]>>,
+    ): Promise<IData<MessageFromServerType[]>> {
+        const response = await request;
+        const aesKey = getRawCryptoKey(chatId);
+        if (!aesKey) return request;
+
+        if (!response.success) return response;
+
+        const tasks = response.data.map<Promise<MessageFromServerType>>((message) => this.decryptMessage(message));
+
+        response.data = await Promise.all(tasks);
+
+        return response;
+    }
+
+    public static async decryptMessage<T extends MessageFromServerType>(data: T): Promise<T> {
+        if (data.type !== MessageTypeEnum.IS_USER) return data;
+
+        const aesKey = getRawCryptoKey(data.chatId);
+        if (!aesKey) return data;
+
+        if (data.message) {
+            const text = await CryptoService.decryptByAESKey(aesKey!, data.message);
+            if (text) data.message = text;
+        }
+
+        return data;
+    }
+
+    public static async keepAesKey(request: Promise<IData<ChatType>>): Promise<IData<ChatType>> {
+        const response = await request;
+        if (!Envs.RASKeys?.privateKey) return request;
+        if (!response.success) return response;
+        if (!response.data?.keys?.length) return response;
+
+        const myKey = response.data.keys.find((key) => key.publicKeyHash === Envs.socketId);
+        if (!myKey) return response;
+
+        const aesKeyString = await CryptoService.decryptByRSAKey(Envs.RASKeys?.privateKey, myKey.encryptionKey);
+        if (!aesKeyString) return response;
+
+        const aesKey = await CryptoService.importEASKey(aesKeyString);
+        setRawCryptoKey(response.data.id, aesKey, aesKeyString);
+
+        return response;
+    }
+
+    public static async decryptChat(chatId: string, request: Promise<IData<ChatType>>): Promise<IData<ChatType>> {
+        const response = await request;
+        const aesKey = getRawCryptoKey(chatId);
+        if (!aesKey) return request;
+
+        if (!response.success) return response;
+
+        response.data.message = await this.decryptMessage(response.data.message);
+        return response;
+    }
+
+    public static async encryptMessage(body: CreateMessageType): Promise<CreateMessageType> {
+        if (!body.chatId) return body;
+        const aesKey = getRawCryptoKey(body.chatId);
+        if (!aesKey) return body;
+
+        if (body.message?.length) {
+            body.message = await CryptoService.encryptByAESKey(aesKey, body.message);
+        }
+
+        return body;
+    }
+
+    public static async encryptFormData(formData: FormData) {
+        const chatId = formData.get('chatId') as string | undefined;
+        if (!chatId) return formData;
+
+        const aesKey = getRawCryptoKey(chatId);
+        if (!aesKey) return formData;
+
+        for (const [key, value] of formData.entries()) {
+            if (key === 'file') {
+                const file = value as FilesType;
+                const encrypted = await CryptoService.encryptFile(file, aesKey);
+                formData.set(key, encrypted);
+            }
+        }
+
+        return formData;
+    }
+}

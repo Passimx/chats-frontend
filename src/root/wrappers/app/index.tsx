@@ -28,8 +28,12 @@ import { useCatchLogs } from './hooks/use-catch-logs.hook.ts';
 import { useKeys } from './hooks/use-keys.hook.ts';
 import { Page } from '../../../pages/page';
 import { useUpdateStaticCache } from './hooks/use-update-static-cache.hook.ts';
+import { useAppSelector } from '../../store';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
+    const socketId = useAppSelector((state) => state.app.socketId);
+    const privateKey = useAppSelector((state) => state.app.RASKeys?.privateKey);
+
     // updating chat information
     useListenAndUpdateChats();
     // add broadcast channel and iframe with Websocket connection
@@ -99,7 +103,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
                             <Menu />
                         </div>
                         <div id={styles.chat} onClick={hideMenu}>
-                            {children}
+                            {privateKey && socketId && children}
                         </div>
                     </PreviewMediaContext>
                 </div>

@@ -2,8 +2,8 @@ import styles from '../index.module.css';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useAppAction, useAppSelector } from '../../../root/store';
 import { ContextMedia } from '../../preview-media-context';
-import { uploadFile } from '../../../root/api/files/file.ts';
-import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
+import { uploadFile } from '../../../root/api/files';
+import { getRawChat } from '../../../root/store/raw/chats.raw.ts';
 import { createMessage } from '../../../root/api/messages';
 import { FileExtensionEnum, MimetypeEnum, Types } from '../../../root/types/files/types.ts';
 
@@ -48,15 +48,13 @@ export const useSendMessage = () => {
                     formData.append('chatId', chatOnPage!.id);
 
                     const request = await uploadFile(formData);
-                    if (request.success) data.metadata!.previewId = request.data.previewId;
+                    if (request.success) data.metadata!.previewId = request.data.fileId;
                 }
 
                 const response = await uploadFile(formData);
                 if (!response.success) return;
 
                 data.key = response.data.fileId;
-                if (response?.data?.previewId) data.metadata!.previewId = response?.data?.previewId;
-
                 fileArray[index] = data;
             }),
         );

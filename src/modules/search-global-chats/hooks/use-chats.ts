@@ -4,7 +4,7 @@ import { useAppSelector } from '../../../root/store';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import useDebounced from '../../../common/hooks/use-debounced.ts';
 import { ChatType } from '../../../root/types/chat/chat.type.ts';
-import { getRawChats } from '../../../root/store/chats/chats.raw.ts';
+import { getRawChats } from '../../../root/store/raw/chats.raw.ts';
 
 let localRawChats = new Map<string, ChatType>();
 let globalKey: string | undefined = undefined;

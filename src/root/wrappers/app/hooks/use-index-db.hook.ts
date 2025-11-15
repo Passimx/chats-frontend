@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useAppAction } from '../../../store';
-import rawChats from '../../../store/chats/chats.raw.ts';
+import rawChats, { setRawCryptoKey } from '../../../store/raw/chats.raw.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 import { ChatItemIndexDb } from '../../../types/chat/chat.type.ts';
 import { CryptoService } from '../../../../common/services/crypto.service.ts';
@@ -26,7 +26,10 @@ export const useIndexDbHook = () => {
                     messageCount += chat.countMessages - chat.readMessage;
                     if (chat.type === ChatEnum.IS_SYSTEM) systemChat = chat;
 
-                    if (chat.aesKeyString) chat.aesKey = await CryptoService.importEASKey(chat.aesKeyString);
+                    if (chat.aesKeyString) {
+                        const aesKey = await CryptoService.importEASKey(chat.aesKeyString);
+                        setRawCryptoKey(chat.id, aesKey);
+                    }
 
                     return chat;
                 });

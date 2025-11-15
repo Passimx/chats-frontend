@@ -1,6 +1,7 @@
 import { CreateRsaKeysType, RsaKeysStringType } from '../../root/types/create-rsa-keys.type.ts';
 import { WordsService } from './words-service/words.service.ts';
 import { IKeys } from '../../root/types/keys/keys.type.ts';
+import { FilesType, MimetypeEnum } from '../../root/types/files/types.ts';
 
 const iterations = 1000000;
 const keyLength = 256;
@@ -195,6 +196,45 @@ export class CryptoService {
         } catch (error) {
             return undefined;
         }
+    }
+
+    public static async decryptFile(blob: Blob, fileType: MimetypeEnum | undefined, key: CryptoKey) {
+        const buffer = await blob.arrayBuffer();
+        const data = new Uint8Array(buffer);
+
+        const iv = data.slice(0, 16);
+        const ciphertext = data.slice(16);
+
+        const decrypted = await crypto.subtle.decrypt(
+            {
+                name: 'AES-GCM',
+                iv,
+            },
+            key,
+            ciphertext,
+        );
+
+        return new Blob([decrypted], { type: fileType });
+    }
+
+    public static async encryptFile(file: File, key: CryptoKey): Promise<FilesType> {
+        const iv = crypto.getRandomValues(new Uint8Array(16));
+        const fileBuffer = await file.arrayBuffer();
+
+        const encrypted = await crypto.subtle.encrypt(
+            {
+                name: 'AES-GCM',
+                iv,
+            },
+            key,
+            fileBuffer,
+        );
+
+        const encryptedBlob = new Blob([iv, new Uint8Array(encrypted)], {
+            type: 'application/octet-stream',
+        });
+
+        return new File([encryptedBlob], file.name, { type: file.type }) as FilesType;
     }
 
     public static async decryptByRSAKey<T = string>(key: CryptoKey, payload: string): Promise<T | undefined> {

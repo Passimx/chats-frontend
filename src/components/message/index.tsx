@@ -31,7 +31,6 @@ const Message: FC<PropsType> = memo((props) => {
     const isPinned = usePinned(props.id, pinnedMessages);
 
     const [visibleMessage, time] = useMemo(() => {
-        console.log([type, props.chat?.type]);
         const time = moment(props.createdAt).format('LT');
         let message;
         if (type === MessageTypeEnum.IS_CREATED_CHAT) {

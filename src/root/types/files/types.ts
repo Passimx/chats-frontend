@@ -4,6 +4,7 @@ export type FileMetadataType = {
 
     previewId?: string;
     previewMimeType?: MimetypeEnum;
+    previewSize?: number;
 
     artist?: string;
     title?: string;
@@ -33,7 +34,6 @@ export type Types = {
 
 export type UploadResultType = {
     fileId: string;
-    previewId?: string;
 };
 
 export enum FileTypeEnum {

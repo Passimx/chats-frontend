@@ -4,12 +4,13 @@ import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
 import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
-import { getRawChat } from '../../../store/chats/chats.raw.ts';
+import { getRawChat } from '../../../store/raw/chats.raw.ts';
 import { deleteChatCache } from '../../../../common/cache/delete-chat-cache.ts';
 import { useCallback } from 'react';
 import { getCacheMemory } from '../../../../common/cache/get-cache-memory.ts';
 import { useUpdateChat } from '../../../../common/hooks/use-update-chat.hook.ts';
 import { usePrepareDialogue } from '../../../../common/hooks/use-prepare-dialogue.ts';
+import { MessagesService } from '../../../../common/services/messages.service.ts';
 
 export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
@@ -54,10 +55,8 @@ export const useAppEvents = () => {
             case EventsEnum.CREATE_MESSAGE:
                 if (!data.success) break;
                 playNotificationSound();
-
-                createMessage(data.data);
+                createMessage(await MessagesService.decryptMessage(data.data));
                 if (getRawChat(data.data.chatId)) setToBegin(getRawChat(data.data.chatId)!);
-
                 break;
             case EventsEnum.READ_MESSAGE:
                 update(data);

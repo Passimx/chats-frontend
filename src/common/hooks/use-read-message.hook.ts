@@ -1,7 +1,7 @@
 import { RefObject, useEffect, useRef } from 'react';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { useAppAction, useAppSelector } from '../../root/store';
-import { getRawChat } from '../../root/store/chats/chats.raw.ts';
+import { getRawChat } from '../../root/store/raw/chats.raw.ts';
 
 export const useReadMessage = (number: number): [RefObject<HTMLDivElement>] => {
     const observerTarget = useRef<HTMLDivElement>(null);

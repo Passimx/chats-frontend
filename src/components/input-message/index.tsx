@@ -2,7 +2,7 @@ import { FC, useCallback, useContext, useMemo, useState } from 'react';
 import styles from './index.module.css';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { ParentMessage } from '../parent-message';
-import { getRawChat } from '../../root/store/chats/chats.raw.ts';
+import { getRawChat } from '../../root/store/raw/chats.raw.ts';
 import { BsEmojiSmile, BsFillArrowUpCircleFill } from 'react-icons/bs';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import Emoji from '../emoji';
