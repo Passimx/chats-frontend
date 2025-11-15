@@ -25,7 +25,7 @@ export const getFilesWithMetadata = async (files: FilesType[]): Promise<FilesTyp
                     const picture = metadataMp3.common.picture[0];
 
                     const newFile = new File([picture.data], 'preview', { type: picture.format });
-                    const previewFile = await FilesService.resizeImage(newFile);
+                    const previewFile = await FilesService.resizeImage(newFile, 512, 512);
 
                     metadata.previewId = URL.createObjectURL(previewFile);
                     metadata.previewMimeType = previewFile.type as MimetypeEnum;

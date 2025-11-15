@@ -1,14 +1,13 @@
 import { useAppAction, useAppSelector } from '../../../store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { createDialogue, getSystemChat, listenChats } from '../../../api/chats';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { rawApp } from '../../../store/app/app.raw.ts';
 import { CryptoService } from '../../../../common/services/crypto.service.ts';
 import { DialogueKey } from '../../../types/chat/create-dialogue.type.ts';
 
-let isLoading: boolean = false;
-
 export const useRequiredChats = () => {
+    const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const { postMessageToBroadCastChannel } = useAppAction();
     const { systemChatId, favoritesChatId, isLoadedChatsFromIndexDb, isListening, socketId, RASKeys } = useAppSelector(
         (state) => state.app,
@@ -44,9 +43,10 @@ export const useRequiredChats = () => {
     };
 
     useEffect(() => {
-        if (!isLoadedChatsFromIndexDb || !isListening || !rawApp.isMainTab || !isLoading) return;
-        isLoading = true;
+        if (!isLoadedChatsFromIndexDb || !isListening || !rawApp.isMainTab || isLoaded) return;
+        setIsLoaded(true);
+
         if (!systemChatId) setSystemChat();
         if (!favoritesChatId) setFavoritesChat();
-    }, [systemChatId, isLoadedChatsFromIndexDb, isListening]);
+    }, [systemChatId, isLoadedChatsFromIndexDb, isListening, isLoaded]);
 };
