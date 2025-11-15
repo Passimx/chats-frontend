@@ -27,8 +27,8 @@ export const AudioPlayer: FC<{ children: ReactElement }> = memo(({ children }) =
     }, []);
 
     const endedVoice = useCallback(() => {
+        audioVoice = null;
         if (audioFile) {
-            audioVoice = null;
             setAudio(audioFile);
             audioMusic?.play();
         } else setIsPlaying(false);

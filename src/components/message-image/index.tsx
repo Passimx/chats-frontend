@@ -6,28 +6,23 @@ import { BsDownload } from 'react-icons/bs';
 import { useDownloadFile } from '../message-audio/hooks/use-download-file.hook.ts';
 import { LoadRadius } from '../load-radius';
 import { MdDownloadForOffline } from 'react-icons/md';
-import { Envs } from '../../common/config/envs/envs.ts';
 import { useTranslation } from 'react-i18next';
 import { useVisibility } from '../../common/hooks/use-visibility.hook.ts';
 import { CiImageOn } from 'react-icons/ci';
+import { useDownloadPreview } from '../../common/hooks/use-download-preview.hook.ts';
 
 export const MessageImage: FC<PropsType> = memo(({ file }) => {
-    const { t } = useTranslation();
     const r = 17;
     const strokeWidth = 3;
+    const { t } = useTranslation();
+    const [observerTarget] = useVisibility();
+    const backgroundImage = useDownloadPreview(file);
+    const { downloadPercent, blob, clickFile, downloadOnDevice } = useDownloadFile(file);
 
     const size = useMemo(() => {
         const [memory, unit] = getFileSize(file.size);
         return `${memory} ${t(unit)}`;
     }, [file.size]);
-
-    const [observerTarget] = useVisibility();
-    const { downloadPercent, blob, clickFile, downloadOnDevice } = useDownloadFile(file);
-
-    const backgroundImage = useMemo(() => {
-        if (file.metadata.previewId) return `url(${Envs.filesServiceUrl}/${file.chatId}/${file.metadata.previewId})`;
-        return undefined;
-    }, [file.metadata.previewId]);
 
     return (
         <div

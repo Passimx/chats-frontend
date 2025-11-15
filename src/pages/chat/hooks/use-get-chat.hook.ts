@@ -1,33 +1,26 @@
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getChatById } from '../../../root/api/chats';
-import { ChatType } from '../../../root/types/chat/chat.type.ts';
 import { useAppAction, useAppSelector } from '../../../root/store';
-import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
+import { getRawChat } from '../../../root/store/raw/chats.raw.ts';
 import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 import { useCustomNavigate } from '../../../common/hooks/use-custom-navigate.hook.ts';
+import { useTranslation } from 'react-i18next';
+import { ChatEnum } from '../../../root/types/chat/chat.enum.ts';
 
 const useGetChat = (): void => {
-    const { setChatOnPage } = useAppAction();
-    const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
-    const { chatOnPage } = useAppSelector((state) => state.chats);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { state }: { state: ChatType | undefined } = useLocation();
-    const navigate = useCustomNavigate();
     const { id } = useParams();
+    const { t } = useTranslation();
+    const { setChatOnPage } = useAppAction();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const navigate = useCustomNavigate();
+    const { chatOnPage } = useAppSelector((state) => state.chats);
+    const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
+    const socketId = useAppSelector((state) => state.app.socketId);
+    const privateKey = useAppSelector((state) => state.app.RASKeys?.privateKey);
 
     useEffect(() => {
         if (!isLoadedChatsFromIndexDb) return;
-
-        if (state) {
-            // todo
-            // то что ниже закомментил - надо ли
-            // чтобы при обновлении страницы обнулялся state и делался запрос на сервер
-            // window.history.replaceState({}, '');
-            setIsLoading(false);
-            setChatOnPage(state);
-            return;
-        }
 
         if (getRawChat(id)) {
             const chat = getRawChat(id!)!;
@@ -36,6 +29,8 @@ const useGetChat = (): void => {
             return;
         }
 
+        if (!socketId || !privateKey) return;
+
         setIsLoading(true);
         getChatById(id!).then((result) => {
             setIsLoading(false);
@@ -43,7 +38,7 @@ const useGetChat = (): void => {
             if (result.success && result.data) setChatOnPage(result.data);
             else setChatOnPage(null);
         });
-    }, [id, isLoadedChatsFromIndexDb]);
+    }, [id, isLoadedChatsFromIndexDb, socketId, privateKey]);
 
     useEffect(() => {
         if (!chatOnPage && !isLoading) {
@@ -52,14 +47,16 @@ const useGetChat = (): void => {
             return navigate('/');
         }
 
-        if (!isLoading && chatOnPage) {
+        if (!isLoading && chatOnPage?.title) {
+            let title = chatOnPage.title;
             const countMessages = chatOnPage.countMessages - chatOnPage.readMessage;
 
-            if (countMessages > 0) changeHead(`${chatOnPage?.title} (${countMessages})`);
-            else changeHead(chatOnPage?.title);
+            if (chatOnPage.type === ChatEnum.IS_FAVORITES) title = t(chatOnPage.title);
+            if (countMessages > 0) changeHead(`${title} (${countMessages})`);
+            else changeHead(title);
             document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
         }
-    }, [isLoading, chatOnPage?.id, chatOnPage?.countMessages, chatOnPage?.readMessage]);
+    }, [isLoading, chatOnPage?.id, chatOnPage?.countMessages, chatOnPage?.readMessage, t]);
 };
 
 export default useGetChat;

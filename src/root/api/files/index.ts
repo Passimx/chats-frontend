@@ -2,11 +2,14 @@ import { IData } from '../index.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import { MimeToExt, Types, UploadResultType } from '../../types/files/types.ts';
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
-import { getRawChat } from '../../store/chats/chats.raw.ts';
+import { getRawChat, getRawCryptoKey } from '../../store/raw/chats.raw.ts';
 import { canSaveCache, getCacheMemory } from '../../../common/cache/get-cache-memory.ts';
 import { StateType } from '../../store/app/types/state.type.ts';
+import { MessagesService } from '../../../common/services/messages.service.ts';
+import { CryptoService } from '../../../common/services/crypto.service.ts';
 
-export const uploadFile = async (body: FormData): Promise<IData<UploadResultType>> => {
+export const uploadFile = async (formData: FormData): Promise<IData<UploadResultType>> => {
+    const body = await MessagesService.encryptFormData(formData);
     const response = await fetch(`${Envs.filesServiceUrl}/upload`, { method: 'POST', body }).then((response) =>
         response.json(),
     );
@@ -20,6 +23,47 @@ const xhrMap: Map<string, XMLHttpRequest> = new Map();
 export const CancelDownload = (file: Types) => {
     cancelRequestMap.add(file.id);
     xhrMap.get(file.id)?.abort();
+};
+
+export const DownloadFilePreview = async (file: Types): Promise<Blob | undefined> => {
+    const metadata = file.metadata;
+    const cache = await caches.open(Envs.cache.files);
+    const cacheUrl = `/${file.chatId}/${metadata.previewId}`;
+    const url = `${Envs.filesServiceUrl}${cacheUrl}`;
+
+    if (!metadata.previewId || !metadata.previewMimeType || !metadata.previewSize) return;
+
+    const result = await cacheIsExist(cacheUrl);
+    if (result) return new Blob([result], { type: metadata.previewMimeType });
+
+    const response = await fetch(url);
+    let blob = await response.blob();
+    if (!blob) return;
+
+    const aesKey = getRawCryptoKey(file.chatId);
+    if (aesKey) {
+        blob = await CryptoService.decryptFile(blob, metadata.previewMimeType, aesKey);
+    }
+
+    const responseCopy = new Response(blob, {
+        headers: {
+            'X-Id': metadata.previewId,
+            'X-Key': metadata.previewId!,
+            'X-Chat-Id': file.chatId,
+            'X-Message-Id': file.messageId,
+            'Content-Type': metadata.previewMimeType,
+            'Content-Length': `${metadata.previewSize}`,
+            'X-Created-At': `${file.createdAt}`,
+            'X-File-Type': file.fileType,
+            'X-Preview-Id': metadata.previewId,
+            'X-Cached-Time': `${Date.now()}`,
+        },
+    });
+
+    const canSave = await canSaveCache(responseCopy);
+    if (canSave) await cache.put(url, responseCopy);
+
+    return blob;
 };
 
 export const DownloadFileWithPercents = async (
@@ -56,9 +100,14 @@ export const DownloadFileWithPercents = async (
 
         xhr.onload = async () => {
             if (xhr.status === 200 && !cancelRequestMap.has(file.id)) {
+                let blob = xhr.response as Blob;
                 if (getRawChat(file.chatId)) {
                     const cache = await caches.open(Envs.cache.files);
-                    const response = new Response(xhr.response, {
+
+                    const aesKey = getRawCryptoKey(file.chatId);
+                    if (aesKey) blob = await CryptoService.decryptFile(blob, file.mimeType, aesKey);
+
+                    const response = new Response(blob, {
                         headers: {
                             'X-Id': file.id,
                             'X-Key': file.key,
@@ -81,7 +130,7 @@ export const DownloadFileWithPercents = async (
                 }
 
                 cancelRequestMap.delete(file.id);
-                resolve(new Blob([xhr.response], { type: file.mimeType }));
+                resolve(new Blob([blob], { type: file.mimeType }));
             } else {
                 cancelRequestMap.delete(file.id);
                 resolve(undefined);
@@ -95,7 +144,7 @@ export const DownloadFileWithPercents = async (
     });
 };
 
-export const DownloadFile = async (file: Types, blob?: Blob): Promise<Blob | undefined> => {
+export const DownloadFileOnDevice = async (file: Types, blob?: Blob): Promise<Blob | undefined> => {
     if (!blob) return;
 
     const filename = file.originalName;
@@ -105,7 +154,7 @@ export const DownloadFile = async (file: Types, blob?: Blob): Promise<Blob | und
     const a = document.createElement('a');
     a.href = url;
 
-    if (mimeToExt && !filename.endsWith(mimeToExt)) {
+    if (mimeToExt && !filename.endsWith(mimeToExt) && !filename.endsWith('.jpg')) {
         a.download = `${filename}.${mimeToExt}`;
     } else a.download = filename;
 

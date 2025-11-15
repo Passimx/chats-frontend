@@ -3,7 +3,7 @@ import { MouseEvent, useCallback, useContext, useEffect, useState } from 'react'
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
 import { Return } from '../types.ts';
 import { AudioPlayerContext } from '../../../root/contexts/audio-player';
-import { CancelDownload, DownloadFile, DownloadFileWithPercents } from '../../../root/api/files/file.ts';
+import { CancelDownload, DownloadFileOnDevice, DownloadFileWithPercents } from '../../../root/api/files';
 import { CanPlayAudio } from '../../../common/hooks/can-play-audio.hook.ts';
 import { useAppAction, useAppSelector } from '../../../root/store';
 
@@ -31,14 +31,25 @@ export const useDownloadFile = (file: Types): Return => {
             }
 
             if (isPhone) {
+                // todo
+                // надо чтобы показывалось изображение
+                // const previewBlob = await convertToJpeg(blob);
+                // await shareFile(new File([previewBlob], "preview.jpg", { type: "image/jpeg" }));
                 const myFile = new File([duplicateBlob], file.originalName, { type: file.mimeType });
+                const canShare = navigator.canShare && navigator.canShare({ files: [myFile] });
 
-                await navigator
-                    .share({
-                        files: [myFile],
-                    })
-                    .catch((error) => console.log('Ошибка при обмене:', error));
-            } else await DownloadFile(file, duplicateBlob);
+                if (canShare) {
+                    try {
+                        await navigator.share({
+                            files: [myFile],
+                        });
+                    } catch (e) {
+                        console.error(e);
+                    }
+                } else {
+                    DownloadFileOnDevice(file, duplicateBlob);
+                }
+            } else await DownloadFileOnDevice(file, duplicateBlob);
         },
         [file, blob, isPhone],
     );

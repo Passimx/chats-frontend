@@ -1,10 +1,11 @@
 import { ChatItemIndexDb } from '../../types/chat/chat.type.ts';
-import { RawChatType } from './types/raw-chat.type.ts';
+import { RawChatType } from '../chats/types/raw-chat.type.ts';
 
 const rawChats: RawChatType = {
     chats: new Map<string, ChatItemIndexDb>(),
     updatedChats: new Map<string, ChatItemIndexDb>(),
     indexDb: undefined,
+    keys: new Map<string, CryptoKey>(),
 };
 
 export default rawChats;
@@ -29,4 +30,17 @@ export const getRawChats = (): ChatItemIndexDb[] => {
 
 export const getRawChatsLength = (): number => {
     return rawChats.chats.size + rawChats.updatedChats.size;
+};
+
+export const setRawCryptoKey = (chatId: string, key: CryptoKey, aesKeyString?: string) => {
+    rawChats.keys.set(chatId, key);
+    const chat = rawChats.chats.get(chatId);
+    if (chat && aesKeyString?.length) {
+        chat.aesKeyString = aesKeyString;
+        updateRawChat(chat);
+    }
+};
+
+export const getRawCryptoKey = (chatId: string) => {
+    return rawChats.keys.get(chatId);
 };

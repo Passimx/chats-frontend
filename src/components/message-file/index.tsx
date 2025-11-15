@@ -28,26 +28,21 @@ import { useDownloadFile } from '../message-audio/hooks/use-download-file.hook.t
 import { LoadRadius } from '../load-radius';
 import { AudioPlayerContext } from '../../root/contexts/audio-player';
 import { MdDownloadForOffline } from 'react-icons/md';
-import { Envs } from '../../common/config/envs/envs.ts';
 import { useTranslation } from 'react-i18next';
+import { useDownloadPreview } from '../../common/hooks/use-download-preview.hook.ts';
 
 export const MessageFile: FC<PropsType> = memo(({ file }) => {
     const { t } = useTranslation();
     const r = 17;
     const strokeWidth = 3;
+    const { isPlaying, audio } = useContext(AudioPlayerContext)!;
+    const backgroundImage = useDownloadPreview(file);
+    const { downloadPercent, blob, clickFile, downloadOnDevice } = useDownloadFile(file);
 
     const size = useMemo(() => {
         const [memory, unit] = getFileSize(file.size);
         return `${memory} ${t(unit)}`;
     }, [file.size]);
-
-    const { downloadPercent, blob, clickFile, downloadOnDevice } = useDownloadFile(file);
-    const { isPlaying, audio } = useContext(AudioPlayerContext)!;
-
-    const backgroundImage = useMemo(() => {
-        if (file.metadata.previewId) return `url(${Envs.filesServiceUrl}/${file.chatId}/${file.metadata.previewId})`;
-        return undefined;
-    }, [file.metadata.previewId]);
 
     return (
         <div className={`${styles.background} ${!blob && styles.background_animation}`} onClick={clickFile}>

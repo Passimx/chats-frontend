@@ -4,6 +4,7 @@ export type FileMetadataType = {
 
     previewId?: string;
     previewMimeType?: MimetypeEnum;
+    previewSize?: number;
 
     artist?: string;
     title?: string;
@@ -33,7 +34,6 @@ export type Types = {
 
 export type UploadResultType = {
     fileId: string;
-    previewId?: string;
 };
 
 export enum FileTypeEnum {
@@ -75,13 +75,13 @@ export enum MimetypeEnum {
     SVG = 'image/svg+xml',
 
     // Видео
-    // MP4 = 'video/mp4',
-    // WebM = 'video/webm',
-    // AVI = 'video/x-msvideo',
-    // MOV = 'video/quicktime',
-    // MKV = 'video/x-matroska',
-    // WMV = 'video/x-ms-wmv',
-    // FLV = 'video/x-flv',
+    MP4 = 'video/mp4',
+    WebM = 'video/webm',
+    AVI = 'video/x-msvideo',
+    MOV = 'video/quicktime',
+    MKV = 'video/x-matroska',
+    WMV = 'video/x-ms-wmv',
+    FLV = 'video/x-flv',
 
     // Звук
     MP3 = 'audio/mpeg',
@@ -148,6 +148,18 @@ export const FileMap = new Map<string, MimetypeEnum[]>([
             MimetypeEnum.SVG,
         ],
     ],
+    [
+        'VIDEO',
+        [
+            MimetypeEnum.MP4,
+            MimetypeEnum.WebM,
+            MimetypeEnum.AVI,
+            MimetypeEnum.MOV,
+            MimetypeEnum.MKV,
+            MimetypeEnum.WMV,
+            MimetypeEnum.FLV,
+        ],
+    ],
 ]);
 
 export const MimeToExt = new Map<string, string>([
@@ -180,7 +192,6 @@ export const MimeToExt = new Map<string, string>([
     ['image/avif', 'avif'],
     ['image/bmp', 'bmp'],
     ['image/gif', 'gif'],
-    ['image/jpeg', 'jpg'],
     ['image/jpeg', 'jpeg'],
     ['image/png', 'png'],
     ['image/svg+xml', 'svg'],

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useAppAction } from '../../root/store';
 import { ChatItemIndexDb } from '../../root/types/chat/chat.type.ts';
-import { getRawChat, getRawChats } from '../../root/store/chats/chats.raw.ts';
+import { getRawChat, getRawChats } from '../../root/store/raw/chats.raw.ts';
 
 export const useUpdateChat = () => {
     const timeUpdate = 200;

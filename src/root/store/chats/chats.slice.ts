@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ChatItemIndexDb, ChatType } from '../../types/chat/chat.type.ts';
 import { StateType } from './types/state.type.ts';
-import rawChats, { deleteChat, getRawChat, updateRawChat } from './chats.raw.ts';
+import rawChats, { deleteChat, getRawChat, updateRawChat } from '../raw/chats.raw.ts';
 import { deleteChatIndexDb, updateChatIndexDb, upsertChatIndexDb } from './index-db/hooks.ts';
 import { MessageType } from '../../types/chat/message.type.ts';
 import { UpdateChat } from './types/update-chat.type.ts';

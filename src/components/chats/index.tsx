@@ -5,7 +5,7 @@ import styles from './index.module.css';
 import { useTranslation } from 'react-i18next';
 import { MdOutlineDeleteSweep } from 'react-icons/md';
 import { useAppAction, useAppSelector } from '../../root/store';
-import { getRawChats, getRawChatsLength } from '../../root/store/chats/chats.raw.ts';
+import { getRawChats, getRawChatsLength } from '../../root/store/raw/chats.raw.ts';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { SegmentSwitcher } from '../segment-switcher';
 

@@ -17,11 +17,12 @@ import { EnvironmentEnum, Envs } from '../../common/config/envs/envs.ts';
 import { Memory } from '../../components/memory';
 import { MdQrCode2 } from 'react-icons/md';
 import { QrCode } from '../../components/qr-code';
+import { LuStar } from 'react-icons/lu';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
     const { setStateApp } = useAppAction();
-    const { cacheMemory, pages, activeTab, systemChatId, logs } = useAppSelector((state) => state.app);
+    const { cacheMemory, pages, activeTab, systemChatId, favoritesChatId, logs } = useAppSelector((state) => state.app);
     const chatsLength = useAppSelector((state) => state.chats.chats.length);
     const socketId = useAppSelector((state) => state.app.socketId);
 
@@ -47,12 +48,10 @@ export const Settings = memo(() => {
             <MenuTitle icon={<IoSettingsOutline />} title={'settings'} />
             <div className={styles.items}>
                 <div className={styles.inf}>
-                    {/*todo*/}
-                    {/*Если соединение не установлено то что показывать?*/}
-                    {/*Нужно сделать сохранение publicKeyHash*/}
                     <div
                         className={styles.inf_qr_code_background}
                         onClick={() => {
+                            if (!socketId) return;
                             setStateApp({
                                 page: <QrCode data={`${window.location.origin}/create-dialogue/${socketId}`} />,
                             });
@@ -85,18 +84,28 @@ export const Settings = memo(() => {
             {/*</div>*/}
 
             <div className={styles.items}>
-                <div className={styles.item} onClick={() => selectMenu(<ChangeLanguage />)}>
-                    <GrLanguage className={styles.item_logo} />
-                    <div className="text_translate">
-                        {t('language')}
-                        <div className={styles.item_value}>&nbsp;{t('language_native')}</div>
-                    </div>
-                </div>
                 <div className={styles.item} onClick={() => selectMenu(<Chats />)}>
                     <IoChatboxEllipsesOutline className={styles.item_logo} />
                     <div className="text_translate">
                         {t('chats')}
                         <div className={styles.item_value}>&nbsp;{chatsLength}</div>
+                    </div>
+                </div>
+                <div
+                    className={styles.item}
+                    onClick={() => {
+                        if (favoritesChatId) navigate(favoritesChatId);
+                        else if (socketId) navigate(`/create-dialogue/${socketId}`);
+                    }}
+                >
+                    <LuStar className={styles.item_logo} />
+                    <div className="text_translate">{t('favorites')}</div>
+                </div>
+                <div className={styles.item} onClick={() => selectMenu(<ChangeLanguage />)}>
+                    <GrLanguage className={styles.item_logo} />
+                    <div className="text_translate">
+                        {t('language')}
+                        <div className={styles.item_value}>&nbsp;{t('language_native')}</div>
                     </div>
                 </div>
                 <div className={styles.item} onClick={() => selectMenu(<Memory />)}>

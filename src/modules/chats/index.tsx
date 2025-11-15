@@ -5,7 +5,7 @@ import Search from '../search';
 import { useAppSelector } from '../../root/store';
 import { SearchGlobalChats } from '../search-global-chats';
 import ChatItem from '../../components/chat-item';
-import rawChats from '../../root/store/chats/chats.raw.ts';
+import rawChats from '../../root/store/raw/chats.raw.ts';
 import { ChatType } from '../../root/types/chat/chat.type.ts';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 import { MenuPadding } from '../../components/menu/compenents/menu-padding';

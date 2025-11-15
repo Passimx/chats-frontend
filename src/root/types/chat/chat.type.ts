@@ -10,14 +10,11 @@ type InnerChatItemType = {
     countMessages: number;
     maxUsersOnline: string;
     message: MessageType;
-};
-
-type InnerDialogueType = InnerChatItemType & {
-    keys: ChatKeyType[];
+    keys?: ChatKeyType[];
 };
 
 export type ChatType = InnerChatItemType;
-export type DialogueType = InnerDialogueType;
+export type DialogueType = ChatType;
 
 export type ChatItemIndexDb = ChatType & {
     key?: number;
@@ -28,7 +25,5 @@ export type ChatItemIndexDb = ChatType & {
     inputMessage?: string;
     answerMessage?: MessageType;
     pinnedMessages?: MessageType[];
-
     aesKeyString?: string;
-    aesKey?: CryptoKey;
 };

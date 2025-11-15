@@ -67,6 +67,7 @@ export type StateType = {
     logs?: string[];
     isPhone?: boolean;
     systemChatId?: string;
+    favoritesChatId?: string;
     isOpenMobileKeyboard?: boolean;
 
     batteryLevel?: number;

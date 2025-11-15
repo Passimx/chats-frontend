@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { getRawChat } from '../../../root/store/chats/chats.raw.ts';
+import { getRawChat } from '../../../root/store/raw/chats.raw.ts';
 import { leaveChats, listenChats } from '../../../root/api/chats';
 import { useAppSelector } from '../../../root/store';
 

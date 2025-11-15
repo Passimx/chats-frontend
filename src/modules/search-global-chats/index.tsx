@@ -4,7 +4,7 @@ import styles from './index.module.css';
 import VisibilityAction from '../../components/visibility-action';
 import { useTranslation } from 'react-i18next';
 import styles2 from '../../components/chat-item/index.module.css';
-import rawChats, { getRawChat } from '../../root/store/chats/chats.raw.ts';
+import rawChats, { getRawChat } from '../../root/store/raw/chats.raw.ts';
 import SearchChatItem from '../../components/search-chat-item';
 import { PropsType } from './types/props.type.ts';
 import BigText from '../../components/big-text';

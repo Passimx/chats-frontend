@@ -2,15 +2,19 @@ import { ChatItemIndexDb, DialogueType } from '../../root/types/chat/chat.type.t
 import { useCallback } from 'react';
 import { Envs } from '../config/envs/envs.ts';
 import { CryptoService } from '../services/crypto.service.ts';
+import { setRawCryptoKey } from '../../root/store/raw/chats.raw.ts';
+import { MessagesService } from '../services/messages.service.ts';
+import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 
 export const usePrepareDialogue = () => {
     return useCallback(async (data: DialogueType) => {
         const { keys, ...body } = data;
-
+        let readMessage = 0;
+        if (data.type === ChatEnum.IS_FAVORITES) readMessage = data.countMessages;
         const payload: ChatItemIndexDb = {
             ...body,
             messages: [body.message],
-            readMessage: 0,
+            readMessage,
             online: '1',
             maxUsersOnline: '1',
             scrollTop: 0,
@@ -27,9 +31,10 @@ export const usePrepareDialogue = () => {
         if (!aesKeyString) return;
 
         const aesKey = await CryptoService.importEASKey(aesKeyString);
+        setRawCryptoKey(payload.id, aesKey, aesKeyString);
 
         payload.aesKeyString = aesKeyString;
-        payload.aesKey = aesKey;
+        payload.message = await MessagesService.decryptMessage(payload.message);
 
         return payload;
     }, []);
