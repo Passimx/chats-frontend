@@ -77,6 +77,22 @@ export class MessagesService {
         return response;
     }
 
+    public static async decryptChats(request: Promise<IData<ChatType[]>>): Promise<IData<ChatType[]>> {
+        const response = await request;
+        if (!response.success) return response;
+
+        const tasks = response.data.map(async (chat) => {
+            const aesKey = getRawCryptoKey(chat.id);
+            if (!aesKey) return chat;
+
+            chat.message = await this.decryptMessage(chat.message);
+            return chat;
+        });
+
+        response.data = await Promise.all(tasks);
+        return response;
+    }
+
     public static async encryptMessage(body: CreateMessageType): Promise<CreateMessageType> {
         if (!body.chatId) return body;
         const aesKey = getRawCryptoKey(body.chatId);
