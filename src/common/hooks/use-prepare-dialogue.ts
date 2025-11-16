@@ -5,6 +5,7 @@ import { CryptoService } from '../services/crypto.service.ts';
 import { setRawCryptoKey } from '../../root/store/raw/chats.raw.ts';
 import { MessagesService } from '../services/messages.service.ts';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
+import { receiveKey } from '../../root/api/keys';
 
 export const usePrepareDialogue = () => {
     return useCallback(async (data: DialogueType) => {
@@ -36,6 +37,7 @@ export const usePrepareDialogue = () => {
         payload.aesKeyString = aesKeyString;
         payload.message = await MessagesService.decryptMessage(payload.message);
 
+        if (!myChatKey.received) await receiveKey(data.id);
         return payload;
     }, []);
 };

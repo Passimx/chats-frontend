@@ -7,6 +7,7 @@ import { Envs } from '../config/envs/envs.ts';
 import { CreateMessageType } from '../../root/types/messages/create-message.type.ts';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { FilesType } from '../../root/types/files/types.ts';
+import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 
 export class MessagesService {
     public static async setSaveTime(request: Promise<IData<MessageFromServerType[]>>) {
@@ -72,6 +73,11 @@ export class MessagesService {
         if (!aesKey) return request;
 
         if (!response.success) return response;
+
+        if (response.data.type === ChatEnum.IS_DIALOGUE && !response?.data?.title?.length) {
+            const anotherChatKey = response.data.keys?.find((key) => key.publicKeyHash !== Envs.socketId);
+            response.data.title = anotherChatKey?.publicKeyHash;
+        }
 
         response.data.message = await this.decryptMessage(response.data.message);
         return response;

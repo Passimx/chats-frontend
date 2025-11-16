@@ -8,3 +8,7 @@ export const getPublicKey = (publicKeyHash: string) => {
 export const keepPublicKey = (publicKey: string) => {
     return Api<PublicKeyType>('/keys/publicKey', { method: 'POST', body: { publicKey } });
 };
+
+export const receiveKey = (chatId: string) => {
+    return Api(`/keys/receiveKey/${chatId}`, { method: 'POST', body: { chatId } });
+};
