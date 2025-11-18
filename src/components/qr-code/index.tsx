@@ -71,7 +71,7 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
             ctx.drawImage(qrCanvas, 0, 0);
 
             const logo = new Image();
-            logo.src = '/assets/icons/256.png';
+            logo.src = '/assets/icons/icon.svg';
             logo.onload = () => {
                 const logoSize = size * 0.8;
                 ctx.globalAlpha = 0.5;
