@@ -5,6 +5,8 @@ import { PropsType } from './types';
 import { FiShare } from 'react-icons/fi';
 import { shareFile } from '../../root/api/files';
 import { MimetypeEnum } from '../../root/types/files/types.ts';
+import { IoCopyOutline } from 'react-icons/io5';
+import { useTranslation } from 'react-i18next';
 
 function setupHiDPICanvas(canvas: HTMLCanvasElement, width: number, height: number) {
     const ratio = 3;
@@ -24,6 +26,7 @@ function setupHiDPICanvas(canvas: HTMLCanvasElement, width: number, height: numb
 }
 
 export const QrCode: FC<PropsType> = memo(({ url, text }) => {
+    const { t } = useTranslation();
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const size = Math.min(window.innerWidth, window.innerHeight, 400) - 8;
@@ -96,9 +99,18 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
     return (
         <div className={styles.background}>
             <canvas ref={canvasRef} />
-            <div className={styles.share_button_background} onClick={() => share()}>
-                <div className={'text_translate'}>Поделиться</div>
-                <FiShare />
+            <div className={styles.buttons}>
+                <div
+                    className={`${styles.button} ${styles.copy_button}`}
+                    onClick={() => navigator.clipboard.writeText(url)}
+                >
+                    <div className={'text_translate'}>{t('copy_link')}</div>
+                    <IoCopyOutline />
+                </div>
+                <div className={`${styles.button} ${styles.share_button}`} onClick={() => share()}>
+                    <div className={'text_translate'}>{t('share')}</div>
+                    <FiShare />
+                </div>
             </div>
         </div>
     );

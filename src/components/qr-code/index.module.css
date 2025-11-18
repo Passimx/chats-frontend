@@ -2,23 +2,45 @@
     display: grid;
     grid-template-rows: auto auto;
     gap: 8px;
+    /*justify-items: center;*/
+    /*justify-content: center;*/
 
     canvas{
         cursor: pointer;
     }
 
-    .share_button_background{
-        background-color: #0098EA;
-        padding: 8px;
-        border-radius: 8px;
-        color: white;
-        font-size: 18px;
-        font-weight: bold;
-        cursor: pointer;
+    .buttons{
         display: grid;
-        justify-content: center;
-        align-self: center;
-        gap: 8px;
         grid-template-columns: auto auto;
+        gap: 8px;
+
+        .canvas{}
+
+        .button{
+            padding: 8px;
+            border-radius: 8px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: grid;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--menu-color);
+            grid-template-columns: auto auto;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .button:active{
+            background-color: #08365e;
+        }
+
+        .copy_button{
+            background-color: #0098EA;
+        }
+
+        .share_button{}
     }
 }
