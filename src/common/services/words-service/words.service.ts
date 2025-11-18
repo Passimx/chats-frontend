@@ -34,7 +34,7 @@ export class WordsService {
         if (typeof words === 'string') strWords = words;
         else strWords = words.join('');
 
-        const firstPass = md5(strWords + Envs.salt);
+        const firstPass = md5(strWords + Envs.appSalt);
         return firstPass + md5(firstPass);
     };
 }

@@ -1,11 +1,11 @@
 .background {
-    position: fixed; /* фиксируем на весь экран */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* полупрозрачный тёмный фон */
-    backdrop-filter: blur(4px); /* размытие фона */
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
     z-index: 1000;
     display: flex;
     overflow: hidden;

@@ -79,6 +79,7 @@ export type StateType = {
 
     RASKeys?: CryptoKeyPair;
     RASKeysString?: RsaKeysStringType;
+    publicKeyHash?: string;
 
     settings?: SettingsType;
 };

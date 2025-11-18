@@ -44,7 +44,7 @@ export async function Api<T>(url: string, { headers, body, method, params }: req
             method,
             credentials: 'include',
         });
-        if (result.status.toString()[0] === '2') return (await result.json()) as IData<T>;
+        if (result.status.toString()[0] === '2') return (await result.json().catch(() => undefined)) as IData<T>;
     } catch (e) {
         console.log(e);
     }

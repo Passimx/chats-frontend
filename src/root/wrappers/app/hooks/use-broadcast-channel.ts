@@ -3,6 +3,7 @@ import { useAppEvents } from './use-app-events.hook.ts';
 import { rawApp } from '../../../store/app/app.raw.ts';
 import { TabsEnum } from '../../../types/events/tabs.enum.ts';
 import { useAppSelector } from '../../../store';
+import { Envs } from '../../../../common/config/envs/envs.ts';
 
 export const useBroadcastChannel = () => {
     const sendMessage = useAppEvents();
@@ -82,6 +83,7 @@ export const useBroadcastChannel = () => {
         if (navigator.serviceWorker) {
             navigator.serviceWorker?.register('/worker.js', { scope: '/' });
             navigator.serviceWorker?.ready?.then((registration) => {
+                if (registration.active) registration.active?.postMessage({ type: 'SET_ENVS', data: Envs });
                 return (registration as any)?.sync?.register('syncdata');
             });
         }

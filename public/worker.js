@@ -1,5 +1,5 @@
+let Envs;
 const CACHE_NAME = 'static-files';
-
 const OFFLINE_ASSETS = [
     '/',
     '/index.html',
@@ -30,6 +30,7 @@ self.addEventListener('install', async (event) => {
             return cache.addAll(OFFLINE_ASSETS);
         }),
     );
+
     self.skipWaiting();
 });
 
@@ -39,6 +40,14 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', async (event) => {
     const request = event.request;
+    const requestUrl = new URL(event.request.url);
+
+    // CSRF secure
+    if (Envs?.allowUrls?.length && !Envs?.allowUrls.includes(requestUrl.host)) {
+        console.log(`Blocking cross-origin request: ${event.request.url}`);
+        event.respondWith(Response.error());
+        return;
+    }
 
     if (request.method !== 'GET') return;
     if (!isStaticAsset(request)) return;
@@ -50,7 +59,7 @@ self.addEventListener('fetch', async (event) => {
             const networkResponse = await fetch(request);
             if (networkResponse && networkResponse.status === 200 && isStaticAsset(request)) {
                 const clone = networkResponse.clone();
-                caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+                caches.open(Envs?.cache?.files).then((cache) => cache.put(request, clone));
             }
 
             return networkResponse;
@@ -64,4 +73,9 @@ self.addEventListener('fetch', (event) => {
     if (request.mode === 'navigate') {
         event.respondWith(fetch(request).catch(() => caches.match('/index.html')));
     }
+});
+
+// Принимаем сообщение с данными
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SET_ENVS') Envs = event.data.data;
 });

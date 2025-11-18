@@ -25,11 +25,11 @@ export const useKeys = () => {
         else RASKeysString = await generateKeys();
         if (!RASKeysString) return;
 
-        setStateApp({ RASKeysString });
-
+        const publicKeyHash = CryptoService.getHash(RASKeysString.publicKey);
         const RASKeys = await CryptoService.importRSAKeys(RASKeysString);
+
         Envs.RASKeys = RASKeys;
-        setStateApp({ RASKeys });
+        setStateApp({ RASKeys, publicKeyHash, RASKeysString });
     }, []);
 
     useEffect(() => {

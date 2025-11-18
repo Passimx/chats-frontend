@@ -8,16 +8,19 @@ import { useAppAction, useAppSelector } from '../../root/store';
 import { getRawChats, getRawChatsLength } from '../../root/store/raw/chats.raw.ts';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { SegmentSwitcher } from '../segment-switcher';
+import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 
 export const Chats: FC = memo(() => {
     const { t } = useTranslation();
     const { postMessageToBroadCastChannel, changeSettings } = useAppAction();
     const { chats, updatedChats } = useAppSelector((state) => state.chats);
+    const navigate = useCustomNavigate();
 
     const deleteChats = useCallback(() => {
         const chats = getRawChats();
         chats.forEach((chat) => {
             postMessageToBroadCastChannel({ event: EventsEnum.REMOVE_CHAT, data: chat.id });
+            navigate('/');
         });
     }, []);
 

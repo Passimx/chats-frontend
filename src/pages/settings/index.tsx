@@ -24,7 +24,7 @@ export const Settings = memo(() => {
     const { setStateApp } = useAppAction();
     const { cacheMemory, pages, activeTab, systemChatId, favoritesChatId, logs } = useAppSelector((state) => state.app);
     const chatsLength = useAppSelector((state) => state.chats.chats.length);
-    const socketId = useAppSelector((state) => state.app.socketId);
+    const publicKeyHash = useAppSelector((state) => state.app.publicKeyHash);
 
     const cache = useMemo(() => {
         const [memory, unit] = getFileSize(cacheMemory);
@@ -51,14 +51,21 @@ export const Settings = memo(() => {
                     <div
                         className={styles.inf_qr_code_background}
                         onClick={() => {
-                            if (!socketId) return;
+                            if (!publicKeyHash) return;
                             setStateApp({
-                                page: <QrCode data={`${window.location.origin}/create-dialogue/${socketId}`} />,
+                                page: (
+                                    <QrCode
+                                        url={`${window.location.origin}/create-dialogue/${publicKeyHash}`}
+                                        text={`@${publicKeyHash}`}
+                                    />
+                                ),
                             });
                         }}
                     >
                         <MdQrCode2 className={styles.inf_qr_code} />
                     </div>
+                    {/*todo*/}
+                    {/*<EditFileName {...{ file: new File([], 'asdasd'), number: 2 }} />*/}
                     <div className={styles.inf_text_background}></div>
                 </div>
                 {/*<div className={styles.item} onClick={() => selectMenu(<Privacy />)}>*/}
@@ -95,7 +102,7 @@ export const Settings = memo(() => {
                     className={styles.item}
                     onClick={() => {
                         if (favoritesChatId) navigate(favoritesChatId);
-                        else if (socketId) navigate(`/create-dialogue/${socketId}`);
+                        else if (publicKeyHash) navigate(`/create-dialogue/${publicKeyHash}`);
                     }}
                 >
                     <LuStar className={styles.item_logo} />

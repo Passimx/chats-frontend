@@ -1,4 +1,24 @@
 .background{
-    overflow: hidden;
-    border-radius: 16px;
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 8px;
+
+    canvas{
+        cursor: pointer;
+    }
+
+    .share_button_background{
+        background-color: #0098EA;
+        padding: 8px;
+        border-radius: 8px;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        display: grid;
+        justify-content: center;
+        align-self: center;
+        gap: 8px;
+        grid-template-columns: auto auto;
+    }
 }

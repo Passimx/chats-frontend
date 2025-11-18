@@ -1,3 +1,4 @@
 export type PropsType = {
-    data: string;
+    url: string;
+    text?: string;
 };
