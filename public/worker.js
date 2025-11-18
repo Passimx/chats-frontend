@@ -40,14 +40,14 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', async (event) => {
     const request = event.request;
-    const requestUrl = new URL(event.request.url);
+    // const requestUrl = new URL(event.request.url);
 
     // CSRF secure
-    if (Envs?.allowUrls?.length && !Envs?.allowUrls.includes(requestUrl.host)) {
-        console.log(`Blocking cross-origin request: ${event.request.url}`);
-        event.respondWith(Response.error());
-        return;
-    }
+    // if (Envs?.allowUrls?.length && !Envs?.allowUrls.includes(requestUrl.host)) {
+    //     console.log(`Blocking cross-origin request: ${event.request.url}`);
+    //     event.respondWith(Response.error());
+    //     return;
+    // }
 
     if (request.method !== 'GET') return;
     if (!isStaticAsset(request)) return;
