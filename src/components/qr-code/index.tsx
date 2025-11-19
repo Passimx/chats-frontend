@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useMemo, useRef } from 'react';
+import { FC, memo, useEffect, useMemo, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import styles from './index.module.css';
 import { PropsType } from './types';
@@ -7,6 +7,8 @@ import { shareFile } from '../../root/api/files';
 import { MimetypeEnum } from '../../root/types/files/types.ts';
 import { IoCopyOutline } from 'react-icons/io5';
 import { useTranslation } from 'react-i18next';
+import Loading from '../loading';
+import { LoadingQrCode } from './components/loading-qr-code';
 
 function setupHiDPICanvas(canvas: HTMLCanvasElement, width: number, height: number) {
     const ratio = 3;
@@ -27,9 +29,11 @@ function setupHiDPICanvas(canvas: HTMLCanvasElement, width: number, height: numb
 
 export const QrCode: FC<PropsType> = memo(({ url, text }) => {
     const { t } = useTranslation();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const size = Math.min(window.innerWidth, window.innerHeight, 400) - 8;
+    const textAreaHeight = 20;
 
     const visibleText = useMemo(() => {
         if (!text) return '';
@@ -37,8 +41,6 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
         return text.slice(0, 10) + '...' + text.slice(-10);
     }, [text]);
 
-    // todo
-    // вынести в подкомпонент
     useEffect(() => {
         if (!canvasRef.current) return;
 
@@ -46,7 +48,6 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
         canvas.width = size;
         canvas.height = size;
 
-        const textAreaHeight = 20;
         const ctx = setupHiDPICanvas(canvas, size, size + textAreaHeight);
 
         if (!ctx) return;
@@ -73,6 +74,7 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
             const logo = new Image();
             logo.src = '/assets/icons/icon.svg';
             logo.onload = () => {
+                setIsLoading(false);
                 const logoSize = size * 0.8;
                 ctx.globalAlpha = 0.5;
                 ctx.drawImage(logo, (size - logoSize) / 2, (size - logoSize) / 2, logoSize, logoSize);
@@ -98,7 +100,13 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
 
     return (
         <div className={styles.background}>
-            <canvas ref={canvasRef} />
+            <Loading
+                isLoading={isLoading}
+                loadingComponent={<LoadingQrCode width={size} height={size + textAreaHeight} />}
+            >
+                <canvas ref={canvasRef} />
+            </Loading>
+
             <div className={styles.buttons}>
                 <div
                     className={`${styles.button} ${styles.copy_button}`}
