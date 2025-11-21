@@ -26,7 +26,7 @@ function isStaticAsset(request) {
 
 self.addEventListener('install', async (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
+        caches.open(Envs?.cache?.files || CACHE_NAME).then((cache) => {
             return cache.addAll(OFFLINE_ASSETS);
         }),
     );
@@ -46,7 +46,8 @@ self.addEventListener('fetch', async (event) => {
     if (Envs?.allowUrls?.length && !Envs?.allowUrls.includes(requestUrl.host)) {
         // qr-code module
         if (requestUrl.href.includes('zxing_reader.wasm')) {
-            const request = fetch('/assets/modules/qr-code/zxing_reader.wasm');
+            const request = await fetch('/assets/modules/qr-code/zxing_reader.wasm');
+            request.mimeType = 'application/wasm';
             return event.respondWith(request);
         }
 
@@ -65,7 +66,7 @@ self.addEventListener('fetch', async (event) => {
             const networkResponse = await fetch(request);
             if (networkResponse && networkResponse.status === 200 && isStaticAsset(request)) {
                 const clone = networkResponse.clone();
-                caches.open(Envs?.cache?.files).then((cache) => cache.put(request, clone));
+                caches.open(Envs?.cache?.files || CACHE_NAME).then((cache) => cache.put(request, clone));
             }
 
             return networkResponse;
