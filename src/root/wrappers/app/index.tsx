@@ -86,7 +86,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
                         <Page />
                         <div id={styles.menu}>
                             <div id={styles.pages}>
-                                {/*<PageItem name={TabEnum.SERVICES}>*/}
+                                {/*<PageItem public-key-name={TabEnum.SERVICES}>*/}
                                 {/*    <Services />*/}
                                 {/*</PageItem>*/}
                                 <PageItem name={TabEnum.CHATS}>

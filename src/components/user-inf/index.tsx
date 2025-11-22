@@ -19,8 +19,7 @@ export const UserInf = memo(() => {
     const openQrCode = useCallback(() => {
         if (!publicKeyHash) return;
         setStateApp({
-            page: <QrCode url={`${window.location.origin}/create-dialogue/${publicKeyHash}`} text={publicKeyHash} />,
-            // page: <QrCode url={`${window.location.origin}/${publicKeyHash}`} text={`@${publicKeyHash}`} />,
+            page: <QrCode url={`${window.location.origin}/${publicKeyHash}`} text={publicKeyHash} />,
         });
     }, [publicKeyHash]);
 

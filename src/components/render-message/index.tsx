@@ -5,6 +5,7 @@ import styles from '../message/index.module.css';
 import { parseMessage } from '../input-message/common/parse-message.ts';
 import { Link } from '../link';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
+import { PublicKeyName } from '../public-key-name';
 
 export const RenderMessage: FC<PropsType> = ({ message, type }) => {
     const parts = parseMessage(message);
@@ -18,6 +19,7 @@ export const RenderMessage: FC<PropsType> = ({ message, type }) => {
                             {part.content}
                         </Link>
                     );
+                else if (part.type === PartTypeEnum.NAME) return <PublicKeyName name={part.content} />;
                 else if (part.type === PartTypeEnum.TAG)
                     return (
                         <span key={index} className={styles.tags}>

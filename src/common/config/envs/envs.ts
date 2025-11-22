@@ -48,7 +48,7 @@ export const Envs: EnvsType = {
         limit: 250,
     },
     cache: {
-        files: 'files-cache-name',
+        files: 'files-cache-public-key-name',
         static: 'static-files',
     },
 };

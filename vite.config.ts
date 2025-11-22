@@ -17,9 +17,9 @@ export default defineConfig({
                 iframe: resolve(__dirname, 'iframe.html'),
             },
             output: {
-                entryFileNames: '[name].js',
-                chunkFileNames: '[name].js',
-                assetFileNames: '[name].[ext]',
+                entryFileNames: '[public-key-name].js',
+                chunkFileNames: '[public-key-name].js',
+                assetFileNames: '[public-key-name].[ext]',
             },
         },
     },

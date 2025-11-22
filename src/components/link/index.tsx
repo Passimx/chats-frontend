@@ -1,10 +1,9 @@
-import { FC, useMemo } from 'react';
+import { FC, memo, useMemo } from 'react';
 import styles from './index.module.css';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
+import { PropsType } from './types.ts';
 
-type PropsType = { href?: string | undefined; children: any };
-
-export const Link: FC<PropsType> = ({ href, children }) => {
+export const Link: FC<PropsType> = memo(({ href, children }) => {
     const navigate = useCustomNavigate();
 
     const ownPath = useMemo(() => {
@@ -23,4 +22,4 @@ export const Link: FC<PropsType> = ({ href, children }) => {
             {children}
         </a>
     );
-};
+});
