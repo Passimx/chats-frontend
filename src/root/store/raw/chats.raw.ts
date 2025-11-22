@@ -36,8 +36,8 @@ export const setRawCryptoKey = (chatId: string, key: CryptoKey, aesKeyString?: s
     rawChats.keys.set(chatId, key);
     const chat = rawChats.chats.get(chatId);
     if (chat && aesKeyString?.length) {
-        chat.aesKeyString = aesKeyString;
-        updateRawChat(chat);
+        const data = { ...chat, aesKeyString };
+        updateRawChat(data);
     }
 };
 

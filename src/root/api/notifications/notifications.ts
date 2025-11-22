@@ -1,4 +1,4 @@
-import { RsaKeysStringType } from '../../types/create-rsa-keys.type.ts';
+import { RsaKeysStringType } from '../../types/keys/create-rsa-keys.type.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import { CryptoService } from '../../../common/services/crypto.service.ts';
 import { EventsFromServer } from '../../types/events/events-from-server.type.ts';

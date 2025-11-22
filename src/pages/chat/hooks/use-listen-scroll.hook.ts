@@ -33,7 +33,7 @@ export const useListenScroll = () => {
             }, 150);
         };
 
-        messagesBlock.addEventListener('scroll', scrollEnd);
+        messagesBlock.addEventListener('scroll', scrollEnd, { passive: true });
         return () => {
             clearTimeout(scrollTimeout);
             messagesBlock.removeEventListener('scroll', scrollEnd);

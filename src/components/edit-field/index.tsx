@@ -1,50 +1,29 @@
-import { FC, memo, useContext, useEffect, useMemo } from 'react';
+import { FC, memo, useEffect, useMemo } from 'react';
 import styles from './index.module.css';
-import { PropsType } from './types.ts';
-import { getFileSize } from '../../common/hooks/get-file-size.ts';
-import { useTranslation } from 'react-i18next';
-import { ContextMedia } from '../preview-media-context';
 import { CiEdit } from 'react-icons/ci';
+import { PropsType } from './types.ts';
 
-export const EditFileName: FC<PropsType> = memo(({ file, number }) => {
-    const { t } = useTranslation();
-    const { files, setFiles } = useContext(ContextMedia)!;
-
-    const [id, size] = useMemo(() => {
-        const [memory, unit] = getFileSize(file.size);
-        return [`file_${number}`, `${memory} ${t(unit)}`];
-    }, [file, number]);
-
-    // первоначальная установка имени файла
-    useEffect(() => {
-        const element = document.getElementById(id);
-        if (element) element.innerText = file.name;
-    }, [id]);
+export const EditField: FC<PropsType> = memo(({ value, setValue }) => {
+    const id = useMemo(() => window.crypto.randomUUID(), []);
 
     const prepareText = (text: string = '') => {
         let fileName = text
-            .trim()
+            .trim() // убираем пробелы в начале и в конце
             // eslint-disable-next-line no-control-regex
             .replace(/[<>:"/\\|?*\x00-\x1F]/g, '_')
             .replace(/\s+/g, ' ');
 
-        if (fileName?.length === 0) fileName = t('without_name');
+        if (fileName?.length === 0) fileName = value || '';
 
         return fileName;
     };
 
-    const input = async () => {
+    useEffect(() => {
         const element = document.getElementById(id);
-        if (!element) return;
-        if (!files?.length) return;
+        if (element && value) element.innerText = value;
+    }, [value]);
 
-        const fileName = prepareText(element.innerText);
-
-        files[number] = new File([await file.arrayBuffer()], fileName, { type: file.type });
-        files[number].metaData = file.metaData;
-        files[number].randomId = file.randomId;
-        setFiles(files);
-    };
+    const input = async () => {};
 
     const focus = () => {
         const element = document.getElementById(id) as HTMLElement | null;
@@ -68,8 +47,10 @@ export const EditFileName: FC<PropsType> = memo(({ file, number }) => {
     const focusOut = () => {
         const element = document.getElementById(id);
         if (!element) return;
+        const text = prepareText(element.innerText);
         element.scrollLeft = 0;
-        element.innerText = prepareText(element.innerText);
+        element.innerText = text;
+        setValue(text);
     };
 
     const paste = (event: ClipboardEvent) => {
@@ -109,14 +90,11 @@ export const EditFileName: FC<PropsType> = memo(({ file, number }) => {
             element?.removeEventListener('paste', paste);
             element?.removeEventListener('focusout', focusOut);
         };
-    }, [id, files]);
+    }, [id]);
 
     return (
         <div className={`${styles.background} text_translate`}>
             <div className={styles.file_name_background}>
-                <div className={styles.edit_button_background} onClick={focus}>
-                    <CiEdit className={styles.edit_button} />
-                </div>
                 <div
                     id={id}
                     className={`content_editable ${styles.file_name}`}
@@ -126,8 +104,10 @@ export const EditFileName: FC<PropsType> = memo(({ file, number }) => {
                     }}
                     spellCheck={false}
                 />
+                <div className={styles.edit_button_background} onClick={focus}>
+                    <CiEdit className={styles.edit_button} />
+                </div>
             </div>
-            <div className={styles.file_size}>{size}</div>
         </div>
     );
 });

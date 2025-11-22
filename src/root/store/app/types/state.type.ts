@@ -1,6 +1,5 @@
 import { JSX } from 'react';
 import { Types } from '../../../types/files/types.ts';
-import { RsaKeysStringType } from '../../../types/create-rsa-keys.type.ts';
 
 export enum TabEnum {
     CHATS = 'chats',
@@ -16,6 +15,15 @@ export type Categories = {
     music: CacheCategoryType;
     files: CacheCategoryType;
     voice_messages: CacheCategoryType;
+};
+
+export type KeyInfType = {
+    name: string;
+    publicKeyHash: string;
+    publicKey: string;
+    privateKey: string;
+
+    RASKeys?: CryptoKeyPair;
 };
 
 export type SettingsType = {
@@ -77,9 +85,6 @@ export type StateType = {
     categories?: Categories;
     files?: Types[];
 
-    RASKeys?: CryptoKeyPair;
-    RASKeysString?: RsaKeysStringType;
-    publicKeyHash?: string;
-
+    keyInf?: Partial<KeyInfType>;
     settings?: SettingsType;
 };

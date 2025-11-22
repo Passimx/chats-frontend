@@ -8,11 +8,11 @@ import { DialogueKey } from '../../root/types/chat/create-dialogue.type.ts';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 
 export const CreateDialogue: FC = memo(() => {
-    const navagate = useCustomNavigate();
     const { recipientPublicKeyHash } = useParams();
-    const publicKeyString = useAppSelector((state) => state.app.RASKeysString?.publicKey);
-    const publicKey = useAppSelector((state) => state.app.RASKeys?.publicKey);
+    const navigate = useCustomNavigate();
     const senderPublicKeyHash = useAppSelector((state) => state.app.socketId);
+    const publicKeyString = useAppSelector((state) => state.app.keyInf?.publicKey);
+    const publicKey = useAppSelector((state) => state.app.keyInf?.RASKeys?.publicKey);
 
     const create = useCallback(async () => {
         if (!recipientPublicKeyHash || !publicKeyString || !publicKey || !senderPublicKeyHash) return;
@@ -38,8 +38,8 @@ export const CreateDialogue: FC = memo(() => {
 
     useEffect(() => {
         if (!recipientPublicKeyHash || !publicKeyString || !publicKey || !senderPublicKeyHash) return;
-        create().then(() => navagate('/'));
+        create().then(() => navigate('/'));
     }, [create]);
 
-    return <div>{recipientPublicKeyHash}</div>;
+    return <div></div>;
 });

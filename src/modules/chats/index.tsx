@@ -18,7 +18,9 @@ const Chats: FC = memo(() => {
     const page = useAppSelector((state) => state.app.page);
     const { chats, updatedChats } = useAppSelector((state) => state.chats);
 
-    const filterFunc = ({ title }: ChatType): boolean => {
+    const filterFunc = ({ title, id }: ChatType): boolean => {
+        if (input === id) return true;
+
         if (!input?.length) return true;
         const searchWords = input.split(' ');
 

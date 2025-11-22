@@ -7,7 +7,7 @@ import { BodyCreateDialogueType } from '../../types/chat/create-dialogue.type.ts
 import { MessagesService } from '../../../common/services/messages.service.ts';
 
 export const getChats = async (
-    title?: string,
+    search?: string,
     offset?: number,
     notFavoriteChatIds?: string[],
 ): Promise<IData<ChatType[]>> => {
@@ -21,11 +21,11 @@ export const getChats = async (
         return text.replace(/#\w+/g, '').trim(); // Удаляем теги и пробелы
     }
 
-    const tags = title?.length ? extractTags(title) : undefined;
-    const titleWithoutTags = removeTags(title);
+    const tags = search?.length ? extractTags(search) : undefined;
+    const titleWithoutTags = removeTags(search);
 
     return Api<ChatType[]>('/chats', {
-        params: { title: titleWithoutTags, limit: Envs.chats.limit, offset, notFavoriteChatIds, tags },
+        params: { search: titleWithoutTags, limit: Envs.chats.limit, offset, notFavoriteChatIds, tags },
     });
 };
 

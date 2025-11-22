@@ -41,7 +41,19 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
     );
 
     useEffect(() => {
-        onChange(input);
+        let value = input;
+        if (value?.startsWith('@')) value = value?.slice(1);
+
+        if (value?.length)
+            try {
+                const url = new URL(value);
+                value = value.replace(url.origin, '');
+                if (value.startsWith('/')) value = value?.slice(1);
+            } catch (error) {
+                value;
+            }
+
+        onChange(value);
     }, [input]);
 
     return (

@@ -7,10 +7,10 @@ import { Envs } from '../../../../common/config/envs/envs.ts';
 
 export const useBroadcastChannel = () => {
     const sendMessage = useAppEvents();
-    const RASKeysString = useAppSelector((state) => state.app.RASKeysString);
+    const publicKey = useAppSelector((state) => state.app.keyInf?.publicKey);
 
     useEffect(() => {
-        if (!RASKeysString?.publicKey) return;
+        if (!publicKey) return;
 
         const channel = new BroadcastChannel('ws-channel');
         const instanceId = Date.now();
@@ -76,7 +76,7 @@ export const useBroadcastChannel = () => {
             const channelSend = new BroadcastChannel('ws-channel');
             channelSend.postMessage({ event: TabsEnum.DELETE_TAB, data: instanceId });
         });
-    }, [RASKeysString?.publicKey]);
+    }, [publicKey]);
 
     /** Service worker registration */
     useEffect(() => {

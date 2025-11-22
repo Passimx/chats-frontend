@@ -1,4 +1,4 @@
-import { CreateRsaKeysType, RsaKeysStringType } from '../../root/types/create-rsa-keys.type.ts';
+import { CreateRsaKeysType, RsaKeysStringType } from '../../root/types/keys/create-rsa-keys.type.ts';
 import { WordsService } from './words-service/words.service.ts';
 import { IKeys } from '../../root/types/keys/keys.type.ts';
 import { FilesType, MimetypeEnum } from '../../root/types/files/types.ts';

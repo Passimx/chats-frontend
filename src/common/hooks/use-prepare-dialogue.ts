@@ -22,9 +22,6 @@ export const usePrepareDialogue = () => {
         };
 
         const myChatKey = keys?.find((key) => key.publicKeyHash === Envs.socketId);
-        const anotherChatKey = keys?.find((key) => key.publicKeyHash !== Envs.socketId);
-
-        if (!payload.title) payload.title = anotherChatKey?.publicKeyHash;
 
         if (!myChatKey || !Envs.RASKeys?.privateKey) return;
 
@@ -37,7 +34,7 @@ export const usePrepareDialogue = () => {
         payload.aesKeyString = aesKeyString;
         payload.message = await MessagesService.decryptMessage(payload.message);
 
-        if (!myChatKey.received) await receiveKey(data.id);
+        await receiveKey(data.id);
         return payload;
     }, []);
 };

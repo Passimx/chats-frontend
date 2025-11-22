@@ -5,9 +5,9 @@ import { RiShieldKeyholeLine } from 'react-icons/ri';
 import { useAppSelector } from '../../root/store';
 
 export const Privacy: FC = () => {
-    const RASKeysString = useAppSelector((state) => state.app.RASKeysString);
+    const publicKey = useAppSelector((state) => state.app.keyInf?.publicKey);
 
-    if (RASKeysString)
+    if (publicKey)
         return (
             <div className={styles.background}>
                 <MenuTitle icon={<RiShieldKeyholeLine />} title={'privacy_policy'} />

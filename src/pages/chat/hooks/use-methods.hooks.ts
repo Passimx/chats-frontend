@@ -32,7 +32,11 @@ export const useMethods = (): R => {
             e.stopPropagation();
             document.documentElement.style.setProperty('--menu-margin', '0px');
 
-            if (window.innerWidth <= 600) setTimeout(() => navigate('/'), 300);
+            if (window.innerWidth <= 600)
+                setTimeout(() => {
+                    navigate('/');
+                    setChatOnPage(null);
+                }, 300);
             if (isShowMessageMenu) setIsShowMessageMenu(false);
         },
         [isShowMessageMenu, isPhone],

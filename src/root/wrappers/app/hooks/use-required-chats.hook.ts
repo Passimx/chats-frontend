@@ -9,7 +9,7 @@ import { DialogueKey } from '../../../types/chat/create-dialogue.type.ts';
 export const useRequiredChats = () => {
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const { postMessageToBroadCastChannel } = useAppAction();
-    const { systemChatId, favoritesChatId, isLoadedChatsFromIndexDb, isListening, socketId, RASKeys } = useAppSelector(
+    const { systemChatId, favoritesChatId, isLoadedChatsFromIndexDb, isListening, socketId, keyInf } = useAppSelector(
         (state) => state.app,
     );
 
@@ -22,7 +22,7 @@ export const useRequiredChats = () => {
 
             postMessageToBroadCastChannel({
                 event: EventsEnum.ADD_CHAT,
-                data: { ...chat, readMessage: 0, messages: [], scrollTop: 0, key: Date.now() },
+                data: { ...chat, readMessage: 0, messages: [chat.message], scrollTop: 0, key: Date.now() },
             });
             listenChats([
                 { chatId: chat?.id, lastMessage: chat?.countMessages, maxUsersOnline: Number(chat?.maxUsersOnline) },
@@ -31,9 +31,9 @@ export const useRequiredChats = () => {
     };
 
     const setFavoritesChat = async () => {
-        if (!socketId || !RASKeys?.publicKey) return;
+        if (!socketId || !keyInf?.RASKeys?.publicKey) return;
         const aesKeyString = await CryptoService.generateAndExportAesKey();
-        const encryptionKey = await CryptoService.encryptByRSAKey(RASKeys?.publicKey, aesKeyString);
+        const encryptionKey = await CryptoService.encryptByRSAKey(keyInf?.RASKeys?.publicKey, aesKeyString);
         if (!encryptionKey) return;
 
         const keys: DialogueKey[] = [];

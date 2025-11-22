@@ -94,7 +94,7 @@ const Chat: FC = memo(() => {
                                 page: (
                                     <QrCode
                                         url={window.location.origin + window.location.pathname}
-                                        text={`@${chatOnPage?.id}`}
+                                        text={chatOnPage?.id}
                                     />
                                 ),
                             });

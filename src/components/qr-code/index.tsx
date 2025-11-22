@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, memo, useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import styles from './index.module.css';
 import { PropsType } from './types';
@@ -9,6 +9,7 @@ import { IoCopyOutline } from 'react-icons/io5';
 import { useTranslation } from 'react-i18next';
 import Loading from '../loading';
 import { LoadingQrCode } from './components/loading-qr-code';
+import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
 
 function setupHiDPICanvas(canvas: HTMLCanvasElement, width: number, height: number) {
     const ratio = 3;
@@ -28,18 +29,12 @@ function setupHiDPICanvas(canvas: HTMLCanvasElement, width: number, height: numb
 }
 
 export const QrCode: FC<PropsType> = memo(({ url, text }) => {
-    const { t } = useTranslation();
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-
-    const size = Math.min(window.innerWidth, window.innerHeight, 400) - 8;
     const textAreaHeight = 20;
-
-    const visibleText = useMemo(() => {
-        if (!text) return '';
-        if (text.length <= 20) return text;
-        return text.slice(0, 10) + '...' + text.slice(-10);
-    }, [text]);
+    const { t } = useTranslation();
+    const visibleText = useShortText(text);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const size = Math.min(window.innerWidth, window.innerHeight, 400) - 8;
+    const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
         if (!canvasRef.current) return;
@@ -84,7 +79,7 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
                     ctx.font = 'bold 20px sans-serif';
                     ctx.fillStyle = '#0098EA';
                     ctx.textAlign = 'center';
-                    ctx.fillText(visibleText, size / 2, size + 8);
+                    ctx.fillText(`@${visibleText}`, size / 2, size + 8);
                 }
             };
         });
