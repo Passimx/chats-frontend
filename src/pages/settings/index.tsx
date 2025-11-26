@@ -21,9 +21,9 @@ import { UserInf } from '../../components/user-inf';
 export const Settings = memo(() => {
     const { t } = useTranslation();
     const { setStateApp } = useAppAction();
-    const { cacheMemory, pages, activeTab, systemChatId, favoritesChatId, logs } = useAppSelector((state) => state.app);
     const chatsLength = useAppSelector((state) => state.chats.chats.length);
-    const publicKeyHash = useAppSelector((state) => state.app.settings);
+    const name = useAppSelector((state) => state.app.keyInf?.name);
+    const { cacheMemory, pages, activeTab, systemChatName, logs } = useAppSelector((state) => state.app);
 
     const cache = useMemo(() => {
         const [memory, unit] = getFileSize(cacheMemory);
@@ -77,8 +77,7 @@ export const Settings = memo(() => {
                 <div
                     className={styles.item}
                     onClick={() => {
-                        if (favoritesChatId) navigate(favoritesChatId);
-                        else if (publicKeyHash) navigate(`/create-dialogue/${publicKeyHash}`);
+                        if (name) navigate(name);
                     }}
                 >
                     <LuStar className={styles.item_logo} />
@@ -139,7 +138,7 @@ export const Settings = memo(() => {
             </div>
 
             <div className={styles.items}>
-                <div className={styles.item} onClick={() => systemChatId && navigate(systemChatId)}>
+                <div className={styles.item} onClick={() => systemChatName && navigate(systemChatName)}>
                     <IoRocketOutline className={styles.item_logo} />
                     <div className="text_translate">
                         {t('about_app')}

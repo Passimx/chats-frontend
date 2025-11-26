@@ -26,7 +26,7 @@ function isStaticAsset(request) {
 
 self.addEventListener('install', async (event) => {
     event.waitUntil(
-        caches.open(Envs?.cache?.files || CACHE_NAME).then((cache) => {
+        caches.open(Envs?.cache?.static || CACHE_NAME).then((cache) => {
             return cache.addAll(OFFLINE_ASSETS);
         }),
     );
@@ -45,11 +45,19 @@ self.addEventListener('fetch', async (event) => {
     // CSRF secure
     if (Envs?.allowUrls?.length && !Envs?.allowUrls.includes(requestUrl.host)) {
         // qr-code module
-        if (requestUrl.href.includes('zxing_reader.wasm')) {
-            const request = await fetch('/assets/modules/qr-code/zxing_reader.wasm');
-            request.mimeType = 'application/wasm';
-            return event.respondWith(request);
-        }
+        if (requestUrl.href.includes('zxing_reader.wasm'))
+            return event.respondWith(
+                fetch(event.request).then((res) => {
+                    return new Response(res.body, {
+                        status: res.status,
+                        statusText: res.statusText,
+                        headers: {
+                            'Content-Type': 'application/wasm',
+                            ...Object.fromEntries(res.headers.entries()),
+                        },
+                    });
+                }),
+            );
 
         console.log(`Blocking cross-origin request: ${event.request.url}`);
         event.respondWith(Response.error());
@@ -66,7 +74,7 @@ self.addEventListener('fetch', async (event) => {
             const networkResponse = await fetch(request);
             if (networkResponse && networkResponse.status === 200 && isStaticAsset(request)) {
                 const clone = networkResponse.clone();
-                caches.open(Envs?.cache?.files || CACHE_NAME).then((cache) => cache.put(request, clone));
+                caches.open(Envs?.cache?.static || CACHE_NAME).then((cache) => cache.put(request, clone));
             }
 
             return networkResponse;

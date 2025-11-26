@@ -11,10 +11,9 @@ export const useKeys = () => {
     const generateKeys = useCallback(async () => {
         const keys = await CryptoService.generateExportRSAKeys();
         const publicKeyHash = CryptoService.getHash(keys.publicKey);
-        const request = await keepPublicKey({ publicKey: keys.publicKey });
-        if (!request.success) return undefined;
-
-        const response = { ...keys, publicKeyHash, name: publicKeyHash };
+        const data = { publicKey: keys.publicKey, name: publicKeyHash, metadata: { name: publicKeyHash } };
+        await keepPublicKey(data);
+        const response = { ...keys, publicKeyHash, ...data };
         localStorage.setItem('keys', JSON.stringify(response));
 
         return response;

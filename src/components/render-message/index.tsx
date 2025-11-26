@@ -19,7 +19,7 @@ export const RenderMessage: FC<PropsType> = ({ message, type }) => {
                             {part.content}
                         </Link>
                     );
-                else if (part.type === PartTypeEnum.NAME) return <PublicKeyName name={part.content} />;
+                else if (part.type === PartTypeEnum.NAME) return <PublicKeyName key={index} name={part.content} />;
                 else if (part.type === PartTypeEnum.TAG)
                     return (
                         <span key={index} className={styles.tags}>

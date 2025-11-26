@@ -13,8 +13,13 @@ export const useListenAndUpdateChats = () => {
     const { setStateApp, setToBegin, postMessageToBroadCastChannel, setStateChat } = useAppAction();
     const { socketId, isLoadedChatsFromIndexDb, isOnline } = useAppSelector((state) => state.app);
     const compareFn = useCallback((chat1: ChatType, chat2: ChatType) => {
-        const firstDate = new Date(chat1.message.createdAt).getTime();
-        const secondDate = new Date(chat2.message.createdAt).getTime();
+        const createdAt1 = chat1.message?.createdAt;
+        const createdAt2 = chat2.message?.createdAt;
+
+        if (!createdAt1 || !createdAt2) return -1;
+
+        const firstDate = new Date(createdAt1).getTime();
+        const secondDate = new Date(createdAt2).getTime();
 
         if (firstDate > secondDate) return 1;
         else return -1;
@@ -35,7 +40,7 @@ export const useListenAndUpdateChats = () => {
         let messageCount = messageCountStart;
 
         const chatsListen = getRawChats().map<ChatListenRequestType>((chat) => ({
-            chatId: chat.id,
+            name: chat.name,
             lastMessage: chat.countMessages,
             maxUsersOnline: Number(chat.maxUsersOnline),
         }));

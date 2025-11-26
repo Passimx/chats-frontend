@@ -20,6 +20,9 @@
         align-items: center;
         justify-content: center;
         overflow: hidden;
+        /*grid-template-columns: calc(100vw - 32px);*/
+        /*grid-template-rows: 1fr;*/
+        /*width: calc(100vw - 32px);*/
 
         @media(width >= 600px){
             width: 400px;

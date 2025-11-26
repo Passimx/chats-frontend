@@ -8,6 +8,8 @@ import { CreateMessageType } from '../../root/types/messages/create-message.type
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { FilesType } from '../../root/types/files/types.ts';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
+import { CreateChatKeyType } from '../../root/types/chat/create-dialogue.type.ts';
+import { getPublicKey, keepChatKey } from '../../root/api/keys';
 
 export class MessagesService {
     public static async setSaveTime(request: Promise<IData<MessageFromServerType[]>>) {
@@ -67,9 +69,10 @@ export class MessagesService {
         return response;
     }
 
-    public static async decryptChat(chatId: string, request: Promise<IData<ChatType>>): Promise<IData<ChatType>> {
+    public static async decryptChat(request: Promise<IData<ChatType>>): Promise<IData<ChatType>> {
         const response = await request;
-        const aesKey = getRawCryptoKey(chatId);
+        if (!response.success) return response;
+        const aesKey = getRawCryptoKey(response.data.id);
         if (!aesKey) return request;
 
         if (!response.success) return response;
@@ -79,7 +82,7 @@ export class MessagesService {
             response.data.title = anotherChatKey?.publicKeyHash;
         }
 
-        response.data.message = await this.decryptMessage(response.data.message);
+        if (response.data.message) response.data.message = await this.decryptMessage(response.data.message);
         return response;
     }
 
@@ -91,7 +94,7 @@ export class MessagesService {
             const aesKey = getRawCryptoKey(chat.id);
             if (!aesKey) return chat;
 
-            chat.message = await this.decryptMessage(chat.message);
+            if (chat.message) chat.message = await this.decryptMessage(chat.message);
             return chat;
         });
 
@@ -127,5 +130,31 @@ export class MessagesService {
         }
 
         return formData;
+    }
+
+    public static async createChatKeys(chat: ChatType): Promise<boolean> {
+        if (!chat.keys?.length) return false;
+
+        const keys: CreateChatKeyType[] = [];
+        const aesKeyString = await CryptoService.generateAndExportAesKey();
+        const aesKey = await CryptoService.importEASKey(aesKeyString);
+
+        const tasks = chat.keys.map(async ({ publicKeyHash }) => {
+            const response = await getPublicKey(publicKeyHash);
+            if (!response.success) return;
+
+            const publicKey = await CryptoService.importRSAKey(response.data.publicKey, ['encrypt']);
+            if (!publicKey) return;
+            const encryptionKey = await CryptoService.encryptByRSAKey(publicKey, aesKeyString);
+            if (!encryptionKey) return;
+            keys.push({ publicKeyHash, encryptionKey });
+        });
+
+        await Promise.all(tasks);
+        await keepChatKey(chat.id, { keys });
+
+        setRawCryptoKey(chat.id, aesKey, aesKeyString);
+
+        return true;
     }
 }

@@ -17,8 +17,19 @@ export type Categories = {
     voice_messages: CacheCategoryType;
 };
 
+export type KeyInfImageType = {
+    original: Types;
+    small: Types;
+};
+
+export type KeyInfMetadataType = {
+    name: string;
+    images?: KeyInfImageType[];
+};
+
 export type KeyInfType = {
     name: string;
+    metadata: KeyInfMetadataType;
     publicKeyHash: string;
     publicKey: string;
     privateKey: string;
@@ -74,8 +85,8 @@ export type StateType = {
     isIos?: boolean;
     logs?: string[];
     isPhone?: boolean;
-    systemChatId?: string;
-    favoritesChatId?: string;
+    systemChatName?: string;
+    favoritesChatName?: string;
     isOpenMobileKeyboard?: boolean;
 
     batteryLevel?: number;

@@ -33,8 +33,8 @@ export const createChat = async (body: CreateChatType): Promise<IData<object>> =
     return Api('/chats', { method: 'POST', body });
 };
 
-export const getChatById = async (id: string): Promise<IData<ChatType>> => {
-    return MessagesService.decryptChat(id, MessagesService.keepAesKey(Api<ChatType>(`/chats/${id}`)));
+export const getChatByName = async (name: string): Promise<IData<ChatType>> => {
+    return MessagesService.decryptChat(MessagesService.keepAesKey(Api<ChatType>(`/chats/${name}`)));
 };
 
 export const listenChats = (chats: ChatListenRequestType[]) => {

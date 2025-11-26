@@ -6,6 +6,7 @@ import { UseMessagesType } from '../types/use-messages.type.ts';
 import { LoadingType } from '../types/loading.type.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import { useLocation } from 'react-router-dom';
+import { MessageType } from '../../../root/types/chat/message.type.ts';
 
 export const useMessages = (): UseMessagesType => {
     const location = useLocation();
@@ -24,7 +25,10 @@ export const useMessages = (): UseMessagesType => {
             el.scrollTo({ behavior: 'smooth', top: el.scrollHeight });
             update({ id: chatOnPage.id, scrollTop: el.scrollHeight });
         } else {
-            setChatOnPage({ messages: [chatOnPage.message] });
+            const messages: MessageType[] = [];
+            if (chatOnPage.message) messages.push(chatOnPage.message);
+
+            setChatOnPage({ messages });
         }
     }, [chatOnPage?.message, isLoading]);
 
@@ -67,7 +71,10 @@ export const useMessages = (): UseMessagesType => {
 
         /** загрузка сообщений с сервера */
         if (!chatOnPage?.messages?.length && !number) {
-            setChatOnPage({ messages: [chatOnPage.message] });
+            const messages: MessageType[] = [];
+            if (chatOnPage.message) messages.push(chatOnPage.message);
+
+            setChatOnPage({ messages });
         }
     }, [chatOnPage?.id, isLoadedChatsFromIndexDb]);
 

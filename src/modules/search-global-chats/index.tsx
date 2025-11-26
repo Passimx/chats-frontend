@@ -27,8 +27,8 @@ export const SearchGlobalChats: FC<PropsType> = ({ input, changeIsLoading }) => 
                 <div className={'text_translate'}>{t('global_search')}</div>
             </div>
             <Loading isLoading={isLoading} loadingComponent={<BigText text="" />}>
-                {chats.length ? (
-                    chats.map((chat) => <SearchChatItem key={chat.id} chat={chat} />)
+                {chats.length || isLoading ? (
+                    chats.map((chat) => <SearchChatItem key={chat.id || chat.name} chat={chat} />)
                 ) : (
                     <BigText text={t('no_chats')} />
                 )}

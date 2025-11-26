@@ -22,20 +22,8 @@
 
         }
 
-        .avatar_background {
-            cursor: pointer;
-            background-color: #0a4375;
-            border-radius: 100px;
-            aspect-ratio: 1 / 1;
-            width: 100%;
-            height: 100%;
-            display: grid;
-            align-items: center;
-            justify-items: center;
-
-            .camera_icon{
-                font-size: 32px;
-            }
+        .avatar_background{
+            height: 50px;
         }
 
         .inf_background {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { MessageType } from '../../root/types/chat/message.type.ts';
 
-export const usePinned = (messageId: string, pinnedMessages?: MessageType[]) => {
+export const usePinned = (messageId?: string, pinnedMessages?: MessageType[]) => {
     const [isPin, setIsPin] = useState<boolean>(false);
 
     useEffect(() => {

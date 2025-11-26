@@ -10,9 +10,9 @@ export const useShowLastMessagesButton = (): [boolean | undefined] => {
     /** проверка: нужно ли показывать кнопку прокрутки сообщений */
     useEffect(() => {
         const messagesBlock = document.getElementById(styles.messages);
-        if (!messagesBlock) return;
-        if (!chatOnPage) return;
-        if (!messages?.length) return;
+        if (!messagesBlock) return setIsShowLastMessagesButton(undefined);
+        if (!chatOnPage) return setIsShowLastMessagesButton(undefined);
+        if (!messages?.length) return setIsShowLastMessagesButton(undefined);
 
         const lastMessage = messages[messages.length - 1];
 

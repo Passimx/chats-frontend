@@ -1,20 +1,18 @@
 import styles from './index.module.css';
 import { EditField } from '../edit-field';
-import { MdPhotoCamera, MdQrCode2 } from 'react-icons/md';
+import { MdQrCode2 } from 'react-icons/md';
 import { QrCode } from '../qr-code';
 import { memo, useCallback } from 'react';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
 import { updatePublicKey } from '../../root/api/keys';
+import { Avatar } from '../avatar';
 
 export const UserInf = memo(() => {
-    const keyName = useAppSelector((state) => state.app.keyInf?.name);
     const publicKeyHash = useAppSelector((state) => state.app.keyInf?.publicKeyHash);
-    const userName = useShortText(`@${publicKeyHash}`);
-
-    // todo
-    // const { openMedia } = useOpenMedia(() => {});
     const { setStateApp, changeKeyInf } = useAppAction();
+    const userName = useShortText(`@${publicKeyHash}`);
+    const keyInfMetadata = useAppSelector((state) => state.app.keyInf?.metadata);
 
     const openQrCode = useCallback(() => {
         if (!publicKeyHash) return;
@@ -24,19 +22,19 @@ export const UserInf = memo(() => {
     }, [publicKeyHash]);
 
     const changeName = async (name: string) => {
-        const response = await updatePublicKey({ name });
-        if (!response.success) return;
-        changeKeyInf({ name });
+        const metadata = { ...(keyInfMetadata ?? {}), name };
+        await updatePublicKey({ metadata });
+        changeKeyInf({ metadata });
     };
 
     return (
         <div className={styles.background}>
             <div className={styles.main}>
                 <div className={styles.avatar_background}>
-                    <MdPhotoCamera className={styles.camera_icon} />
+                    <Avatar images={keyInfMetadata?.images} isClickable={true} />
                 </div>
                 <div className={styles.inf_background}>
-                    <EditField value={keyName} setValue={(value) => changeName(value)} />
+                    <EditField value={keyInfMetadata?.name} setValue={(value) => changeName(value)} />
                     <div className={styles.name_background}>
                         <div
                             className={styles.background_name}

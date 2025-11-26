@@ -3,7 +3,6 @@ import { FC } from 'react';
 import AppWrapper from '../wrappers/app';
 import { Redirect } from '../../pages/redirect';
 import { ChatContext } from '../../pages/chat/context/chat-context.tsx';
-import { CreateDialogue } from '../../pages/create-dialogue';
 
 const router = createBrowserRouter([
     {
@@ -14,11 +13,7 @@ const router = createBrowserRouter([
         ),
         children: [
             {
-                path: 'create-dialogue/:recipientPublicKeyHash',
-                element: <CreateDialogue />,
-            },
-            {
-                path: ':id',
+                path: ':name',
                 element: <ChatContext />,
             },
             {

@@ -30,7 +30,7 @@ export const useAppEvents = () => {
             case EventsEnum.ADD_CHAT:
                 if (getRawChat(data.id)) break;
                 setToBegin(data);
-                if (data.type === ChatEnum.IS_SYSTEM) setStateApp({ systemChatId: data.id });
+                if (data.type === ChatEnum.IS_SYSTEM) setStateApp({ systemChatName: data.name });
                 playNotificationSound();
                 break;
             case EventsEnum.CREATE_CHAT:
@@ -38,7 +38,7 @@ export const useAppEvents = () => {
                 if (getRawChat(data.data.id)) break;
                 setToBegin({
                     ...data.data,
-                    messages: [data.data.message],
+                    messages: data.data.message ? [data.data.message] : [],
                     readMessage: 0,
                     online: '1',
                     maxUsersOnline: '1',
@@ -49,7 +49,7 @@ export const useAppEvents = () => {
             case EventsEnum.CREATE_DIALOGUE:
                 if (!data.success) break;
                 if (getRawChat(data.data.id)) break;
-                if (data.data.type === ChatEnum.IS_FAVORITES) setStateApp({ favoritesChatId: data.data.id });
+                if (data.data.type === ChatEnum.IS_FAVORITES) setStateApp({ favoritesChatName: data.data.name });
                 setToBegin(await prepareDialogue(data.data));
                 playNotificationSound();
                 break;

@@ -7,6 +7,7 @@ export const useUpdateBadge = () => {
 
     useEffect(() => {
         if (!rawApp.isMainTab) return;
+        if (!messageCount) return;
         if (navigator.setAppBadge) navigator.setAppBadge(messageCount);
     }, [messageCount]);
 };

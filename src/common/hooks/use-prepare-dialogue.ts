@@ -6,16 +6,20 @@ import { setRawCryptoKey } from '../../root/store/raw/chats.raw.ts';
 import { MessagesService } from '../services/messages.service.ts';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { receiveKey } from '../../root/api/keys';
+import { MessageType } from '../../root/types/chat/message.type.ts';
 
 export const usePrepareDialogue = () => {
     return useCallback(async (data: DialogueType) => {
         const { keys, ...body } = data;
         let readMessage = 0;
         if (data.type === ChatEnum.IS_FAVORITES) readMessage = data.countMessages;
+        const messages: MessageType[] = [];
+        if (body.message) messages.push(body.message);
+
         const payload: ChatItemIndexDb = {
             ...body,
-            messages: [body.message],
             readMessage,
+            messages,
             online: '1',
             maxUsersOnline: '1',
             scrollTop: 0,
@@ -30,9 +34,9 @@ export const usePrepareDialogue = () => {
 
         const aesKey = await CryptoService.importEASKey(aesKeyString);
         setRawCryptoKey(payload.id, aesKey, aesKeyString);
-
         payload.aesKeyString = aesKeyString;
-        payload.message = await MessagesService.decryptMessage(payload.message);
+
+        if (payload.message) payload.message = await MessagesService.decryptMessage(payload.message);
 
         await receiveKey(data.id);
         return payload;

@@ -66,15 +66,13 @@ const ChatsSlice = createSlice({
 
         createMessage(state, { payload }: PayloadAction<MessageType>) {
             // обновление страницы чата
-            if (payload.chatId === state.chatOnPage?.id && payload.number > state.chatOnPage.message.number) {
+            if (payload.chatId === state.chatOnPage?.id && payload.number > state.chatOnPage.countMessages) {
                 state.chatOnPage.message = payload;
                 state.chatOnPage.countMessages++;
 
                 const messages = state.chatOnPage.messages;
-                const count = messages.length;
-                const lastMessage = messages[count - 1];
 
-                if (payload.number - 1 === lastMessage.number) {
+                if (payload.number === state.chatOnPage.countMessages) {
                     messages.push(payload);
                     state.chatOnPage.messages = messages;
                 }
@@ -136,6 +134,9 @@ const ChatsSlice = createSlice({
         },
 
         setChatOnPage(state, { payload }: PayloadAction<Partial<ChatItemIndexDb> | null>) {
+            if (!payload) state.chatOnPage = undefined;
+            if (payload?.id && payload?.id !== state.chatOnPage?.id) state.chatOnPage = undefined;
+
             if (!payload) return;
             if (state.chatOnPage?.id && payload?.id && payload?.id !== state.chatOnPage?.id)
                 state.chatOnPage = undefined;

@@ -70,12 +70,12 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
 
     // set language
     const isLoaded = useTranslation();
-    const { id } = useParams();
+    const { name } = useParams();
 
     const hideMenu = useCallback(() => {
-        if (!id) return;
+        if (!name) return;
         document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
-    }, [id]);
+    }, [name]);
 
     if (isLoaded)
         return (

@@ -11,17 +11,17 @@ export const useJoinChat = () => {
         if (!socketId || !isLoadedChatsFromIndexDb) return;
 
         if (!chatOnPage) return;
-        if (!getRawChat(chatOnPage.id))
+        if (chatOnPage.id && !getRawChat(chatOnPage.id))
             listenChats([
                 {
-                    chatId: chatOnPage.id,
+                    name: chatOnPage.name,
                     lastMessage: chatOnPage.countMessages,
                     maxUsersOnline: Number(chatOnPage.maxUsersOnline),
                 },
             ]);
 
         return () => {
-            if (!getRawChat(chatOnPage.id)) leaveChats([chatOnPage.id]);
+            if (chatOnPage.id && !getRawChat(chatOnPage.id)) leaveChats([chatOnPage.id]);
         };
     }, [chatOnPage?.id, socketId, isLoadedChatsFromIndexDb]);
 };
