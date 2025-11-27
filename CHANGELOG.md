@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/Passimx/chats-frontend/compare/v0.0.4...v0.0.6) (2025-11-27)
+
+
+### Features
+
+* just check ([46e9f6a](https://github.com/Passimx/chats-frontend/commit/46e9f6a500ab818c8266d88c9197b4cc48919547))
+
 ### [0.0.5](https://github.com/Passimx/chats-frontend/compare/v0.0.4...v0.0.5) (2025-11-27)
 
 ### 0.0.4 (2025-11-27)
