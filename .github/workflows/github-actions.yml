@@ -40,9 +40,7 @@ jobs:
 
       - name: Get release version
         id: get_version
-        run: |
-          echo "VERSION=$(git describe --tags --abbrev=0)" >> "$GITHUB_ENV"
-          echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
   build:
     uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
