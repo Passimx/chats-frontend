@@ -57,6 +57,9 @@ jobs:
       GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+    permissions:
+     contents: write
+     packages: write
 
   release:
     needs: build
