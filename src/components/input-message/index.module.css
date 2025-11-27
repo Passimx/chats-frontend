@@ -48,11 +48,13 @@
 #inputs{
     display: grid;
     grid-template-columns: auto 1fr auto auto;
+    align-items: center;
 }
 
 .button_inputs_background{
     display: grid;
     align-items: end;
+    height: 100%;
 }
 
 #button_menu, #button_emoji_block, #button_input_block, #button_microphone_block, #button_microphone_delete{
@@ -82,6 +84,7 @@
 #button_input_background{
     display: grid;
     align-items: end;
+    height: 100%;
 }
 
 #button_input_block, #button_microphone_block, #button_microphone_delete{
@@ -118,10 +121,11 @@
 }
 
 #new_message_block{
-    overflow: scroll;
-    min-height: 30px;
-    padding: 8px;
+    overflow: auto;
+    /*min-height: 30px;*/
+    /*padding: 8px;*/
     background-color: #FFFFFF;
+    /*background-color: red;*/
     scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
     pointer-events: auto;
@@ -155,7 +159,6 @@
 .placeholder_text{
     display: grid;
     align-items: center;
-    height: 30px;
     opacity: 0.5;
     position: absolute;
     pointer-events: none;

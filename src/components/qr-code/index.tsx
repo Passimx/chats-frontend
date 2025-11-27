@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import Loading from '../loading';
 import { LoadingQrCode } from './components/loading-qr-code';
 import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
+import { useAppSelector } from '../../root/store';
 
 function setupHiDPICanvas(canvas: HTMLCanvasElement, width: number, height: number) {
     const ratio = 3;
@@ -33,8 +34,9 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
     const { t } = useTranslation();
     const visibleText = useShortText(text);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const size = Math.min(window.innerWidth, window.innerHeight, 400) - 8;
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const zoom = useAppSelector((state) => state.app.settings?.zoom);
+    const size = (Math.min(window.innerWidth, window.innerHeight, 400) - 8) / Math.max(zoom ?? 0, 1);
 
     useEffect(() => {
         if (!canvasRef.current) return;
