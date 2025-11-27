@@ -14,7 +14,7 @@ export const useJoinChat = () => {
         if (chatOnPage.id && !getRawChat(chatOnPage.id))
             listenChats([
                 {
-                    name: chatOnPage.name,
+                    chatId: chatOnPage.id,
                     lastMessage: chatOnPage.countMessages,
                     maxUsersOnline: Number(chatOnPage.maxUsersOnline),
                 },

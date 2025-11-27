@@ -40,7 +40,7 @@ export const useListenAndUpdateChats = () => {
         let messageCount = messageCountStart;
 
         const chatsListen = getRawChats().map<ChatListenRequestType>((chat) => ({
-            name: chat.name,
+            chatId: chat.id,
             lastMessage: chat.countMessages,
             maxUsersOnline: Number(chat.maxUsersOnline),
         }));

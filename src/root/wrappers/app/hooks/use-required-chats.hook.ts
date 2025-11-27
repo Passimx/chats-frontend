@@ -25,7 +25,7 @@ export const useRequiredChats = () => {
                 data: { ...chat, readMessage: 0, messages, scrollTop: 0, key: Date.now() },
             });
             listenChats([
-                { name: chat?.name, lastMessage: chat?.countMessages, maxUsersOnline: Number(chat?.maxUsersOnline) },
+                { chatId: chat?.id, lastMessage: chat?.countMessages, maxUsersOnline: Number(chat?.maxUsersOnline) },
             ]);
         }
     };

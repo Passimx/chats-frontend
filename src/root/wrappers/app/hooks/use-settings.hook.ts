@@ -22,6 +22,9 @@ export const useSettings = () => {
             const languages: string[] = Object.keys(resources);
             settings.lang = languages.find((lang) => lang === browserLang) ?? 'en';
         }
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        if (settings.zoom) document.body.style.zoom = settings.zoom;
 
         Envs.settings = settings;
         changeSettings({ ...initSettings, ...settings });

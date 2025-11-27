@@ -62,6 +62,9 @@ export type SettingsType = {
     cacheVoiceTime?: number;
     cacheTotalMemory?: number;
 
+    // appearance
+    zoom?: number;
+
     // auth
     isCheckVerified?: boolean;
     verificationKey?: string;

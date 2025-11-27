@@ -5,7 +5,7 @@ import { memo, useCallback, useMemo } from 'react';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { IoChatboxEllipsesOutline, IoRocketOutline, IoSettingsOutline } from 'react-icons/io5';
 import json from '../../../package.json';
-import { TbDatabase, TbLogs } from 'react-icons/tb';
+import { TbBackground, TbDatabase, TbLogs } from 'react-icons/tb';
 import { ChangeLanguage } from '../../components/change-language';
 import { MenuTitle } from '../../components/menu-title';
 import { Chats } from '../../components/chats';
@@ -17,6 +17,7 @@ import { EnvironmentEnum, Envs } from '../../common/config/envs/envs.ts';
 import { Memory } from '../../components/memory';
 import { LuStar } from 'react-icons/lu';
 import { UserInf } from '../../components/user-inf';
+import { Appearance } from '../../components/appearance';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
@@ -82,6 +83,10 @@ export const Settings = memo(() => {
                 >
                     <LuStar className={styles.item_logo} />
                     <div className="text_translate">{t('favorites')}</div>
+                </div>
+                <div className={styles.item} onClick={() => selectMenu(<Appearance />)}>
+                    <TbBackground className={styles.item_logo} />
+                    <div className="text_translate">{t('appearance')}</div>
                 </div>
                 <div className={styles.item} onClick={() => selectMenu(<ChangeLanguage />)}>
                     <GrLanguage className={styles.item_logo} />
