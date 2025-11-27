@@ -44,20 +44,10 @@ self.addEventListener('fetch', async (event) => {
 
     // CSRF secure
     if (Envs?.allowUrls?.length && !Envs?.allowUrls.includes(requestUrl.host)) {
-        // qr-code module
-        if (requestUrl.href.includes('zxing_reader.wasm'))
-            return event.respondWith(
-                fetch(event.request).then((res) => {
-                    return new Response(res.body, {
-                        status: res.status,
-                        statusText: res.statusText,
-                        headers: {
-                            'Content-Type': 'application/wasm',
-                            ...Object.fromEntries(res.headers.entries()),
-                        },
-                    });
-                }),
-            );
+        // qr-code module (WASM)
+        if (requestUrl.href.includes('zxing_reader.wasm')) {
+            return event.respondWith(fetch(event.request));
+        }
 
         console.log(`Blocking cross-origin request: ${event.request.url}`);
         event.respondWith(Response.error());
