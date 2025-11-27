@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/Passimx/chats-frontend/compare/v1.0.0...v1.0.1) (2025-11-27)
+
+
+### Bug Fixes
+
+* correct ci-cd ([bca1d26](https://github.com/Passimx/chats-frontend/commit/bca1d267f21a00060fb38d60d0506ac95ff8518b))
+
 # 1.0.0 (2025-11-27)
 
 
