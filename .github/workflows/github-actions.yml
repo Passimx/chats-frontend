@@ -14,11 +14,13 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+    outputs:
+      release_version: ${{ steps.get_version.outputs.VERSION }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # обязательно для тегов
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,9 +34,15 @@ jobs:
         run: npm run lint && npm run build
 
       - name: Semantic Release
+        run: npx semantic-release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+
+      - name: Get release version
+        id: get_version
+        run: |
+          echo "VERSION=$(git describe --tags --abbrev=0)" >> "$GITHUB_ENV"
+          echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
   build:
     uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
@@ -43,15 +51,12 @@ jobs:
       ORGANIZATION_NAME: ${{ vars.ORGANIZATION_NAME }}
       IMAGE_NAME: ${{ vars.IMAGE_NAME }}
       VITE_API_URL: ${{ vars.VITE_API_URL }}
-      ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+      VERSION: ${{ needs.version.outputs.release_version }}
     secrets:
       DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
       GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-    permissions:
-      contents: write
-      packages: write
 
   release:
     needs: build
