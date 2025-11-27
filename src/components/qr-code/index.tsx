@@ -33,8 +33,10 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
     const { t } = useTranslation();
     const visibleText = useShortText(text);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const size = Math.min(window.innerWidth, window.innerHeight, 400) - 8;
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const size = (Math.min(window.innerWidth, window.innerHeight, 400) - 8) / (zoom ?? 1);
 
     useEffect(() => {
         if (!canvasRef.current) return;
