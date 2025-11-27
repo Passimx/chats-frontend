@@ -2,7 +2,7 @@
   "name": "PassimX",
   "description": "Open platform for messaging",
   "private": true,
-  "version": "0.0.9",
+  "version": "0.0.10",
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
