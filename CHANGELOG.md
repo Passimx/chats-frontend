@@ -1,3 +1,13 @@
+## [1.0.2](https://github.com/Passimx/chats-frontend/compare/v1.0.1...v1.0.2) (2025-11-27)
+
+
+### Performance Improvements
+
+* actions ([c0b620e](https://github.com/Passimx/chats-frontend/commit/c0b620eb23bbcc99ca8dbd189b7a06a630cdf14f))
+* actions ([dc1ef95](https://github.com/Passimx/chats-frontend/commit/dc1ef95ce3a665311d3502b170c29edeffd22fed))
+* actions ([1a6bb3c](https://github.com/Passimx/chats-frontend/commit/1a6bb3c84eae2403b7d1454552f319903ea5b631))
+* actions ([85d46b0](https://github.com/Passimx/chats-frontend/commit/85d46b01b2f93c38a764dafd279aed9d9007effb))
+
 ## [1.0.1](https://github.com/Passimx/chats-frontend/compare/v1.0.0...v1.0.1) (2025-11-27)
 
 
