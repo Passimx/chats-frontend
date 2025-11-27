@@ -234,4 +234,3 @@ Thank you for your time and effort.
    git commit -m "feature: chat encryption module"
    ```
 4. Push your branch and open a Pull Request to the `main` branch.
-
