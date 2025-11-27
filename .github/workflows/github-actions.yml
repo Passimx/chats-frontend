@@ -37,10 +37,14 @@ jobs:
         run: npx semantic-release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Fetch updated tags
+        run: git fetch --tags --force
       - name: Get release version
         id: get_version
         run: echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+      - name: Show new version
+        run: |
+          echo "New version: $(git describe --tags --abbrev=0)"
 
   build:
     uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
