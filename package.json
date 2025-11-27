@@ -2,7 +2,7 @@
   "name": "PassimX",
   "description": "Open platform for messaging",
   "private": true,
-  "version": "0.0.11",
+  "version": "0.0.1",
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
@@ -13,8 +13,7 @@
     "preview": "vite preview",
     "prepare": "husky install",
     "dist:sha256": "cd dist && find . -type f -not -name \"*.map\" -print0 | sort -z | xargs -0 sha256sum | sed 's|^\\(.*\\)\\ \\./|\\1\\ |' > ../verify/dist.sha256",
-    "verify": "cd verify && node verify.js",
-    "release": "standard-version"
+    "verify": "cd verify && node verify.js"
   },
   "dependencies": {
     "@types/qrcode": "^1.5.6",
@@ -36,6 +35,9 @@
   "devDependencies": {
     "@react-buddy/ide-toolbox": "^2.4.0",
     "@reduxjs/toolkit": "^2.3.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/npm": "^13.1.2",
     "@types/md5": "^2.3.5",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.3.0",
@@ -51,7 +53,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.2.7",
     "prettier": "3.3.2",
-    "standard-version": "^9.5.0",
+    "semantic-release": "^25.0.2",
     "typescript": "^5.2.2",
     "vite": "^5.4.10"
   },
