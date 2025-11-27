@@ -2,7 +2,7 @@
   "name": "PassimX",
   "description": "Open platform for messaging",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
@@ -13,7 +13,8 @@
     "preview": "vite preview",
     "prepare": "husky install",
     "dist:sha256": "cd dist && find . -type f -not -name \"*.map\" -print0 | sort -z | xargs -0 sha256sum | sed 's|^\\(.*\\)\\ \\./|\\1\\ |' > ../verify/dist.sha256",
-    "verify": "cd verify && node verify.js"
+    "verify": "cd verify && node verify.js",
+    "release": "standard-version"
   },
   "dependencies": {
     "@types/qrcode": "^1.5.6",
@@ -50,6 +51,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.2.7",
     "prettier": "3.3.2",
+    "standard-version": "^9.5.0",
     "typescript": "^5.2.2",
     "vite": "^5.4.10"
   },
