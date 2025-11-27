@@ -5,14 +5,21 @@ import { ChatListenRequestType } from '../../../types/chat/chat-listen-request.t
 import rawChats, { getRawChat, getRawChats } from '../../../store/raw/chats.raw.ts';
 import { ChatItemIndexDb, ChatType } from '../../../types/chat/chat.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
-// import { rawApp } from '../../../store/app/app.raw.ts';
+import { usePrepareDialogue } from '../../../../common/hooks/use-prepare-dialogue.ts';
+import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 
 export const useListenAndUpdateChats = () => {
+    const prepareDialogue = usePrepareDialogue();
     const { setStateApp, setToBegin, postMessageToBroadCastChannel, setStateChat } = useAppAction();
     const { socketId, isLoadedChatsFromIndexDb, isOnline } = useAppSelector((state) => state.app);
     const compareFn = useCallback((chat1: ChatType, chat2: ChatType) => {
-        const firstDate = new Date(chat1.message.createdAt).getTime();
-        const secondDate = new Date(chat2.message.createdAt).getTime();
+        const createdAt1 = chat1.message?.createdAt;
+        const createdAt2 = chat2.message?.createdAt;
+
+        if (!createdAt1 || !createdAt2) return -1;
+
+        const firstDate = new Date(createdAt1).getTime();
+        const secondDate = new Date(createdAt2).getTime();
 
         if (firstDate > secondDate) return 1;
         else return -1;
@@ -33,25 +40,34 @@ export const useListenAndUpdateChats = () => {
         let messageCount = messageCountStart;
 
         const chatsListen = getRawChats().map<ChatListenRequestType>((chat) => ({
-            chatId: chat.id,
+            name: chat.name,
             lastMessage: chat.countMessages,
             maxUsersOnline: Number(chat.maxUsersOnline),
         }));
 
         listenChats(chatsListen)
-            .then(({ success, data }) => {
+            .then(async ({ success, data }) => {
                 const indexDb = rawChats.indexDb;
                 if (!indexDb) return;
                 if (!success) return;
 
                 /** обновление последнего сообщения и максимально онлайн */
-                data.sort(compareFn).forEach((chat) => {
-                    const chatFromRaw = getRawChat(chat.id);
-                    if (!chatFromRaw) return;
-                    const updatedChat: ChatItemIndexDb = { ...chatFromRaw, ...chat };
+                data.sort(compareFn).map(async (chat) => {
+                    let updatedChat: ChatItemIndexDb | undefined;
 
-                    if (updatedChat.countMessages > chatFromRaw.countMessages) {
-                        messageCount += updatedChat.countMessages - chatFromRaw.countMessages;
+                    const chatFromRaw = getRawChat(chat.id);
+
+                    if (chatFromRaw) updatedChat = { ...chatFromRaw, ...chat };
+                    else if (chat.type === ChatEnum.IS_DIALOGUE) {
+                        updatedChat = await prepareDialogue(chat);
+                        if (updatedChat) updatedChat.key = Date.now();
+                    }
+
+                    if (!updatedChat) return;
+
+                    const countMessages = chatFromRaw?.countMessages ?? 0;
+                    if (updatedChat.countMessages > countMessages) {
+                        messageCount += updatedChat.countMessages - countMessages;
                         setToBegin(updatedChat);
 
                         // todo

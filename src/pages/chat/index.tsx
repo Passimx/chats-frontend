@@ -1,7 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
 import { FC, memo } from 'react';
-import ChatAvatar from '../../components/chat-avatar';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import Message from '../../components/message';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +13,6 @@ import { CiMenuKebab } from 'react-icons/ci';
 import useClickOutside from '../../common/hooks/use-click-outside.ts';
 import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
 import { MdExitToApp, MdQrCode2 } from 'react-icons/md';
-import { IconEnum } from '../../components/chat-avatar/types/icon.enum.ts';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { RxLockClosed } from 'react-icons/rx';
 import { useMethods } from './hooks/use-methods.hooks.ts';
@@ -26,6 +24,8 @@ import { InputMessage } from '../../components/input-message';
 import { QrCode } from '../../components/qr-code';
 import { PinnedMessages } from '../../components/pinned-messages';
 import { useGetChatTitle } from '../../common/hooks/use-get-chat-title.hook.ts';
+import { Avatar } from '../../components/avatar';
+import { EmptyMessages } from '../../components/empty-messages';
 
 const Chat: FC = memo(() => {
     useGetChat();
@@ -47,12 +47,9 @@ const Chat: FC = memo(() => {
                 <div id={styles.header}>
                     <IoArrowBackCircleOutline onClick={back} id={styles.back_icon} />
                     <div id={styles.chat_inf}>
-                        <ChatAvatar
-                            onlineCount={chatOnPage.online}
-                            maxUsersOnline={chatOnPage.maxUsersOnline}
-                            iconType={IconEnum.ONLINE}
-                            isChange={chatOnPage.type !== ChatEnum.IS_SYSTEM}
-                            isSystem={chatOnPage.type === ChatEnum.IS_SYSTEM}
+                        <Avatar
+                            showIcon={[ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage.type)}
+                            isClickable={![ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage.type)}
                         />
                         <div className={`${styles.title_block} text_translate`}>
                             {[ChatEnum.IS_FAVORITES, ChatEnum.IS_SYSTEM].includes(chatOnPage.type) && (
@@ -65,13 +62,15 @@ const Chat: FC = memo(() => {
                                 <RxLockClosed className={styles.look_svg} color="red" />
                             )}
                         </div>
-                        <div id={styles.chat_menu_button} onClick={() => setIsVisible(true)}>
-                            <CiMenuKebab id={styles.menu_icon} />
-                        </div>
+                        {!!chatOnPage.countMessages && (
+                            <div id={styles.chat_menu_button} onClick={() => setIsVisible(true)}>
+                                <CiMenuKebab id={styles.menu_icon} />
+                            </div>
+                        )}
                     </div>
                 </div>
                 <PinnedMessages />
-                {!getRawChat(chatOnPage.id) && (
+                {!!chatOnPage.countMessages && !getRawChat(chatOnPage.id) && (
                     <div className={`${styles.add_chat_block} text_translate`} onClick={addChat}>
                         <IoIosAddCircleOutline id={styles.new_chat_icon} />
                         {t('add_chat')}
@@ -81,48 +80,60 @@ const Chat: FC = memo(() => {
             <div id={styles.messages_main_block}>
                 {/*todo*/}
                 {/*вынести меню чата в отдельный компонент как эмодзи*/}
-                <div
-                    id={styles.chat_menu}
-                    className={setVisibilityCss(styles.show_slowly, styles.hide_slowly, isVisible)}
-                    ref={wrapperRef}
-                    onClick={() => setIsVisible(false)}
-                >
+                {
                     <div
-                        className={styles.chat_menu_item}
-                        onClick={() => {
-                            setStateApp({ page: <QrCode data={window.location.origin + window.location.pathname} /> });
-                        }}
+                        id={styles.chat_menu}
+                        className={setVisibilityCss(styles.show_slowly, styles.hide_slowly, isVisible)}
+                        ref={wrapperRef}
+                        onClick={() => setIsVisible(false)}
                     >
-                        <MdQrCode2 className={styles.chat_menu_item_icon} />
-                        <div className={'text_translate'}>{t('qr_code')}</div>
+                        <div
+                            className={styles.chat_menu_item}
+                            onClick={() => {
+                                setStateApp({
+                                    page: (
+                                        <QrCode
+                                            url={window.location.origin + window.location.pathname}
+                                            text={chatOnPage?.id}
+                                        />
+                                    ),
+                                });
+                            }}
+                        >
+                            <MdQrCode2 className={styles.chat_menu_item_icon} />
+                            <div className={'text_translate'}>{t('qr_code')}</div>
+                        </div>
+                        <div
+                            className={styles.chat_menu_item}
+                            onClick={() => {
+                                navigator.clipboard.writeText(window.location.origin + window.location.pathname);
+                            }}
+                        >
+                            <IoCopyOutline className={styles.chat_menu_item_icon} />
+                            <div className={'text_translate'}>{t('copy_link')}</div>
+                        </div>
+                        {getRawChat(chatOnPage.id) &&
+                            ![ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage!.type) && (
+                                <div className={styles.chat_menu_item} onClick={leave}>
+                                    <MdExitToApp className={`${styles.chat_menu_item_icon} ${styles.rotate}`} />
+                                    <div className={'text_translate'}>{t('leave_chat')}</div>
+                                </div>
+                            )}
                     </div>
-                    <div
-                        className={styles.chat_menu_item}
-                        onClick={() => {
-                            navigator.clipboard.writeText(window.location.origin + window.location.pathname);
-                        }}
-                    >
-                        <IoCopyOutline className={styles.chat_menu_item_icon} />
-                        <div className={'text_translate'}>{t('copy_link')}</div>
+                }
+                {!!chatOnPage?.countMessages && (
+                    <div id={styles.messages_block}>
+                        <div></div>
+                        <div id={styles.messages}>
+                            {isLoading === LoadingType.OLD && <RotateLoading />}
+                            {chatOnPage?.messages?.map((message) => (
+                                <Message key={message.id} {...{ ...message, chat: { type: chatOnPage.type } }} />
+                            ))}
+                            {isLoading === LoadingType.NEW && <RotateLoading />}
+                        </div>
                     </div>
-                    {getRawChat(chatOnPage.id) &&
-                        ![ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage!.type) && (
-                            <div className={styles.chat_menu_item} onClick={leave}>
-                                <MdExitToApp className={`${styles.chat_menu_item_icon} ${styles.rotate}`} />
-                                <div className={'text_translate'}>{t('leave_chat')}</div>
-                            </div>
-                        )}
-                </div>
-                <div id={styles.messages_block}>
-                    <div></div>
-                    <div id={styles.messages}>
-                        {isLoading === LoadingType.OLD && <RotateLoading />}
-                        {chatOnPage?.messages?.map((message) => (
-                            <Message key={message.id} {...{ ...message, chat: { type: chatOnPage.type } }} />
-                        ))}
-                        {isLoading === LoadingType.NEW && <RotateLoading />}
-                    </div>
-                </div>
+                )}
+                {!chatOnPage?.countMessages && <EmptyMessages />}
             </div>
             <InputMessage {...{ showLastMessages }} />
         </div>

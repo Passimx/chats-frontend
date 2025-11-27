@@ -1,7 +1,9 @@
-import { CreateRsaKeysType, RsaKeysStringType } from '../../root/types/create-rsa-keys.type.ts';
+import { CreateRsaKeysType, RsaKeysStringType } from '../../root/types/keys/create-rsa-keys.type.ts';
 import { WordsService } from './words-service/words.service.ts';
 import { IKeys } from '../../root/types/keys/keys.type.ts';
 import { FilesType, MimetypeEnum } from '../../root/types/files/types.ts';
+import { createHmac } from 'crypto';
+import { Envs } from '../config/envs/envs.ts';
 
 const iterations = 1000000;
 const keyLength = 256;
@@ -252,6 +254,10 @@ export class CryptoService {
         } catch (e) {
             return undefined;
         }
+    }
+
+    public static getHash(value: string): string {
+        return createHmac('sha256', Envs.appSalt).update(value).digest('hex');
     }
 }
 

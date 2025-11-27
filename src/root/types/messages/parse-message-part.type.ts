@@ -16,4 +16,9 @@ type TagType = {
     content: string;
 };
 
-export type ParseMessagePartType = LinkType | TextType | TagType;
+type NameType = {
+    type: PartTypeEnum.NAME;
+    content: string;
+};
+
+export type ParseMessagePartType = LinkType | TextType | TagType | NameType;

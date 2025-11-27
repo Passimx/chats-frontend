@@ -15,7 +15,7 @@ export const EditFileName: FC<PropsType> = memo(({ file, number }) => {
         return [`file_${number}`, `${memory} ${t(unit)}`];
     }, [file, number]);
 
-    // // первоначальная установка имени файла
+    // первоначальная установка имени файла
     useEffect(() => {
         const element = document.getElementById(id);
         if (element) element.innerText = file.name;
@@ -23,7 +23,7 @@ export const EditFileName: FC<PropsType> = memo(({ file, number }) => {
 
     const prepareText = (text: string = '') => {
         let fileName = text
-            .trim() // убираем пробелы в начале и в конце
+            .trim()
             // eslint-disable-next-line no-control-regex
             .replace(/[<>:"/\\|?*\x00-\x1F]/g, '_')
             .replace(/\s+/g, ' ');

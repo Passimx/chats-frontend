@@ -5,11 +5,12 @@ import { ChatKeyType } from '../keys/chat-key.type.ts';
 type InnerChatItemType = {
     id: string;
     title?: string;
+    name: string;
     type: ChatEnum;
     createdAt: Date;
     countMessages: number;
     maxUsersOnline: string;
-    message: MessageType;
+    message?: MessageType;
     keys?: ChatKeyType[];
 };
 

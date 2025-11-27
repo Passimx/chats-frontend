@@ -1,7 +1,7 @@
 import { createContext, FC, memo, ReactElement, useCallback, useEffect, useState } from 'react';
 import { AudioType, ContextType } from './types/context.type.ts';
 import { FileExtensionEnum, FileMap } from '../../types/files/types.ts';
-import { UpdateMediaSession } from './components/update-media-session.hook.tsx';
+import { UpdateMediaSession } from './hooks/update-media-session.hook.tsx';
 
 export const AudioPlayerContext = createContext<ContextType | null>(null);
 

@@ -7,6 +7,7 @@ import { canSaveCache, getCacheMemory } from '../../../common/cache/get-cache-me
 import { StateType } from '../../store/app/types/state.type.ts';
 import { MessagesService } from '../../../common/services/messages.service.ts';
 import { CryptoService } from '../../../common/services/crypto.service.ts';
+import { store } from '../../store';
 
 export const uploadFile = async (formData: FormData): Promise<IData<UploadResultType>> => {
     const body = await MessagesService.encryptFormData(formData);
@@ -144,19 +145,37 @@ export const DownloadFileWithPercents = async (
     });
 };
 
-export const DownloadFileOnDevice = async (file: Types, blob?: Blob): Promise<Blob | undefined> => {
-    if (!blob) return;
+export const shareFile = (file: Partial<Types>, blob: Blob) => {
+    let filename = file.originalName || 'file';
+    const mimeToExt = MimeToExt.get(file.mimeType!);
 
-    const filename = file.originalName;
+    if (mimeToExt && !filename.endsWith(mimeToExt) && !filename.endsWith('.jpg')) filename = `${filename}.${mimeToExt}`;
+
+    const myFile = new File([blob], filename, { type: file.mimeType });
+    const canShare = navigator.canShare && navigator.canShare({ files: [myFile] });
+    const isPhone = store.getState().app.isPhone;
+
+    if (isPhone && canShare) {
+        try {
+            navigator.share({
+                files: [myFile],
+            });
+        } catch (e) {
+            DownloadFileOnDevice(myFile, blob);
+            console.error(e);
+        }
+    } else {
+        DownloadFileOnDevice(myFile, blob);
+    }
+};
+
+const DownloadFileOnDevice = async (file: File, blob: Blob): Promise<Blob | undefined> => {
+    const filename = file.name;
     const url = window.URL.createObjectURL(blob);
-    const mimeToExt = MimeToExt.get(blob.type);
 
     const a = document.createElement('a');
     a.href = url;
-
-    if (mimeToExt && !filename.endsWith(mimeToExt) && !filename.endsWith('.jpg')) {
-        a.download = `${filename}.${mimeToExt}`;
-    } else a.download = filename;
+    a.download = filename;
 
     document.body.appendChild(a);
     a.click();

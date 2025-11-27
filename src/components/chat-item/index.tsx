@@ -1,15 +1,13 @@
 import { FC, memo, useEffect, useMemo } from 'react';
 import styles from './index.module.css';
-import ChatAvatar from '../chat-avatar';
 import { useMessage } from './hooks/use-message.hook.ts';
-import { IconEnum } from '../chat-avatar/types/icon.enum.ts';
 import { PropsType } from './types/props.type.ts';
 import { useTranslation } from 'react-i18next';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { FaStar } from 'react-icons/fa';
-import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { BsPinAngleFill } from 'react-icons/bs';
 import { useGetChatTitle } from '../../common/hooks/use-get-chat-title.hook.ts';
+import { Avatar } from '../avatar';
 
 const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redirect }) => {
     const { t } = useTranslation();
@@ -31,14 +29,12 @@ const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redir
         <div
             id={elementId}
             className={`${styles.chat_item} ${isChatOnPage && styles.selected_chat} ${isNew && styles.new_message}`}
-            onClick={() => redirect(chat.id, chat)}
+            onClick={() => redirect(chat.name, chat)}
         >
-            <ChatAvatar
-                onlineCount={chat.online}
-                maxUsersOnline={chat.maxUsersOnline}
-                iconType={IconEnum.ONLINE}
-                isSystem={chat.type === ChatEnum.IS_SYSTEM}
-            />
+            <div className={styles.avatar_background}>
+                <Avatar showIcon={[ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chat.type)} />
+            </div>
+
             <div className={styles.main_inf}>
                 <div className={styles.title_block}>
                     <div>
@@ -53,9 +49,7 @@ const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redir
                     </div>
                 </div>
                 <div className={styles.message_block}>
-                    <div
-                        className={`${styles.message} ${[MessageTypeEnum.IS_SYSTEM, MessageTypeEnum.IS_CREATED_CHAT].includes(chat.message.type) && 'text_translate'}`}
-                    >
+                    <div className={`${styles.message} text_translate`}>
                         {chat.inputMessage ? (
                             <>
                                 <strong>📝{t('draft')}: </strong>

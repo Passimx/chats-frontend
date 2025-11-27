@@ -17,8 +17,6 @@ export const useIndexDbHook = () => {
 
             const request = IndexDb.transaction('chats', 'readonly').objectStore('chats').getAll();
             request.onsuccess = async () => {
-                setStateApp({ isLoadedChatsFromIndexDb: true });
-
                 let systemChat: ChatItemIndexDb | undefined;
                 let favoritesChat: ChatItemIndexDb | undefined;
                 let messageCount = 0;
@@ -40,9 +38,10 @@ export const useIndexDbHook = () => {
                 setToEnd(chats.reverse());
                 if (messageCount) setStateChat({ messageCount });
 
-                if (systemChat) setStateApp({ systemChatId: systemChat.id });
-                if (favoritesChat) setStateApp({ favoritesChatId: favoritesChat.id });
-                else setStateApp({ systemChatId: undefined });
+                if (systemChat) setStateApp({ systemChatName: systemChat.name });
+                if (favoritesChat) setStateApp({ favoritesChatName: favoritesChat.name });
+
+                setStateApp({ isLoadedChatsFromIndexDb: true });
             };
         };
 

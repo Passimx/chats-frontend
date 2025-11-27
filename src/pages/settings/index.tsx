@@ -15,16 +15,15 @@ import { getFileSize } from '../../common/hooks/get-file-size.ts';
 import { LogList } from '../../components/log-list';
 import { EnvironmentEnum, Envs } from '../../common/config/envs/envs.ts';
 import { Memory } from '../../components/memory';
-import { MdQrCode2 } from 'react-icons/md';
-import { QrCode } from '../../components/qr-code';
 import { LuStar } from 'react-icons/lu';
+import { UserInf } from '../../components/user-inf';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
     const { setStateApp } = useAppAction();
-    const { cacheMemory, pages, activeTab, systemChatId, favoritesChatId, logs } = useAppSelector((state) => state.app);
     const chatsLength = useAppSelector((state) => state.chats.chats.length);
-    const socketId = useAppSelector((state) => state.app.socketId);
+    const name = useAppSelector((state) => state.app.keyInf?.name);
+    const { cacheMemory, pages, activeTab, systemChatName, logs } = useAppSelector((state) => state.app);
 
     const cache = useMemo(() => {
         const [memory, unit] = getFileSize(cacheMemory);
@@ -46,25 +45,9 @@ export const Settings = memo(() => {
     return (
         <div id={styles.background}>
             <MenuTitle icon={<IoSettingsOutline />} title={'settings'} />
+
             <div className={styles.items}>
-                <div className={styles.inf}>
-                    <div
-                        className={styles.inf_qr_code_background}
-                        onClick={() => {
-                            if (!socketId) return;
-                            setStateApp({
-                                page: <QrCode data={`${window.location.origin}/create-dialogue/${socketId}`} />,
-                            });
-                        }}
-                    >
-                        <MdQrCode2 className={styles.inf_qr_code} />
-                    </div>
-                    <div className={styles.inf_text_background}></div>
-                </div>
-                {/*<div className={styles.item} onClick={() => selectMenu(<Privacy />)}>*/}
-                {/*    <RiShieldKeyholeLine className={styles.item_logo} />*/}
-                {/*    <div className="text_translate">{t('privacy_policy')}</div>*/}
-                {/*</div>*/}
+                <UserInf />
             </div>
 
             {/*<div className={styles.items}>*/}
@@ -94,8 +77,7 @@ export const Settings = memo(() => {
                 <div
                     className={styles.item}
                     onClick={() => {
-                        if (favoritesChatId) navigate(favoritesChatId);
-                        else if (socketId) navigate(`/create-dialogue/${socketId}`);
+                        if (name) navigate(name);
                     }}
                 >
                     <LuStar className={styles.item_logo} />
@@ -156,7 +138,7 @@ export const Settings = memo(() => {
             </div>
 
             <div className={styles.items}>
-                <div className={styles.item} onClick={() => systemChatId && navigate(systemChatId)}>
+                <div className={styles.item} onClick={() => systemChatName && navigate(systemChatName)}>
                     <IoRocketOutline className={styles.item_logo} />
                     <div className="text_translate">
                         {t('about_app')}

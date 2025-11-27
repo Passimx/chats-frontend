@@ -40,7 +40,9 @@ export const useTranslation = () => {
             el.style.filter = 'blur(4px)';
         });
 
-        moment.locale(settings.lang);
+        if (settings.lang === 'zh') moment.locale('zh-cn');
+        else moment.locale(settings.lang);
+
         i18n.use(initReactI18next)
             .init({
                 resources,

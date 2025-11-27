@@ -1,5 +1,5 @@
-export type DialogueKey = { publicKeyHash: string; encryptionKey: string };
+export type CreateChatKeyType = { publicKeyHash: string; encryptionKey: string };
 
 export type BodyCreateDialogueType = {
-    keys: DialogueKey[];
+    keys: CreateChatKeyType[];
 };

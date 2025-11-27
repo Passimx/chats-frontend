@@ -29,11 +29,12 @@ export const useMessage = (chat: ChatItemIndexDb): ReturnType => {
 
     const changeMessage = useCallback(() => {
         const message = chat.message;
-        const visibleMessage: string = getVisibleMessage(chat.message, t);
+        if (!message) return;
+        const visibleMessage: string = getVisibleMessage(message, t);
 
         updateTime(message.createdAt);
         setMessage(visibleMessage);
-    }, [chat]);
+    }, [chat.message]);
 
     const changeCountMessages = useCallback(() => {
         if (!isLoadedChatsFromIndexDb) return;
@@ -50,7 +51,7 @@ export const useMessage = (chat: ChatItemIndexDb): ReturnType => {
 
     useEffect(() => {
         changeMessage();
-    }, [chat.message.id, t]);
+    }, [chat.message?.id, t]);
 
     useEffect(() => {
         changeCountMessages();

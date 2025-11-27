@@ -45,9 +45,9 @@ export const useMessageMenu = (message: MessageType) => {
         const clearTimeOut = () => clearTimeout(longPressTimer);
 
         if (isPhone) {
-            messageDiv.addEventListener('touchstart', appleFunc);
-            messageDiv.addEventListener('touchend', clearTimeOut);
-            messageDiv.addEventListener('touchmove', clearTimeOut);
+            messageDiv.addEventListener('touchstart', appleFunc, { passive: true });
+            messageDiv.addEventListener('touchend', clearTimeOut, { passive: true });
+            messageDiv.addEventListener('touchmove', clearTimeOut, { passive: true });
         } else messageDiv.addEventListener('contextmenu', setMenuPosition);
         return () => {
             if (isPhone) {

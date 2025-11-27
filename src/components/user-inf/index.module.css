@@ -1,0 +1,60 @@
+.background{
+    background-color: #08365e;
+    padding: 12px;
+    border-radius: 8px;
+    display: grid;
+    gap: 8px;
+
+    .main {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: stretch;
+        gap: 4px;
+
+        .main {
+            padding: 12px;
+            background-color: #08365e;
+            display: grid;
+            border-radius: 8px;
+            grid-template-columns: auto 1fr;
+            align-items: stretch;
+            gap: 4px;
+
+        }
+
+        .avatar_background{
+            height: 50px;
+        }
+
+        .inf_background {
+            display: grid;
+            gap: 8px;
+
+            .name_background{
+                display: grid;
+                grid-template-columns: 1fr auto;
+                cursor: pointer;
+                gap: 4px;
+
+                .background_name{
+                    color:#0098ea;
+                    overflow: hidden;
+                }
+
+                .copy_logo_background{
+                    cursor: pointer;
+                    border-radius: 8px;
+                    display: grid;
+                    align-items: center;
+                    background-color: #0a4375;
+                    padding: 2px;
+
+                    .copy_logo{
+                        font-size: 20px;
+                    }
+
+                }
+            }
+        }
+    }
+}

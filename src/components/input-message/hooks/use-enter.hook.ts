@@ -37,7 +37,7 @@ export const useEnterHook = (): UseEnterHookType => {
 
     useEffect(() => {
         const el = document.getElementById(styles.new_message);
-        if (!el || !chatOnPage?.id) return;
+        if (!el || !chatOnPage?.name) return;
 
         if (el.innerText !== chatOnPage?.inputMessage) {
             el.innerText = chatOnPage?.inputMessage ?? '';
@@ -125,16 +125,16 @@ export const useEnterHook = (): UseEnterHookType => {
         const isEmpty = ['', '\n'].includes(el.innerText);
         if (isEmpty) el.innerText = '';
         setIsShowPlaceholder(isEmpty);
-        if (chatOnPage?.id) {
+        if (chatOnPage?.name) {
             const isText = !!el.innerText.replace(/^\n+|\n+$/g, '').trim()?.length;
             setTextExist(isText);
 
             update({ id: chatOnPage.id, inputMessage: isText ? el.innerText : undefined });
         }
-    }, [chatOnPage?.id, textExist]);
+    }, [chatOnPage?.name, textExist]);
 
     const sendMessage = useCallback(async () => {
-        if (!chatOnPage?.id) return;
+        if (!chatOnPage?.name) return;
         const element = document.getElementById(styles.new_message)!;
         const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
 
@@ -153,7 +153,7 @@ export const useEnterHook = (): UseEnterHookType => {
     }, [chatOnPage, isPhone, isOpenMobileKeyboard, chatOnPage?.answerMessage]);
 
     useEffect(() => {
-        if (!chatOnPage?.id) return;
+        if (!chatOnPage?.name) return;
 
         const element = document.getElementById(styles.new_message)!;
         const text = getRawChat(chatOnPage.id)?.inputMessage;
@@ -169,7 +169,7 @@ export const useEnterHook = (): UseEnterHookType => {
 
         // 300 - время анимации, иначе быстро отрабатывает анимация
         if (!isPhone) setTimeout(() => focusToEnd(element), 300);
-    }, [chatOnPage?.id, isPhone]);
+    }, [chatOnPage?.name, isPhone]);
 
     useEffect(() => {
         if (!chatOnPage) return;
@@ -227,7 +227,7 @@ export const useEnterHook = (): UseEnterHookType => {
             selection.removeAllRanges();
             selection.addRange(range);
 
-            if (chatOnPage?.id) {
+            if (chatOnPage?.name) {
                 const isText = !!element.innerText.replace(/^\n+|\n+$/g, '').trim()?.length;
                 setTextExist(isText);
 
@@ -313,7 +313,7 @@ export const useEnterHook = (): UseEnterHookType => {
                 sendMessageButton.removeEventListener('touchend', sendMessage);
             } else sendMessageButton.removeEventListener('click', sendMessage);
         };
-    }, [chatOnPage?.id, isPhone, sendMessage, isRecovering]);
+    }, [chatOnPage?.name, isPhone, sendMessage, isRecovering]);
 
     const setEmoji = useCallback(
         (emoji: string) => {
@@ -354,7 +354,7 @@ export const useEnterHook = (): UseEnterHookType => {
             else chatInput.blur();
             onInput();
         },
-        [chatOnPage?.id, isPhone, isOpenMobileKeyboard, isRecovering],
+        [chatOnPage?.name, isPhone, isOpenMobileKeyboard, isRecovering],
     );
 
     return [textExist, setEmoji, placeholder, isShowPlaceholder];

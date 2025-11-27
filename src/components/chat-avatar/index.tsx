@@ -28,7 +28,7 @@ const ChatAvatar: FC<PropsType> = ({ onlineCount, maxUsersOnline, iconType, isCh
                     {!isSystem && (
                         <>
                             {!!onlineCount && onlineCount}
-                            {!onlineCount && (
+                            {!onlineCount && !isSystem && (
                                 <>
                                     <div id={styles.logos_block}>
                                         <AiOutlineLoading3Quarters className={styles.loading_logo} />

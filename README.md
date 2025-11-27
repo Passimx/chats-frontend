@@ -57,10 +57,11 @@ chats-frontend/
 │   ├── pages/                  # Main app pages
 │   ├── root/
 │   │   │
-│   │   ├── api/                # All backend API logic
+│   │   ├── api/                # All backend API logic (with encrypt / decrypt logic)
 │   │   │   │
 │   │   │   ├── chats/          # Chat-related endpoints
 │   │   │   ├── files/          # File management endpoints
+│   │   │   ├── keys/           # Keys endpoints
 │   │   │   ├── messages/       # Message endpoints
 │   │   │   ├── notifications/  # Notifications Service connection
 │   │   │   └── index.ts        # API client configuration
@@ -225,7 +226,7 @@ Thank you for your time and effort.
 1. **Fork** this repository to your own GitHub account.
 2. Create a new branch for your changes:
    ```bash
-   git checkout -b feature/your-feature-name
+   git checkout -b feature/your-feature-public-key-name
    ```
 3. Make your changes and commit them with clear messages:
    ```bash

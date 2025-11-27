@@ -67,12 +67,12 @@ const useChats = (
 
         if (!isOnline) return;
         setOffset(0);
-        removeAll();
         const notFavoriteChatIds = getRawChats().map((chat) => chat.id);
 
         getChats(key, 0, notFavoriteChatIds).then(({ success, data }) => {
             if (key !== globalKey) return;
             setIsLoading(false);
+            removeAll();
 
             if (success && data) setToEnd(data);
             else setToEnd([]);

@@ -70,12 +70,12 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
 
     // set language
     const isLoaded = useTranslation();
-    const { id } = useParams();
+    const { name } = useParams();
 
     const hideMenu = useCallback(() => {
-        if (!id) return;
+        if (!name) return;
         document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
-    }, [id]);
+    }, [name]);
 
     if (isLoaded)
         return (
@@ -86,7 +86,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
                         <Page />
                         <div id={styles.menu}>
                             <div id={styles.pages}>
-                                {/*<PageItem name={TabEnum.SERVICES}>*/}
+                                {/*<PageItem public-key-name={TabEnum.SERVICES}>*/}
                                 {/*    <Services />*/}
                                 {/*</PageItem>*/}
                                 <PageItem name={TabEnum.CHATS}>

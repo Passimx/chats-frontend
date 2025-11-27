@@ -3,13 +3,14 @@ import { useAppEvents } from './use-app-events.hook.ts';
 import { rawApp } from '../../../store/app/app.raw.ts';
 import { TabsEnum } from '../../../types/events/tabs.enum.ts';
 import { useAppSelector } from '../../../store';
+import { Envs } from '../../../../common/config/envs/envs.ts';
 
 export const useBroadcastChannel = () => {
     const sendMessage = useAppEvents();
-    const RASKeysString = useAppSelector((state) => state.app.RASKeysString);
+    const publicKey = useAppSelector((state) => state.app.keyInf?.publicKey);
 
     useEffect(() => {
-        if (!RASKeysString?.publicKey) return;
+        if (!publicKey) return;
 
         const channel = new BroadcastChannel('ws-channel');
         const instanceId = Date.now();
@@ -75,13 +76,14 @@ export const useBroadcastChannel = () => {
             const channelSend = new BroadcastChannel('ws-channel');
             channelSend.postMessage({ event: TabsEnum.DELETE_TAB, data: instanceId });
         });
-    }, [RASKeysString?.publicKey]);
+    }, [publicKey]);
 
     /** Service worker registration */
     useEffect(() => {
         if (navigator.serviceWorker) {
             navigator.serviceWorker?.register('/worker.js', { scope: '/' });
             navigator.serviceWorker?.ready?.then((registration) => {
+                if (registration.active) registration.active?.postMessage({ type: 'SET_ENVS', data: Envs });
                 return (registration as any)?.sync?.register('syncdata');
             });
         }

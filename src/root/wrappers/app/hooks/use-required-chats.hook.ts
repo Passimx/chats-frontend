@@ -1,16 +1,14 @@
 import { useAppAction, useAppSelector } from '../../../store';
-import { useEffect } from 'react';
-import { createDialogue, getSystemChat, listenChats } from '../../../api/chats';
+import { useEffect, useState } from 'react';
+import { getSystemChat, listenChats } from '../../../api/chats';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { rawApp } from '../../../store/app/app.raw.ts';
-import { CryptoService } from '../../../../common/services/crypto.service.ts';
-import { DialogueKey } from '../../../types/chat/create-dialogue.type.ts';
+import { MessageType } from '../../../types/chat/message.type.ts';
 
 export const useRequiredChats = () => {
+    const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const { postMessageToBroadCastChannel } = useAppAction();
-    const { systemChatId, favoritesChatId, isLoadedChatsFromIndexDb, isListening, socketId, RASKeys } = useAppSelector(
-        (state) => state.app,
-    );
+    const { systemChatName, isLoadedChatsFromIndexDb, isListening } = useAppSelector((state) => state.app);
 
     const setSystemChat = async () => {
         const response = await getSystemChat();
@@ -19,31 +17,23 @@ export const useRequiredChats = () => {
             if (!response.data.length) return;
             const [chat] = response.data;
 
+            const messages: MessageType[] = [];
+            if (chat.message) messages.push(chat.message);
+
             postMessageToBroadCastChannel({
                 event: EventsEnum.ADD_CHAT,
-                data: { ...chat, readMessage: 0, messages: [], scrollTop: 0, key: Date.now() },
+                data: { ...chat, readMessage: 0, messages, scrollTop: 0, key: Date.now() },
             });
             listenChats([
-                { chatId: chat?.id, lastMessage: chat?.countMessages, maxUsersOnline: Number(chat?.maxUsersOnline) },
+                { name: chat?.name, lastMessage: chat?.countMessages, maxUsersOnline: Number(chat?.maxUsersOnline) },
             ]);
         }
     };
 
-    const setFavoritesChat = async () => {
-        if (!socketId || !RASKeys?.publicKey) return;
-        const aesKeyString = await CryptoService.generateAndExportAesKey();
-        const encryptionKey = await CryptoService.encryptByRSAKey(RASKeys?.publicKey, aesKeyString);
-        if (!encryptionKey) return;
-
-        const keys: DialogueKey[] = [];
-        keys.push({ publicKeyHash: socketId, encryptionKey });
-
-        await createDialogue({ keys });
-    };
-
     useEffect(() => {
-        if (!isLoadedChatsFromIndexDb || !isListening || !rawApp.isMainTab) return;
-        if (!systemChatId) setSystemChat();
-        if (!favoritesChatId) setFavoritesChat();
-    }, [systemChatId, isLoadedChatsFromIndexDb, isListening]);
+        if (!isLoadedChatsFromIndexDb || !isListening || !rawApp.isMainTab || isLoaded) return;
+        setIsLoaded(true);
+
+        if (!systemChatName) setSystemChat();
+    }, [systemChatName, isLoadedChatsFromIndexDb, isListening, isLoaded]);
 };

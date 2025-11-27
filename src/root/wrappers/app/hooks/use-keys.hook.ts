@@ -1,8 +1,8 @@
 import { CryptoService } from '../../../../common/services/crypto.service.ts';
 import { useCallback, useEffect } from 'react';
-import { RsaKeysStringType } from '../../../types/create-rsa-keys.type.ts';
 import { useAppAction } from '../../../store';
 import { Envs } from '../../../../common/config/envs/envs.ts';
+import { KeyInfType } from '../../../store/app/types/state.type.ts';
 import { keepPublicKey } from '../../../api/keys';
 
 export const useKeys = () => {
@@ -10,26 +10,26 @@ export const useKeys = () => {
 
     const generateKeys = useCallback(async () => {
         const keys = await CryptoService.generateExportRSAKeys();
-        const request = await keepPublicKey(keys.publicKey);
+        const publicKeyHash = CryptoService.getHash(keys.publicKey);
+        const data = { publicKey: keys.publicKey, name: publicKeyHash, metadata: { name: publicKeyHash } };
+        await keepPublicKey(data);
+        const response = { ...keys, publicKeyHash, ...data };
+        localStorage.setItem('keys', JSON.stringify(response));
 
-        if (!request.success) return undefined;
-
-        localStorage.setItem('keys', JSON.stringify(keys));
-        return keys;
+        return response;
     }, []);
 
     const checkKeys = useCallback(async () => {
-        let RASKeysString: RsaKeysStringType | undefined;
+        let keyInf: KeyInfType | undefined;
         const payloadKeys = localStorage.getItem('keys');
-        if (payloadKeys) RASKeysString = JSON.parse(payloadKeys) as RsaKeysStringType;
-        else RASKeysString = await generateKeys();
-        if (!RASKeysString) return;
+        if (payloadKeys) keyInf = JSON.parse(payloadKeys) as KeyInfType;
+        else keyInf = await generateKeys();
+        if (!keyInf) return;
 
-        setStateApp({ RASKeysString });
-
-        const RASKeys = await CryptoService.importRSAKeys(RASKeysString);
+        const RASKeys = await CryptoService.importRSAKeys(keyInf);
         Envs.RASKeys = RASKeys;
-        setStateApp({ RASKeys });
+
+        setStateApp({ keyInf: { ...keyInf, RASKeys } });
     }, []);
 
     useEffect(() => {

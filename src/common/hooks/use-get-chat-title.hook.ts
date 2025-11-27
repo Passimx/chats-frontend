@@ -12,5 +12,5 @@ export const useGetChatTitle = (chat?: ChatItemIndexDb) => {
         let title = chat.title;
         if (chat.type === ChatEnum.IS_FAVORITES && chat.title) title = t(chat.title);
         return title;
-    }, [t, chat?.id]);
+    }, [t, chat?.id, chat?.title]);
 };

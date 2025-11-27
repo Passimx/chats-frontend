@@ -12,6 +12,7 @@ export const PinnedMessages: FC = memo(() => {
     const navigate = useCustomNavigate();
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
     const [visibleMessage, setVisibleMessage] = useState<string>();
+    const chatName = useAppSelector((state) => state.chats.chatOnPage?.name);
 
     useEffect(() => {
         if (!pinnedMessages?.length) return setIndex(undefined);
@@ -23,7 +24,7 @@ export const PinnedMessages: FC = memo(() => {
         if (index === undefined) return;
 
         const message = pinnedMessages[index];
-        navigate(`/${message.chatId}?number=${message.number}`);
+        navigate(`/${chatName}?number=${message.number}`);
 
         let newIndex: number = index - 1;
         if (newIndex < 0) newIndex = pinnedMessages.length - 1;
