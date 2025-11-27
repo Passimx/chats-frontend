@@ -1,6 +1,6 @@
 import { words } from './words.json';
 import { GenerateType } from './types/generate.type.ts';
-import md5 from 'md5';
+import { sha256 } from 'sha.js';
 import { Envs } from '../../config/envs/envs.ts';
 
 const wordsSet: Set<string> = new Set<string>(words);
@@ -34,7 +34,7 @@ export class WordsService {
         if (typeof words === 'string') strWords = words;
         else strWords = words.join('');
 
-        const firstPass = md5(strWords + Envs.appSalt);
-        return firstPass + md5(firstPass);
+        const firstPass = new sha256().update(strWords + Envs.appSalt).digest('hex');
+        return firstPass + new sha256().update(firstPass).digest('hex');
     };
 }
