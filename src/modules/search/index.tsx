@@ -78,7 +78,7 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
                         <div className={'text_translate'}>{t('scan_qr_code')}</div>
                     </div>
                 </div>
-                // todo
+                {/*todo*/}
                 {/*<div className={styles.new_chats_item}>*/}
                 {/*    <div className={styles.new_chats_item_click} onClick={() => changePage(<OpenChat />)}>*/}
                 {/*        <AiOutlineGlobal className={styles.new_chats_item_logo} color="green" />*/}

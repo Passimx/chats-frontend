@@ -24,7 +24,10 @@ export const useSettings = () => {
         }
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        if (settings.zoom) document.body.style.zoom = settings.zoom;
+        if (!settings.zoom) settings.zoom = document.body.style.zoom;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        document.body.style.zoom = settings.zoom;
 
         Envs.settings = settings;
         changeSettings({ ...initSettings, ...settings });

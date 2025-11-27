@@ -10,12 +10,11 @@ export const Appearance: FC = memo(() => {
     const zoom = useAppSelector((state) => state.app.settings?.zoom);
     const { changeSettings } = useAppAction();
     const options: OptionType[] = [
-        ['1', 1.05],
-        ['2', 1.1],
-        ['3', 1.15],
-        ['4', 1.2],
-        ['5', 1.25],
-        ['6', 1.3],
+        ['1', 0],
+        ['2', 1.05],
+        ['3', 1.1],
+        ['4', 1.15],
+        ['5', 1.2],
     ];
 
     const changeZoom = useCallback((zoom?: number) => {
