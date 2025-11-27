@@ -9,24 +9,7 @@ on:
       - main
 
 jobs:
-  build:
-    uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
-    with:
-      ORGANIZATION_NAME: ${{ vars.ORGANIZATION_NAME }}
-      IMAGE_NAME: ${{ vars.IMAGE_NAME }}
-      VITE_API_URL: ${{ vars.VITE_API_URL }}
-      ENVIRONMENT: ${{ vars.ENVIRONMENT }}
-    secrets:
-      DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-      GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
-      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-    permissions:
-      contents: write
-      packages: write
-
   version:
-    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -52,6 +35,23 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
+
+  build:
+    uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
+    needs: version
+    with:
+      ORGANIZATION_NAME: ${{ vars.ORGANIZATION_NAME }}
+      IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+      VITE_API_URL: ${{ vars.VITE_API_URL }}
+      ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+    secrets:
+      DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+    permissions:
+      contents: write
+      packages: write
 
   release:
     needs: version
