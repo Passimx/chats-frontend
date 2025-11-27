@@ -1,19 +1,17 @@
 module.exports = {
-    branches: ['main'],
+    branches: ['version'], // пуш в main → релиз
     plugins: [
-        '@semantic-release/commit-analyzer', // анализ коммитов
-        '@semantic-release/release-notes-generator', // генерация заметок
+        '@semantic-release/commit-analyzer',
+        '@semantic-release/release-notes-generator',
+        ['@semantic-release/changelog', { changelogFile: 'CHANGELOG.md' }],
+        ['@semantic-release/npm', { npmPublish: false }],
         [
-            '@semantic-release/changelog', // обновление CHANGELOG.md
+            '@semantic-release/git',
             {
-                changelogFile: 'CHANGELOG.md',
+                assets: ['CHANGELOG.md', 'package.json'],
+                message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
             },
         ],
-        [
-            '@semantic-release/github', // пуш релиза на GitHub через API
-            {
-                assets: ['CHANGELOG.md'], // CHANGELOG включается в релиз
-            },
-        ],
+        ['@semantic-release/github', { assets: ['CHANGELOG.md'] }],
     ],
 };
