@@ -42,19 +42,6 @@ jobs:
         id: get_version
         run: echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
-  log:
-    runs-on: ubuntu-latest
-    needs: version
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Fetch updated tags
-        run: git fetch --tags --force
-
-      - name: Log version
-        run: |
-          echo "Publishing version ${{ needs.version.outputs.release_version }}"
-
   build:
     uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
     needs: version
