@@ -23,9 +23,23 @@ jobs:
       VERSION: ${{ needs.version.outputs.release_version }}
     secrets:
       DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-      GIT_HUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+    permissions:
+      contents: write
+      packages: write
+
+  dev:
+    needs: build
+    uses: Passimx/ci-cd-workflows/.github/workflows/dev.yml@main
+    with:
+      ORGANIZATION_NAME: ${{ vars.ORGANIZATION_NAME }}
+      IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+      VERSION: ${{ needs.version.outputs.release_version }}
+    secrets:
+      DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
     permissions:
       contents: write
       packages: write
