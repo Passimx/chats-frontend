@@ -4,7 +4,7 @@
 
 If you discover a security vulnerability in this project, please **do not open a public issue**. Instead, report it privately so we can address it responsibly.
 
-Please send an email to: **security@example.com**  
+Please send to: **[security account](https://passimx.ru/6637f975627413fdb11d9f73dacbcfc1f85af42903100cb218df08cc5e787524)**  
 
 Include the following information:
 
