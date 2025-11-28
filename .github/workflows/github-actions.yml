@@ -30,9 +30,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint & Build
-        run: npm run lint && npm run build
-
       - name: Semantic Release
         run: npx semantic-release
         env:
@@ -40,31 +37,39 @@ jobs:
       - name: Fetch updated tags
         run: git fetch --tags --force
 
-  build:
-    uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
-    needs: version
-    with:
-      ORGANIZATION_NAME: ${{ vars.ORGANIZATION_NAME }}
-      IMAGE_NAME: ${{ vars.IMAGE_NAME }}
-      VITE_API_URL: ${{ vars.VITE_API_URL }}
-    secrets:
-      DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-      GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
-      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-    permissions:
-     contents: write
-     packages: write
+      - name: Get release version
+        id: get_version
+        run: echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
-  release:
-    needs: build
-    uses: Passimx/ci-cd-workflows/.github/workflows/release.yml@main
-    with:
-      ORGANIZATION_NAME: ${{ vars.ORGANIZATION_NAME }}
-      IMAGE_NAME: ${{ vars.IMAGE_NAME }}
-    secrets:
-      DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-      GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
-    permissions:
-      contents: write
-      packages: write
+      - name: Show new version
+        run: |
+          echo "New version: $(git describe --tags --abbrev=0)"
+
+#  build:
+#    uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
+#    needs: version
+#    with:
+#      ORGANIZATION_NAME: ${{ vars.ORGANIZATION_NAME }}
+#      IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+#      VITE_API_URL: ${{ vars.VITE_API_URL }}
+#    secrets:
+#      DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+#      GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
+#      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+#      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+#    permissions:
+#     contents: write
+#     packages: write
+
+#  release:
+#    needs: build
+#    uses: Passimx/ci-cd-workflows/.github/workflows/release.yml@main
+#    with:
+#      ORGANIZATION_NAME: ${{ vars.ORGANIZATION_NAME }}
+#      IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+#    secrets:
+#      DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+#      GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
+#    permissions:
+#      contents: write
+#      packages: write
