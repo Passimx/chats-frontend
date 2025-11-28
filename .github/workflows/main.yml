@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - main
-
 jobs:
   version:
     uses: Passimx/ci-cd-workflows/.github/workflows/version.yml@main
@@ -24,7 +23,7 @@ jobs:
       VERSION: ${{ needs.version.outputs.release_version }}
     secrets:
       DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-      GIT_HUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
     permissions:
