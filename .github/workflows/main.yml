@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - main
+
 jobs:
   version:
     uses: Passimx/ci-cd-workflows/.github/workflows/version.yml@main
