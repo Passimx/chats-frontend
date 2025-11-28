@@ -19,6 +19,9 @@ jobs:
         run: |
           VERSION=$(jq -r .version package.json)
           echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+    permissions:
+      contents: write
+      packages: write
 
   build:
     needs: build_version
@@ -33,3 +36,6 @@ jobs:
       GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+    permissions:
+      contents: write
+      packages: write
