@@ -7,40 +7,11 @@ on:
   push:
     branches:
       - main
-
 jobs:
   version:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    outputs:
-      release_version: ${{ steps.get_version.outputs.VERSION }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Semantic Release
-        run: npx semantic-release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Fetch updated tags
-        run: git fetch --tags --force
-
-      - name: Get release version
-        id: get_version
-        run: echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+    uses: Passimx/ci-cd-workflows/.github/workflows/version.yml@main
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
@@ -56,19 +27,39 @@ jobs:
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
     permissions:
-     contents: write
-     packages: write
+      contents: write
+      packages: write
 
-#  release:
-#    needs: build
-#    uses: Passimx/ci-cd-workflows/.github/workflows/release.yml@main
-#    with:
-#      ORGANIZATION_NAME: ${{ vars.ORGANIZATION_NAME }}
-#      IMAGE_NAME: ${{ vars.IMAGE_NAME }}
-#       VERSION: ${{ needs.version.outputs.release_version }}
-#    secrets:
-#      DOCKER_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-#      GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
+#jobs:
+#  version:
+#    runs-on: ubuntu-latest
 #    permissions:
 #      contents: write
-#      packages: write
+#      pull-requests: write
+#    outputs:
+#      release_version: ${{ steps.get_version.outputs.VERSION }}
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#        with:
+#          fetch-depth: 0
+#
+#      - name: Setup Node.js
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: 22
+#
+#      - name: Install dependencies
+#        run: npm ci
+#
+#      - name: Semantic Release
+#        run: npx semantic-release
+#        env:
+#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Fetch updated tags
+#        run: git fetch --tags --force
+#
+#      - name: Get release version
+#        id: get_version
+#        run: echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
