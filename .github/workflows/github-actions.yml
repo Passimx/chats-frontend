@@ -44,6 +44,12 @@ jobs:
       - name: Show new version
         run: |
           echo "New version: $(git describe --tags --abbrev=0)"
+  log:
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+      - run: echo "Publishing version ${{ needs.version.outputs.release_version }}"
+      - run: npm publish --tag ${{ needs.version.outputs.release_version }}
 
 #  build:
 #    uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
