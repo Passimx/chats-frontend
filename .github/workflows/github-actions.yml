@@ -9,8 +9,17 @@ on:
       - main
 
 jobs:
+  before:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Logs output
+        run: |
+          echo "Publishing version ${{ needs.version.outputs.release_version }}"
+          echo "New version: $(git describe --tags --abbrev=0)"
+
   version:
     runs-on: ubuntu-latest
+    needs: before
     permissions:
       contents: write
       pull-requests: write
@@ -48,8 +57,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: version
     steps:
-      - run: echo "Publishing version ${{ needs.version.outputs.release_version }}"
-      - run: npm publish --tag ${{ needs.version.outputs.release_version }}
+      - name: Logs output
+        run: |
+          echo "Publishing version ${{ needs.version.outputs.release_version }}"
+          echo "New version: $(git describe --tags --abbrev=0)"
 
 #  build:
 #    uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
