@@ -18,6 +18,8 @@
     gap: 8px;
     align-items: center;
     grid-template-columns: auto 1fr;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .message_menu_item:hover{

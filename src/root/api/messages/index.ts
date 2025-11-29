@@ -8,7 +8,6 @@ import { getRawCryptoKey } from '../../store/raw/chats.raw.ts';
 
 export const createMessage = async (data: CreateMessageType) => {
     const chatOnPage = store.getState().chats.chatOnPage;
-    console.log([chatOnPage, getRawCryptoKey(chatOnPage!.id)]);
     if (
         chatOnPage &&
         !getRawCryptoKey(chatOnPage.id) &&
