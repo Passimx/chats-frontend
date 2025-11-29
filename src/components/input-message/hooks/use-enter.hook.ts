@@ -249,8 +249,8 @@ export const useEnterHook = (): UseEnterHookType => {
         };
 
         const startRecover = async () => {
-            if (isRecovering && mediaRecorder) {
-                mediaRecorder.stop();
+            if (isRecovering || textExist) {
+                mediaRecorder?.stop();
                 return;
             }
 
@@ -313,7 +313,7 @@ export const useEnterHook = (): UseEnterHookType => {
                 sendMessageButton.removeEventListener('touchend', sendMessage);
             } else sendMessageButton.removeEventListener('click', sendMessage);
         };
-    }, [chatOnPage?.name, isPhone, sendMessage, isRecovering]);
+    }, [chatOnPage?.name, isPhone, sendMessage, isRecovering, textExist]);
 
     const setEmoji = useCallback(
         (emoji: string) => {

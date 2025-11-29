@@ -1,10 +1,10 @@
 {
   "name": "PassimX",
   "description": "Open platform for messaging",
-  "private": true,
   "version": "1.0.4",
+  "private": false,
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "MIT LICENSE",
   "scripts": {
     "dev": "vite",
     "format": "prettier . --write",
