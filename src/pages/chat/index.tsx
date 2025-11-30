@@ -26,12 +26,13 @@ import { PinnedMessages } from '../../components/pinned-messages';
 import { useGetChatTitle } from '../../common/hooks/use-get-chat-title.hook.ts';
 import { Avatar } from '../../components/avatar';
 import { EmptyMessages } from '../../components/empty-messages';
+import { EventsEnum } from '../../root/types/events/events.enum.ts';
 
 const Chat: FC = memo(() => {
     useGetChat();
     useJoinChat();
     const { t } = useTranslation();
-    const { setStateApp } = useAppAction();
+    const { setStateApp, postMessageToBroadCastChannel } = useAppAction();
     const [addChat, leave, back] = useMethods();
     const [isLoading, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
@@ -105,9 +106,12 @@ const Chat: FC = memo(() => {
                         </div>
                         <div
                             className={styles.chat_menu_item}
-                            onClick={() => {
-                                navigator.clipboard.writeText(window.location.origin + window.location.pathname);
-                            }}
+                            onClick={() =>
+                                postMessageToBroadCastChannel({
+                                    event: EventsEnum.COPY_TEXT,
+                                    data: window.location.origin + window.location.pathname,
+                                })
+                            }
                         >
                             <IoCopyOutline className={styles.chat_menu_item_icon} />
                             <div className={'text_translate'}>{t('copy_link')}</div>
@@ -126,9 +130,7 @@ const Chat: FC = memo(() => {
                         <div></div>
                         <div id={styles.messages}>
                             {isLoading === LoadingType.OLD && <RotateLoading />}
-                            {chatOnPage?.messages?.map((message) => (
-                                <Message key={message.id} {...{ ...message, chat: { type: chatOnPage.type } }} />
-                            ))}
+                            {chatOnPage?.messages?.map((message) => <Message key={message.id} {...{ ...message }} />)}
                             {isLoading === LoadingType.NEW && <RotateLoading />}
                         </div>
                     </div>

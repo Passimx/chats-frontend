@@ -1,56 +1,86 @@
-.main{
+.main_background{
     display: grid;
-    grid-template-columns: auto 1fr;
 
-    .background{
-        width: 40px;
-        height: 40px;
-        padding: 4px;
+    .main{
+        display: grid;
+        grid-template-columns: auto 1fr;
 
-        .background_play, .background_stop{
-            background-color: #0098ea;
+        .background{
             width: 40px;
             height: 40px;
-            border-radius: 40px;
-            display: grid;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
+            padding: 4px;
 
-            .play_button{
-                font-size: 15px;
-                font-weight: 700;
-                color: white;
+            .background_play, .background_stop{
+                background-color: #0098ea;
+                width: 40px;
+                height: 40px;
+                border-radius: 40px;
+                display: grid;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+
+                .play_button{
+                    font-size: 15px;
+                    font-weight: 700;
+                    color: white;
+                }
+            }
+
+            .background_stop{
+                background: none;
+                position: relative;
+                top: -40px;
             }
         }
 
-        .background_stop{
-            background: none;
-            position: relative;
-            top: -40px;
-        }
-    }
-
-    .duration{
-        display: grid;
-        grid-template-rows:24px 18px;
-        padding-top: 4px;
-
-        .duration_text{
+        .duration{
             display: grid;
-            align-items: center;
+            grid-template-rows:24px 18px;
+            padding-top: 4px;
+
+            .audio_background{
+                display: grid;
+                grid-template-columns:1fr auto;
+                gap: 4px;
+
+                .audio_text{
+                    background-color: #e8f3fd;
+                    border-radius: 14px;
+                    color: #0098ea;
+                    cursor: pointer;
+                    font-weight: bold;
+                    aspect-ratio: 1 / 1;
+                    display: grid;
+                    justify-items: center;
+                    align-items: center;
+                    -webkit-user-select: none;
+                    user-select: none;
+
+                    &:hover{
+                        opacity: 0.8;
+                    }
+                }
+            }
+
+            .duration_text{
+                display: grid;
+                align-items: center;
+                -webkit-user-select: none;
+                user-select: none;
+            }
         }
     }
 
-}
+    .text_background{
+        background-color: #e8f3fd;
+        border-radius: 4px;
+        opacity: 0.8;
+        overflow: hidden;
+        max-height: 0;
 
-
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
+        .text_main{
+            padding: 4px;
+        }
     }
 }

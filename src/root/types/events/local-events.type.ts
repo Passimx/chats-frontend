@@ -42,6 +42,11 @@ type ChangeLanguage = {
     readonly data: string;
 };
 
+type CopyText = {
+    readonly event: EventsEnum.COPY_TEXT;
+    readonly data: string;
+};
+
 export type LocalEvents =
     | ReadMessage
     | AddChat
@@ -50,4 +55,5 @@ export type LocalEvents =
     | CloseSocket
     | PlayNotification
     | Error
-    | ChangeLanguage;
+    | ChangeLanguage
+    | CopyText;

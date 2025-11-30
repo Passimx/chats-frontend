@@ -1,0 +1,57 @@
+.background{
+    --width: 90%;
+
+    @media(width > 600px){
+        --width: 200px;
+    }
+
+    background-color: rgb(0, 0, 0, 0.5);
+    color: white;
+    position: absolute;
+    z-index: 1000;
+    left: calc(50% - (var(--width) / 2) - 8px);
+    padding: 8px;
+    border-radius: 8px;
+    -webkit-user-select: none;
+    user-select: none;
+    width: var(--width);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    align-items: center;
+    font-weight: bold;
+    visibility: hidden;
+    opacity: 0;
+
+    bottom: 80px;
+}
+
+.show{
+    animation: show .2s linear forwards;
+}
+
+.hide{
+    animation: hide .2s linear forwards;
+}
+
+@keyframes show{
+    from {
+        visibility: hidden;
+        opacity: 0;
+    }
+    to {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+@keyframes hide{
+    from {
+        visibility: visible;
+        opacity: 1;
+    }
+    to {
+        visibility: hidden;
+        opacity: 0;
+    }
+}

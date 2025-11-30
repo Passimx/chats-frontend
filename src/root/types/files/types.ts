@@ -10,6 +10,8 @@ export type FileMetadataType = {
     title?: string;
     album?: string;
     year?: number;
+
+    transcriptionVoice?: string | null;
 };
 
 export interface FilesType extends File {

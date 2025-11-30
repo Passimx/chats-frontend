@@ -29,19 +29,20 @@ const Message: FC<PropsType> = memo((props) => {
     const title = useAppSelector((state) => state.chats.chatOnPage?.title);
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
     const isPinned = usePinned(props.id, pinnedMessages);
+    const chatType = useAppSelector((state) => state.chats.chatOnPage?.type);
 
     const [visibleMessage, time] = useMemo(() => {
         const time = moment(props.createdAt).format('LT');
         let message;
         if (type === MessageTypeEnum.IS_CREATED_CHAT) {
             message = `${t(props.message)} «${title}»`;
-            if (props.chat?.type && [ChatEnum.IS_FAVORITES, ChatEnum.IS_DIALOGUE].includes(props.chat?.type))
+            if (chatType && [ChatEnum.IS_FAVORITES, ChatEnum.IS_DIALOGUE].includes(chatType))
                 message = t(props.message);
         } else if (type === MessageTypeEnum.IS_SYSTEM) message = t(props.message);
         else message = props.message;
 
         return [message, time];
-    }, [t]);
+    }, [t, chatType]);
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (

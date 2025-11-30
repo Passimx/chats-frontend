@@ -3,6 +3,7 @@ export enum EventsEnum {
     ADD_CHAT = 'add_chat',
     CREATE_CHAT = 'create_chat',
     CREATE_DIALOGUE = 'create_dialogue',
+    COPY_TEXT = 'COPY_TEXT',
     CHANGE_LANGUAGE = 'CHANGE_LANGUAGE',
     CREATE_MESSAGE = 'create_message',
     READ_MESSAGE = 'read_message',

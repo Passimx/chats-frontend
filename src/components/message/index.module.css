@@ -59,6 +59,8 @@
     .time{
         display: inline-block;
         opacity: 0.5;
+        -webkit-user-select: none;
+        user-select: none;
     }
 }
 

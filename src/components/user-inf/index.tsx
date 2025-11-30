@@ -7,11 +7,12 @@ import { useAppAction, useAppSelector } from '../../root/store';
 import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
 import { updatePublicKey } from '../../root/api/keys';
 import { Avatar } from '../avatar';
+import { EventsEnum } from '../../root/types/events/events.enum.ts';
 
 export const UserInf = memo(() => {
     const publicKeyHash = useAppSelector((state) => state.app.keyInf?.publicKeyHash);
-    const { setStateApp, changeKeyInf } = useAppAction();
     const userName = useShortText(`@${publicKeyHash}`);
+    const { setStateApp, changeKeyInf, postMessageToBroadCastChannel } = useAppAction();
     const keyInfMetadata = useAppSelector((state) => state.app.keyInf?.metadata);
 
     const openQrCode = useCallback(() => {
@@ -38,7 +39,12 @@ export const UserInf = memo(() => {
                     <div className={styles.name_background}>
                         <div
                             className={styles.background_name}
-                            onClick={() => navigator.clipboard.writeText(`@${publicKeyHash}`)}
+                            onClick={() =>
+                                postMessageToBroadCastChannel({
+                                    event: EventsEnum.COPY_TEXT,
+                                    data: `@${publicKeyHash}`,
+                                })
+                            }
                         >
                             {userName}
                         </div>

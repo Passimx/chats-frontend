@@ -18,7 +18,6 @@ import { useMemory } from './hooks/use-memory.ts';
 import { Settings } from '../../../pages/settings';
 import { PageItem } from '../../../components/page-item';
 import { TabEnum } from '../../store/app/types/state.type.ts';
-import { PreviewMedia } from '../../../components/preview-media';
 import { PreviewMediaContext } from '../../../components/preview-media-context';
 import { useIsIos } from './hooks/use-is-ios.hook.ts';
 import { useBattery } from './hooks/use-battery.hook.ts';
@@ -26,8 +25,8 @@ import { useSettings } from './hooks/use-settings.hook.ts';
 import { useUpdateBadge } from './hooks/use-update-badge.hook.ts';
 import { useCatchLogs } from './hooks/use-catch-logs.hook.ts';
 import { useKeys } from './hooks/use-keys.hook.ts';
-import { Page } from '../../../pages/page';
 import { useUpdateStaticCache } from './hooks/use-update-static-cache.hook.ts';
+import { TopElements } from '../../../components/top-elements';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -82,8 +81,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
             <AudioPlayer>
                 <div id={styles.background}>
                     <PreviewMediaContext>
-                        <PreviewMedia />
-                        <Page />
+                        <TopElements />
                         <div id={styles.menu}>
                             <div id={styles.pages}>
                                 {/*<PageItem public-key-name={TabEnum.SERVICES}>*/}

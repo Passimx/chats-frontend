@@ -17,6 +17,9 @@ import PublicChat from '../../components/create-chat/public-chat';
 import PrivateChat from '../../components/create-chat/private-chat';
 import { MdOutlineQrCodeScanner } from 'react-icons/md';
 import { ScanQrCode } from '../../components/scan-qr-code';
+import { AiOutlineGlobal } from 'react-icons/ai';
+import OpenChatInfo from '../../components/chat-info/open-chat-info';
+import OpenChat from '../../components/create-chat/open-chat';
 
 const Search: FC<PropsType> = ({ isLoading, onChange }) => {
     const { t } = useTranslation();
@@ -79,16 +82,16 @@ const Search: FC<PropsType> = ({ isLoading, onChange }) => {
                     </div>
                 </div>
                 {/*todo*/}
-                {/*<div className={styles.new_chats_item}>*/}
-                {/*    <div className={styles.new_chats_item_click} onClick={() => changePage(<OpenChat />)}>*/}
-                {/*        <AiOutlineGlobal className={styles.new_chats_item_logo} color="green" />*/}
-                {/*        <div className={'text_translate'}>{t('create_open_chat')}</div>*/}
-                {/*    </div>*/}
-                {/*    <IoMdInformationCircleOutline*/}
-                {/*        className={styles.new_chats_item_info}*/}
-                {/*        onClick={() => changePage(<OpenChatInfo />)}*/}
-                {/*    />*/}
-                {/*</div>*/}
+                <div className={styles.new_chats_item}>
+                    <div className={styles.new_chats_item_click} onClick={() => changePage(<OpenChat />)}>
+                        <AiOutlineGlobal className={styles.new_chats_item_logo} color="green" />
+                        <div className={'text_translate'}>{t('create_open_chat')}</div>
+                    </div>
+                    <IoMdInformationCircleOutline
+                        className={styles.new_chats_item_info}
+                        onClick={() => changePage(<OpenChatInfo />)}
+                    />
+                </div>
                 {aesKey && (
                     <>
                         <div className={styles.new_chats_item}>

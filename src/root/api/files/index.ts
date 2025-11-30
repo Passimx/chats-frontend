@@ -1,4 +1,4 @@
-import { IData } from '../index.ts';
+import { Api, IData } from '../index.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import { MimeToExt, Types, UploadResultType } from '../../types/files/types.ts';
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
@@ -9,6 +9,9 @@ import { MessagesService } from '../../../common/services/messages.service.ts';
 import { CryptoService } from '../../../common/services/crypto.service.ts';
 import { store } from '../../store';
 
+const cancelRequestMap = new Set<string>();
+const xhrMap: Map<string, XMLHttpRequest> = new Map();
+
 export const uploadFile = async (formData: FormData): Promise<IData<UploadResultType>> => {
     const body = await MessagesService.encryptFormData(formData);
     const response = await fetch(`${Envs.filesServiceUrl}/upload`, { method: 'POST', body }).then((response) =>
@@ -18,8 +21,9 @@ export const uploadFile = async (formData: FormData): Promise<IData<UploadResult
     return response as IData<UploadResultType>;
 };
 
-const cancelRequestMap = new Set<string>();
-const xhrMap: Map<string, XMLHttpRequest> = new Map();
+export const getFile = async (messageId: string, fileId: string) => {
+    return Api<Types>(`/messages/${messageId}/files/${fileId}`);
+};
 
 export const CancelDownload = (file: Types) => {
     cancelRequestMap.add(file.id);

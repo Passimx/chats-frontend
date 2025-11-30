@@ -10,7 +10,8 @@ import { useTranslation } from 'react-i18next';
 import Loading from '../loading';
 import { LoadingQrCode } from './components/loading-qr-code';
 import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
-import { useAppSelector } from '../../root/store';
+import { useAppAction, useAppSelector } from '../../root/store';
+import { EventsEnum } from '../../root/types/events/events.enum.ts';
 
 function setupHiDPICanvas(canvas: HTMLCanvasElement, width: number, height: number) {
     const ratio = 3;
@@ -33,6 +34,7 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
     const textAreaHeight = 20;
     const { t } = useTranslation();
     const visibleText = useShortText(text);
+    const { postMessageToBroadCastChannel } = useAppAction();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const zoom = useAppSelector((state) => state.app.settings?.zoom);
@@ -107,7 +109,7 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
             <div className={styles.buttons}>
                 <div
                     className={`${styles.button} ${styles.copy_button}`}
-                    onClick={() => navigator.clipboard.writeText(url)}
+                    onClick={() => postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT, data: url })}
                 >
                     <div className={'text_translate'}>{t('copy_link')}</div>
                     <IoCopyOutline />
