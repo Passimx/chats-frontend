@@ -64,7 +64,6 @@ export const UpdateMediaSession: FC<{ children: any }> = memo(({ children }) => 
         navigator.mediaSession.setActionHandler('previoustrack', () => {
             const audioElement: HTMLAudioElement | null = audioVoice ?? audioMusic;
             if (audioElement) audioElement.currentTime = 0;
-
             console.log('⬅️ предыдущая');
             // switchToPreviousTrack();
         });
