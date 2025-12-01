@@ -49,6 +49,30 @@
     font-size: 13px;
     display: inline-block;
 
+    .listen_button_background{
+        display: inline-block;
+        padding-right: 4px;
+
+        .listen_button{
+            width: 12px;
+            height: 12px;
+            display: grid;
+            justify-content: center;
+            align-content: center;
+            overflow: hidden;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #439fef;
+            background-color: #e8f3fd;
+
+            &:hover{
+                opacity: 0.8;
+            }
+        }
+    }
+
     .pin{
         display: inline-block;
         font-size: 14px;

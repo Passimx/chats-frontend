@@ -15,4 +15,16 @@ module.exports = {
         ],
         ['@semantic-release/github', { assets: ['CHANGELOG.md'] }],
     ],
+    releaseRules: [
+        { tag: 'breaking', release: 'major' },
+        { tag: 'feat', release: 'minor' },
+        { tag: 'fix', release: 'patch' },
+        { tag: 'refactor', release: 'patch' },
+        { tag: 'security', release: 'patch' },
+        { tag: 'style', release: 'patch' },
+        { tag: 'chore', release: false },
+        { tag: 'ci', release: false },
+        { tag: 'docs', release: false },
+        { tag: 'test', release: false },
+    ],
 };

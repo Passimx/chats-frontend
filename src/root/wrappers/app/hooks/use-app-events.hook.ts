@@ -81,8 +81,7 @@ export const useAppEvents = () => {
                 });
                 break;
             case EventsEnum.CLOSE_SOCKET:
-                setStateApp({ socketId: undefined });
-                setStateApp({ isListening: false });
+                setStateApp({ socketId: undefined, isListening: false });
                 break;
             case EventsEnum.PLAY_NOTIFICATION:
                 playNotificationSound();

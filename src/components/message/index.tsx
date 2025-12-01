@@ -1,4 +1,4 @@
-import { FC, memo, useMemo } from 'react';
+import { FC, memo } from 'react';
 import styles from './index.module.css';
 import { PropsType } from './types/props.type.ts';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
@@ -11,38 +11,23 @@ import { FileExtensionEnum, FileTypeEnum } from '../../root/types/files/types.ts
 import { MessageImage } from '../message-image';
 import { MessageMp3 } from '../message-mp3';
 import { CanPlayAudio } from '../../common/hooks/can-play-audio.hook.ts';
-import moment from 'moment/min/moment-with-locales';
-import { useTranslation } from 'react-i18next';
 import { useMessageMenu } from './hooks/use-message-menu.hook.ts';
 import { MessageVideo } from '../message-video';
 import { useReadMessage } from '../../common/hooks/use-read-message.hook.ts';
 import { BsPinAngleFill } from 'react-icons/bs';
 import { usePinned } from '../../common/hooks/use-pinned.hook.ts';
-import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
+import { AiFillSound } from 'react-icons/ai';
+import { useSpeak } from './hooks/use-speak.hook.ts';
+import { useText } from './hooks/use-text.hook.ts';
 
 const Message: FC<PropsType> = memo((props) => {
     const { type, number } = props;
-
     const [ref] = useReadMessage(number);
-    const { t } = useTranslation();
     const [elementId] = useMessageMenu(props);
-    const title = useAppSelector((state) => state.chats.chatOnPage?.title);
+    const [visibleMessage, time] = useText(props);
+    const speakText = useSpeak();
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
     const isPinned = usePinned(props.id, pinnedMessages);
-    const chatType = useAppSelector((state) => state.chats.chatOnPage?.type);
-
-    const [visibleMessage, time] = useMemo(() => {
-        const time = moment(props.createdAt).format('LT');
-        let message;
-        if (type === MessageTypeEnum.IS_CREATED_CHAT) {
-            message = `${t(props.message)} «${title}»`;
-            if (chatType && [ChatEnum.IS_FAVORITES, ChatEnum.IS_DIALOGUE].includes(chatType))
-                message = t(props.message);
-        } else if (type === MessageTypeEnum.IS_SYSTEM) message = t(props.message);
-        else message = props.message;
-
-        return [message, time];
-    }, [t, chatType]);
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
@@ -66,6 +51,13 @@ const Message: FC<PropsType> = memo((props) => {
                 </div>
                 <RenderMessage message={visibleMessage} type={type} />
                 <div className={`${styles.left_div2} text_translate`}>
+                    {props.message?.length && (
+                        <div className={styles.listen_button_background}>
+                            <div className={styles.listen_button} onClick={() => speakText(visibleMessage)}>
+                                <AiFillSound />
+                            </div>
+                        </div>
+                    )}
                     {isPinned && <BsPinAngleFill className={styles.pin} />}
                     <div className={styles.time}>{time}</div>
                 </div>
