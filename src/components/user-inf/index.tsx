@@ -39,12 +39,13 @@ export const UserInf = memo(() => {
                     <div className={styles.name_background}>
                         <div
                             className={styles.background_name}
-                            onClick={() =>
+                            onClick={() => {
+                                navigator.clipboard.writeText(`@${publicKeyHash}`);
                                 postMessageToBroadCastChannel({
                                     event: EventsEnum.COPY_TEXT,
                                     data: `@${publicKeyHash}`,
-                                })
-                            }
+                                });
+                            }}
                         >
                             {userName}
                         </div>
