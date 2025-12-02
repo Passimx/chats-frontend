@@ -68,14 +68,16 @@ export const MenuMessage: FC = memo(() => {
         if (!clickMessage) return;
         const element = document.getElementById(`message-${clickMessage.number}`)!;
         const text = element.getElementsByTagName('pre')[0].innerText;
-        postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT, data: text });
+        navigator.clipboard.writeText(text);
+        postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
     }, [clickMessage]);
 
     const copyMessageWithChat = useCallback(() => {
         setIsShowMessageMenu(false);
         const url = new URL(window.location.href);
         url.search = ''; // удаляем query-параметры
-        postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT, data: `${url}?number=${clickMessage?.number}` });
+        navigator.clipboard.writeText(`${url}?number=${clickMessage?.number}`);
+        postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
     }, [clickMessage]);
 
     const pin = useCallback(() => {

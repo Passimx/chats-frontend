@@ -89,9 +89,6 @@ export const useAppEvents = () => {
             case EventsEnum.CHANGE_LANGUAGE:
                 changeSettings({ lang: data });
                 break;
-            case EventsEnum.COPY_TEXT:
-                await navigator.clipboard.writeText(data);
-                break;
             case EventsEnum.ERROR:
                 console.log(`${'\x1B[31m'}error: ${data}${'\x1B[31m'}`);
                 break;

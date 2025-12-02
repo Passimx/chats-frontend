@@ -22,7 +22,10 @@ export const LogList: FC = memo(() => {
                     <div
                         key={index}
                         className={styles.log_item}
-                        onClick={() => postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT, data: log })}
+                        onClick={() => {
+                            navigator.clipboard.writeText(log);
+                            postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
+                        }}
                     >
                         <div className={styles.log_item_copy}>
                             <IoCopyOutline className={styles.log_item_logo} />

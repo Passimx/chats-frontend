@@ -106,12 +106,10 @@ const Chat: FC = memo(() => {
                         </div>
                         <div
                             className={styles.chat_menu_item}
-                            onClick={() =>
-                                postMessageToBroadCastChannel({
-                                    event: EventsEnum.COPY_TEXT,
-                                    data: window.location.origin + window.location.pathname,
-                                })
-                            }
+                            onClick={() => {
+                                navigator.clipboard.writeText(window.location.origin + window.location.pathname);
+                                postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
+                            }}
                         >
                             <IoCopyOutline className={styles.chat_menu_item_icon} />
                             <div className={'text_translate'}>{t('copy_link')}</div>

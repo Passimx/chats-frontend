@@ -109,7 +109,10 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
             <div className={styles.buttons}>
                 <div
                     className={`${styles.button} ${styles.copy_button}`}
-                    onClick={() => postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT, data: url })}
+                    onClick={() => {
+                        navigator.clipboard.writeText(url);
+                        postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
+                    }}
                 >
                     <div className={'text_translate'}>{t('copy_link')}</div>
                     <IoCopyOutline />

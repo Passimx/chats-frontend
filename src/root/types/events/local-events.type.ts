@@ -44,7 +44,7 @@ type ChangeLanguage = {
 
 type CopyText = {
     readonly event: EventsEnum.COPY_TEXT;
-    readonly data: string;
+    readonly data?: unknown;
 };
 
 export type LocalEvents =
