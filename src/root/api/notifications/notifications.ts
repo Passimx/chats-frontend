@@ -30,6 +30,7 @@ async function connect() {
         if (keys) RASKeys = keys;
     }
 
+    if (socketId) return;
     ws = new WebSocket(`${Envs.notificationsServiceUrl}?publicKey=${RASKeysString.publicKey}`);
     ws.onopen = ping;
     ws.onmessage = (event: MessageEvent<string>) => {
@@ -65,8 +66,6 @@ async function connect() {
     };
 }
 
-connect();
-
 channel.onmessage = (ev) => {
     const event = ev.data?.event;
     switch (event) {
@@ -80,4 +79,12 @@ channel.onmessage = (ev) => {
 self.addEventListener('online', () => {
     if (socketId) ws?.close();
     else connect();
+});
+
+connect();
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        console.log('Страница снова стала видимой!');
+        connect();
+    }
 });
