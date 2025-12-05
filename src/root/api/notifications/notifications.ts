@@ -82,9 +82,10 @@ self.addEventListener('online', () => {
 });
 
 connect();
-document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-        console.log('Страница снова стала видимой!');
+document.addEventListener('pageshow', () => {
+    console.log('Страница снова стала видимой!');
+
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
         connect();
     }
 });
