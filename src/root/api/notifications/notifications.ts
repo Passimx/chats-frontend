@@ -54,7 +54,7 @@ async function connect() {
 
     ws.onclose = () => {
         socketId = undefined;
-        handleCloseSocket = setTimeout(() => channel.postMessage({ event: EventsEnum.CLOSE_SOCKET }), Envs.waitPong);
+        channel.postMessage({ event: EventsEnum.CLOSE_SOCKET });
         clearTimeout(handlerPing);
         clearTimeout(handlerDisconnect);
         if (navigator.onLine) connect();
