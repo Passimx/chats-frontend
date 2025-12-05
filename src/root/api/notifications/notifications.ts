@@ -82,10 +82,19 @@ self.addEventListener('online', () => {
 });
 
 connect();
-document.addEventListener('pageshow', () => {
-    console.log('Страница снова стала видимой!');
 
-    if (!ws || ws.readyState !== WebSocket.OPEN) {
-        connect();
+let lastAlive = Date.now();
+
+setInterval(() => {
+    const now = Date.now();
+
+    if (now - lastAlive > 5000) {
+        console.log('iOS PWA woke up');
+
+        if (!ws || ws.readyState !== WebSocket.OPEN) {
+            connect();
+        }
     }
-});
+
+    lastAlive = now;
+}, 2000);
