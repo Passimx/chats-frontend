@@ -10,19 +10,14 @@ export const useBroadcastChannel = () => {
     const publicKey = useAppSelector((state) => state.app.keyInf?.publicKey);
 
     useEffect(() => {
-        window.addEventListener('focus', () => {
-            console.log('Пользователь вернулся в нашу вкладку!');
-        });
-
-        window.addEventListener('blur', () => {
-            console.log('Пользователь ушел из нашей вкладки.');
-        });
-
-        document.addEventListener('visibilitychange', () => {
+        const func = () => {
             if (document.visibilityState === 'visible') {
-                console.log('Страница снова стала видимой!');
+                console.log(Envs.socketId);
             }
-        });
+        };
+
+        document.addEventListener('visibilitychange', func);
+        return () => document.removeEventListener('visibilitychange', func);
     }, []);
 
     useEffect(() => {

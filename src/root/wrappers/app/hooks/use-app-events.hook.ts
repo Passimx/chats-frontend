@@ -23,6 +23,7 @@ export const useAppEvents = () => {
 
         switch (event) {
             case EventsEnum.GET_SOCKET_ID:
+                console.log('Get socket');
                 if (!data.success) break;
                 setStateApp({ socketId: data.data });
                 Envs.socketId = data.data;
@@ -81,7 +82,9 @@ export const useAppEvents = () => {
                 });
                 break;
             case EventsEnum.CLOSE_SOCKET:
+                console.log('Closing socket');
                 setStateApp({ socketId: undefined, isListening: false });
+                Envs.socketId = undefined;
                 break;
             case EventsEnum.PLAY_NOTIFICATION:
                 playNotificationSound();
