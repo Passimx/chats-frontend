@@ -66,9 +66,7 @@ export const MenuMessage: FC = memo(() => {
     const copyMessage = useCallback(() => {
         setIsShowMessageMenu(false);
         if (!clickMessage) return;
-        const element = document.getElementById(`message-${clickMessage.number}`)!;
-        const text = element.getElementsByTagName('pre')[0].innerText;
-        navigator.clipboard.writeText(text);
+        navigator.clipboard.writeText(clickMessage.message);
         postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
     }, [clickMessage]);
 

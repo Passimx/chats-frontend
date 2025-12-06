@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getChatByName } from '../../../root/api/chats';
 import { useAppAction, useAppSelector } from '../../../root/store';
@@ -7,6 +7,7 @@ import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 import { useCustomNavigate } from '../../../common/hooks/use-custom-navigate.hook.ts';
 import { useTranslation } from 'react-i18next';
 import { ChatEnum } from '../../../root/types/chat/chat.enum.ts';
+import { ChatType } from '../../../root/types/chat/chat.type.ts';
 
 const useGetChat = (): void => {
     const { name } = useParams();
@@ -18,9 +19,11 @@ const useGetChat = (): void => {
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
     const socketId = useAppSelector((state) => state.app.socketId);
     const privateKey = useAppSelector((state) => state.app.keyInf?.RASKeys?.privateKey);
+    const { state }: { state: ChatType | undefined } = useLocation();
 
     useEffect(() => {
         if (!isLoadedChatsFromIndexDb) return;
+        if (state) setChatOnPage(state);
 
         if (getRawChatByName(name)) {
             const chat = getRawChatByName(name!)!;
@@ -33,7 +36,6 @@ const useGetChat = (): void => {
 
         setIsLoading(true);
         getChatByName(name!).then((result) => {
-            setChatOnPage(null);
             if (result.success && result.data) setChatOnPage(result.data);
             else setChatOnPage(null);
 

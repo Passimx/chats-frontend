@@ -121,11 +121,9 @@
 }
 
 #new_message_block{
-    overflow: auto;
-    /*min-height: 30px;*/
-    /*padding: 8px;*/
+    overflow-x: hidden;
+    overflow-y: scroll;
     background-color: #FFFFFF;
-    /*background-color: red;*/
     scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
     pointer-events: auto;

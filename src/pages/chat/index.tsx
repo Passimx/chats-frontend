@@ -133,7 +133,7 @@ const Chat: FC = memo(() => {
                         </div>
                     </div>
                 )}
-                {!chatOnPage?.countMessages && <EmptyMessages />}
+                {chatOnPage?.countMessages === 0 && <EmptyMessages />}
             </div>
             <InputMessage {...{ showLastMessages }} />
         </div>
