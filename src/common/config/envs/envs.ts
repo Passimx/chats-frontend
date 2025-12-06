@@ -1,4 +1,5 @@
 import { SettingsType } from '../../../root/store/app/types/state.type.ts';
+import json from '../../../../package.json';
 
 export enum EnvironmentEnum {
     STAGING = 'staging',
@@ -25,6 +26,8 @@ type EnvsType = {
     settings?: Partial<SettingsType>;
 
     RASKeys?: CryptoKeyPair;
+
+    version: string;
 };
 
 const allowUrls: string[] = ['fonts.googleapis.com', window.location.host];
@@ -51,4 +54,6 @@ export const Envs: EnvsType = {
         files: 'files-cache',
         static: 'static-files',
     },
+
+    version: import.meta.env.VITE_APP_VERSION ?? json.version,
 };

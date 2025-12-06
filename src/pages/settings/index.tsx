@@ -4,7 +4,6 @@ import { GrLanguage } from 'react-icons/gr';
 import { memo, useCallback, useMemo } from 'react';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { IoChatboxEllipsesOutline, IoRocketOutline, IoSettingsOutline } from 'react-icons/io5';
-import json from '../../../package.json';
 import { TbBackground, TbDatabase, TbLogs } from 'react-icons/tb';
 import { ChangeLanguage } from '../../components/change-language';
 import { MenuTitle } from '../../components/menu-title';
@@ -148,7 +147,7 @@ export const Settings = memo(() => {
                     <div className="text_translate">
                         {t('about_app')}
                         <div className={`${styles.item_value} text_translate`}>
-                            &nbsp;{`(${t('version')} ${json.version})`}
+                            &nbsp;{`(${t('version')} ${Envs.version})`}
                         </div>
                     </div>
                 </div>

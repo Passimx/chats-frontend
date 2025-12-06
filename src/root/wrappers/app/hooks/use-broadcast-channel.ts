@@ -10,17 +10,6 @@ export const useBroadcastChannel = () => {
     const publicKey = useAppSelector((state) => state.app.keyInf?.publicKey);
 
     useEffect(() => {
-        const func = () => {
-            if (document.visibilityState === 'visible') {
-                console.log(Envs.socketId);
-            }
-        };
-
-        document.addEventListener('visibilitychange', func);
-        return () => document.removeEventListener('visibilitychange', func);
-    }, []);
-
-    useEffect(() => {
         if (!publicKey) return;
 
         const channel = new BroadcastChannel('ws-channel');

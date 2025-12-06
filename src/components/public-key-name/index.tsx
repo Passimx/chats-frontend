@@ -5,10 +5,12 @@ import { useAppAction } from '../../root/store';
 import { NotFoundUsername } from '../not-found-username';
 import { getChatByName } from '../../root/api/chats';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
+import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
 
 export const PublicKeyName: FC<PropsType> = memo(({ name }) => {
     const { setStateApp } = useAppAction();
     const navigate = useCustomNavigate();
+    const shortName = useShortText(name);
 
     const click = useCallback(async () => {
         const response = await getChatByName(name);
@@ -19,8 +21,8 @@ export const PublicKeyName: FC<PropsType> = memo(({ name }) => {
     }, []);
 
     return (
-        <div className={styles.background} onClick={click}>
-            @{name}
-        </div>
+        <span className={styles.background} onClick={click}>
+            @{shortName}
+        </span>
     );
 });
