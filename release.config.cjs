@@ -9,7 +9,7 @@ module.exports = {
                     { tag: 'breaking', release: 'major' },
                     { tag: 'feat', release: 'minor' },
                     { tag: 'fix', release: 'patch' },
-                    { tag: 'refactor', release: 'patch' },
+                    { type: 'refactor', release: 'patch' },
                     { tag: 'security', release: 'patch' },
                     { tag: 'style', release: 'patch' },
                     { tag: 'chore', release: false },
