@@ -17,15 +17,6 @@ We will respond within **48 hours**.
 
 ---
 
-## Supported Versions
-
-| Version | Supported |
-|---------|-----------|
-| 1.x     | ✅ Yes    |
-| 0.x     | ❌ No     |
-
----
-
 ## Security Updates
 
 Security updates are released as part of the regular version releases. When a fix is released, we will update the release notes and tag it accordingly.
