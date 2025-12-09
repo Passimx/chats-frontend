@@ -15,7 +15,6 @@ module.exports = {
                     { type: 'chore', release: false },
                     { type: 'ci', release: false },
                     { type: 'docs', release: false },
-                    { type: 'test', release: false },
                 ],
             },
         ],
