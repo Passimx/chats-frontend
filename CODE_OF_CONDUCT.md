@@ -40,7 +40,7 @@ issues, pull requests, discussions, and external communication channels.
 If you experience or witness unacceptable behavior, please report it to the
 project maintainers at:
 
-**support@passimx.com**
+**[security account](https://passimx.ru/6637f975627413fdb11d9f73dacbcfc1f85af42903100cb218df08cc5e787524)**
 
 All complaints will be reviewed and responded to fairly and consistently.
 

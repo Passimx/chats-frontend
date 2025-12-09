@@ -3,7 +3,7 @@
 ![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen)
 ![Docker Automated build](https://img.shields.io/docker/automated/passimx/chats-frontend?label=docker)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/passimx/chats-frontend/github-actions.yml)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/passimx/chats-frontend/main.yml)
 
 # Passimx Chats Frontend
 
