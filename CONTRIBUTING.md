@@ -90,7 +90,6 @@ chats-frontend/
 ├── .eslintrc.cjs               # ESLint configuration 
 ├── .gitignore                  # Git ignore rules
 ├── .prettierrc                 # Prettier code style config
-├── CODE_OF_CONDUCT.md          # Docker build definition
 ├── CONTRIBUTING.md             # Code of conduct information
 ├── Dockerfile                  # Docker build definition
 ├── index.html                  # Base HTML entry
@@ -99,7 +98,6 @@ chats-frontend/
 ├── package-lock.json           # Locked dependency tree
 ├── README.md                   # Project files roadmap
 ├── release.config.cjs          # Semantic release branch rules
-├── SECURITY.md                 # SECURITY information
 ├── tsconfig.json               # TypeScript config
 ├── tsconfig.node.json          # TypeScript config for Node environment
 └── vite.config.ts              # Vite build configuration

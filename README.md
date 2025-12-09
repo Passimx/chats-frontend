@@ -24,7 +24,7 @@ See https://opensource.org/license/MIT for more information.
 
 ## Features
 
-- 🔒 Messaging **without authentication** or any personal identifiers
+- 🔒 Communication **without authentication** or any personal identifiers
 - 🌐 **Self-hostable** — deploy your own secure server
 - 💬 Supports both private and group chats
 - 📱 Responsive design (SPA / PWA ready)
