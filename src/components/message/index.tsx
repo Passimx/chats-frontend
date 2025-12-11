@@ -16,7 +16,7 @@ import { MessageVideo } from '../message-video';
 import { useReadMessage } from '../../common/hooks/use-read-message.hook.ts';
 import { BsPinAngleFill } from 'react-icons/bs';
 import { usePinned } from '../../common/hooks/use-pinned.hook.ts';
-import { AiFillSound } from 'react-icons/ai';
+import { AiFillSound, AiOutlinePause } from 'react-icons/ai';
 import { useSpeak } from './hooks/use-speak.hook.ts';
 import { useText } from './hooks/use-text.hook.ts';
 
@@ -25,7 +25,7 @@ const Message: FC<PropsType> = memo((props) => {
     const [ref] = useReadMessage(number);
     const [elementId] = useMessageMenu(props);
     const [visibleMessage, time] = useText(props);
-    const speakText = useSpeak();
+    const { handleSpeaking, isSpeaking } = useSpeak(visibleMessage);
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
     const isPinned = usePinned(props.id, pinnedMessages);
 
@@ -53,8 +53,8 @@ const Message: FC<PropsType> = memo((props) => {
                 <div className={`${styles.left_div2} text_translate`}>
                     {props.message?.length && (
                         <div className={styles.listen_button_background}>
-                            <div className={styles.listen_button} onClick={() => speakText(visibleMessage)}>
-                                <AiFillSound />
+                            <div className={styles.listen_button} onClick={handleSpeaking}>
+                                {isSpeaking ? <AiOutlinePause /> : <AiFillSound />}
                             </div>
                         </div>
                     )}
