@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { GrLanguage } from 'react-icons/gr';
 import { memo, useCallback, useMemo } from 'react';
 import { useAppAction, useAppSelector } from '../../root/store';
-import { IoChatboxEllipsesOutline, IoRocketOutline, IoSettingsOutline } from 'react-icons/io5';
+import { IoChatboxEllipsesOutline, IoRocketOutline, IoSettingsOutline, IoWalletOutline } from 'react-icons/io5';
 import { TbBackground, TbDatabase, TbLogs } from 'react-icons/tb';
 import { ChangeLanguage } from '../../components/change-language';
 import { MenuTitle } from '../../components/menu-title';
@@ -110,6 +110,10 @@ export const Settings = memo(() => {
                         </div>
                     </div>
                 )}
+                <div className={styles.item}>
+                    <IoWalletOutline className={styles.item_logo} />
+                    <div className="text_translate">{t('wallet')}</div>
+                </div>
                 {/*{batteryLevel && (*/}
                 {/*    <div className={styles.item} onClick={() => selectMenu(<BatterySaver />)}>*/}
                 {/*        <MdBatteryCharging20 className={styles.item_logo} />*/}
