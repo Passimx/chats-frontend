@@ -25,14 +25,9 @@ const Message: FC<PropsType> = memo((props) => {
     const [ref] = useReadMessage(number);
     const [elementId] = useMessageMenu(props);
     const [visibleMessage, time] = useText(props);
-
-    const { speakAloud, stopSpeak, isSpeaking } = useSpeak();
+    const { handleSpeaking, isSpeaking } = useSpeak(visibleMessage);
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
     const isPinned = usePinned(props.id, pinnedMessages);
-
-    const handleSpeaking = () => {
-        isSpeaking ? stopSpeak() : speakAloud(visibleMessage);
-    };
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (

@@ -1,10 +1,14 @@
 import { useCallback, useState } from 'react';
 import { getLanguageByText } from '../../../root/wrappers/app/hooks/translations/get-language-by-text.ts';
 
-export const useSpeak = () => {
+export const useSpeak = (visibleMessage: string) => {
     const [isSpeaking, setIsSpeaking] = useState(false);
 
-    const speakAloud = useCallback((visibleMessage: string) => {
+    const handleSpeaking = () => {
+        isSpeaking ? stopSpeak() : speakAloud();
+    };
+
+    const speakAloud = useCallback(() => {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(visibleMessage);
         utterance.lang = getLanguageByText(visibleMessage);
@@ -20,5 +24,5 @@ export const useSpeak = () => {
         setIsSpeaking(false);
     }, []);
 
-    return { speakAloud, stopSpeak, isSpeaking };
+    return { handleSpeaking, isSpeaking };
 };
