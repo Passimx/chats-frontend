@@ -11,14 +11,14 @@ import { EventsEnum } from '../../root/types/events/events.enum.ts';
 
 export const UserInf = memo(() => {
     const publicKeyHash = useAppSelector((state) => state.app.keyInf?.publicKeyHash);
-    const userName = useShortText(`@${publicKeyHash}`);
+    const userNameShort = useShortText(`@${publicKeyHash}`);
     const { setStateApp, changeKeyInf, postMessageToBroadCastChannel } = useAppAction();
     const keyInfMetadata = useAppSelector((state) => state.app.keyInf?.metadata);
 
     const openQrCode = useCallback(() => {
         if (!publicKeyHash) return;
         setStateApp({
-            page: <QrCode url={`${window.location.origin}/${publicKeyHash}`} text={publicKeyHash} />,
+            page: <QrCode url={`${window.location.origin}/${publicKeyHash}`} userNameShort={userNameShort} />,
         });
     }, [publicKeyHash]);
 
@@ -44,7 +44,7 @@ export const UserInf = memo(() => {
                                 postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
                             }}
                         >
-                            {userName}
+                            {userNameShort}
                         </div>
                         <div className={styles.copy_logo_background}>
                             <MdQrCode2 className={styles.copy_logo} onClick={openQrCode} />
