@@ -64,7 +64,7 @@ export class MessagesService {
         if (!aesKeyString) return response;
 
         const aesKey = await CryptoService.importEASKey(aesKeyString);
-        setRawCryptoKey(response.data.id, aesKey, aesKeyString);
+        setRawCryptoKey(response.data.id, aesKey);
 
         return response;
     }
@@ -153,7 +153,7 @@ export class MessagesService {
         await Promise.all(tasks);
         await keepChatKey(chat.id, { keys });
 
-        setRawCryptoKey(chat.id, aesKey, aesKeyString);
+        setRawCryptoKey(chat.id, aesKey);
 
         return true;
     }

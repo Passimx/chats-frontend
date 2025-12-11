@@ -3,7 +3,6 @@ import { useAppAction } from '../../../store';
 import rawChats, { setRawCryptoKey } from '../../../store/raw/chats.raw.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 import { ChatItemIndexDb } from '../../../types/chat/chat.type.ts';
-import { CryptoService } from '../../../../common/services/crypto.service.ts';
 
 export const useIndexDbHook = () => {
     const { setToEnd, setStateApp, setStateChat } = useAppAction();
@@ -26,9 +25,8 @@ export const useIndexDbHook = () => {
                     if (chat.type === ChatEnum.IS_SYSTEM) systemChat = chat;
                     if (chat.type === ChatEnum.IS_FAVORITES) favoritesChat = chat;
 
-                    if (chat.aesKeyString) {
-                        const aesKey = await CryptoService.importEASKey(chat.aesKeyString);
-                        setRawCryptoKey(chat.id, aesKey);
+                    if (chat.cryptoKey) {
+                        setRawCryptoKey(chat.id, chat.cryptoKey);
                     }
 
                     return chat;
