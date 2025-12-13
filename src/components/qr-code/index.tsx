@@ -9,7 +9,6 @@ import { IoCopyOutline } from 'react-icons/io5';
 import { useTranslation } from 'react-i18next';
 import Loading from '../loading';
 import { LoadingQrCode } from './components/loading-qr-code';
-import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 
@@ -30,10 +29,9 @@ function setupHiDPICanvas(canvas: HTMLCanvasElement, width: number, height: numb
     return ctx;
 }
 
-export const QrCode: FC<PropsType> = memo(({ url, text }) => {
+export const QrCode: FC<PropsType> = memo(({ url, userNameShort }) => {
     const textAreaHeight = 20;
     const { t } = useTranslation();
-    const visibleText = useShortText(text);
     const { postMessageToBroadCastChannel } = useAppAction();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -79,15 +77,15 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
                 ctx.drawImage(logo, (size - logoSize) / 2, (size - logoSize) / 2, logoSize, logoSize);
                 ctx.globalAlpha = 1.0;
 
-                if (visibleText) {
+                if (userNameShort) {
                     ctx.font = 'bold 20px sans-serif';
                     ctx.fillStyle = '#0098EA';
                     ctx.textAlign = 'center';
-                    ctx.fillText(`@${visibleText}`, size / 2, size + 8);
+                    ctx.fillText(`${userNameShort}`, size / 2, size + 8);
                 }
             };
         });
-    }, [url, visibleText]);
+    }, [url, userNameShort]);
 
     const share = () => {
         canvasRef?.current?.toBlob(async (blob) => {
