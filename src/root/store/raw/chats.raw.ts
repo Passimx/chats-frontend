@@ -36,11 +36,11 @@ export const getRawChatsLength = (): number => {
     return rawChats.chats.size + rawChats.updatedChats.size;
 };
 
-export const setRawCryptoKey = (chatId: string, key: CryptoKey, aesKeyString?: string) => {
+export const setRawCryptoKey = (chatId: string, key: CryptoKey) => {
     rawChats.keys.set(chatId, key);
     const chat = rawChats.chats.get(chatId);
-    if (chat && aesKeyString?.length) {
-        const data = { ...chat, aesKeyString };
+    if (chat) {
+        const data = { ...chat, CryptoKey: key };
         updateRawChat(data);
     }
 };

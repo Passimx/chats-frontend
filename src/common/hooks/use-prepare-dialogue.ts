@@ -33,8 +33,7 @@ export const usePrepareDialogue = () => {
         if (!aesKeyString) return;
 
         const aesKey = await CryptoService.importEASKey(aesKeyString);
-        setRawCryptoKey(payload.id, aesKey, aesKeyString);
-        payload.aesKeyString = aesKeyString;
+        setRawCryptoKey(payload.id, aesKey);
 
         if (payload.message) payload.message = await MessagesService.decryptMessage(payload.message);
 
