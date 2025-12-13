@@ -16,7 +16,7 @@ import { MessageVideo } from '../message-video';
 import { useReadMessage } from '../../common/hooks/use-read-message.hook.ts';
 import { BsPinAngleFill } from 'react-icons/bs';
 import { usePinned } from '../../common/hooks/use-pinned.hook.ts';
-import { AiFillSound, AiOutlinePause } from 'react-icons/ai';
+import { AiFillSound, AiFillStop } from 'react-icons/ai';
 import { useSpeak } from './hooks/use-speak.hook.ts';
 import { useText } from './hooks/use-text.hook.ts';
 
@@ -54,7 +54,7 @@ const Message: FC<PropsType> = memo((props) => {
                     {props.message?.length && (
                         <div className={styles.listen_button_background}>
                             <div className={styles.listen_button} onClick={handleSpeaking}>
-                                {isSpeaking ? <AiOutlinePause /> : <AiFillSound />}
+                                {isSpeaking ? <AiFillStop /> : <AiFillSound />}
                             </div>
                         </div>
                     )}
