@@ -1,6 +1,6 @@
 import rawChats from '../../raw/chats.raw.ts';
 import { rawApp } from '../../app/app.raw.ts';
-import { UserIndexDbType } from '../../../types/user/user-index-db.type.ts';
+import { UserIndexDbType } from '../../../types/users/user-index-db.type.ts';
 
 export const upsertAccountIndexDb = (payload: Partial<UserIndexDbType>, oldKey?: number) => {
     const IndexDb = rawChats.indexDb;

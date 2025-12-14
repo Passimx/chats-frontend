@@ -2,7 +2,7 @@ import { Api, IData } from '../index.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import { MimeToExt, Types, UploadResultType } from '../../types/files/types.ts';
 import { cacheIsExist } from '../../../common/cache/cache-is-exist.ts';
-import { getRawChat, getRawCryptoKey } from '../../store/raw/chats.raw.ts';
+import { getRawChat } from '../../store/raw/chats.raw.ts';
 import { canSaveCache, getCacheMemory } from '../../../common/cache/get-cache-memory.ts';
 import { StateType } from '../../store/app/types/state.type.ts';
 import { MessagesService } from '../../../common/services/messages.service.ts';
@@ -45,7 +45,7 @@ export const DownloadFilePreview = async (file: Types): Promise<Blob | undefined
     let blob = await response.blob();
     if (!blob) return;
 
-    const aesKey = getRawCryptoKey(file.chatId);
+    const aesKey = getRawChat(file.chatId)?.aesKey;
     if (aesKey) {
         blob = await CryptoService.decryptFile(blob, metadata.previewMimeType, aesKey);
     }
@@ -109,7 +109,7 @@ export const DownloadFileWithPercents = async (
                 if (getRawChat(file.chatId)) {
                     const cache = await caches.open(Envs.cache.files);
 
-                    const aesKey = getRawCryptoKey(file.chatId);
+                    const aesKey = getRawChat(file.chatId)?.aesKey;
                     if (aesKey) blob = await CryptoService.decryptFile(blob, file.mimeType, aesKey);
 
                     const response = new Response(blob, {

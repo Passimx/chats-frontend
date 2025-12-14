@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { upsertAccountIndexDb } from './index-db/hooks.ts';
-import { UserIndexDbType } from '../../types/user/user-index-db.type.ts';
+import { UserIndexDbType } from '../../types/users/user-index-db.type.ts';
 
 const initialState: Partial<UserIndexDbType> = {};
 

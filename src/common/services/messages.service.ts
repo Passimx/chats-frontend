@@ -1,6 +1,5 @@
 import { MessageFromServerType, MessageType } from '../../root/types/chat/message.type.ts';
 import { IData } from '../../root/api';
-import { getRawCryptoKey, setRawCryptoKey } from '../../root/store/raw/chats.raw.ts';
 import { CryptoService } from './crypto.service.ts';
 import { ChatType } from '../../root/types/chat/chat.type.ts';
 import { Envs } from '../config/envs/envs.ts';
@@ -9,7 +8,11 @@ import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { FilesType } from '../../root/types/files/types.ts';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { CreateChatKeyType } from '../../root/types/chat/create-dialogue.type.ts';
-import { getPublicKey, keepChatKey } from '../../root/api/keys';
+import { getUserByUserName } from '../../root/api/users';
+import { keepChatKey } from '../../root/api/chats';
+import { getRawChat } from '../../root/store/raw/chats.raw.ts';
+import { store } from '../../root/store';
+import { ChatsActions } from '../../root/store/chats/chats.slice.ts';
 
 export class MessagesService {
     public static async setSaveTime(request: Promise<IData<MessageFromServerType[]>>) {
@@ -25,7 +28,7 @@ export class MessagesService {
         request: Promise<IData<MessageFromServerType[]>>,
     ): Promise<IData<MessageFromServerType[]>> {
         const response = await request;
-        const aesKey = getRawCryptoKey(chatId);
+        const aesKey = getRawChat(chatId)?.aesKey;
         if (!aesKey) return request;
 
         if (!response.success) return response;
@@ -40,7 +43,7 @@ export class MessagesService {
     public static async decryptMessage<T extends MessageFromServerType>(data: T): Promise<T> {
         if (data.type !== MessageTypeEnum.IS_USER) return data;
 
-        const aesKey = getRawCryptoKey(data.chatId);
+        const aesKey = getRawChat(data.chatId)?.aesKey;
         if (!aesKey) return data;
 
         if (data.message) {
@@ -57,14 +60,14 @@ export class MessagesService {
         if (!response.success) return response;
         if (!response.data?.keys?.length) return response;
 
-        const myKey = response.data.keys.find((key) => key.publicKeyHash === Envs.socketId);
+        const myKey = response.data.keys.find((key) => key.userId === Envs.socketId);
         if (!myKey) return response;
 
         const aesKeyString = await CryptoService.decryptByRSAKey(Envs.RASKeys?.privateKey, myKey.encryptionKey);
         if (!aesKeyString) return response;
 
         const aesKey = await CryptoService.importEASKey(aesKeyString);
-        setRawCryptoKey(response.data.id, aesKey, aesKeyString);
+        store.dispatch(ChatsActions.update({ id: response.data.id, aesKey }));
 
         return response;
     }
@@ -72,14 +75,14 @@ export class MessagesService {
     public static async decryptChat(request: Promise<IData<ChatType>>): Promise<IData<ChatType>> {
         const response = await request;
         if (!response.success) return response;
-        const aesKey = getRawCryptoKey(response.data.id);
+        const aesKey = getRawChat(response.data.id)?.aesKey;
         if (!aesKey) return request;
 
         if (!response.success) return response;
 
         if (response.data.type === ChatEnum.IS_DIALOGUE && !response?.data?.title?.length) {
-            const anotherChatKey = response.data.keys?.find((key) => key.publicKeyHash !== Envs.socketId);
-            response.data.title = anotherChatKey?.publicKeyHash;
+            const anotherChatKey = response.data.keys?.find((key) => key.userId !== Envs.socketId);
+            response.data.title = anotherChatKey?.userId;
         }
 
         if (response.data.message) response.data.message = await this.decryptMessage(response.data.message);
@@ -91,7 +94,7 @@ export class MessagesService {
         if (!response.success) return response;
 
         const tasks = response.data.map(async (chat) => {
-            const aesKey = getRawCryptoKey(chat.id);
+            const aesKey = getRawChat(chat.id)?.aesKey;
             if (!aesKey) return chat;
 
             if (chat.message) chat.message = await this.decryptMessage(chat.message);
@@ -104,7 +107,7 @@ export class MessagesService {
 
     public static async encryptMessage(body: CreateMessageType): Promise<CreateMessageType> {
         if (!body.chatId) return body;
-        const aesKey = getRawCryptoKey(body.chatId);
+        const aesKey = getRawChat(body.chatId)?.aesKey;
         if (!aesKey) return body;
 
         if (body.message?.length) {
@@ -118,7 +121,7 @@ export class MessagesService {
         const chatId = formData.get('chatId') as string | undefined;
         if (!chatId) return formData;
 
-        const aesKey = getRawCryptoKey(chatId);
+        const aesKey = getRawChat(chatId)?.aesKey;
         if (!aesKey) return formData;
 
         for (const [key, value] of formData.entries()) {
@@ -136,24 +139,23 @@ export class MessagesService {
         if (!chat.keys?.length) return false;
 
         const keys: CreateChatKeyType[] = [];
-        const aesKeyString = await CryptoService.generateAndExportAesKey();
+        const aesKeyString = await CryptoService.generateAndExportAesKey(undefined, true);
         const aesKey = await CryptoService.importEASKey(aesKeyString);
 
-        const tasks = chat.keys.map(async ({ publicKeyHash }) => {
-            const response = await getPublicKey(publicKeyHash);
+        const tasks = chat.keys.map(async ({ userId }) => {
+            const response = await getUserByUserName(userId);
             if (!response.success) return;
 
-            const publicKey = await CryptoService.importRSAKey(response.data.publicKey, ['encrypt']);
+            const publicKey = await CryptoService.importRSAKey(response.data.rsaPublicKey, ['encrypt']);
             if (!publicKey) return;
             const encryptionKey = await CryptoService.encryptByRSAKey(publicKey, aesKeyString);
             if (!encryptionKey) return;
-            keys.push({ publicKeyHash, encryptionKey });
+            keys.push({ userId, encryptionKey });
         });
 
         await Promise.all(tasks);
         await keepChatKey(chat.id, { keys });
-
-        setRawCryptoKey(chat.id, aesKey, aesKeyString);
+        store.dispatch(ChatsActions.update({ id: chat.id, aesKey }));
 
         return true;
     }

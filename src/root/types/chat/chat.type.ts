@@ -26,5 +26,5 @@ export type ChatItemIndexDb = ChatType & {
     inputMessage?: string;
     answerMessage?: MessageType;
     pinnedMessages?: MessageType[];
-    aesKeyString?: string;
+    aesKey?: CryptoKey;
 };

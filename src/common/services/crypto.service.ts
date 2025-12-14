@@ -42,7 +42,10 @@ export class CryptoService {
         return { publicKey: publicExportedKey, privateKey: privateExportedKey };
     }
 
-    public static async generateAESKey(passphrase?: string): Promise<CryptoKey> {
+    public static async generateAESKey(
+        passphrase: string | undefined = undefined,
+        extractable: boolean = true,
+    ): Promise<CryptoKey> {
         if (!passphrase?.length)
             passphrase = await mnemonicNew(24)
                 .then((result) => result.join(' '))
@@ -60,13 +63,16 @@ export class CryptoService {
             },
             key,
             { name: 'AES-GCM', length: keyLength },
-            false,
+            extractable,
             ['encrypt', 'decrypt'],
         );
     }
 
-    public static async generateAndExportAesKey(passphrase?: string): Promise<string> {
-        const aesKey = await this.generateAESKey(passphrase);
+    public static async generateAndExportAesKey(
+        passphrase: string | undefined = undefined,
+        extractable: boolean = true,
+    ): Promise<string> {
+        const aesKey = await this.generateAESKey(passphrase, extractable);
         return this.exportKey(aesKey);
     }
 
@@ -78,9 +84,9 @@ export class CryptoService {
         return JSON.stringify(exportedKey);
     }
 
-    public static importEASKey(key: JsonWebKey | string): Promise<CryptoKey> {
+    public static importEASKey(key: JsonWebKey | string, extractable = true): Promise<CryptoKey> {
         const jsonWebKey = typeof key === 'string' ? (JSON.parse(key) as JsonWebKey) : key;
-        return window.crypto.subtle.importKey('jwk', jsonWebKey, { name: 'AES-GCM', length: keyLength }, true, [
+        return window.crypto.subtle.importKey('jwk', jsonWebKey, { name: 'AES-GCM', length: keyLength }, extractable, [
             'encrypt',
             'decrypt',
         ]);

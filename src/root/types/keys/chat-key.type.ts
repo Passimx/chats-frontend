@@ -1,5 +1,5 @@
 export type ChatKeyType = {
-    publicKeyHash: string;
+    userId: string;
     encryptionKey: string;
     received: boolean;
 };

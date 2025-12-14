@@ -49,6 +49,10 @@ export const getSystemChat = (): Promise<IData<ChatType[]>> => {
     return Api<ChatType[]>('/chats/system_chats');
 };
 
-export const createDialogue = (body: BodyCreateDialogueType) => {
-    return Api<ChatType>('/dialogues', { method: 'POST', body });
+export const keepChatKey = (id: string, body: BodyCreateDialogueType) => {
+    return Api(`/chats/${id}/keys/keep`, { method: 'POST', body });
+};
+
+export const receiveKey = (chatId: string) => {
+    return Api(`/chats/${chatId}/keys/receive`, { method: 'POST', body: { chatId } });
 };

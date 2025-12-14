@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { CryptoService } from '../../../common/services/crypto.service.ts';
 import { useAppAction } from '../../../root/store';
 import { generateUser } from '../../../root/api/users';
-import { UserFromServerMe } from '../../../root/types/chat/users/user-from-server-me.type.ts';
+import { UserFromServerMe } from '../../../root/types/users/user-from-server-me.type.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 
 type FuncType = [boolean, (words: string[], password: string, name: string) => any];
@@ -48,6 +48,7 @@ export const useCreateUser = (): FuncType => {
             userName: data.userName,
             rsaPublicKey: rsaKeysPair.publicKey,
             rsaPrivateKey: rsaKeysPair.privateKey,
+            encryptedRsaPrivateKey,
         });
     }, []);
 
