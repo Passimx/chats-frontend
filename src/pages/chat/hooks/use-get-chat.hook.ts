@@ -18,7 +18,7 @@ const useGetChat = (): void => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
     const socketId = useAppSelector((state) => state.app.socketId);
-    const privateKey = useAppSelector((state) => state.app.keyInf?.RASKeys?.privateKey);
+    const privateKey = useAppSelector((state) => state.user.rsaPrivateKey);
     const { state }: { state: ChatType | undefined } = useLocation();
 
     useEffect(() => {

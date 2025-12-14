@@ -4,13 +4,13 @@ import { MessagesService } from '../../../common/services/messages.service.ts';
 import { CreateMessageType } from '../../types/messages/create-message.type.ts';
 import { store } from '../../store';
 import { ChatEnum } from '../../types/chat/chat.enum.ts';
-import { getRawCryptoKey } from '../../store/raw/chats.raw.ts';
+import { getRawChat } from '../../store/raw/chats.raw.ts';
 
 export const createMessage = async (data: CreateMessageType) => {
     const chatOnPage = store.getState().chats.chatOnPage;
     if (
         chatOnPage &&
-        !getRawCryptoKey(chatOnPage.id) &&
+        !getRawChat(chatOnPage.id)?.aesKey &&
         [ChatEnum.IS_DIALOGUE, ChatEnum.IS_FAVORITES].includes(chatOnPage.type)
     )
         await MessagesService.createChatKeys(chatOnPage);

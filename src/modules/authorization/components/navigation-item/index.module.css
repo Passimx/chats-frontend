@@ -1,0 +1,41 @@
+.background{
+    position: absolute;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 16px;
+    background-color: #041b2f;
+    border-radius: 8px;
+    max-width: calc(min(calc(100% - 16px), 400px) - 32px);
+    color: white;
+
+    .arrow{
+        position: absolute;
+        cursor: pointer;
+        &:hover{
+            color: #439fef;
+        }
+    }
+}
+
+.show_slowly{
+    animation: show_slowly .2s ease forwards;
+}
+
+.hide_slowly{
+    animation: hide_slowly .2s ease forwards;
+}
+
+@keyframes show_slowly{
+    from {
+        max-width: 0;
+        margin-left: calc(min(100%, 400px) - 32px);
+    }
+}
+
+@keyframes hide_slowly{
+    to {
+        max-width: 0;
+        visibility: hidden;
+        margin-left: calc(min(100%, 400px) - 32px);
+    }
+}

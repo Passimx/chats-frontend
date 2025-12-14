@@ -2,11 +2,10 @@ import { ChatItemIndexDb, DialogueType } from '../../root/types/chat/chat.type.t
 import { useCallback } from 'react';
 import { Envs } from '../config/envs/envs.ts';
 import { CryptoService } from '../services/crypto.service.ts';
-import { setRawCryptoKey } from '../../root/store/raw/chats.raw.ts';
 import { MessagesService } from '../services/messages.service.ts';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
-import { receiveKey } from '../../root/api/keys';
 import { MessageType } from '../../root/types/chat/message.type.ts';
+import { receiveKey } from '../../root/api/chats';
 
 export const usePrepareDialogue = () => {
     return useCallback(async (data: DialogueType) => {
@@ -25,16 +24,13 @@ export const usePrepareDialogue = () => {
             scrollTop: 0,
         };
 
-        const myChatKey = keys?.find((key) => key.publicKeyHash === Envs.socketId);
+        const myChatKey = keys?.find((key) => key.userId === Envs.socketId);
 
         if (!myChatKey || !Envs.RASKeys?.privateKey) return;
 
         const aesKeyString = await CryptoService.decryptByRSAKey(Envs.RASKeys.privateKey, myChatKey.encryptionKey);
         if (!aesKeyString) return;
-
-        const aesKey = await CryptoService.importEASKey(aesKeyString);
-        setRawCryptoKey(payload.id, aesKey, aesKeyString);
-        payload.aesKeyString = aesKeyString;
+        payload.aesKey = await CryptoService.importEASKey(aesKeyString, false);
 
         if (payload.message) payload.message = await MessagesService.decryptMessage(payload.message);
 

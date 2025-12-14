@@ -24,10 +24,10 @@ import { useBattery } from './hooks/use-battery.hook.ts';
 import { useSettings } from './hooks/use-settings.hook.ts';
 import { useUpdateBadge } from './hooks/use-update-badge.hook.ts';
 import { useCatchLogs } from './hooks/use-catch-logs.hook.ts';
-import { useKeys } from './hooks/use-keys.hook.ts';
 import { useUpdateStaticCache } from './hooks/use-update-static-cache.hook.ts';
 import { TopElements } from '../../../components/top-elements';
 import { StartPage } from '../../../pages/start';
+import { useMainTab } from './hooks/use-main-tab.hook.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -61,12 +61,10 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useSettings();
     // update badge
     useUpdateBadge();
-    // get RSA keys
-    useKeys();
     // update static files in cache storage
     useUpdateStaticCache();
-    // verity when open app
-    // const [isAuth] = useVerify();
+    // get main tab
+    useMainTab();
 
     // set language
     const isLoaded = useTranslation();
@@ -81,9 +79,9 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
         return (
             <AudioPlayer>
                 <div id={styles.background}>
-                    <StartPage>
-                        <PreviewMediaContext>
-                            <TopElements />
+                    <PreviewMediaContext>
+                        <TopElements />
+                        <StartPage>
                             <div id={styles.menu}>
                                 <div id={styles.pages}>
                                     {/*<PageItem public-key-name={TabEnum.SERVICES}>*/}
@@ -101,8 +99,8 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
                             <div id={styles.chat} onClick={hideMenu}>
                                 {children}
                             </div>
-                        </PreviewMediaContext>
-                    </StartPage>
+                        </StartPage>
+                    </PreviewMediaContext>
                 </div>
             </AudioPlayer>
         );

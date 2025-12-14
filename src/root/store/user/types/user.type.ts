@@ -1,4 +1,8 @@
 export type UserType = {
+    id: string;
+    name: string;
+    userName: string;
     aesKey: CryptoKey;
-    authToken: string;
+    rsaPublicKey: CryptoKey;
+    rsaPrivateKey: CryptoKey;
 };

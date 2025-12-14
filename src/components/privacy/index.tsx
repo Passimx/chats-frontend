@@ -5,7 +5,7 @@ import { RiShieldKeyholeLine } from 'react-icons/ri';
 import { useAppSelector } from '../../root/store';
 
 export const Privacy: FC = () => {
-    const publicKey = useAppSelector((state) => state.app.keyInf?.publicKey);
+    const publicKey = useAppSelector((state) => state.user.rsaPublicKey);
 
     if (publicKey)
         return (

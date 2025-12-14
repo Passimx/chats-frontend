@@ -22,7 +22,7 @@ export const Settings = memo(() => {
     const { t } = useTranslation();
     const { setStateApp } = useAppAction();
     const chatsLength = useAppSelector((state) => state.chats.chats.length);
-    const name = useAppSelector((state) => state.app.keyInf?.name);
+    const userName = useAppSelector((state) => state.user.userName);
     const { cacheMemory, pages, activeTab, systemChatName, logs } = useAppSelector((state) => state.app);
 
     const cache = useMemo(() => {
@@ -77,7 +77,7 @@ export const Settings = memo(() => {
                 <div
                     className={styles.item}
                     onClick={() => {
-                        if (name) navigate(name);
+                        if (userName) navigate(userName);
                     }}
                 >
                     <LuStar className={styles.item_logo} />
