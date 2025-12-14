@@ -19,10 +19,12 @@
 
 *::-webkit-scrollbar-thumb {
     background-color: white;
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
-html,body, #root{
+html,
+body,
+#root {
     height: 100%;
     width: 100%;
     background-color: var(--menu-color);
@@ -42,14 +44,20 @@ html,body, #root{
 }
 
 /* класс для всего текста, что может быть изменен при выборе другого языка */
-.text_translate{}
-
-@keyframes show {
-    from { filter: blur(4px); }
-    to { filter: none }
+.text_translate {
 }
 
-.content_editable, .content_editable *{
+@keyframes show {
+    from {
+        filter: blur(4px);
+    }
+    to {
+        filter: none;
+    }
+}
+
+.content_editable,
+.content_editable * {
     outline: none !important;
     -webkit-box-shadow: none !important;
     -moz-box-shadow: none !important;
