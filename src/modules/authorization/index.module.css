@@ -1,0 +1,52 @@
+.background{
+    padding: 8px;
+    display: grid;
+    width: 100%;
+    overflow: auto;
+    grid-template-rows: 1fr auto;
+    gap: 8px;
+
+    .main{
+        overflow: hidden;
+        display: grid;
+        justify-items: center;
+        align-items: center;
+
+        .page{
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+    }
+    .footer{
+        display: grid;
+        justify-items: center;
+
+        .footer_block{
+            display: flex;
+            flex-wrap: wrap;
+            justify-items: stretch;
+            gap: 16px;
+            color: white;
+
+            .footer_item{
+                cursor: pointer;
+                border-radius: 4px;
+                font-size: 16px;
+
+                display: grid;
+                grid-template-columns: auto auto;
+                gap: 4px;
+                align-content: center;
+                justify-content: center;
+
+                &:hover{
+                    color: #439fef;
+                }
+            }
+        }
+    }
+}
