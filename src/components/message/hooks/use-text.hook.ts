@@ -6,11 +6,12 @@ import { useAppSelector } from '../../../root/store';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment/min/moment-with-locales';
 
-export const useText = (props: PropsType) => {
+export const useText = (props: PropsType | undefined) => {
     const { t } = useTranslation();
     const title = useAppSelector((state) => state.chats.chatOnPage?.title);
     const chatType = useAppSelector((state) => state.chats.chatOnPage?.type);
     return useMemo(() => {
+        if (!props) return [];
         const time = moment(props.createdAt).format('LT');
         let message;
         if (props.type === MessageTypeEnum.IS_CREATED_CHAT) {

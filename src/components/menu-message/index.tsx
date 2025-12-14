@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { ContextChat } from '../../pages/chat/context/chat-context.tsx';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { useText } from '../message/hooks/use-text.hook.ts';
 
 export const MenuMessage: FC = memo(() => {
     const { t } = useTranslation();
@@ -19,6 +20,7 @@ export const MenuMessage: FC = memo(() => {
     const { clickMessage, isShowMessageMenu, setIsShowMessageMenu } = useContext(ContextChat)!;
     const { update, setChatOnPage, postMessageToBroadCastChannel } = useAppAction();
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
+    const [message] = useText(clickMessage);
 
     useEffect(() => {
         if (isShowMessageMenu) setIsShowMessageMenu(false);
@@ -66,7 +68,14 @@ export const MenuMessage: FC = memo(() => {
     const copyMessage = useCallback(() => {
         setIsShowMessageMenu(false);
         if (!clickMessage) return;
-        navigator.clipboard.writeText(clickMessage.message);
+
+        const selectedText = window.getSelection()?.toString();
+        if (selectedText) {
+            navigator.clipboard.writeText(selectedText);
+        } else {
+            navigator.clipboard.writeText(message);
+        }
+
         postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
     }, [clickMessage]);
 
