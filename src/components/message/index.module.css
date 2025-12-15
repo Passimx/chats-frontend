@@ -1,7 +1,7 @@
 /* src/components/message/index.module.css */
 .background{
     padding: 8px;
-    background-color: white;
+    background-color: rgb(228, 228, 229);
     border-radius: 10px;
     vertical-align : bottom;
     box-shadow: 4px 4px 10px #80808047;

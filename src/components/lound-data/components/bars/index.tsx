@@ -31,7 +31,7 @@ export const Bars: FC<PropsType> = memo(({ flip, displayData, fileId }) => {
                         className={styles.bar_item}
                         style={{
                             height: Math.max(val * height, minHeight),
-                            background: isPlayed ? '#0098ea' : '#808080',
+                            background: isPlayed ? '#0098ea' : '#797979ff',
                         }}
                     />
                 );

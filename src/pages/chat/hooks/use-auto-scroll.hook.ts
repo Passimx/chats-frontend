@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { UseAutoScrollProps } from '../types/use-auto-scroll.type';
+import { UseAutoScrollProps } from '../props.type';
 import { useAppSelector } from '../../../root/store';
 
 export const useAutoScroll = (props: UseAutoScrollProps) => {
@@ -35,5 +35,5 @@ export const useAutoScroll = (props: UseAutoScrollProps) => {
 
     useEffect(() => {
         scrollToBottom();
-    }, [chatOnPage?.inputMessage]);
+    }, [chatOnPage?.inputMessage, chatOnPage?.messages]);
 };

@@ -2,7 +2,7 @@
     display: grid;
 
     .main{
-        display: grid;
+        display: flex;
         grid-template-columns: auto 1fr;
 
         .background{
@@ -45,17 +45,19 @@
                 gap: 4px;
 
                 .audio_text{
-                    background-color: #e8f3fd;
-                    border-radius: 14px;
-                    color: #0098ea;
+                    border: 1px solid;
+                    border-radius: 4px;
+                    color: #1d86bd;
                     cursor: pointer;
                     font-weight: bold;
-                    aspect-ratio: 1 / 1;
                     display: grid;
                     justify-items: center;
                     align-items: center;
                     -webkit-user-select: none;
                     user-select: none;
+                    width: 20px;
+                    height: 20px;
+                    margin-left: 5px;
 
                     &:hover{
                         opacity: 0.8;
@@ -68,6 +70,7 @@
                 align-items: center;
                 -webkit-user-select: none;
                 user-select: none;
+                font-size: small;
             }
         }
     }
@@ -81,6 +84,7 @@
 
         .text_main{
             padding: 4px;
+            color:#010135;;
         }
     }
 }
