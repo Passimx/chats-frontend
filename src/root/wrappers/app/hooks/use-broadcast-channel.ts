@@ -8,11 +8,24 @@ export const useBroadcastChannel = () => {
     const sendMessage = useAppEvents();
     const rsaPublicKey = useAppSelector((state) => state.user.rsaPublicKey);
 
+    /** App events */
     useEffect(() => {
         const channel = new BroadcastChannel('ws-channel');
         channel.onmessage = ({ data }: MessageEvent<any>) => sendMessage(data);
     }, []);
 
+    /** Service worker registration */
+    useEffect(() => {
+        if (navigator.serviceWorker) {
+            navigator.serviceWorker?.register('/worker.js', { scope: '/' });
+            navigator.serviceWorker?.ready?.then((registration) => {
+                if (registration.active) registration.active?.postMessage({ type: 'SET_ENVS', data: Envs });
+                return (registration as any)?.sync?.register('syncdata');
+            });
+        }
+    }, []);
+
+    /** Notifications service connection */
     useEffect(() => {
         if (!rsaPublicKey) return;
 
@@ -30,15 +43,4 @@ export const useBroadcastChannel = () => {
             iframe?.remove();
         }
     }, [rsaPublicKey]);
-
-    /** Service worker registration */
-    useEffect(() => {
-        if (navigator.serviceWorker) {
-            navigator.serviceWorker?.register('/worker.js', { scope: '/' });
-            navigator.serviceWorker?.ready?.then((registration) => {
-                if (registration.active) registration.active?.postMessage({ type: 'SET_ENVS', data: Envs });
-                return (registration as any)?.sync?.register('syncdata');
-            });
-        }
-    }, []);
 };
