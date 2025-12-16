@@ -14,8 +14,8 @@ jobs:
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
-      contents: write
       packages: write
+      contents: write
 
   build:
     uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
