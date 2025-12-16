@@ -9,9 +9,12 @@ export const useBroadcastChannel = () => {
     const rsaPublicKey = useAppSelector((state) => state.user.rsaPublicKey);
 
     useEffect(() => {
-        if (!rsaPublicKey) return;
         const channel = new BroadcastChannel('ws-channel');
         channel.onmessage = ({ data }: MessageEvent<any>) => sendMessage(data);
+    }, []);
+
+    useEffect(() => {
+        if (!rsaPublicKey) return;
 
         if (rawApp.isMainTab) {
             const iframeExist = document.querySelector('iframe[data-main-iframe]');
