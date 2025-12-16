@@ -10,7 +10,7 @@ export const AccountStart: FC = memo(() => {
 
     const createAccount = useCallback(() => {
         pages?.push(<CreateAccount />);
-        if (pages) setStateApp({ pages: new Map<TabEnum, React.JSX.Element[]>([[TabEnum.AUTHORIZATION, pages]]) });
+        if (pages) setStateApp({ pages: new Map<TabEnum, JSX.Element[]>([[TabEnum.AUTHORIZATION, pages]]) });
     }, [pages]);
 
     return (
