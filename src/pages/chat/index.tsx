@@ -27,6 +27,8 @@ import { useGetChatTitle } from '../../common/hooks/use-get-chat-title.hook.ts';
 import { Avatar } from '../../components/avatar';
 import { EmptyMessages } from '../../components/empty-messages';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { PiPhoneCallFill } from 'react-icons/pi';
+import CallModal from '../../components/call-modal/index.tsx';
 
 const Chat: FC = memo(() => {
     useGetChat();
@@ -103,6 +105,10 @@ const Chat: FC = memo(() => {
                         >
                             <MdQrCode2 className={styles.chat_menu_item_icon} />
                             <div className={'text_translate'}>{t('qr_code')}</div>
+                        </div>
+                        <div className={styles.chat_menu_item} onClick={() => setStateApp({ page: <CallModal /> })}>
+                            <PiPhoneCallFill className={styles.chat_menu_item_icon} />
+                            <div className={'text_translate'}>{t('call')}</div>
                         </div>
                         <div
                             className={styles.chat_menu_item}

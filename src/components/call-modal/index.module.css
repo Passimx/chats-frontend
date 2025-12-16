@@ -1,0 +1,120 @@
+.background {
+    max-width: calc(300px - 48px);
+    width: 100%;
+    padding: 16px 24px;
+    border-radius: 8px;
+    background: #79b6ec;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    row-gap: 100px;
+    position: absolute;
+    z-index: 100;
+    left: calc(50% - 150px);
+    top: calc(50% - 30vh);
+}
+
+.background[data-fullScreen='active'] {
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    border-radius: 0%;
+    left: 0;
+    top: 0;
+}
+
+.background[data-minimize='active'] {
+    max-width: 300px;
+    top: 3px;
+    padding: 5px 10px;
+}
+
+.avatar {
+    width: 150px;
+    height: 150px;
+}
+.avatar[data-minimize='active'] {
+    display: none;
+}
+
+.minimize,
+.fullscreen {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.minimizeBlock {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+}
+
+.minimizeBtn {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.controlIcons {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.callControll {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.callControll[data-minimize='active'] {
+    display: none;
+}
+
+.callControll[data-fullScreen='active'] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 40px;
+}
+
+.cameraToggle,
+.microphoneToggle,
+.decline {
+    background: transparent;
+    border: none;
+    outline: none;
+    max-width: 45px;
+    width: 100%;
+    height: 45px;
+    padding: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.callBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 5px;
+    flex-wrap: wrap;
+}
+
+.label {
+    font-size: 12px;
+    text-align: center;
+    padding: 1px 2px;
+    font-weight: 600;
+    font-family: 'Roboto';
+}
