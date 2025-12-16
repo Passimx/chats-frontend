@@ -16,7 +16,7 @@ export const Authorization: FC = memo(() => {
     const pages = useAppSelector((state) => state.app.pages)?.get(TabEnum.AUTHORIZATION);
 
     useEffect(() => {
-        setStateApp({ pages: new Map<TabEnum, React.JSX.Element[]>([[TabEnum.AUTHORIZATION, [<AccountStart />]]]) });
+        setStateApp({ pages: new Map<TabEnum, JSX.Element[]>([[TabEnum.AUTHORIZATION, [<AccountStart />]]]) });
     }, []);
 
     return (
