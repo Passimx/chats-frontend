@@ -5,46 +5,49 @@ import { QrCode } from '../qr-code';
 import { memo, useCallback } from 'react';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
-import { updatePublicKey } from '../../root/api/keys';
 import { Avatar } from '../avatar';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { updateUser } from '../../root/api/users';
 
 export const UserInf = memo(() => {
-    const publicKeyHash = useAppSelector((state) => state.app.keyInf?.publicKeyHash);
-    const userName = useShortText(`@${publicKeyHash}`);
-    const { setStateApp, changeKeyInf, postMessageToBroadCastChannel } = useAppAction();
-    const keyInfMetadata = useAppSelector((state) => state.app.keyInf?.metadata);
+    const id = useAppSelector((state) => state.user.id);
+    const name = useAppSelector((state) => state.user.name);
+    const userName = useAppSelector((state) => state.user.userName);
+    const seedPhraseHash = useAppSelector((state) => state.user.seedPhraseHash);
+    const shortUserName = useShortText(userName);
+    const { setStateApp, postMessageToBroadCastChannel, setStateUser } = useAppAction();
 
     const openQrCode = useCallback(() => {
-        if (!publicKeyHash) return;
+        if (!userName) return;
         setStateApp({
-            page: <QrCode url={`${window.location.origin}/${publicKeyHash}`} text={publicKeyHash} />,
+            page: <QrCode url={`${window.location.origin}/${userName}`} text={shortUserName} />,
         });
-    }, [publicKeyHash]);
+    }, [userName]);
 
-    const changeName = async (name: string) => {
-        const metadata = { ...(keyInfMetadata ?? {}), name };
-        await updatePublicKey({ metadata });
-        changeKeyInf({ metadata });
+    const changeName = async (newName: string) => {
+        if (name === newName) return;
+        const response = await updateUser({ id, seedPhraseHash, name: newName });
+        if (!response.success) return;
+        setStateUser({ name: newName });
     };
 
     return (
         <div className={styles.background}>
             <div className={styles.main}>
                 <div className={styles.avatar_background}>
-                    <Avatar images={keyInfMetadata?.images} isClickable={true} />
+                    <Avatar images={[]} isClickable={true} />
                 </div>
                 <div className={styles.inf_background}>
-                    <EditField value={keyInfMetadata?.name} setValue={(value) => changeName(value)} />
+                    <EditField value={name} setValue={(value) => changeName(value)} />
                     <div className={styles.name_background}>
                         <div
                             className={styles.background_name}
                             onClick={() => {
-                                navigator.clipboard.writeText(`@${publicKeyHash}`);
+                                userName && navigator.clipboard.writeText(`@${userName}`);
                                 postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
                             }}
                         >
-                            {userName}
+                            @{shortUserName}
                         </div>
                         <div className={styles.copy_logo_background}>
                             <MdQrCode2 className={styles.copy_logo} onClick={openQrCode} />

@@ -1,14 +1,27 @@
-import { CreateRsaKeysType, RsaKeysStringType } from '../../root/types/keys/create-rsa-keys.type.ts';
-import { WordsService } from './words-service/words.service.ts';
+import { RsaKeysStringType } from '../../root/types/keys/create-rsa-keys.type.ts';
 import { IKeys } from '../../root/types/keys/keys.type.ts';
 import { FilesType, MimetypeEnum } from '../../root/types/files/types.ts';
 import { createHmac } from 'crypto';
 import { Envs } from '../config/envs/envs.ts';
+import { mnemonicNew } from 'ton-crypto';
 
 const iterations = 1000000;
 const keyLength = 256;
 
 export class CryptoService {
+    public static async generateRSAKeys(): Promise<CryptoKeyPair> {
+        return window.crypto.subtle.generateKey(
+            {
+                name: 'RSA-OAEP',
+                modulusLength: 4096,
+                publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+                hash: 'SHA-512',
+            },
+            true,
+            ['encrypt', 'decrypt'],
+        );
+    }
+
     public static async generateExportRSAKeys(): Promise<RsaKeysStringType> {
         const { publicKey, privateKey } = await window.crypto.subtle.generateKey(
             {
@@ -29,36 +42,16 @@ export class CryptoService {
         return { publicKey: publicExportedKey, privateKey: privateExportedKey };
     }
 
-    public static async generateExportEncryptRSAKeys(
-        passphrase: string | CryptoKey,
-    ): Promise<CreateRsaKeysType | undefined> {
-        const { publicKey, privateKey } = await window.crypto.subtle.generateKey(
-            {
-                name: 'RSA-OAEP',
-                modulusLength: 4096,
-                publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-                hash: 'SHA-512',
-            },
-            true,
-            ['encrypt', 'decrypt'],
-        );
+    public static async generateAESKey(
+        passphrase: string | undefined = undefined,
+        extractable: boolean = true,
+    ): Promise<CryptoKey> {
+        if (!passphrase?.length)
+            passphrase = await mnemonicNew(24)
+                .then((result) => result.join(' '))
+                .catch(() => window.crypto.randomUUID());
 
-        const [publicExportedKey, privateExportedKey] = await Promise.all([
-            this.exportKey(publicKey),
-            this.exportKey(privateKey),
-        ]);
-
-        const aesKey = typeof passphrase === 'string' ? await this.generateAESKey(passphrase) : passphrase;
-        const encryptPrivateKey = await this.encryptByAESKey(aesKey, privateExportedKey);
-        if (!encryptPrivateKey) return undefined;
-
-        return { publicKey: publicExportedKey, encryptPrivateKey };
-    }
-
-    public static async generateAESKey(passphrase?: string): Promise<CryptoKey> {
-        const passphraseForSalt =
-            passphrase ?? (WordsService.generate({ exactly: 24, maxLength: 10, minLength: 3 }) as string[]);
-        const salt = new TextEncoder().encode(WordsService.hashPassphrase(passphraseForSalt));
+        const salt = new TextEncoder().encode(this.getHash(passphrase));
         const key = await window.crypto.subtle.importKey('raw', salt, 'PBKDF2', false, ['deriveKey']);
 
         return window.crypto.subtle.deriveKey(
@@ -70,13 +63,16 @@ export class CryptoService {
             },
             key,
             { name: 'AES-GCM', length: keyLength },
-            true,
+            extractable,
             ['encrypt', 'decrypt'],
         );
     }
 
-    public static async generateAndExportAesKey(passphrase?: string): Promise<string> {
-        const aesKey = await this.generateAESKey(passphrase);
+    public static async generateAndExportAesKey(
+        passphrase: string | undefined = undefined,
+        extractable: boolean = true,
+    ): Promise<string> {
+        const aesKey = await this.generateAESKey(passphrase, extractable);
         return this.exportKey(aesKey);
     }
 
@@ -88,9 +84,9 @@ export class CryptoService {
         return JSON.stringify(exportedKey);
     }
 
-    public static importEASKey(key: JsonWebKey | string): Promise<CryptoKey> {
+    public static importEASKey(key: JsonWebKey | string, extractable = true): Promise<CryptoKey> {
         const jsonWebKey = typeof key === 'string' ? (JSON.parse(key) as JsonWebKey) : key;
-        return window.crypto.subtle.importKey('jwk', jsonWebKey, { name: 'AES-GCM', length: keyLength }, true, [
+        return window.crypto.subtle.importKey('jwk', jsonWebKey, { name: 'AES-GCM', length: keyLength }, extractable, [
             'encrypt',
             'decrypt',
         ]);

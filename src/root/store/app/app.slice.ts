@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { KeyInfType, SettingsType, StateType, TabEnum } from './types/state.type.ts';
+import { SettingsType, StateType, TabEnum } from './types/state.type.ts';
 import { LocalEvents } from '../../types/events/local-events.type.ts';
 import { JSX } from 'react';
 import { Envs } from '../../../common/config/envs/envs.ts';
@@ -52,13 +52,6 @@ const AppSlice = createSlice({
             Envs.settings = { ...Envs.settings, ...state.settings, ...payload };
             localStorage.setItem('settings', JSON.stringify(Envs.settings));
             state.settings = Envs.settings as SettingsType;
-        },
-
-        changeKeyInf(state, { payload }: PayloadAction<Partial<KeyInfType>>) {
-            const data = { ...state.keyInf, ...payload };
-            state.keyInf = data;
-            delete data.RASKeys;
-            localStorage.setItem('keys', JSON.stringify(data));
         },
     },
 });
