@@ -9,17 +9,17 @@ on:
       - main
 
 jobs:
-#  version:
-#    uses: Passimx/ci-cd-workflows/.github/workflows/version.yml@main
-#    secrets:
-#      GH_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
-#    permissions:
-#      contents: write
-#      packages: write
+  version:
+    uses: Passimx/ci-cd-workflows/.github/workflows/version.yml@main
+    secrets:
+      GH_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
+    permissions:
+      contents: write
+      packages: write
 
   build:
     uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
-#    needs: version
+    needs: version
     with:
       ORGANIZATION_NAME: ${{ vars.ORGANIZATION_NAME }}
       IMAGE_NAME: ${{ vars.IMAGE_NAME }}
