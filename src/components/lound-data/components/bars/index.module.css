@@ -6,8 +6,8 @@
 }
 
 .bar_item{
-    width: 3px;
-    border-top-left-radius: 1px;
-    border-top-right-radius: 1px;
+    width: 2px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
     transition: background-color .2s linear;
 }

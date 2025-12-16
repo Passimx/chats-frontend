@@ -35,5 +35,5 @@ export const useAutoScroll = (props: UseAutoScrollProps) => {
 
     useEffect(() => {
         scrollToBottom();
-    }, [chatOnPage?.inputMessage, chatOnPage?.messages]);
+    }, [chatOnPage?.messages]);
 };

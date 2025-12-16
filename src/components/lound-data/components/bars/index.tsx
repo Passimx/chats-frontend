@@ -6,15 +6,21 @@ import { AudioPlayerContext } from '../../../../root/contexts/audio-player';
 export const Bars: FC<PropsType> = memo(({ flip, displayData, fileId }) => {
     const { progress, audio } = useContext(AudioPlayerContext)!;
 
-    const height = 12;
-    const minHeight = 3;
+    const height = 17;
+    const minHeight = 5;
 
     return (
         <div
             className={styles.background}
             style={{
-                gridTemplateColumns: `repeat(${displayData.length}, 1fr)`,
-                transform: flip ? 'scaleY(-1)' : 'none',
+                display: 'flex',
+                flexDirection: 'row',
+                width: '100%',
+                gap: '2px',
+                height: '20px',
+                alignItems: 'flex-end',
+                //gridTemplateColumns: `repeat(${displayData.length}, 1fr)`,
+                //transform: flip ? 'scaleY(-1)' : 'none',
             }}
         >
             {displayData.map((val, idx) => {

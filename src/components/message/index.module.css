@@ -5,6 +5,7 @@
     border-radius: 10px;
     vertical-align : bottom;
     box-shadow: 4px 4px 10px #80808047;
+    max-width: 80%;
 
     @media(width < 600px){
         -webkit-user-select: none;
@@ -20,6 +21,8 @@
     vertical-align : bottom;
     color:#e8f3fd;
     box-shadow: 4px 4px 10px #80808047;
+    max-width: 80%;
+    margin-right: 0.5rem;
 
     @media(width < 600px){
         -webkit-user-select: none;
