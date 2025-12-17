@@ -6,6 +6,7 @@ export const useAutoScroll = (props: UseAutoScrollProps) => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
 
     const scrollToBottom = () => {
+        if (!chatOnPage?.id) return;
         const container = props.chatContainerRef.current;
         if (container) {
             const targetScrollTop = container.scrollHeight;
@@ -33,7 +34,31 @@ export const useAutoScroll = (props: UseAutoScrollProps) => {
         }
     };
 
+    const isScrolledToBottom = (element: HTMLDivElement) => {
+        const { scrollTop, scrollHeight, clientHeight } = element;
+        const threshold = 100;
+        return Math.abs(scrollHeight - scrollTop - clientHeight) < threshold;
+    };
+
     useEffect(() => {
-        scrollToBottom();
-    }, [chatOnPage?.messages]);
+        if (!chatOnPage?.messages) return;
+
+        const timer = setTimeout(() => {
+            if (props.isShowLastMessagesButton) {
+                const isNewMessage = chatOnPage.countMessages > chatOnPage.readMessage;
+                if (isNewMessage) {
+                    const lastMessage = chatOnPage.messages[chatOnPage.messages.length - 1];
+                    const username = lastMessage?.user?.userName;
+                    console.log(username, props.ownUserName);
+                    if (username === props.ownUserName) scrollToBottom();
+                }
+            } else {
+                if (isScrolledToBottom(props.chatContainerRef.current as HTMLDivElement)) {
+                    scrollToBottom();
+                }
+            }
+        }, 300);
+
+        return () => clearTimeout(timer); // Очистка таймера
+    }, [chatOnPage?.message]);
 };

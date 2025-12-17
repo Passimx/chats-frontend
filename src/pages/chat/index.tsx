@@ -46,7 +46,7 @@ const Chat: FC = memo(() => {
     const chatContainerRef = useRef(null);
     const [isShowLastMessagesButton] = useShowLastMessagesButton();
 
-    useAutoScroll({ chatContainerRef, isShowLastMessagesButton });
+    useAutoScroll({ chatContainerRef, ownUserName, isShowLastMessagesButton });
 
     if (!chatOnPage) return <></>;
 
@@ -143,7 +143,7 @@ const Chat: FC = memo(() => {
                                     <div
                                         key={message.id}
                                         id={`message-${index}`}
-                                        className={`${message.user.id === ownUserName ? styles.message_container_own : styles.message_container}`}
+                                        className={`${message?.user?.id === ownUserName ? styles.message_container_own : styles.message_container}`}
                                     >
                                         <Message {...{ ...message }} />
                                     </div>

@@ -139,6 +139,13 @@
     animation: messageSlide 0.3s ease;
 }
 
+/* Центрируем только system-сообщения */
+.message_container > [class*="system"] {
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 222px;
+}
+
 .message_container_own {
     display: flex;
     flex-direction: row-reverse;
