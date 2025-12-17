@@ -20,7 +20,7 @@ export type MessageFromServerType = {
     parentMessage?: MessageType;
     files: Types[];
     chat?: Partial<ChatType>;
-    user: User;
+    user?: User;
 };
 
 type SaveTimeMessageType = {
