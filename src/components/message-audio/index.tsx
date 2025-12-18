@@ -39,9 +39,25 @@ export const AudioFile: FC<PropsType> = memo(({ file }) => {
         const textBackgroundElement = document.getElementById(idTextBackground)!;
 
         if (transcription !== undefined) {
-            if (!isVisible) textBackgroundElement.style.maxHeight = `${textElement.scrollHeight}px`;
-            else textBackgroundElement.style.maxHeight = '0px';
-            setIsVisible(!isVisible);
+            if (!isVisible) {
+                textBackgroundElement.style.marginTop = '8px';
+                textBackgroundElement.style.padding = '10px';
+                textBackgroundElement.style.display = 'flex';
+                textBackgroundElement.style.overflow = 'hidden';
+                textBackgroundElement.style.maxHeight = `${textElement.scrollHeight}px`;
+                setIsVisible(true);
+            } else {
+                textBackgroundElement.style.maxHeight = '0px';
+                textBackgroundElement.style.marginTop = '0px';
+                textBackgroundElement.style.padding = '0px';
+
+                setTimeout(() => {
+                    if (textBackgroundElement.style.maxHeight === '0px') {
+                        textBackgroundElement.style.display = 'none';
+                        setIsVisible(!isVisible);
+                    }
+                }, 300);
+            }
         } else {
             const result = await getFile(file.messageId, file.id);
             if (!result.success) return;
@@ -73,8 +89,8 @@ export const AudioFile: FC<PropsType> = memo(({ file }) => {
                         {downloadPercent === undefined && (!isPlaying || audio?.file.id !== file.id) && (
                             <FaPlay className={styles.play_button} />
                         )}
-                        {isPlaying && audio?.file.id === file.id && <FaPause className={styles.play_button} />}
-                        {downloadPercent !== undefined && <div className={styles.play_button}>X</div>}
+                        {isPlaying && audio?.file.id === file.id && <FaPause className={styles.pause_button} />}
+                        {downloadPercent !== undefined && <div className={styles.pause_button}>X</div>}
                     </div>
                     <div className={styles.background_stop}>
                         {downloadPercent !== undefined && (

@@ -27,17 +27,20 @@ import { useGetChatTitle } from '../../common/hooks/use-get-chat-title.hook.ts';
 import { Avatar } from '../../components/avatar';
 import { EmptyMessages } from '../../components/empty-messages';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { useAutoScroll } from './hooks/use-auto-scroll.hook.ts';
 
 const Chat: FC = memo(() => {
     useGetChat();
     useJoinChat();
+    useAutoScroll();
     const { t } = useTranslation();
     const { setStateApp, postMessageToBroadCastChannel } = useAppAction();
     const [addChat, leave, back] = useMethods();
     const [isLoading, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
-    const { chatOnPage } = useAppSelector((state) => state.chats);
+    const chatOnPage = useAppSelector((state) => state.chats.chatOnPage);
     const title = useGetChatTitle(chatOnPage);
+    const ownUserName = useAppSelector((state) => state.user.userName);
 
     if (!chatOnPage) return <></>;
 
@@ -123,12 +126,23 @@ const Chat: FC = memo(() => {
                             )}
                     </div>
                 }
+                {/* Блок сообщений (переписка) */}
                 {!!chatOnPage?.countMessages && (
                     <div id={styles.messages_block}>
                         <div></div>
                         <div id={styles.messages}>
                             {isLoading === LoadingType.OLD && <RotateLoading />}
-                            {chatOnPage?.messages?.map((message) => <Message key={message.id} {...{ ...message }} />)}
+                            {chatOnPage?.messages?.map((message, index) => {
+                                return (
+                                    <div
+                                        key={message.id}
+                                        id={`message-${index}`}
+                                        className={`${message?.user?.id === ownUserName ? styles.message_container_own : styles.message_container}`}
+                                    >
+                                        <Message {...{ ...message }} />
+                                    </div>
+                                );
+                            })}
                             {isLoading === LoadingType.NEW && <RotateLoading />}
                         </div>
                     </div>

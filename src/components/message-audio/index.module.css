@@ -8,7 +8,7 @@
         .background{
             width: 40px;
             height: 40px;
-            padding: 4px;
+            padding: 4px 4px 0 0;
 
             .background_play, .background_stop{
                 background-color: #0098ea;
@@ -19,11 +19,19 @@
                 justify-content: center;
                 align-items: center;
                 cursor: pointer;
-
-                .play_button{
+                
+                .play_button {
                     font-size: 15px;
                     font-weight: 700;
                     color: white;
+                    margin-left: 3px;
+                }
+
+                .pause_button {
+                    font-size: 15px;
+                    font-weight: 700;
+                    color: white;
+                    margin-left: 0px;
                 }
             }
 
@@ -37,7 +45,7 @@
         .duration{
             display: grid;
             grid-template-rows:24px 18px;
-            padding-top: 4px;
+            padding: 4px 0 0 6px;
 
             .audio_background{
                 display: grid;
@@ -45,20 +53,23 @@
                 gap: 4px;
 
                 .audio_text{
-                    background-color: #e8f3fd;
-                    border-radius: 14px;
-                    color: #0098ea;
+                    border: 1px solid;
+                    border-radius: 4px;
+                    color: #1d86bd;
                     cursor: pointer;
                     font-weight: bold;
-                    aspect-ratio: 1 / 1;
                     display: grid;
                     justify-items: center;
                     align-items: center;
                     -webkit-user-select: none;
                     user-select: none;
+                    width: 20px;
+                    height: 20px;
+                    margin-left: 5px;
+                    transition: all 0.3s ease;
 
                     &:hover{
-                        opacity: 0.8;
+                        color: #3ca6df;
                     }
                 }
             }
@@ -68,6 +79,7 @@
                 align-items: center;
                 -webkit-user-select: none;
                 user-select: none;
+                font-size: small;
             }
         }
     }
@@ -77,10 +89,14 @@
         border-radius: 4px;
         opacity: 0.8;
         overflow: hidden;
+        display: none;
         max-height: 0;
+        margin-top: 8px;
+        padding: 10px;
+        transition: all 0.3s ease-in-out;
 
         .text_main{
-            padding: 4px;
+            color:#010135;;
         }
     }
 }
