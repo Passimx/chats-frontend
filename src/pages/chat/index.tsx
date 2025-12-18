@@ -1,6 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import { FC, memo, useRef } from 'react';
+import { FC, memo } from 'react';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import Message from '../../components/message';
 import { useTranslation } from 'react-i18next';
@@ -28,25 +28,19 @@ import { Avatar } from '../../components/avatar';
 import { EmptyMessages } from '../../components/empty-messages';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { useAutoScroll } from './hooks/use-auto-scroll.hook.ts';
-import { useShowLastMessagesButton } from './hooks/use-show-last-messages-button.hook.ts';
 
 const Chat: FC = memo(() => {
     useGetChat();
     useJoinChat();
+    useAutoScroll();
     const { t } = useTranslation();
     const { setStateApp, postMessageToBroadCastChannel } = useAppAction();
     const [addChat, leave, back] = useMethods();
     const [isLoading, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
-    const { chatOnPage } = useAppSelector((state) => state.chats);
+    const chatOnPage = useAppSelector((state) => state.chats.chatOnPage);
     const title = useGetChatTitle(chatOnPage);
-
     const ownUserName = useAppSelector((state) => state.user.userName);
-
-    const chatContainerRef = useRef(null);
-    const [isShowLastMessagesButton] = useShowLastMessagesButton();
-
-    useAutoScroll({ chatContainerRef, ownUserName, isShowLastMessagesButton });
 
     if (!chatOnPage) return <></>;
 
@@ -132,11 +126,11 @@ const Chat: FC = memo(() => {
                             )}
                     </div>
                 }
-                {/* Это блок сообщений (переписка) */}
+                {/* Блок сообщений (переписка) */}
                 {!!chatOnPage?.countMessages && (
                     <div id={styles.messages_block}>
                         <div></div>
-                        <div id={styles.messages} ref={chatContainerRef}>
+                        <div id={styles.messages}>
                             {isLoading === LoadingType.OLD && <RotateLoading />}
                             {chatOnPage?.messages?.map((message, index) => {
                                 return (
