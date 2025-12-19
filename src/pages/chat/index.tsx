@@ -133,10 +133,11 @@ const Chat: FC = memo(() => {
                         <div id={styles.messages}>
                             {isLoading === LoadingType.OLD && <RotateLoading />}
                             {chatOnPage?.messages?.map((message, index) => {
+                                index++;
                                 return (
                                     <div
                                         key={message.id}
-                                        id={`message-${index}`}
+                                        id={`container_${index}`}
                                         className={`${message?.user?.id === ownUserName ? styles.message_container_own : styles.message_container}`}
                                     >
                                         <Message {...{ ...message }} />
