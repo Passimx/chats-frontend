@@ -22,7 +22,7 @@ const CallModal: FC = () => {
             data-fullscreen={(isFullScreenActive && 'active') || ''}
             data-minimize={(isMinimize && 'active') || ''}
         >
-            <div className={styles.controlIcons}>
+            <div className={styles.control_icons}>
                 {isFullScreenActive ? (
                     <button
                         className={styles.fullscreen}
@@ -34,11 +34,14 @@ const CallModal: FC = () => {
                         <FaCompressAlt size={22} />
                     </button>
                 ) : isMinimize ? (
-                    <div className={styles.minimizeBlock}>
-                        <button className={styles.minimizeBtn} onClick={() => setMinimize(false)}>
+                    <div className={styles.minimize_block}>
+                        <button className={styles.minimize_btn} onClick={() => setMinimize(false)}>
                             <FaExpandAlt size={22} />
                         </button>
-                        <button className={styles.minimizeBtn} onClick={() => setStateApp({ page: undefined })}>
+                        <button className={styles.minimize_btn} onClick={() => setIsMicrophoneOn(!isMicrophoneOn)}>
+                            {(isMicrophoneOn && <BiMicrophone size={25} />) || <BiMicrophoneOff size={25} />}
+                        </button>
+                        <button className={styles.minimize_btn} onClick={() => setStateApp({ page: undefined })}>
                             <MdCallEnd size={25} color="#FF595A" />
                         </button>
                     </div>
@@ -73,22 +76,23 @@ const CallModal: FC = () => {
             </div>
 
             <div
-                className={styles.callControll}
+                className={styles.call_controll}
                 data-fullscreen={(isFullScreenActive && 'active') || ''}
                 data-minimize={(isMinimize && 'active') || ''}
             >
-                <div className={styles.callBlock}>
-                    <button className={styles.cameraToggle} onClick={() => setIsCameraOn(!isCameraOn)}>
+                <div className={styles.call_block}>
+                    <button className={styles.camera_toggle} onClick={() => setIsCameraOn(!isCameraOn)}>
                         {(isCameraOn && <BiVideo size={25} />) || <BiVideoOff size={25} />}
                     </button>
                 </div>
 
-                <div className={styles.callBlock}>
-                    <button className={styles.microphoneToggle} onClick={() => setIsMicrophoneOn(!isMicrophoneOn)}>
+                <div className={styles.call_block}>
+                    <button className={styles.microphone_toggle} onClick={() => setIsMicrophoneOn(!isMicrophoneOn)}>
                         {(isMicrophoneOn && <BiMicrophone size={25} />) || <BiMicrophoneOff size={25} />}
-                    </button>                </div>
+                    </button>
+                </div>
 
-                <div className={styles.callBlock}>
+                <div className={styles.call_block}>
                     <button className={styles.decline} onClick={() => setStateApp({ page: undefined })}>
                         <MdCallEnd size={25} color="#FF595A" />
                     </button>

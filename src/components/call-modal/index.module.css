@@ -11,23 +11,29 @@
     row-gap: 100px;
     position: absolute;
     z-index: 100;
-    left: calc(50% - 150px);
-    top: calc(50% - 30vh);
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0 auto;
+    box-shadow: 0 0 3px 1px rgb(234, 231, 231);
 }
 
-.background[data-fullScreen='active'] {
+.background[data-fullscreen='active'] {
     max-width: 100%;
     width: calc(100% - 48px);
     height: calc(100% - 32px);
-    border-radius: 0%;
+    border-radius: 0;
     left: 0;
     top: 0;
+    transform: translateY(0%);
 }
 
 .background[data-minimize='active'] {
     max-width: 300px;
     top: 3px;
     padding: 5px 10px;
+    transform: translateY(0%);
 }
 
 .avatar {
@@ -46,7 +52,7 @@
     cursor: pointer;
 }
 
-.minimizeBlock {
+.minimize_block {
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -54,46 +60,42 @@
     padding: 0;
 }
 
-.minimizeBtn {
+.minimize_btn {
     background-color: transparent;
     border: none;
     outline: none;
     cursor: pointer;
 }
 
-.controlIcons {
+.control_icons {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-.callControll {
+.call_controll {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 }
 
-.callControll[data-minimize='active'] {
+.call_controll[data-minimize='active'] {
     display: none;
 }
 
-.callControll[data-fullScreen='active'] {
+.call_controll[data-fullScreen='active'] {
     display: flex;
     justify-content: center;
     align-items: center;
     column-gap: 40px;
 }
 
-.cameraToggle,
-.microphoneToggle,
+.camera_toggle,
+.microphone_toggle,
 .decline {
-    background: transparent;
     border: none;
     outline: none;
-    max-width: 45px;
-    width: 100%;
-    height: 45px;
-    padding: 6px;
+    padding: 12px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
@@ -103,18 +105,56 @@
     justify-content: center;
 }
 
-.callBlock {
+.camera_toggle:hover,
+.microphone_toggle:hover,
+.decline:hover{
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.call_block {
     display: flex;
     flex-direction: column;
     align-items: center;
-    row-gap: 5px;
-    flex-wrap: wrap;
 }
 
-.label {
-    font-size: 12px;
-    text-align: center;
-    padding: 1px 2px;
-    font-weight: 600;
-    font-family: 'Roboto';
+
+@media screen and (max-width: 600px) {
+    .background{
+        max-width: 100%;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        row-gap: 0;
+        border-radius: 0;
+        padding: 0;
+        transform: translateY(0%);
+    }
+
+    .fullscreen{
+        display: none;
+    }
+
+    .minimize{
+        margin-left: 10px;
+    }
+
+    .control_icons{
+        padding: 10px;
+    }
+    .call_controll{
+        margin-bottom: 10px;
+    }
+
+    .background[data-minimize='active'] {
+        max-width: 100%;
+        width: 100%;
+        height: 40px;
+        top: 55px;
+        padding: 0;
+    }
+
+    .minimize_block{
+        justify-content: space-around;
+    }
 }
