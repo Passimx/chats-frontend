@@ -1,9 +1,9 @@
 #search{
-    height: 34px;
     padding: 11px 0 11px 4px;
     display: grid;
     grid-template-columns: auto 40px;
-    gap: 4px;
+    grid-auto-rows: 15px;
+    gap: 14px;
     transition: 0.3s all ease;
 }
 

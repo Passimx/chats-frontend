@@ -1,15 +1,23 @@
-.background{
+.background {
     display: grid;
     height: 100%;
     grid-template-rows: auto 1fr;
     white-space: nowrap;
 
-    .title{
+    .title {
         font-weight: bold;
         font-size: 18px;
         display: grid;
         justify-items: center;
         align-items: center;
+    }
+
+    .input {
+        border-radius: 8px;
+        min-height: 2rem;
+        padding: 0 5px;
+        border: 1px solid #fff;
+        outline: none;
     }
 
     .main {
@@ -24,7 +32,7 @@
             .words_background{
                 display: grid;
                 gap: 8px;
-                grid-template-columns: auto auto;
+                grid-template-columns: auto auto auto;
 
                 .word_item{
                     display: grid;
@@ -41,6 +49,7 @@
         .button_background {
             display: grid;
             justify-items: center;
+            gap: 8px;
 
             .button {
                 border-radius: 4px;

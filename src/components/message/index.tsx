@@ -30,6 +30,15 @@ const Message: FC<PropsType> = memo((props) => {
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
     const isPinned = usePinned(props.id, pinnedMessages);
 
+    const username = () => {
+        const maxLength = 20;
+        if (props) {
+            return props?.user?.name.length > maxLength
+                ? `${props?.user?.name.slice(0, maxLength)}...`
+                : props?.user?.name;
+        }
+    };
+
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
             <div id={messageID} ref={ref} className={styles.system_background}>
@@ -46,6 +55,8 @@ const Message: FC<PropsType> = memo((props) => {
             >
                 {!!props.parentMessage && <ParentMessage {...{ ...props.parentMessage }} />}
                 <div className={styles.file_list}>
+                    <h4>{username()}</h4>
+
                     {props?.files?.map((file, index) => {
                         if (file.fileType === FileExtensionEnum.IS_VOICE) return <AudioFile key={index} file={file} />;
                         if (file.mimeType.includes(FileTypeEnum.IMAGE)) return <MessageImage key={index} file={file} />;

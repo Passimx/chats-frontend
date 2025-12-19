@@ -30,7 +30,7 @@ export const CreateAccount: FC = memo(() => {
             <div className={styles.main}>
                 <div className={styles.center}>
                     <div>
-                        <input placeholder={'имя'} />
+                        <input className={styles.input} placeholder={'Ваше имя'} />
                     </div>
                     {isLoading ? (
                         <AiOutlineLoading3Quarters id={styles.loading_logo} className={styles.logo} size={100} />

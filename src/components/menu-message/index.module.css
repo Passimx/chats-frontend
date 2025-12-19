@@ -8,6 +8,7 @@
     backdrop-filter: blur(4px);
     display: grid;
     visibility: hidden;
+    /* right: 0; */
 }
 
 .message_menu_item{
