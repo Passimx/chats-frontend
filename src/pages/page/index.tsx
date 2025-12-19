@@ -5,6 +5,7 @@ import { MdOutlineClose } from 'react-icons/md';
 import { setThemeColor } from '../../common/hooks/set-theme-color.ts';
 import useClickOutside from '../../common/hooks/use-click-outside.ts';
 
+/** Show page from state */
 export const Page: FC = memo(() => {
     const { setStateApp } = useAppAction();
     const [ref, isVisible, setIsVisible] = useClickOutside();
