@@ -47,10 +47,17 @@
             grid-template-rows:24px 18px;
             padding: 4px 0 0 6px;
 
+
             .audio_background{
                 display: grid;
                 grid-template-columns:1fr auto;
                 gap: 4px;
+
+                .audio_text_load{
+                    background: linear-gradient(90deg, #23d5ab, #23a6d5, #e73c7e, #ee7752);
+                    animation: gradient 1s forwards infinite;
+                    background-size: 400% 400%;
+                }
 
                 .audio_text{
                     border: 1px solid;
@@ -66,7 +73,6 @@
                     width: 20px;
                     height: 20px;
                     margin-left: 5px;
-                    transition: all 0.3s ease;
 
                     &:hover{
                         color: #3ca6df;
@@ -85,18 +91,29 @@
     }
 
     .text_background{
-        background-color: #e8f3fd;
+        background-color: rgb(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
         border-radius: 4px;
         opacity: 0.8;
         overflow: hidden;
-        display: none;
         max-height: 0;
-        margin-top: 8px;
-        padding: 10px;
-        transition: all 0.3s ease-in-out;
+        max-width: 0;
+        transition: all 1s ease;
 
         .text_main{
-            color:#010135;;
+            padding: 8px;
         }
+    }
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
     }
 }
