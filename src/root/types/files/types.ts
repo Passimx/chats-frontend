@@ -11,6 +11,8 @@ export type FileMetadataType = {
     album?: string;
     year?: number;
 
+    // null         never gave a text
+    // undefined    wait for create text
     transcriptionVoice?: string | null;
 };
 

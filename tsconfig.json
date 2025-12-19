@@ -22,6 +22,6 @@
     },
     "include": ["src",
         "src/modules/telegram/types/telegram.d.ts"
-    ],
+, "src/pages/chat/props.type.ts"    ],
     "references": [{ "path": "./tsconfig.node.json" }]
 }
