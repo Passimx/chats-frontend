@@ -14,6 +14,7 @@ import { PreviewMusic } from '../preview-music';
 import { setThemeColor } from '../../common/hooks/set-theme-color.ts';
 import { getFileSize } from '../../common/hooks/get-file-size.ts';
 
+/** Show files list before send message */
 export const PreviewMedia: FC = memo(() => {
     const [isShowPlaceholder] = useSendMessage();
     const { t } = useTranslation();

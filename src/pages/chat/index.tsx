@@ -28,7 +28,9 @@ import { Avatar } from '../../components/avatar';
 import { EmptyMessages } from '../../components/empty-messages';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { useAutoScroll } from './hooks/use-auto-scroll.hook.ts';
+import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
 
+/** Main chat component */
 const Chat: FC = memo(() => {
     useGetChat();
     useJoinChat();
@@ -39,6 +41,7 @@ const Chat: FC = memo(() => {
     const [isLoading, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const chatOnPage = useAppSelector((state) => state.chats.chatOnPage);
+    const shortName = useShortText(chatOnPage?.id);
     const title = useGetChatTitle(chatOnPage);
     const ownUserName = useAppSelector((state) => state.user.userName);
 
@@ -98,7 +101,7 @@ const Chat: FC = memo(() => {
                                     page: (
                                         <QrCode
                                             url={window.location.origin + window.location.pathname}
-                                            text={chatOnPage?.id}
+                                            text={shortName}
                                         />
                                     ),
                                 });

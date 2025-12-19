@@ -20,6 +20,7 @@ import { AiFillSound, AiFillStop } from 'react-icons/ai';
 import { useSpeak } from './hooks/use-speak.hook.ts';
 import { useText } from './hooks/use-text.hook.ts';
 
+/** Message component */
 const Message: FC<PropsType> = memo((props) => {
     const { type, number } = props;
     const [ref] = useReadMessage(number);
