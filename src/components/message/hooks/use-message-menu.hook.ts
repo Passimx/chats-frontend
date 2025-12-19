@@ -20,15 +20,11 @@ export const useMessageMenu = (message: MessageType) => {
             const x: number = event instanceof MouseEvent ? event.x : event.touches[0].clientX;
             const menuWidth = 180;
             const marginRight = () => {
-                {
-                    /* Меню выходит за правую границу окна - смещаем влево от курсора/касания */
-                }
+                /* Меню выходит за правую границу окна - смещаем влево от курсора/касания */
                 if (x + menuWidth > window.innerWidth) {
                     return `${window.innerWidth - x}px`;
                 } else {
-                    {
-                        /* По умолчаию меню всегда справа от курсора/касания */
-                    }
+                    /* По умолчанию меню всегда справа от курсора/касания */
                     return `${window.innerWidth - x - menuWidth}px`;
                 }
             };
