@@ -20,25 +20,31 @@ import { AiFillSound, AiFillStop } from 'react-icons/ai';
 import { useSpeak } from './hooks/use-speak.hook.ts';
 import { useText } from './hooks/use-text.hook.ts';
 
+/** Message component */
 const Message: FC<PropsType> = memo((props) => {
     const { type, number } = props;
     const [ref] = useReadMessage(number);
-    const [elementId] = useMessageMenu(props);
+    const [messageID] = useMessageMenu(props);
     const [visibleMessage, time] = useText(props);
     const { handleSpeaking, isSpeaking } = useSpeak(visibleMessage);
+    const ownUserName = useAppSelector((state) => state.user.userName);
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
     const isPinned = usePinned(props.id, pinnedMessages);
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
-            <div id={elementId} ref={ref} className={styles.system_background}>
+            <div id={messageID} ref={ref} className={styles.system_background}>
                 <div className={`${styles.background} ${styles.system_message} text_translate`}>{visibleMessage}</div>
             </div>
         );
 
     return (
         <>
-            <div ref={ref} id={elementId} className={`${styles.background}`}>
+            <div
+                ref={ref}
+                id={messageID}
+                className={`${props?.user?.id === ownUserName ? styles.background_own : styles.background}`}
+            >
                 {!!props.parentMessage && <ParentMessage {...{ ...props.parentMessage }} />}
                 <div className={styles.file_list}>
                     {props?.files?.map((file, index) => {

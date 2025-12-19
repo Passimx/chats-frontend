@@ -24,7 +24,7 @@ type EnvsType = {
     };
     settings?: Partial<SettingsType>;
 
-    RASKeys?: CryptoKeyPair;
+    RSAKeys?: CryptoKeyPair;
 
     version: string;
 };

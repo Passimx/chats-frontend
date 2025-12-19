@@ -9,14 +9,16 @@ import { GrLanguage } from 'react-icons/gr';
 import { ChangeLanguage } from '../../components/change-language';
 import { AccountStart } from '../../components/account-start';
 import { NavigationItem } from './components/navigation-item';
+import { useTranslation } from 'react-i18next';
 
 export const Authorization: FC = memo(() => {
+    const { t } = useTranslation();
     const { setStateApp } = useAppAction();
     const lang = useAppSelector((state) => state.app.settings?.lang);
     const pages = useAppSelector((state) => state.app.pages)?.get(TabEnum.AUTHORIZATION);
 
     useEffect(() => {
-        setStateApp({ pages: new Map<TabEnum, React.JSX.Element[]>([[TabEnum.AUTHORIZATION, [<AccountStart />]]]) });
+        setStateApp({ pages: new Map<TabEnum, JSX.Element[]>([[TabEnum.AUTHORIZATION, [<AccountStart />]]]) });
     }, []);
 
     return (
@@ -39,15 +41,15 @@ export const Authorization: FC = memo(() => {
                     </div>
                     <div className={styles.footer_item} onClick={() => window.open(`/info/${lang}/terms.html`)}>
                         <RiContractFill />
-                        Условия использования
+                        {t('terms_of_use')}
                     </div>
                     <div className={styles.footer_item} onClick={() => window.open(`/info/${lang}/privacy.html`)}>
                         <MdOutlinePrivacyTip />
-                        Политика конфиденциальности
+                        {t('privacy_policy_1')}
                     </div>
                     <div className={styles.footer_item} onClick={() => setStateApp({ page: <ChangeLanguage /> })}>
                         <GrLanguage />
-                        Язык
+                        {t('language')}
                     </div>
                 </div>
             </div>

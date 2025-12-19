@@ -27,17 +27,27 @@ import { useGetChatTitle } from '../../common/hooks/use-get-chat-title.hook.ts';
 import { Avatar } from '../../components/avatar';
 import { EmptyMessages } from '../../components/empty-messages';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { useAutoScroll } from './hooks/use-auto-scroll.hook.ts';
+import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
+import { useSwipeBack } from './hooks/use-swipe.hook.ts';
+import { PiPhoneCallFill } from 'react-icons/pi';
+import CallModal from '../../components/call-modal/index.tsx';
 
+/** Main chat component */
 const Chat: FC = memo(() => {
     useGetChat();
     useJoinChat();
-    const { t } = useTranslation();
-    const { setStateApp, postMessageToBroadCastChannel } = useAppAction();
+    useAutoScroll();
     const [addChat, leave, back] = useMethods();
+    useSwipeBack(back);
+    const { t } = useTranslation();
     const [isLoading, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
-    const { chatOnPage } = useAppSelector((state) => state.chats);
+    const { setStateApp, postMessageToBroadCastChannel } = useAppAction();
+    const chatOnPage = useAppSelector((state) => state.chats.chatOnPage);
+    const shortName = useShortText(chatOnPage?.id);
     const title = useGetChatTitle(chatOnPage);
+    const ownUserName = useAppSelector((state) => state.user.userName);
 
     if (!chatOnPage) return <></>;
 
@@ -95,7 +105,7 @@ const Chat: FC = memo(() => {
                                     page: (
                                         <QrCode
                                             url={window.location.origin + window.location.pathname}
-                                            text={chatOnPage?.id}
+                                            text={shortName}
                                         />
                                     ),
                                 });
@@ -103,6 +113,10 @@ const Chat: FC = memo(() => {
                         >
                             <MdQrCode2 className={styles.chat_menu_item_icon} />
                             <div className={'text_translate'}>{t('qr_code')}</div>
+                        </div>
+                        <div className={styles.chat_menu_item} onClick={() => setStateApp({ page: <CallModal /> })}>
+                            <PiPhoneCallFill className={styles.chat_menu_item_icon} />
+                            <div className={'text_translate'}>{t('call')}</div>
                         </div>
                         <div
                             className={styles.chat_menu_item}
@@ -123,12 +137,23 @@ const Chat: FC = memo(() => {
                             )}
                     </div>
                 }
+                {/* Блок сообщений (переписка) */}
                 {!!chatOnPage?.countMessages && (
                     <div id={styles.messages_block}>
                         <div></div>
                         <div id={styles.messages}>
                             {isLoading === LoadingType.OLD && <RotateLoading />}
-                            {chatOnPage?.messages?.map((message) => <Message key={message.id} {...{ ...message }} />)}
+                            {chatOnPage?.messages?.map((message) => {
+                                return (
+                                    <div
+                                        key={message.id}
+                                        id={`container_${message.number}`}
+                                        className={`${message?.user?.id === ownUserName ? styles.message_container_own : styles.message_container}`}
+                                    >
+                                        <Message {...{ ...message }} />
+                                    </div>
+                                );
+                            })}
                             {isLoading === LoadingType.NEW && <RotateLoading />}
                         </div>
                     </div>

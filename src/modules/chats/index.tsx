@@ -10,6 +10,7 @@ import { ChatType } from '../../root/types/chat/chat.type.ts';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 import { MenuPadding } from '../../components/menu/compenents/menu-padding';
 
+/** Chats list component */
 const Chats: FC = memo(() => {
     const navigate = useCustomNavigate();
     const { chatOnPage } = useAppSelector((state) => state.chats);

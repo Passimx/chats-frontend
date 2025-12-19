@@ -17,6 +17,17 @@ export const useMessageMenu = (message: MessageType) => {
 
         const setMenuPosition = (event: MouseEvent | TouchEvent) => {
             const y: number = event instanceof MouseEvent ? event.y : event.touches[0].clientY;
+            const x: number = event instanceof MouseEvent ? event.x : event.touches[0].clientX;
+            const menuWidth = 180;
+            const marginRight = () => {
+                /* Меню выходит за правую границу окна - смещаем влево от курсора/касания */
+                if (x + menuWidth > window.innerWidth) {
+                    return `${window.innerWidth - x}px`;
+                } else {
+                    /* По умолчанию меню всегда справа от курсора/касания */
+                    return `${window.innerWidth - x - menuWidth}px`;
+                }
+            };
 
             event.preventDefault();
             if (type === MessageTypeEnum.IS_CREATED_CHAT) {
@@ -28,13 +39,14 @@ export const useMessageMenu = (message: MessageType) => {
             const gap = '16px';
 
             setClickMessage(message);
-
             if (window.innerHeight / 2 > y) element.style.marginTop = `calc(${y}px + ${gap})`;
             else element.style.marginTop = `calc(${y}px - ${element.clientHeight}px - ${gap})`;
 
-            if (isPhone) element.style.marginLeft = `calc(${window.innerWidth - element.clientWidth}px / 2)`;
-            else
-                element.style.marginLeft = `calc((${window.innerWidth - element.clientWidth}px + (var(--menu-margin) - var(--menu-width)) / 2) / 2)`;
+            if (isPhone) {
+                element.style.marginRight = `calc(${window.innerWidth - element.clientWidth}px / 2)`;
+            } else {
+                element.style.marginRight = marginRight();
+            }
         };
 
         const appleFunc = (e: TouchEvent) => {

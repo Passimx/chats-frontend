@@ -38,7 +38,7 @@ export const useCreateUser = (): FuncType => {
         if (!response.success) return;
         const data = response.data;
 
-        Envs.RASKeys = rsaKeysPair;
+        Envs.RSAKeys = rsaKeysPair;
         setStateUser({
             key: Date.now(),
             aesKey,
