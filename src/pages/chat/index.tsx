@@ -29,17 +29,19 @@ import { EmptyMessages } from '../../components/empty-messages';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { useAutoScroll } from './hooks/use-auto-scroll.hook.ts';
 import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
+import { useSwipeBack } from './hooks/use-swipe.hook.ts';
 
 /** Main chat component */
 const Chat: FC = memo(() => {
     useGetChat();
     useJoinChat();
     useAutoScroll();
-    const { t } = useTranslation();
-    const { setStateApp, postMessageToBroadCastChannel } = useAppAction();
     const [addChat, leave, back] = useMethods();
+    useSwipeBack(back);
+    const { t } = useTranslation();
     const [isLoading, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
+    const { setStateApp, postMessageToBroadCastChannel } = useAppAction();
     const chatOnPage = useAppSelector((state) => state.chats.chatOnPage);
     const shortName = useShortText(chatOnPage?.id);
     const title = useGetChatTitle(chatOnPage);
