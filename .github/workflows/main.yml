@@ -12,7 +12,10 @@ jobs:
   version:
     uses: Passimx/ci-cd-workflows/.github/workflows/version.yml@main
     secrets:
-      GH_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      packages: write
+      contents: write
 
   build:
     uses: Passimx/ci-cd-workflows/.github/workflows/build.yml@main
