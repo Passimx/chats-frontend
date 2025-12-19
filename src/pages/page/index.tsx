@@ -10,29 +10,33 @@ export const Page: FC = memo(() => {
     const { setStateApp } = useAppAction();
     const [ref, isVisible, setIsVisible] = useClickOutside();
     const page = useAppSelector((state) => state.app.page);
-
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
         if (e.key === 'Escape') setStateApp({ page: undefined });
     }, []);
 
     useEffect(() => {
-        setIsVisible(!!page);
+        if (page?.type.name !== 'CallModal') setIsVisible(!!page);
     }, [page]);
 
     useEffect(() => {
-        if (isVisible) {
-            setThemeColor('#02101C');
-            window.addEventListener('keydown', handleKeyDown);
-        }
+        if (page?.type.name !== 'CallModal') {
+            if (isVisible) {
+                setThemeColor('#02101C');
+                window.addEventListener('keydown', handleKeyDown);
+            }
 
-        if (!isVisible) {
-            setThemeColor('#062846');
-            setStateApp({ page: undefined });
-            window.removeEventListener('keydown', handleKeyDown);
+            if (!isVisible) {
+                setThemeColor('#062846');
+                setStateApp({ page: undefined });
+                window.removeEventListener('keydown', handleKeyDown);
+            }
         }
     }, [isVisible]);
 
-    if (page)
+    if (page) {
+        if (page.type.name === 'CallModal') {
+            return <div ref={ref}>{page}</div>;
+        }
         return (
             <div className={styles.background}>
                 <div ref={ref} className={styles.page}>
@@ -43,4 +47,5 @@ export const Page: FC = memo(() => {
                 </div>
             </div>
         );
+    }
 });
