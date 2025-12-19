@@ -26,9 +26,9 @@ export const usePrepareDialogue = () => {
 
         const myChatKey = keys?.find((key) => key.userId === Envs.socketId);
 
-        if (!myChatKey || !Envs.RASKeys?.privateKey) return;
+        if (!myChatKey || !Envs.RSAKeys?.privateKey) return;
 
-        const aesKeyString = await CryptoService.decryptByRSAKey(Envs.RASKeys.privateKey, myChatKey.encryptionKey);
+        const aesKeyString = await CryptoService.decryptByRSAKey(Envs.RSAKeys.privateKey, myChatKey.encryptionKey);
         if (!aesKeyString) return;
         payload.aesKey = await CryptoService.importEASKey(aesKeyString, false);
 
