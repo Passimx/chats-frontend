@@ -37,13 +37,15 @@ const Chat: FC = memo(() => {
     useAutoScroll();
     const { t } = useTranslation();
     const { setStateApp, postMessageToBroadCastChannel } = useAppAction();
-    const [addChat, leave, back] = useMethods();
+    const [addChat, leave, back, useSwipeBack] = useMethods();
     const [isLoading, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
     const chatOnPage = useAppSelector((state) => state.chats.chatOnPage);
     const shortName = useShortText(chatOnPage?.id);
     const title = useGetChatTitle(chatOnPage);
     const ownUserName = useAppSelector((state) => state.user.userName);
+
+    useSwipeBack();
 
     if (!chatOnPage) return <></>;
 

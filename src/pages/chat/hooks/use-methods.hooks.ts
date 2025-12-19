@@ -1,4 +1,4 @@
-import { MouseEvent, useCallback, useContext } from 'react';
+import { MouseEvent, useCallback, useContext, useEffect, useRef } from 'react';
 import { useAppAction, useAppSelector } from '../../../root/store';
 import { leaveChats } from '../../../root/api/chats';
 import { EventsEnum } from '../../../root/types/events/events.enum.ts';
@@ -7,7 +7,7 @@ import { useCustomNavigate } from '../../../common/hooks/use-custom-navigate.hoo
 import styles from '../index.module.css';
 import { ContextChat } from '../context/chat-context.tsx';
 
-type R = [() => void, (e: MouseEvent<unknown>) => void, (e: MouseEvent<unknown>) => void];
+type R = [() => void, (e: MouseEvent<unknown>) => void, (e: MouseEvent<unknown>) => void, () => void];
 
 export const useMethods = (): R => {
     const isPhone = useAppSelector((state) => state.app.isPhone);
@@ -42,6 +42,51 @@ export const useMethods = (): R => {
         [isShowMessageMenu, isPhone],
     );
 
+    const useSwipeBack = () => {
+        const touchStartX = useRef<number>(0);
+        const touchStartY = useRef<number>(0);
+        const threshold = 50;
+
+        const onTouchStart = useCallback((e: TouchEvent) => {
+            touchStartX.current = e.touches[0].clientX;
+            touchStartY.current = e.touches[0].clientY;
+        }, []);
+
+        const onTouchEnd = useCallback(
+            (e: TouchEvent) => {
+                if (e.changedTouches && e.changedTouches.length > 0) {
+                    const touchEndX = e.changedTouches[0].clientX;
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const deltaX = touchEndX - touchStartX.current;
+                    const deltaY = Math.abs(touchStartY.current - touchEndY);
+
+                    // Проверяем, что это горизонтальный свайп
+                    if (Math.abs(deltaX) > deltaY) {
+                        if (deltaX > threshold) {
+                            back({ stopPropagation: () => {} } as MouseEvent<unknown>);
+                        }
+                    }
+                }
+            },
+            [back],
+        );
+
+        useEffect(() => {
+            const isMobile = window.innerWidth <= 600;
+
+            if (isMobile) {
+                window.addEventListener('touchstart', onTouchStart, { passive: true });
+                window.addEventListener('touchend', onTouchEnd, { passive: true });
+
+                return () => {
+                    window.removeEventListener('touchstart', onTouchStart);
+                    window.removeEventListener('touchend', onTouchEnd);
+                };
+            }
+        }, [onTouchStart, onTouchEnd]);
+    };
+    useSwipeBack();
+
     const leave = useCallback(
         (e: MouseEvent<unknown>) => {
             const id = chatOnPage!.id;
@@ -57,5 +102,5 @@ export const useMethods = (): R => {
         [chatOnPage?.id],
     );
 
-    return [addChat, leave, back];
+    return [addChat, leave, back, useSwipeBack];
 };
