@@ -1,5 +1,6 @@
 .background {
     max-width: calc(300px - 48px);
+    max-height: 500px;
     width: 100%;
     padding: 16px 24px;
     border-radius: 8px;
@@ -16,11 +17,21 @@
     top: 50%;
     transform: translateY(-50%);
     margin: 0 auto;
-    box-shadow: 0 0 3px 1px rgb(234, 231, 231);
+    box-shadow: 0 0 3px 1px rgb(0, 0, 0, 0.5);
+    transition: all .5s ease;
+    overflow: hidden;
+
+
+    @media screen and (max-width: 600px) {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
 }
 
 .background[data-fullscreen='active'] {
     max-width: 100%;
+    max-height: 100%;
     width: calc(100% - 48px);
     height: calc(100% - 32px);
     border-radius: 0;
@@ -32,7 +43,7 @@
 .background[data-minimize='active'] {
     max-width: 300px;
     top: 3px;
-    padding: 5px 10px;
+    padding: 5px;
     transform: translateY(0%);
 }
 
@@ -53,6 +64,7 @@
 }
 
 .minimize_block {
+    border-radius: 20px;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -103,6 +115,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s ease;
 }
 
 .camera_toggle:hover,
