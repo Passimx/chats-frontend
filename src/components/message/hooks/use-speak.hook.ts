@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-//import { getLanguageByText } from '../../../root/wrappers/app/hooks/translations/get-language-by-text.ts';
+import { getLanguageByText } from '../../../root/wrappers/app/hooks/translations/get-language-by-text.ts';
 import { useTranslation } from 'react-i18next';
+import { MessageTypeEnum } from '../../../root/types/chat/message-type.enum.ts';
 
-export const useSpeak = (message: string) => {
+export const useSpeak = (message: string, type: string) => {
     const [isSpeaking, setIsSpeaking] = useState(false);
     const { i18n } = useTranslation();
 
@@ -14,7 +15,12 @@ export const useSpeak = (message: string) => {
         if (!message) return;
 
         const utterance = new SpeechSynthesisUtterance(message);
-        utterance.lang = i18n.language;
+
+        if (type == MessageTypeEnum.IS_CREATED_CHAT) {
+            utterance.lang = i18n.language;
+        } else {
+            utterance.lang = getLanguageByText(message);
+        }
         utterance.pitch = 1;
         utterance.rate = 0.9;
 
