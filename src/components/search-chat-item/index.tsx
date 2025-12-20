@@ -27,7 +27,7 @@ const ChatItem: FC<PropsType> = ({ chat }) => {
             className={`${styles.chat_item} ${id === `${chat.id}` && styles.selected_chat}`}
             onClick={() => {
                 document.documentElement.style.setProperty('--menu-margin', 'var(--menu-width)');
-                navigate(`${chat.name}`, { state: chat });
+                navigate(`${chat.id}`, { state: chat });
             }}
         >
             <div className={styles.avatar_background}>
