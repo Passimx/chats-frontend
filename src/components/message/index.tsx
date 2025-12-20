@@ -19,6 +19,8 @@ import { usePinned } from '../../common/hooks/use-pinned.hook.ts';
 import { AiFillSound, AiFillStop } from 'react-icons/ai';
 import { useSpeak } from './hooks/use-speak.hook.ts';
 import { useText } from './hooks/use-text.hook.ts';
+import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
+import { useLocation } from 'react-router-dom';
 
 const Message: FC<PropsType> = memo((props) => {
     const { type, number } = props;
@@ -29,6 +31,8 @@ const Message: FC<PropsType> = memo((props) => {
     const ownUserName = useAppSelector((state) => state.user.userName);
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
     const isPinned = usePinned(props.id, pinnedMessages);
+    const navigate = useCustomNavigate();
+    const location = useLocation();
 
     const username = () => {
         const maxLength = 20;
@@ -40,7 +44,11 @@ const Message: FC<PropsType> = memo((props) => {
     };
 
     const createNewPrivateChat = () => {
-        //getUserByUserName('@14b03b9dbdb5ffdcf88f6b17d64b729bd222fa4f26d3da8ceac6ba152efc3354')
+        if (
+            location.pathname !== `/${props.user.userName}` &&
+            decodeURIComponent(location.pathname) !== `/${props?.user?.name}`
+        )
+            navigate(`/${props.user.userName}`);
     };
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)

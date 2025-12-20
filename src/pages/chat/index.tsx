@@ -67,11 +67,13 @@ const Chat: FC = memo(() => {
                                 {[ChatEnum.IS_SYSTEM].includes(chatOnPage.type) && (
                                     <FaStar className={styles.icon_star} />
                                 )}
-                                {[ChatEnum.IS_DIALOGUE, ChatEnum.IS_FAVORITES].includes(chatOnPage.type) && (
+                                {[ChatEnum.IS_FAVORITES].includes(chatOnPage.type) && (
                                     <RxLockClosed className={styles.look_svg} color="red" />
                                 )}
                             </div>
-                            {<p id={styles.subtitle}>{`${t('members')}: ${onlineUsersCount}`}</p>}
+                            {[ChatEnum.IS_OPEN, ChatEnum.IS_PUBLIC].includes(chatOnPage.type) && (
+                                <p id={styles.subtitle}>{`${t('members')}: ${onlineUsersCount}`}</p>
+                            )}
                         </div>
                         {!!chatOnPage.countMessages && (
                             <div id={styles.chat_menu_button} onClick={() => setIsVisible(true)}>
