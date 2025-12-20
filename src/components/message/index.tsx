@@ -39,6 +39,10 @@ const Message: FC<PropsType> = memo((props) => {
         }
     };
 
+    const createNewPrivateChat = () => {
+        //getUserByUserName('@14b03b9dbdb5ffdcf88f6b17d64b729bd222fa4f26d3da8ceac6ba152efc3354')
+    };
+
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
             <div id={messageID} ref={ref} className={styles.system_background}>
@@ -55,7 +59,7 @@ const Message: FC<PropsType> = memo((props) => {
             >
                 {!!props.parentMessage && <ParentMessage {...{ ...props.parentMessage }} />}
                 <div className={styles.file_list}>
-                    <h4>{username()}</h4>
+                    <div onClick={() => createNewPrivateChat()}>{username()}</div>
 
                     {props?.files?.map((file, index) => {
                         if (file.fileType === FileExtensionEnum.IS_VOICE) return <AudioFile key={index} file={file} />;

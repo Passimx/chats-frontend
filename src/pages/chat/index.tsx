@@ -64,7 +64,7 @@ const Chat: FC = memo(() => {
                                 <h3 id={styles.title}>{title}</h3>
 
                                 {/* icons for system chats*/}
-                                {[ChatEnum.IS_FAVORITES, ChatEnum.IS_SYSTEM].includes(chatOnPage.type) && (
+                                {[ChatEnum.IS_SYSTEM].includes(chatOnPage.type) && (
                                     <FaStar className={styles.icon_star} />
                                 )}
                                 {[ChatEnum.IS_DIALOGUE, ChatEnum.IS_FAVORITES].includes(chatOnPage.type) && (
