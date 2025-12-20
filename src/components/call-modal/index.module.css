@@ -2,7 +2,7 @@
     max-width: calc(300px - 48px);
     max-height: 500px;
     width: 100%;
-    padding: calc(16px + env(safe-area-inset-bottom, 32px));
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 32px)) 16px;
     border-radius: 8px;
     background: #79b6ec;
     display: flex;
@@ -32,8 +32,7 @@
     max-width: 100%;
     max-height: 100%;
     width: calc(100% - 32px);
-    height: calc(100% - 32px - env(safe-area-inset-bottom, 32px));
-
+    height: calc(100% - 16px - calc(16px + env(safe-area-inset-bottom, 32px)));
     border-radius: 0;
     left: 0;
     top: 0;
