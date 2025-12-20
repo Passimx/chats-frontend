@@ -23,7 +23,7 @@
 
     @media screen and (max-width: 600px) {
         max-width: 100%;
-        max-height: calc(100% - 16px);
+        max-height: calc(100% - env(safe-area-inset-bottom, 32px));
         /*max-height: calc(100% - 16px - calc(16px + env(safe-area-inset-bottom, 32px)));;*/
         border-radius: 0;
     }
