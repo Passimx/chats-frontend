@@ -22,36 +22,57 @@ export const AudioFile: FC<PropsType> = memo(({ file }) => {
     const idTextBackground = `text_background_${file.id}`;
     const [isVisible, setIsVisible] = useState<boolean>();
     const { downloadPercent, clickFile } = useDownloadFile(file);
+    const [isTextLoading, setIsTextLoading] = useState<boolean>(false);
     const { isPlaying, audio, progress } = useContext(AudioPlayerContext)!;
     const [transcription, setTranscription] = useState(file.metadata.transcriptionVoice);
     const [time, setTime] = useState<string>(getStringDuration(file?.metadata?.duration));
-
     const constDuration = useMemo(() => getStringDuration(file?.metadata?.duration), []);
 
-    useEffect(() => {
+    const showTranslation = useCallback(() => {
         const textElement = document.getElementById(idText)!;
         const textBackgroundElement = document.getElementById(idTextBackground)!;
-        textBackgroundElement.style.transition = `all ${Math.max(textElement.scrollHeight, 300)}ms`;
-    }, [idText, idTextBackground]);
+
+        if (!isVisible) {
+            textBackgroundElement.style.maxWidth = '1000px';
+            setTimeout(() => {
+                textBackgroundElement.style.maxHeight = `${textElement.scrollHeight}px`;
+            }, 300);
+        } else {
+            textBackgroundElement.style.maxHeight = '0';
+            setTimeout(() => {
+                textBackgroundElement.style.maxWidth = '0';
+            }, 300);
+        }
+
+        setIsVisible(!isVisible);
+    }, [transcription, isVisible]);
 
     const clickTextButton = useCallback(async () => {
-        const textElement = document.getElementById(idText)!;
-        const textBackgroundElement = document.getElementById(idTextBackground)!;
+        if (transcription !== undefined) return showTranslation();
+        if (isTextLoading) return;
 
-        if (transcription !== undefined) {
-            if (!isVisible) textBackgroundElement.style.maxHeight = `${textElement.scrollHeight}px`;
-            else textBackgroundElement.style.maxHeight = '0px';
-            setIsVisible(!isVisible);
-        } else {
-            const result = await getFile(file.messageId, file.id);
-            if (!result.success) return;
+        setIsTextLoading(!isTextLoading);
+        const result = await getFile(file.messageId, file.id);
 
-            setTranscription(result.data.metadata.transcriptionVoice);
-            setIsVisible(true);
-            updateFile(result.data);
-            textBackgroundElement.style.maxHeight = `${textElement.scrollHeight}px`;
+        if (!result.success) {
+            setIsTextLoading(false);
+            return;
         }
-    }, [isVisible, transcription]);
+
+        const transcriptionVoice = result.data.metadata.transcriptionVoice;
+        if (transcriptionVoice === undefined) {
+            setTimeout(() => {
+                setIsTextLoading(false);
+                clickTextButton();
+            }, 3000);
+            return;
+        }
+
+        setIsTextLoading(false);
+        setTranscription(transcriptionVoice);
+        updateFile(result.data);
+        showTranslation();
+    }, [isTextLoading, showTranslation]);
 
     useEffect(() => {
         const duration = file?.metadata?.duration;
@@ -73,8 +94,8 @@ export const AudioFile: FC<PropsType> = memo(({ file }) => {
                         {downloadPercent === undefined && (!isPlaying || audio?.file.id !== file.id) && (
                             <FaPlay className={styles.play_button} />
                         )}
-                        {isPlaying && audio?.file.id === file.id && <FaPause className={styles.play_button} />}
-                        {downloadPercent !== undefined && <div className={styles.play_button}>X</div>}
+                        {isPlaying && audio?.file.id === file.id && <FaPause className={styles.pause_button} />}
+                        {downloadPercent !== undefined && <div className={styles.pause_button}>X</div>}
                     </div>
                     <div className={styles.background_stop}>
                         {downloadPercent !== undefined && (
@@ -87,7 +108,10 @@ export const AudioFile: FC<PropsType> = memo(({ file }) => {
                         <div className={styles.audio_background}>
                             <LoudnessBars file={file} />
                             {transcription !== null && (
-                                <div className={`${styles.audio_text} text_translate`} onClick={clickTextButton}>
+                                <div
+                                    className={`${styles.audio_text} ${isTextLoading && styles.audio_text_load} text_translate`}
+                                    onClick={clickTextButton}
+                                >
                                     {t('T')}
                                 </div>
                             )}

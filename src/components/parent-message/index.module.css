@@ -10,8 +10,9 @@
     font-weight: 300;
     cursor: pointer;
     transition: background .3s ease;
+    max-width: 35rem;
 }
 
 .background:hover{
-    background-color: rgb(0, 152, 234, 0.1);
+    background-color: rgba(0, 152, 234, 0.485);
 }

@@ -56,14 +56,14 @@ export class MessagesService {
 
     public static async keepAesKey(request: Promise<IData<ChatType>>): Promise<IData<ChatType>> {
         const response = await request;
-        if (!Envs.RASKeys?.privateKey) return request;
+        if (!Envs.RSAKeys?.privateKey) return request;
         if (!response.success) return response;
         if (!response.data?.keys?.length) return response;
 
         const myKey = response.data.keys.find((key) => key.userId === Envs.socketId);
         if (!myKey) return response;
 
-        const aesKeyString = await CryptoService.decryptByRSAKey(Envs.RASKeys?.privateKey, myKey.encryptionKey);
+        const aesKeyString = await CryptoService.decryptByRSAKey(Envs.RSAKeys?.privateKey, myKey.encryptionKey);
         if (!aesKeyString) return response;
 
         const aesKey = await CryptoService.importEASKey(aesKeyString);
