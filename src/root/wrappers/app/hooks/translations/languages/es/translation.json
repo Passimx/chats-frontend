@@ -71,6 +71,10 @@
   "appearance": "Apariencia",
   "copied": "Copiado",
   "T": "T",
+  "log_out": "Cerrar sesión",
+  "yes": "Sí",
+  "no": "No",
+  "sure_about_log_out": "¿Estás seguro de que quieres cerrar sesión?",
 
   "all": "todo",
   "always": "siempre",

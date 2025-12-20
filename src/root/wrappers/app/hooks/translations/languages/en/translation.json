@@ -74,6 +74,10 @@
   "appearance": "Appearance",
   "copied": "Copied",
   "T": "T",
+  "log_out": "Log out",
+  "yes": "Yes",
+  "no": "No",
+  "sure_about_log_out": "Are you sure you want to log out?",
 
   "all": "all",
   "always": "always",
