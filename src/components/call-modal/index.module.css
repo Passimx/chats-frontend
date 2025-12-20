@@ -2,7 +2,7 @@
     max-width: calc(300px - 48px);
     max-height: 500px;
     width: 100%;
-    padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 32px)) 16px;
+    padding: 16px;
     border-radius: 8px;
     background: #79b6ec;
     display: flex;
@@ -23,9 +23,14 @@
 
     @media screen and (max-width: 600px) {
         max-width: 100%;
-        max-height: calc(100% - env(safe-area-inset-bottom, 32px));
-        /*max-height: calc(100% - 16px - calc(16px + env(safe-area-inset-bottom, 32px)));;*/
+        max-height: 100%;
+        width: calc(100% - 32px);
+        height: calc(100% - 16px - calc(16px + env(safe-area-inset-bottom, 32px)));
+        top: 0;
+        left: 0;
         border-radius: 0;
+        padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 32px)) 16px;
+        transform: translateY(0%);
     }
 }
 
@@ -132,18 +137,6 @@
 
 
 @media screen and (max-width: 600px) {
-    .background{
-        max-width: 100%;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        row-gap: 0;
-        border-radius: 0;
-        padding: 0;
-        transform: translateY(0%);
-    }
-
     .fullscreen{
         display: none;
     }
@@ -154,9 +147,6 @@
 
     .control_icons{
         padding: 10px;
-    }
-    .call_controll{
-        margin-bottom: 10px;
     }
 
     .background[data-minimize='active'] {
