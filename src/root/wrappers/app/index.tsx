@@ -28,6 +28,7 @@ import { useUpdateStaticCache } from './hooks/use-update-static-cache.hook.ts';
 import { TopElements } from '../../../components/top-elements';
 import { StartPage } from '../../../pages/start';
 import { useMainTab } from './hooks/use-main-tab.hook.ts';
+import { useDragAndDropHook } from './hooks/use-drag-and-drop.hook.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -65,6 +66,8 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useUpdateStaticCache();
     // get main tab
     useMainTab();
+    // catch drag and drop files
+    useDragAndDropHook();
 
     // set language
     const isLoaded = useTranslation();

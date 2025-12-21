@@ -2,8 +2,9 @@ import { FC, memo, useCallback } from 'react';
 import styles from './index.module.css';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { TabEnum } from '../../root/store/app/types/state.type.ts';
-import { CreateAccount } from './create-account';
+import { AccountCreate } from '../account-create';
 import { useTranslation } from 'react-i18next';
+import { AccountUseKey } from '../account-use-key';
 
 export const AccountStart: FC = memo(() => {
     const { t } = useTranslation();
@@ -11,7 +12,12 @@ export const AccountStart: FC = memo(() => {
     const pages = useAppSelector((state) => state.app.pages)?.get(TabEnum.AUTHORIZATION);
 
     const createAccount = useCallback(() => {
-        pages?.push(<CreateAccount />);
+        pages?.push(<AccountCreate />);
+        if (pages) setStateApp({ pages: new Map<TabEnum, JSX.Element[]>([[TabEnum.AUTHORIZATION, pages]]) });
+    }, [pages]);
+
+    const useAccountKey = useCallback(() => {
+        pages?.push(<AccountUseKey />);
         if (pages) setStateApp({ pages: new Map<TabEnum, JSX.Element[]>([[TabEnum.AUTHORIZATION, pages]]) });
     }, [pages]);
 
@@ -26,7 +32,7 @@ export const AccountStart: FC = memo(() => {
                         {t('create_account')}
                     </div>
                 </div>
-                <div className={styles.create_account_button}>
+                <div className={styles.create_account_button} onClick={useAccountKey}>
                     <div className={styles.create_account_button}>{t('log_in_with_a_key')}</div>
                 </div>
             </div>
