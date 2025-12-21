@@ -22,6 +22,7 @@ import { useText } from './hooks/use-text.hook.ts';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 import { useLocation } from 'react-router-dom';
 
+/** Message component */
 const Message: FC<PropsType> = memo((props) => {
     const { type, number } = props;
     const [ref] = useReadMessage(number);

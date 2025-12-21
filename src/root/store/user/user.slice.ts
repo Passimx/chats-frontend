@@ -4,7 +4,7 @@ import { UserIndexDbType } from '../../types/users/user-index-db.type.ts';
 
 const initialState: Partial<UserIndexDbType> = {};
 
-const UerSlice = createSlice({
+const UserSlice = createSlice({
     name: 'users',
     initialState,
     reducers: {
@@ -20,5 +20,5 @@ const UerSlice = createSlice({
     },
 });
 
-export const UserActions = UerSlice.actions;
-export const UserReducers = UerSlice.reducer;
+export const UserActions = UserSlice.actions;
+export const UserReducers = UserSlice.reducer;

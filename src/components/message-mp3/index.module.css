@@ -8,12 +8,6 @@
     border-radius: 8px;
 }
 
-.background:hover {
-    @media(width > 600px) {
-        background-color: #ccedff;
-    }
-}
-
 .background_animation:hover{
 
     @media(width > 600px) {
