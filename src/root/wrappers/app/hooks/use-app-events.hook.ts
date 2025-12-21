@@ -16,7 +16,7 @@ export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
     const prepareDialogue = usePrepareDialogue();
     const [playNotificationSound] = useLoadSoundsHooks();
-    const { updateMany, setStateApp, createMessage, removeChat, update, changeSettings } = useAppAction();
+    const { updateMany, setStateApp, createMessage, removeChat, update, changeSettings, logout } = useAppAction();
 
     return useCallback(async (dataEvent: DataType) => {
         const { event, data } = dataEvent;
@@ -92,6 +92,9 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.ERROR:
                 console.log(`${'\x1B[31m'}error: ${data}${'\x1B[31m'}`);
+                break;
+            case EventsEnum.LOGOUT:
+                logout();
                 break;
         }
     }, []);

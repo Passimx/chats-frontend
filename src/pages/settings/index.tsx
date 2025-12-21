@@ -3,7 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { GrLanguage } from 'react-icons/gr';
 import { memo, useCallback, useMemo } from 'react';
 import { useAppAction, useAppSelector } from '../../root/store';
-import { IoChatboxEllipsesOutline, IoRocketOutline, IoSettingsOutline, IoWalletOutline } from 'react-icons/io5';
+import {
+    IoChatboxEllipsesOutline,
+    IoRocketOutline,
+    IoSettingsOutline,
+    IoWalletOutline,
+    IoExitOutline,
+} from 'react-icons/io5';
 import { TbBackground, TbDatabase, TbLogs } from 'react-icons/tb';
 import { ChangeLanguage } from '../../components/change-language';
 import { MenuTitle } from '../../components/menu-title';
@@ -17,6 +23,7 @@ import { Memory } from '../../components/memory';
 import { LuStar } from 'react-icons/lu';
 import { UserInf } from '../../components/user-inf';
 import { Appearance } from '../../components/appearance';
+import { LogOut } from '../../components/log-out/index.tsx';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
@@ -154,6 +161,13 @@ export const Settings = memo(() => {
                             &nbsp;{`(${t('version')} ${Envs.version})`}
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div className={styles.items}>
+                <div className={styles.item} onClick={() => setStateApp({ page: <LogOut /> })}>
+                    <IoExitOutline className={styles.item_logo} />
+                    <div className="text_translate">{t('log_out')}</div>
                 </div>
             </div>
         </div>
