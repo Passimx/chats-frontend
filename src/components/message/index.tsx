@@ -35,9 +35,10 @@ const Message: FC<PropsType> = memo((props) => {
 
     const username = useMemo(() => {
         const maxLength = 20;
-        if (props?.user?.name.length > maxLength) return props?.user?.name.slice(0, maxLength);
+        if (!props.user.name) return;
+        if (props.user.name.length > maxLength) return props.user.name.slice(0, maxLength);
 
-        return props?.user?.name;
+        return props.user.name;
     }, [props?.user?.name]);
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)

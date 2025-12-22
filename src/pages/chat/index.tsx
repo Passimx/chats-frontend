@@ -47,9 +47,8 @@ const Chat: FC = memo(() => {
     const chatOnPage = useAppSelector((state) => state.chats.chatOnPage);
     const shortName = useShortText(chatOnPage?.id);
     const title = useGetChatTitle(chatOnPage);
-    const onlineUsersCount = chatOnPage?.online;
+    const onlineUsersCount = chatOnPage?.maxUsersOnline;
 
-    //console.log(chatOnPage)
     const ownUserName = useAppSelector((state) => state.user.userName);
 
     if (!chatOnPage) return <></>;
