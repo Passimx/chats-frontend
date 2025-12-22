@@ -1,6 +1,7 @@
 import { FC, memo, useEffect } from 'react';
 import styles from './index.module.css';
 import { CryptoService } from '../../common/services/crypto.service.ts';
+import { getUserMe } from '../../root/api/users';
 
 export const AccountUseKey: FC = memo(() => {
     // localStorage.setItem('keys', JSON.stringify({ publicKey: publicKeyString, privateKey: privateKeyString }));
@@ -34,7 +35,7 @@ export const AccountUseKey: FC = memo(() => {
 
                 const reader = new FileReader();
                 reader.readAsText(file);
-                reader.onload = (e) => {
+                reader.onload = async (e) => {
                     try {
                         const content = e.target?.result;
                         if (typeof content !== 'string' || !content) return;
@@ -46,6 +47,27 @@ export const AccountUseKey: FC = memo(() => {
                         const str = `${userId}\n${words.join('\n')}`;
                         const strHash = CryptoService.getHash(str);
                         if (strHash !== hash) return;
+
+                        const password = 'pass';
+                        const seedPhrase = words.join(' ');
+                        const mainSeedPhrase = `${password} ${seedPhrase}`;
+                        const seedPhraseHash = CryptoService.getHash(seedPhrase);
+                        // const passwordHash = CryptoService.getHash(password);
+
+                        const response = await getUserMe({ id: userId, seedPhraseHash });
+                        if (!response.success) return;
+
+                        const aesKey = await CryptoService.generateAESKey(mainSeedPhrase, false);
+                        const rsaPrivateKeyString = await CryptoService.decryptByAESKey(
+                            aesKey,
+                            response.data.encryptedRsaPrivateKey,
+                        );
+
+                        if (!rsaPrivateKeyString?.length) return;
+                        const rsaPrivateKey = await CryptoService.importRSAKey(rsaPrivateKeyString, ['decrypt']);
+                        if (!rsaPrivateKey) return;
+
+                        console.log(rsaPrivateKey);
                     } catch (err) {
                         console.error('Ошибка при чтении ключа:', err);
                     }
