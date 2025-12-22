@@ -14,11 +14,7 @@ const CallModal: FC = () => {
     const [isMinimize, setMinimize] = useState<boolean>(false);
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { setStateApp } = useAppAction();
-
     const context = useContext(CallContext);
-    if(!context) {
-        return <div></div>;
-    }
 
     const { isCameraOn, setIsCameraOn, isMicrophoneOn, setIsMicrophoneOn, isCallActive, setIsCallActive } = context;
 
@@ -102,7 +98,7 @@ const CallModal: FC = () => {
                     <button
                         className={styles.decline}
                         onClick={() => {
-                            if(!isCallActive) return;
+                            if (!isCallActive) return;
                             setIsCallActive(false);
                             setStateApp({ page: undefined });
                         }}

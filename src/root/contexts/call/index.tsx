@@ -6,12 +6,12 @@ export type CallContextType = {
     isMicrophoneOn: boolean;
     setIsMicrophoneOn: (value: boolean) => void;
     isCallActive: boolean;
-    setIsCallActive: (value: boolean)=>void;
+    setIsCallActive: (value: boolean) => void;
 };
 
-export const CallContext = createContext<Partial<CallContextType>>({});
+export const CallContext = createContext<CallContextType>({} as CallContextType);
 
-export  const CallProvider = ({ children }: { children: ReactNode }) => {
+export const CallProvider = ({ children }: { children: ReactNode }) => {
     const [isCameraOn, setIsCameraOn] = useState(false);
     const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
     const [isCallActive, setIsCallActive] = useState(false);
