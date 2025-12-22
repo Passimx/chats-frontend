@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { FC, memo, useMemo } from 'react';
 import styles from './index.module.css';
 import { PropsType } from './types/props.type.ts';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
@@ -20,7 +20,6 @@ import { AiFillSound, AiFillStop } from 'react-icons/ai';
 import { useSpeak } from './hooks/use-speak.hook.ts';
 import { useText } from './hooks/use-text.hook.ts';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
-import { useLocation } from 'react-router-dom';
 
 /** Message component */
 const Message: FC<PropsType> = memo((props) => {
@@ -29,28 +28,17 @@ const Message: FC<PropsType> = memo((props) => {
     const [messageID] = useMessageMenu(props);
     const [visibleMessage, time] = useText(props);
     const { handleSpeaking, isSpeaking } = useSpeak(visibleMessage);
+    const navigate = useCustomNavigate();
     const ownUserName = useAppSelector((state) => state.user.userName);
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
     const isPinned = usePinned(props.id, pinnedMessages);
-    const navigate = useCustomNavigate();
-    const location = useLocation();
 
-    const username = () => {
+    const username = useMemo(() => {
         const maxLength = 20;
-        if (props) {
-            return props?.user?.name.length > maxLength
-                ? `${props?.user?.name.slice(0, maxLength)}...`
-                : props?.user?.name;
-        }
-    };
+        if (props?.user?.name.length > maxLength) return props?.user?.name.slice(0, maxLength);
 
-    const createNewPrivateChat = () => {
-        if (
-            location.pathname !== `/${props.user.userName}` &&
-            decodeURIComponent(location.pathname) !== `/${props?.user?.name}`
-        )
-            navigate(`/${props.user.userName}`);
-    };
+        return props?.user?.name;
+    }, [props?.user?.name]);
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
@@ -66,10 +54,11 @@ const Message: FC<PropsType> = memo((props) => {
                 id={messageID}
                 className={`${props?.user?.id === ownUserName ? styles.background_own : styles.background}`}
             >
+                <div className={styles.name} onClick={() => navigate(`/${props.user.userName}`)}>
+                    {username}
+                </div>
                 {!!props.parentMessage && <ParentMessage {...{ ...props.parentMessage }} />}
                 <div className={styles.file_list}>
-                    <div onClick={() => createNewPrivateChat()}>{username()}</div>
-
                     {props?.files?.map((file, index) => {
                         if (file.fileType === FileExtensionEnum.IS_VOICE) return <AudioFile key={index} file={file} />;
                         if (file.mimeType.includes(FileTypeEnum.IMAGE)) return <MessageImage key={index} file={file} />;
