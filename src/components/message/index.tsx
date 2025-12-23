@@ -28,6 +28,7 @@ const Message: FC<PropsType> = memo((props) => {
     const [messageID] = useMessageMenu(props);
     const [visibleMessage, time] = useText(props);
     const { handleSpeaking, isSpeaking } = useSpeak(visibleMessage, type);
+    const navigate = useCustomNavigate();
     const ownUserName = useAppSelector((state) => state.user.userName);
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
     const isPinned = usePinned(props.id, pinnedMessages);
