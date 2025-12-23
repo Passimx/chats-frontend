@@ -1,5 +1,4 @@
 import { FC, memo, useCallback, useContext, useMemo, useRef } from 'react';
-//import { useAppSelector } from '../../root/store';
 import { Bars } from './components/bars';
 import { PropsType } from './types.ts';
 import { AudioPlayerContext } from '../../root/contexts/audio-player';
@@ -9,7 +8,7 @@ export const LoudnessBars: FC<PropsType> = memo(({ file }) => {
     const durationAudio = file?.metadata?.duration;
     const { seek, audio } = useContext(AudioPlayerContext)!;
     const barRef = useRef<HTMLDivElement>(null);
-    //const { isPhone } = useAppSelector((state) => state.app);
+
     // вычисляем сколько элементов из loudnessData использовать
     const displayData = useMemo(() => {
         // Базовое количество баров
