@@ -1,6 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import { FC, memo } from 'react';
+import { FC, memo, useContext } from 'react';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import Message from '../../components/message';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +32,7 @@ import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
 import { useSwipeBack } from './hooks/use-swipe.hook.ts';
 import { PiPhoneCallFill } from 'react-icons/pi';
 import CallModal from '../../components/call-modal/index.tsx';
+import { CallContext } from '../../root/contexts/call';
 
 /** Main chat component */
 const Chat: FC = memo(() => {
@@ -50,7 +51,10 @@ const Chat: FC = memo(() => {
 
     const ownUserName = useAppSelector((state) => state.user.userName);
 
+    const {isCallActive, setIsCallActive} = useContext(CallContext);
+
     if (!chatOnPage) return <></>;
+
 
     return (
         <div id={styles.background}>
@@ -118,7 +122,14 @@ const Chat: FC = memo(() => {
                             <MdQrCode2 className={styles.chat_menu_item_icon} />
                             <div className={'text_translate'}>{t('qr_code')}</div>
                         </div>
-                        <div className={styles.chat_menu_item} onClick={() => setStateApp({ page: <CallModal /> })}>
+                        <div
+                            className={styles.chat_menu_item}
+                            onClick={() => {
+                                if (isCallActive || !setIsCallActive) return;
+                                setStateApp({ page: <CallModal /> });
+                                setIsCallActive(true);
+                            }}
+                        >
                             <PiPhoneCallFill className={styles.chat_menu_item_icon} />
                             <div className={'text_translate'}>{t('call')}</div>
                         </div>

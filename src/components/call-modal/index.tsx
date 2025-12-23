@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useContext } from 'react';
 import { FaMinus } from 'react-icons/fa6';
 import { BiFullscreen, BiVideo, BiVideoOff, BiMicrophone, BiMicrophoneOff } from 'react-icons/bi';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
@@ -7,14 +7,16 @@ import styles from './index.module.css';
 import { Avatar } from '../avatar';
 import { ChatEnum } from '../../root/types/chat/chat.enum';
 import { useAppAction, useAppSelector } from '../../root/store';
+import { CallContext } from '../../root/contexts/call';
 
 const CallModal: FC = () => {
-    const [isCameraOn, setIsCameraOn] = useState<boolean>(false);
-    const [isMicrophoneOn, setIsMicrophoneOn] = useState<boolean>(true);
     const [isFullScreenActive, setIsFullScreenActive] = useState<boolean>(false);
     const [isMinimize, setMinimize] = useState<boolean>(false);
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { setStateApp } = useAppAction();
+    const context = useContext(CallContext);
+
+    const { isCameraOn, setIsCameraOn, isMicrophoneOn, setIsMicrophoneOn, isCallActive, setIsCallActive } = context;
 
     return (
         <div
@@ -93,7 +95,14 @@ const CallModal: FC = () => {
                 </div>
 
                 <div className={styles.call_block}>
-                    <button className={styles.decline} onClick={() => setStateApp({ page: undefined })}>
+                    <button
+                        className={styles.decline}
+                        onClick={() => {
+                            if (!isCallActive) return;
+                            setIsCallActive(false);
+                            setStateApp({ page: undefined });
+                        }}
+                    >
                         <MdCallEnd size={25} color="#FF595A" />
                     </button>
                 </div>

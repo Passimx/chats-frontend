@@ -32,8 +32,8 @@
 }
 
 .system_background{
-    /* display: contents;
-    justify-content: center; */
+    display: flex;
+    justify-content: center;
 }
 
 .text{
