@@ -12,6 +12,7 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    flex-direction: column;
 
     .page{
         cursor: auto;
@@ -27,23 +28,32 @@
         @media(width >= 600px){
             width: 400px;
         }
+
+        @media (width < 400px) {
+            scale: 0.8;
+        }
     }
 
     .cancel_background{
-        top: 0;
-        left: 0;
-        position: absolute;
-        width: 50px;
-        height: 50px;
-        display: grid;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
+        display: flex;
+        justify-content: end;
+        opacity: 0.5;
+        transition: opacity 0.3s ease;
+        width: 32rem;
+
+        &:hover {
+            opacity: 0.9;
+        }
+
+        @media (width < 400px) {
+            display: none;
+        }
 
         .cancel_button{
             color: white;
             font-weight: bold;
             font-size: 30px;
+            position: absolute;
         }
     }
 }
