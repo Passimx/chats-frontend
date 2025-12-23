@@ -9,33 +9,24 @@ html {
 
 #background{
     --local-width-menu: 200px;
-    position: absolute;
-    bottom: calc(var(--menu-bottom) + env(safe-area-inset-bottom, 32px));
-    width: var(--local-width-menu);
-    left: calc((var(--menu-width) - var(--local-width-menu)) / 2 - 2px);
-    display: grid;
-    grid-template-columns: 50% 50%;
-    border-radius: var(--local-width-menu);
-    overflow: hidden;
-    background-color: rgb(255, 255, 255, 8%);
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    gap: 0.5rem;
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.12);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-    padding: 5px 10px;
-    right: 0;
+    border-radius: var(--local-width-menu);
+    background-color: rgb(255, 255, 255, 8%);
+    margin-bottom: 1rem;
+    padding: 5px;
 }
 
 .menu_item{
     transition: all .3s ease;
     border-radius: var(--local-width-menu);
     display: grid;
-    justify-content: center;
-    align-items: center;
-    grid-template-rows: auto;
     cursor: pointer;
     color: white;
-    padding: 6px;
+    padding: 6px 18px;
     position: relative;
 }
 
@@ -62,7 +53,7 @@ html {
 }
 
 .menu_item_active{
-    color: #0098ea;
+    color: #3ebcff;
 }
 
 .menu_item_inner{
