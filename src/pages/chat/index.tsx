@@ -47,7 +47,6 @@ const Chat: FC = memo(() => {
     const chatOnPage = useAppSelector((state) => state.chats.chatOnPage);
     const shortName = useShortText(chatOnPage?.id);
     const title = useGetChatTitle(chatOnPage);
-    const onlineUsersCount = chatOnPage?.maxUsersOnline;
 
     const ownUserName = useAppSelector((state) => state.user.userName);
 
@@ -77,9 +76,6 @@ const Chat: FC = memo(() => {
                                     <RxLockClosed className={styles.look_svg} color="red" />
                                 )}
                             </div>
-                            {[ChatEnum.IS_OPEN, ChatEnum.IS_PUBLIC].includes(chatOnPage.type) && (
-                                <p id={styles.subtitle}>{`${t('members')}: ${onlineUsersCount}`}</p>
-                            )}
                         </div>
                         {!!chatOnPage.countMessages && (
                             <div id={styles.chat_menu_button} onClick={() => setIsVisible(true)}>
