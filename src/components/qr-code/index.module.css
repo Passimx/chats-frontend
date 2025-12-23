@@ -2,8 +2,6 @@
     display: grid;
     grid-template-rows: auto auto;
     gap: 8px;
-    /*justify-items: center;*/
-    /*justify-content: center;*/
 
     canvas{
         cursor: pointer;
@@ -11,7 +9,7 @@
 
     .buttons{
         display: grid;
-        grid-template-columns: auto auto;
+        grid-template-columns: 1fr 1fr;
         gap: 8px;
 
         .canvas{}

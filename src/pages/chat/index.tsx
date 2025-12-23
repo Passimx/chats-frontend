@@ -1,6 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import { FC, memo } from 'react';
+import { FC, memo, useContext } from 'react';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import Message from '../../components/message';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +32,7 @@ import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
 import { useSwipeBack } from './hooks/use-swipe.hook.ts';
 import { PiPhoneCallFill } from 'react-icons/pi';
 import CallModal from '../../components/call-modal/index.tsx';
+import { CallContext } from '../../root/contexts/call';
 
 /** Main chat component */
 const Chat: FC = memo(() => {
@@ -47,7 +48,10 @@ const Chat: FC = memo(() => {
     const chatOnPage = useAppSelector((state) => state.chats.chatOnPage);
     const shortName = useShortText(chatOnPage?.id);
     const title = useGetChatTitle(chatOnPage);
+
     const ownUserName = useAppSelector((state) => state.user.userName);
+
+    const { isCallActive, setIsCallActive } = useContext(CallContext);
 
     if (!chatOnPage) return <></>;
 
@@ -63,15 +67,18 @@ const Chat: FC = memo(() => {
                             isClickable={![ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage.type)}
                         />
                         <div className={`${styles.title_block} text_translate`}>
-                            {[ChatEnum.IS_FAVORITES, ChatEnum.IS_SYSTEM].includes(chatOnPage.type) && (
-                                <FaStar className={styles.icon_star} />
-                            )}
-                            <div id={styles.title}>{title}</div>
-                        </div>
-                        <div className={styles.icon}>
-                            {[ChatEnum.IS_DIALOGUE, ChatEnum.IS_FAVORITES].includes(chatOnPage.type) && (
-                                <RxLockClosed className={styles.look_svg} color="red" />
-                            )}
+                            <div className={styles.title_block_inline}>
+                                {/* Chat title*/}
+                                <h3 id={styles.title}>{title}</h3>
+
+                                {/* icons for system chats*/}
+                                {[ChatEnum.IS_SYSTEM].includes(chatOnPage.type) && (
+                                    <FaStar className={styles.icon_star} />
+                                )}
+                                {[ChatEnum.IS_FAVORITES].includes(chatOnPage.type) && (
+                                    <RxLockClosed className={styles.look_svg} color="red" />
+                                )}
+                            </div>
                         </div>
                         {!!chatOnPage.countMessages && (
                             <div id={styles.chat_menu_button} onClick={() => setIsVisible(true)}>
@@ -114,7 +121,14 @@ const Chat: FC = memo(() => {
                             <MdQrCode2 className={styles.chat_menu_item_icon} />
                             <div className={'text_translate'}>{t('qr_code')}</div>
                         </div>
-                        <div className={styles.chat_menu_item} onClick={() => setStateApp({ page: <CallModal /> })}>
+                        <div
+                            className={styles.chat_menu_item}
+                            onClick={() => {
+                                if (isCallActive || !setIsCallActive) return;
+                                setStateApp({ page: <CallModal /> });
+                                setIsCallActive(true);
+                            }}
+                        >
                             <PiPhoneCallFill className={styles.chat_menu_item_icon} />
                             <div className={'text_translate'}>{t('call')}</div>
                         </div>

@@ -1,20 +1,22 @@
 #search{
-    height: 34px;
     padding: 11px 0 11px 4px;
     display: grid;
     grid-template-columns: auto 40px;
-    gap: 4px;
+    grid-auto-rows: 15px;
+    gap: 14px;
     transition: 0.3s all ease;
 }
 
 #new_chats{
-    background-color: white;
+    background-color: rgb(226, 226, 226);
     z-index: 10;
     border-radius: 10px;
-    box-shadow:0 0 10px 4px black;
+    box-shadow:0 0 10px 10px rgba(0, 0, 0, 0.323);
     cursor: pointer;
     position: relative;
     visibility: hidden;
+    display: inline-table;
+    margin-left: 1rem;
 }
 
 #new_chat_icon{

@@ -3,6 +3,7 @@ import { FC, memo, useCallback, cloneElement } from 'react';
 import { PropsType } from './props.type.ts';
 import { useTranslation } from 'react-i18next';
 import { useAppAction, useAppSelector } from '../../root/store';
+import { AiOutlineArrowLeft } from 'react-icons/ai';
 
 export const MenuTitle: FC<PropsType> = memo(({ icon, title }) => {
     const { t } = useTranslation();
@@ -21,7 +22,7 @@ export const MenuTitle: FC<PropsType> = memo(({ icon, title }) => {
         <div className={`${styles.background} text_translate`}>
             {!!pages.get(activeTab)?.length && (
                 <div className={styles.back} onClick={back}>
-                    ◀ {t('back')}
+                    <AiOutlineArrowLeft />
                 </div>
             )}
             <div className={`${styles.title}`}>

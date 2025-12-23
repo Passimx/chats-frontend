@@ -39,11 +39,11 @@ export const Page: FC = memo(() => {
         }
         return (
             <div className={styles.background}>
-                <div ref={ref} className={styles.page}>
-                    {page}
-                </div>
                 <div className={styles.cancel_background}>
                     <MdOutlineClose className={styles.cancel_button} />
+                </div>
+                <div ref={ref} className={styles.page}>
+                    {page}
                 </div>
             </div>
         );
