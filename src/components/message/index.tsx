@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { FC, memo, useMemo } from 'react';
 import styles from './index.module.css';
 import { PropsType } from './types/props.type.ts';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
@@ -19,6 +19,7 @@ import { usePinned } from '../../common/hooks/use-pinned.hook.ts';
 import { AiFillSound, AiFillStop } from 'react-icons/ai';
 import { useSpeak } from './hooks/use-speak.hook.ts';
 import { useText } from './hooks/use-text.hook.ts';
+import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 
 /** Message component */
 const Message: FC<PropsType> = memo((props) => {
@@ -27,9 +28,18 @@ const Message: FC<PropsType> = memo((props) => {
     const [messageID] = useMessageMenu(props);
     const [visibleMessage, time] = useText(props);
     const { handleSpeaking, isSpeaking } = useSpeak(visibleMessage, type);
+    const navigate = useCustomNavigate();
     const ownUserName = useAppSelector((state) => state.user.userName);
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
     const isPinned = usePinned(props.id, pinnedMessages);
+
+    const username = useMemo(() => {
+        const maxLength = 20;
+        if (!props.user.name) return;
+        if (props.user.name.length > maxLength) return props.user.name.slice(0, maxLength);
+
+        return props.user.name;
+    }, [props?.user?.name]);
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
@@ -45,6 +55,9 @@ const Message: FC<PropsType> = memo((props) => {
                 id={messageID}
                 className={`${props?.user?.id === ownUserName ? styles.background_own : styles.background}`}
             >
+                <div className={styles.name} onClick={() => navigate(`/${props.user.userName}`)}>
+                    {username}
+                </div>
                 {!!props.parentMessage && <ParentMessage {...{ ...props.parentMessage }} />}
                 <div className={styles.file_list}>
                     {props?.files?.map((file, index) => {

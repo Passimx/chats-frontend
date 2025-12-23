@@ -124,3 +124,9 @@
 .file_list{
     display: grid;
 }
+
+.name{
+    cursor: pointer;
+    color: #439fef;
+
+}

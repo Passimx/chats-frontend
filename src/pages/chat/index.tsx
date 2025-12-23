@@ -48,6 +48,7 @@ const Chat: FC = memo(() => {
     const chatOnPage = useAppSelector((state) => state.chats.chatOnPage);
     const shortName = useShortText(chatOnPage?.id);
     const title = useGetChatTitle(chatOnPage);
+
     const ownUserName = useAppSelector((state) => state.user.userName);
 
     const {isCallActive, setIsCallActive} = useContext(CallContext);
@@ -67,15 +68,18 @@ const Chat: FC = memo(() => {
                             isClickable={![ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage.type)}
                         />
                         <div className={`${styles.title_block} text_translate`}>
-                            {[ChatEnum.IS_FAVORITES, ChatEnum.IS_SYSTEM].includes(chatOnPage.type) && (
-                                <FaStar className={styles.icon_star} />
-                            )}
-                            <div id={styles.title}>{title}</div>
-                        </div>
-                        <div className={styles.icon}>
-                            {[ChatEnum.IS_DIALOGUE, ChatEnum.IS_FAVORITES].includes(chatOnPage.type) && (
-                                <RxLockClosed className={styles.look_svg} color="red" />
-                            )}
+                            <div className={styles.title_block_inline}>
+                                {/* Chat title*/}
+                                <h3 id={styles.title}>{title}</h3>
+
+                                {/* icons for system chats*/}
+                                {[ChatEnum.IS_SYSTEM].includes(chatOnPage.type) && (
+                                    <FaStar className={styles.icon_star} />
+                                )}
+                                {[ChatEnum.IS_FAVORITES].includes(chatOnPage.type) && (
+                                    <RxLockClosed className={styles.look_svg} color="red" />
+                                )}
+                            </div>
                         </div>
                         {!!chatOnPage.countMessages && (
                             <div id={styles.chat_menu_button} onClick={() => setIsVisible(true)}>
