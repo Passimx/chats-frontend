@@ -32,7 +32,7 @@ languages.forEach(([lang, list]) => {
     langMaps.set(lang, new Set(myArray));
 });
 
-export const getLanguageByText = (text: string) => {
+export const getLanguageByText = (text: string, lang: string = 'en') => {
     const map = new Map<string, number>(Array.from(languages).map(([lang]) => [lang, 0]));
 
     const spanishChars = /[ñÑáéíóúÁÉÍÓÚüÜ¿¡]/;
@@ -51,5 +51,16 @@ export const getLanguageByText = (text: string) => {
         map.set(lang, sum + 1);
     }
 
-    return [...map].reduce((prev, current) => (prev[1] > current[1] ? prev : current))[0];
+    const language = languages.find(([str]) => str.indexOf(lang) === 0);
+    const correctLang = language ? language[0] : 'lang';
+
+    const initialValue = map.get(correctLang) || 0;
+
+    return [...map].reduce(
+        (prev, current) => {
+            if (prev[1] < current[1]) return current;
+            return prev;
+        },
+        [lang, initialValue],
+    )[0];
 };

@@ -2,10 +2,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { getLanguageByText } from '../../../root/wrappers/app/hooks/translations/get-language-by-text.ts';
 import { useTranslation } from 'react-i18next';
 import { MessageTypeEnum } from '../../../root/types/chat/message-type.enum.ts';
+import { useAppSelector } from '../../../root/store';
 
 export const useSpeak = (message: string, type: string) => {
-    const [isSpeaking, setIsSpeaking] = useState(false);
     const { i18n } = useTranslation();
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const lang = useAppSelector((state) => state.app.settings?.lang);
 
     const handleSpeaking = () => {
         isSpeaking ? pauseSpeak() : speakAloud();
@@ -13,13 +15,14 @@ export const useSpeak = (message: string, type: string) => {
 
     const speakAloud = useCallback(() => {
         if (!message) return;
+        window.speechSynthesis.cancel();
 
         const utterance = new SpeechSynthesisUtterance(message);
 
         if (type == MessageTypeEnum.IS_CREATED_CHAT) {
             utterance.lang = i18n.language;
         } else {
-            utterance.lang = getLanguageByText(message);
+            utterance.lang = getLanguageByText(message, lang);
         }
         utterance.pitch = 1;
         utterance.rate = 0.9;
@@ -29,7 +32,7 @@ export const useSpeak = (message: string, type: string) => {
         utterance.onerror = () => setIsSpeaking(false);
 
         window.speechSynthesis.speak(utterance);
-    }, [message, i18n.language]);
+    }, [message, lang]);
 
     const pauseSpeak = useCallback(() => {
         window.speechSynthesis.cancel();
