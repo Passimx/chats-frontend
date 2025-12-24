@@ -20,11 +20,9 @@ const UserSlice = createSlice({
         },
         logout(state) {
             state.key && deleteAccountIndexDb(state.key);
-            state = {};
             Envs.RSAKeys = undefined;
             localStorage.removeItem('keys');
-            state.id = undefined;
-            // window.location.reload();
+            return {};
         },
     },
 });
