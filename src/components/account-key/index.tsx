@@ -13,20 +13,24 @@ export const AccountKey: FC<PropsType> = memo(({ data }) => {
     const pages = useAppSelector((state) => state.app.pages)?.get(TabEnum.AUTHORIZATION);
     const [isActiveButton, setIsActiveButton] = useState<boolean>(false);
 
-    const downloadAccountKey = useCallback(() => {
+    const downloadAccountKey = useCallback(async () => {
         const { userId, words } = data;
-        const str = `${userId}\n${words.join('\n')}`;
-        const strHash = CryptoService.getHash(str);
-        const keyStr = `${str}\n${strHash}`;
+        const seedPhrase = [userId, ...words].join(' ');
+        const keyPair = await CryptoService.generateEd25519Key();
 
-        setIsActiveButton(true);
-        const blob = new Blob([keyStr], { type: 'text/plain' });
+        const publicKeyEd25519 = await CryptoService.exportKey(keyPair.publicKey);
+        const encoded = new TextEncoder().encode(seedPhrase);
+        const signature = await crypto.subtle.sign('Ed25519', keyPair.privateKey, encoded);
+        const filePayload = `${seedPhrase}\n${btoa(String.fromCharCode(...new Uint8Array(signature)))}\n${publicKeyEd25519}`;
+
+        const blob = new Blob([filePayload], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
         link.download = `${userId}.txt`;
         link.click();
         URL.revokeObjectURL(url);
+        setIsActiveButton(true);
     }, [data]);
 
     const accountUseKey = useCallback(() => {

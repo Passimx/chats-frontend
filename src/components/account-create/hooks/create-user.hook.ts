@@ -13,6 +13,8 @@ export const useCreateUser = (): FuncType => {
         const words = await mnemonicNew(24);
         const seedPhrase = words.join(' ');
         const mainSeedPhrase = `${password} ${seedPhrase}`;
+        const passwordHash = CryptoService.getHash(password);
+        const seedPhraseHash = CryptoService.getHash(seedPhrase);
 
         const aesKey = await CryptoService.generateAESKey(mainSeedPhrase);
         const rsaKeysPair = await CryptoService.generateRSAKeys();
@@ -20,9 +22,6 @@ export const useCreateUser = (): FuncType => {
         const privateKeyString = await CryptoService.exportKey(rsaKeysPair.privateKey);
 
         const encryptedRsaPrivateKey = await CryptoService.encryptByAESKey(aesKey, privateKeyString);
-
-        const passwordHash = CryptoService.getHash(password);
-        const seedPhraseHash = CryptoService.getHash(seedPhrase);
 
         const userRequest: Partial<UserFromServerMe> = {
             encryptedRsaPrivateKey,

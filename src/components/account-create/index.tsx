@@ -22,7 +22,7 @@ export const AccountCreate: FC = memo(() => {
 
         pages?.push(<AccountKey data={data} />);
         if (pages) setStateApp({ pages: new Map<TabEnum, JSX.Element[]>([[TabEnum.AUTHORIZATION, pages]]) });
-    }, [isLoading, name]);
+    }, [isLoading, name, password]);
 
     const isReadyGenerate = useMemo(() => {
         return name?.length && !!password.length && !!repeatPassword.length && password === repeatPassword;

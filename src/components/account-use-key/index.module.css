@@ -18,6 +18,19 @@
 
     .main{
         display: grid;
+        /*grid-template-rows: 1fr auto;*/
+
+        .key_background{
+            align-items: center;
+            display: grid;
+
+            .key_main{
+                background-color: red;
+            }
+        }
+
+        .name_background{
+        }
 
     }
 }

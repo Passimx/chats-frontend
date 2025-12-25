@@ -1,86 +1,46 @@
-import { FC, memo, useEffect } from 'react';
+import { FC, memo, useEffect, useState } from 'react';
 import styles from './index.module.css';
-import { CryptoService } from '../../common/services/crypto.service.ts';
-import { getUserMe } from '../../root/api/users';
+import { EditField } from '../edit-field';
+import { useVerify } from './hooks/use-verify.hook.ts';
 
 export const AccountUseKey: FC = memo(() => {
-    // localStorage.setItem('keys', JSON.stringify({ publicKey: publicKeyString, privateKey: privateKeyString }));
-    // const { setStateUser } = useAppAction();
-    // Envs.RSAKeys = rsaKeysPair;
-    // setStateUser({
-    //     key: Date.now(),
-    //     aesKey,
-    //     id: data.id,
-    //     name: data.name,
-    //     seedPhraseHash,
-    //     userName: data.userName,
-    //     rsaPublicKey: rsaKeysPair.publicKey,
-    //     rsaPrivateKey: rsaKeysPair.privateKey,
-    //     encryptedRsaPrivateKey,
-    // });
+    const [isDragOver, setIsDragOver] = useState<boolean>(false);
+    const [keyFile, setKeyFile] = useState<File>();
+    const [password, setPassword] = useState<string>('');
+    useVerify(keyFile, password);
 
     useEffect(() => {
         const element = document.getElementById(styles.background);
         if (!element) return;
         element.addEventListener('dragover', (e) => {
+            setIsDragOver(true);
+            e.preventDefault();
+        });
+        element.addEventListener('dragleave', (e) => {
+            setIsDragOver(false);
             e.preventDefault();
         });
 
         element.addEventListener('drop', (e) => {
+            setIsDragOver(false);
             e.preventDefault();
 
             const files = e.dataTransfer?.files; // Список файлов с рабочего стола
-            if (files?.length) {
-                const file = files[0];
-
-                const reader = new FileReader();
-                reader.readAsText(file);
-                reader.onload = async (e) => {
-                    try {
-                        const content = e.target?.result;
-                        if (typeof content !== 'string' || !content) return;
-
-                        const allWords = content.split('\n');
-                        const hash = allWords.pop();
-                        const [userId, ...words] = allWords;
-
-                        const str = `${userId}\n${words.join('\n')}`;
-                        const strHash = CryptoService.getHash(str);
-                        if (strHash !== hash) return;
-
-                        const password = 'pass';
-                        const seedPhrase = words.join(' ');
-                        const mainSeedPhrase = `${password} ${seedPhrase}`;
-                        const seedPhraseHash = CryptoService.getHash(seedPhrase);
-                        // const passwordHash = CryptoService.getHash(password);
-
-                        const response = await getUserMe({ id: userId, seedPhraseHash });
-                        if (!response.success) return;
-
-                        const aesKey = await CryptoService.generateAESKey(mainSeedPhrase, false);
-                        const rsaPrivateKeyString = await CryptoService.decryptByAESKey(
-                            aesKey,
-                            response.data.encryptedRsaPrivateKey,
-                        );
-
-                        if (!rsaPrivateKeyString?.length) return;
-                        const rsaPrivateKey = await CryptoService.importRSAKey(rsaPrivateKeyString, ['decrypt']);
-                        if (!rsaPrivateKey) return;
-
-                        console.log(rsaPrivateKey);
-                    } catch (err) {
-                        console.error('Ошибка при чтении ключа:', err);
-                    }
-                };
-            }
+            if (files?.length) setKeyFile(files[0]);
         });
     }, []);
 
     return (
         <div id={styles.background} className={styles.background}>
             <div className={styles.title}>Ввод ключа</div>
-            <div className={styles.main}>
-                <div>sdf</div>
+            <div className={styles.main} style={{ backgroundColor: isDragOver ? 'green' : undefined }}>
+                <div className={styles.key_background}>
+                    <div className={styles.key_main}></div>
+                </div>
+                <div className={styles.name_background}>
+                    <div>Введите пароль</div>
+                    <EditField blur={true} value={password} setValue={setPassword} />
+                </div>
             </div>
         </div>
     );
