@@ -1,7 +1,6 @@
 import { useAppAction } from '../../../store';
 import { DataType } from '../../../types/events/event-data.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
-import { Envs } from '../../../../common/config/envs/envs.ts';
 import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 import { getRawChat } from '../../../store/raw/chats.raw.ts';
@@ -16,7 +15,7 @@ export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
     const prepareDialogue = usePrepareDialogue();
     const [playNotificationSound] = useLoadSoundsHooks();
-    const { updateMany, setStateApp, createMessage, removeChat, update, changeSettings } = useAppAction();
+    const { updateMany, setStateApp, createMessage, removeChat, update, changeSettings, setStateUser } = useAppAction();
 
     return useCallback(async (dataEvent: DataType) => {
         const { event, data } = dataEvent;
@@ -25,7 +24,6 @@ export const useAppEvents = () => {
             case EventsEnum.GET_SOCKET_ID:
                 if (!data.success) break;
                 setStateApp({ socketId: data.data });
-                Envs.socketId = data.data;
                 break;
             case EventsEnum.ADD_CHAT:
                 if (getRawChat(data.id)) break;
@@ -71,7 +69,10 @@ export const useAppEvents = () => {
                 if (!data.success) break;
                 updateMany(data.data);
                 break;
-
+            case EventsEnum.UPDATE_ME:
+                if (!data.success) break;
+                setStateUser(data.data);
+                break;
             case EventsEnum.UPDATE_MAX_USERS_ONLINE:
                 if (!data.success) break;
                 data.data.forEach(({ id, maxUsersOnline }) => {
@@ -82,7 +83,6 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.CLOSE_SOCKET:
                 setStateApp({ socketId: undefined, isListening: false });
-                Envs.socketId = undefined;
                 break;
             case EventsEnum.PLAY_NOTIFICATION:
                 playNotificationSound();

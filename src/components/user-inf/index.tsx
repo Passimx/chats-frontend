@@ -10,12 +10,10 @@ import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import { updateUser } from '../../root/api/users';
 
 export const UserInf = memo(() => {
-    const id = useAppSelector((state) => state.user.id);
     const name = useAppSelector((state) => state.user.name);
     const userName = useAppSelector((state) => state.user.userName);
-    const seedPhraseHash = useAppSelector((state) => state.user.seedPhraseHash);
     const shortUserName = useShortText(userName);
-    const { setStateApp, postMessageToBroadCastChannel, setStateUser } = useAppAction();
+    const { setStateApp, postMessageToBroadCastChannel } = useAppAction();
 
     const openQrCode = useCallback(() => {
         if (!userName) return;
@@ -26,9 +24,7 @@ export const UserInf = memo(() => {
 
     const changeName = async (newName: string) => {
         if (name === newName) return;
-        const response = await updateUser({ id, seedPhraseHash, name: newName });
-        if (!response.success) return;
-        setStateUser({ name: newName });
+        await updateUser({ name: newName });
     };
 
     return (

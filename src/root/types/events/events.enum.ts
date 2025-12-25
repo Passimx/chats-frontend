@@ -6,6 +6,7 @@ export enum EventsEnum {
     COPY_TEXT = 'COPY_TEXT',
     CHANGE_LANGUAGE = 'CHANGE_LANGUAGE',
     CREATE_MESSAGE = 'create_message',
+    UPDATE_ME = 'update_me',
     READ_MESSAGE = 'read_message',
     REMOVE_CHAT = 'remove_chat',
     UPDATE_BADGE = 'update_badge',

@@ -19,6 +19,7 @@ export const useVerify = (file?: File, password?: string) => {
         const aesKey = await CryptoService.generateAESKey(mainSeedPhrase, false);
         const rsaPrivateKeyString = await CryptoService.decryptByAESKey(aesKey, userData.encryptedRsaPrivateKey);
         const rsaPublicKey = await CryptoService.importRSAKey(userData.rsaPublicKey, ['encrypt']);
+        const encryptedSeedPhrase = await CryptoService.encryptByAESKey(aesKey, seedPhrase);
 
         if (!rsaPrivateKeyString?.length) return;
         if (!rsaPublicKey) return;
@@ -31,6 +32,7 @@ export const useVerify = (file?: File, password?: string) => {
             JSON.stringify({ publicKey: userData.rsaPublicKey, privateKey: rsaPrivateKeyString }),
         );
         Envs.RSAKeys = rsaKeysPair;
+        Envs.userId = userData.id;
         setStateUser({
             id: userData.id,
             key: Date.now(),
@@ -38,6 +40,7 @@ export const useVerify = (file?: File, password?: string) => {
             userName: userData.userName,
             aesKey,
             encryptedRsaPrivateKey: userData.encryptedRsaPrivateKey,
+            encryptedSeedPhrase,
             rsaPublicKey,
             rsaPrivateKey,
         });

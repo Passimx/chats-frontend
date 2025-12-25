@@ -7,7 +7,7 @@ export enum EnvironmentEnum {
 }
 
 type EnvsType = {
-    socketId?: string;
+    userId?: string;
     chatsServiceUrl: string;
     notificationsServiceUrl: string;
     filesServiceUrl: string;
