@@ -3,10 +3,13 @@ import styles from './index.module.css';
 import { useCreateUser } from '../hooks/create-user.hook.ts';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { mnemonicNew } from 'ton-crypto';
+import { useAppAction } from '../../../root/store/index.ts';
+import { EventsEnum } from '../../../root/types/events/events.enum.ts';
 
 export const CreateAccount: FC = memo(() => {
-    const [isLoading, createUser] = useCreateUser();
+    const [isLoading] = useCreateUser();
     const [words, setWords] = useState<string[]>([]);
+    const { postMessageToBroadCastChannel } = useAppAction();
 
     const generateWords = useCallback(async () => {
         const result = await mnemonicNew(24);
@@ -19,7 +22,10 @@ export const CreateAccount: FC = memo(() => {
 
     const create = useCallback(async () => {
         if (!isLoading) {
-            await createUser(words, 'pass', 'Рамиль');
+            postMessageToBroadCastChannel({
+                event: EventsEnum.CREATE_USER,
+                data: { words: words, password: 'pass', name: 'Рамиль' },
+            });
             return;
         }
     }, [words, isLoading]);

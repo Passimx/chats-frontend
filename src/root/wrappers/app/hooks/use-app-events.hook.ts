@@ -11,11 +11,13 @@ import { getCacheMemory } from '../../../../common/cache/get-cache-memory.ts';
 import { useUpdateChat } from '../../../../common/hooks/use-update-chat.hook.ts';
 import { usePrepareDialogue } from '../../../../common/hooks/use-prepare-dialogue.ts';
 import { MessagesService } from '../../../../common/services/messages.service.ts';
+import { useCreateUser } from '../../../../components/account-start/hooks/create-user.hook.ts';
 
 export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
     const prepareDialogue = usePrepareDialogue();
     const [playNotificationSound] = useLoadSoundsHooks();
+    const [, createUser] = useCreateUser();
     const { updateMany, setStateApp, createMessage, removeChat, update, changeSettings } = useAppAction();
 
     return useCallback(async (dataEvent: DataType) => {
@@ -92,6 +94,9 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.ERROR:
                 console.log(`${'\x1B[31m'}error: ${data}${'\x1B[31m'}`);
+                break;
+            case EventsEnum.CREATE_USER:
+                await createUser(data.words, data.password, data.name);
                 break;
         }
     }, []);
