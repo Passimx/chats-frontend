@@ -3,12 +3,13 @@ import { CryptoService } from '../../../common/services/crypto.service.ts';
 import { getUserMe } from '../../../root/api/users';
 import { UserGetMetType } from '../../../root/types/users/user-get-met.type.ts';
 import { useAppAction } from '../../../root/store';
-import { Envs } from '../../../common/config/envs/envs.ts';
+import { EventsEnum } from '../../../root/types/events/events.enum.ts';
+import { UserIndexDbType } from '../../../root/types/users/user-index-db.type.ts';
 
 export const useVerify = (file?: File, password?: string) => {
     const [userData, setUserData] = useState<UserGetMetType>();
     const [seedPhrase, setSeedPhrase] = useState<string>();
-    const { setStateUser } = useAppAction();
+    const { postMessageToBroadCastChannel } = useAppAction();
 
     const test = async () => {
         if (!password?.length) return;
@@ -25,15 +26,8 @@ export const useVerify = (file?: File, password?: string) => {
         if (!rsaPublicKey) return;
         const rsaPrivateKey = await CryptoService.importRSAKey(rsaPrivateKeyString, ['decrypt']);
         if (!rsaPrivateKey) return;
-        const rsaKeysPair = { privateKey: rsaPrivateKey, publicKey: rsaPublicKey };
 
-        localStorage.setItem(
-            'keys',
-            JSON.stringify({ publicKey: userData.rsaPublicKey, privateKey: rsaPrivateKeyString }),
-        );
-        Envs.RSAKeys = rsaKeysPair;
-        Envs.userId = userData.id;
-        setStateUser({
+        const data: Partial<UserIndexDbType> = {
             id: userData.id,
             key: Date.now(),
             name: userData.name,
@@ -43,7 +37,9 @@ export const useVerify = (file?: File, password?: string) => {
             encryptedSeedPhrase,
             rsaPublicKey,
             rsaPrivateKey,
-        });
+        };
+
+        postMessageToBroadCastChannel({ event: EventsEnum.CREATE_USER, data });
     };
 
     useEffect(() => {

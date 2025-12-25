@@ -17,4 +17,5 @@ export enum EventsEnum {
     PONG = 'pong',
     VERIFY = 'verify',
     ERROR = 'error',
+    CREATE_USER = 'CREATE_USER',
 }

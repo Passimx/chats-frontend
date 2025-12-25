@@ -10,6 +10,8 @@ import { getCacheMemory } from '../../../../common/cache/get-cache-memory.ts';
 import { useUpdateChat } from '../../../../common/hooks/use-update-chat.hook.ts';
 import { usePrepareDialogue } from '../../../../common/hooks/use-prepare-dialogue.ts';
 import { MessagesService } from '../../../../common/services/messages.service.ts';
+import { Envs } from '../../../../common/config/envs/envs.ts';
+import { CryptoService } from '../../../../common/services/crypto.service.ts';
 
 export const useAppEvents = () => {
     const setToBegin = useUpdateChat();
@@ -92,6 +94,20 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.ERROR:
                 console.log(`${'\x1B[31m'}error: ${data}${'\x1B[31m'}`);
+                break;
+            case EventsEnum.CREATE_USER:
+                Envs.userId = data.id;
+                setStateUser(data);
+                Envs.RSAKeys = { publicKey: data.rsaPublicKey!, privateKey: data.rsaPrivateKey! };
+
+                localStorage.setItem(
+                    'keys',
+                    JSON.stringify({
+                        publicKey: await CryptoService.exportKey(data.rsaPublicKey!),
+                        privateKey: await CryptoService.exportKey(data.rsaPrivateKey!),
+                    }),
+                );
+
                 break;
         }
     }, []);
