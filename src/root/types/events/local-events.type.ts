@@ -47,6 +47,11 @@ type CopyText = {
     readonly data?: unknown;
 };
 
+type CreateUser = {
+    readonly event: EventsEnum.CREATE_USER;
+    readonly data: { words: string[]; password: string; name: string };
+};
+
 export type LocalEvents =
     | ReadMessage
     | AddChat
@@ -56,4 +61,5 @@ export type LocalEvents =
     | PlayNotification
     | Error
     | ChangeLanguage
-    | CopyText;
+    | CopyText
+    | CreateUser;
