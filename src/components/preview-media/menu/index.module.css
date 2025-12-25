@@ -1,0 +1,273 @@
+#background {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    overflow: hidden;
+    grid-template-rows: auto 1fr;
+}
+
+#main{
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 56px;
+    grid-template-columns: 1fr;
+    z-index: 1;
+    box-shadow: 0 -5px 10px 10px rgba(0, 0, 0, 0.23);
+}
+
+#header{
+    display: grid;
+    grid-template-columns: 50px auto;
+    grid-template-rows: 40px;
+    align-items: center;
+    padding: 8px;
+    background-color: var(--menu-color);
+    color: #FFFFFF;
+
+    @media(width > 926px){
+        grid-template-columns: 1fr
+    }
+}
+
+#back_icon{
+    font-size: 40px;
+    cursor: pointer;
+
+    @media(width > 926px){
+        display: none;
+    }
+}
+
+.title_block {
+    display: grid;
+    gap: 5px;
+}
+
+.title_block_inline {
+    display: flex;
+    gap: 3px;
+}
+
+#chat_inf{
+    display: grid;
+    grid-template-columns: 50px auto 50px;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 0;
+}
+
+.icon_star{
+    font-size: 18px;
+    color:gold;
+    animation: star_animation 3s ease infinite;
+    /*margin-bottom: auto;*/
+    /*margin-top: auto;*/
+}
+
+.look_svg{
+    cursor: pointer;
+}
+
+#title{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -moz-box;
+    -moz-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+}
+
+#subtitle {
+    opacity: 0.7;
+    font-size: small;
+}
+
+.type_icon{
+    font-size: 24px;
+}
+
+#title::first-letter {
+    text-transform: uppercase;
+}
+
+#chat_menu_button{
+    height: 100%;
+    align-items: center;
+    cursor: pointer;
+    display: grid;
+    justify-content: center;
+}
+
+#menu_icon{
+    font-size: 25px;
+}
+
+#messages_main_block{
+    display: grid;
+    justify-content: center;
+    grid-template-rows: 1fr auto;
+    grid-template-columns: 1fr;
+    overflow: hidden;
+}
+
+#messages_block{
+    padding: 8px;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 1fr auto;
+}
+
+#messages{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-left: calc(50% - 288px);
+    padding-top: 8px;
+    scroll-behavior: smooth;
+    padding-right: calc(50% - 288px);
+}
+
+.message_container {
+    display: flex;
+    animation: messageSlide 0.3s ease;
+    
+
+    @media(width > 600px) {
+        .hover_item:hover{
+            background-color: rgb(0,0,0,0.2);
+        }
+    }
+}
+
+/* Центрируем только system-сообщения */
+.message_container > [class*="system"] {
+    margin: 0 auto !important;
+    min-width: 340px;
+}
+
+.message_container_own {
+    display: flex;
+    flex-direction: row-reverse;
+
+    @media(width > 600px) {
+        .hover_item:hover{
+            background-color: rgb(255,255,255,0.2);
+        }
+    }
+}
+
+@keyframes messageSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.add_chat_block{
+    display: grid;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.5cm;
+    border-top: 1px solid rgb(255, 255, 255, 0.2);
+    background-color: var(--menu-color);
+    font-weight: bold;
+    color: #439fef;
+    padding: 4px;
+
+    z-index: 2;
+    grid-template-columns: auto auto;
+    gap: 5px;
+}
+
+#new_chat_icon{
+    font-size: 0.8cm;
+}
+
+#media_menu{
+    background-color: white;
+    visibility: hidden;
+    z-index: 10;
+    border-radius: 10px;
+    box-shadow: 0 0 5px 0.5px black;
+    cursor: pointer;
+    overflow: hidden;
+    position: absolute;
+    right: 47px;
+    top: 4rem;
+    color: gray;
+    padding: 10px;
+}
+
+.media_menu_item{
+    padding: 8px 30px 8px 8px;
+    font-weight: 600;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    align-items: center;
+}
+
+.chat_menu_item:hover{
+    background-color: #a1cff7;
+}
+
+.chat_menu_item_icon{
+    font-size: 25px;
+}
+
+.rotate{
+    transform: rotate(180deg);
+}
+
+.show_slowly{
+    animation: show_slowly_menu .2s linear forwards;
+}
+
+.hide_slowly{
+    animation: hide_slowly_menu .2s linear forwards;
+}
+
+@keyframes show_slowly_menu{
+    from {
+        visibility: hidden;
+        opacity: 0;
+    }
+    to {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+@keyframes hide_slowly_menu{
+    from {
+        visibility: visible;
+        opacity: 1;
+    }
+    to {
+        visibility: hidden;
+        opacity: 0;
+    }
+}
+
+@keyframes star_animation{
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        transform: scale(0.8) rotate(30deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}

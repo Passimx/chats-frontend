@@ -14,13 +14,18 @@
     cursor: pointer;
 }
 
-.cancel_logo{
+.cancel_logo, .menu_logo {
     font-size: 32px;
     cursor: pointer;
+    opacity: 0.6;
+
+    &:hover {
+        opacity: 0.9;
+    }
 }
 
 .main{
-    background-color: var(--menu-color);
+    background-color: #1a4265;
     color: white;
     height: auto;
     border-radius: 8px;
@@ -31,6 +36,8 @@
     grid-template-rows: auto 1fr auto;
     cursor: auto;
     max-height: calc(100% - env(safe-area-inset-bottom, 32px) * 2 - 30px);
+    position: relative;
+    padding: 12px;
 
     @media(width < 600px) {
         width: calc(100% - 30px);
@@ -39,12 +46,13 @@
 
 .header{
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr auto auto;
     padding: 8px;
 
     .files_inf{
         display: grid;
         justify-content: center;
+        align-content: center;
     }
 }
 
@@ -59,6 +67,9 @@
     width: 100%;
     display: grid;
     grid-template-columns: auto 1fr auto;
+    border-radius: 8px;
+    margin-top: 1rem;
+    padding: 3px;
 }
 
 .button_background_main{
