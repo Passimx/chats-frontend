@@ -32,5 +32,5 @@ html{
 
 #chats{
     overflow-y: scroll;
-    height: calc(100% - 40px - 16px);
+    height: calc(100% - 80px - 16px);
 }

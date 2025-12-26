@@ -9,6 +9,7 @@ html {
 
 #background{
     --local-width-menu: 200px;
+    bottom: calc(var(--menu-bottom) + env(safe-area-inset-bottom, 32px));
     margin-left: auto;
     margin-right: auto;
     display: flex;
@@ -16,7 +17,7 @@ html {
     backdrop-filter: blur(8px);
     border-radius: var(--local-width-menu);
     background-color: rgb(255, 255, 255, 8%);
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     padding: 5px;
 }
 
