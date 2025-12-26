@@ -43,9 +43,9 @@ type ChangeLanguage = {
     readonly data: string;
 };
 
-type CopyText = {
-    readonly event: EventsEnum.COPY_TEXT;
-    readonly data?: unknown;
+type ShowText = {
+    readonly event: EventsEnum.SHOW_TEXT;
+    readonly data: string;
 };
 
 type CreateUser = {
@@ -62,5 +62,5 @@ export type LocalEvents =
     | PlayNotification
     | Error
     | ChangeLanguage
-    | CopyText
+    | ShowText
     | CreateUser;

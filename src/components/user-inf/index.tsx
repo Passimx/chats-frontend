@@ -40,7 +40,7 @@ export const UserInf = memo(() => {
                             className={styles.background_name}
                             onClick={() => {
                                 userName && navigator.clipboard.writeText(`@${userName}`);
-                                postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
+                                postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'copied' });
                             }}
                         >
                             @{shortUserName}

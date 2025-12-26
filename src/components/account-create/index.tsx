@@ -6,6 +6,7 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { TabEnum } from '../../root/store/app/types/state.type.ts';
 import { AccountKey } from '../account-key';
+import { Animation1 } from '../animation-1';
 
 export const AccountCreate: FC = memo(() => {
     const [isLoading, createUser] = useCreateUser();
@@ -45,11 +46,11 @@ export const AccountCreate: FC = memo(() => {
                         <div>Подтвердите пароль</div>
                         <EditField blur={true} value={repeatPassword} setValue={setRepeatPassword} />
                     </div>
-                    <div>
-                        {isLoading && (
-                            <AiOutlineLoading3Quarters id={styles.loading_logo} className={styles.logo} size={100} />
-                        )}
-                    </div>
+                    {isLoading ? (
+                        <AiOutlineLoading3Quarters id={styles.loading_logo} className={styles.logo} size={100} />
+                    ) : (
+                        <Animation1 />
+                    )}
                 </div>
                 <div className={styles.button_background}>
                     <div

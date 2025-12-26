@@ -6,27 +6,38 @@ import { useAppAction } from '../../../root/store';
 import { EventsEnum } from '../../../root/types/events/events.enum.ts';
 import { UserIndexDbType } from '../../../root/types/users/user-index-db.type.ts';
 
-export const useVerify = (file?: File, password?: string) => {
-    const [userData, setUserData] = useState<UserGetMetType>();
+export const useVerify: (file?: File, password?: string) => [boolean, UserGetMetType | undefined] = (
+    file,
+    password,
+) => {
     const [seedPhrase, setSeedPhrase] = useState<string>();
+    const [userData, setUserData] = useState<UserGetMetType>();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const { postMessageToBroadCastChannel } = useAppAction();
 
-    const test = async () => {
+    const postError = () => {
+        postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'fuck' });
+        setIsLoading(false);
+    };
+
+    const saveData = async () => {
         if (!password?.length) return;
         if (!seedPhrase?.length) return;
         if (!userData) return;
 
+        setIsLoading(true);
         const mainSeedPhrase = `${password} ${seedPhrase}`;
         const aesKey = await CryptoService.generateAESKey(mainSeedPhrase, false);
         const rsaPrivateKeyString = await CryptoService.decryptByAESKey(aesKey, userData.encryptedRsaPrivateKey);
         const rsaPublicKey = await CryptoService.importRSAKey(userData.rsaPublicKey, ['encrypt']);
         const encryptedSeedPhrase = await CryptoService.encryptByAESKey(aesKey, seedPhrase);
 
-        if (!rsaPrivateKeyString?.length) return;
-        if (!rsaPublicKey) return;
+        if (!rsaPrivateKeyString?.length) return postError();
+        if (!rsaPublicKey) return postError();
         const rsaPrivateKey = await CryptoService.importRSAKey(rsaPrivateKeyString, ['decrypt']);
-        if (!rsaPrivateKey) return;
+        if (!rsaPrivateKey) return postError();
 
+        setIsLoading(false);
         const data: Partial<UserIndexDbType> = {
             id: userData.id,
             key: Date.now(),
@@ -43,7 +54,7 @@ export const useVerify = (file?: File, password?: string) => {
     };
 
     useEffect(() => {
-        test();
+        saveData();
     }, [password, userData, seedPhrase]);
 
     useEffect(() => {
@@ -53,31 +64,35 @@ export const useVerify = (file?: File, password?: string) => {
         reader.readAsText(file);
         reader.onload = async (e) => {
             try {
+                setIsLoading(true);
                 const content = e.target?.result;
-                if (typeof content !== 'string' || !content) return;
-
+                if (typeof content !== 'string' || !content) return postError();
                 const [payloadString, signatureString, keyString] = content.split('\n');
 
                 const dataEncoded = new TextEncoder().encode(payloadString);
                 const signature = Uint8Array.from(atob(signatureString), (c) => c.charCodeAt(0));
 
                 const publicEd25519Key = await CryptoService.importEd25519Key(keyString, ['verify']);
-                if (!publicEd25519Key) return;
+                if (!publicEd25519Key) return postError();
 
                 const verified = await crypto.subtle.verify('Ed25519', publicEd25519Key, signature, dataEncoded);
-                if (!verified) return;
+                if (!verified) return postError();
                 const [userId, ...words] = payloadString.split(' ');
                 const seedPhrase = words.join(' ');
                 const seedPhraseHash = CryptoService.getHash(seedPhrase);
 
                 const response = await getUserMe({ id: userId, seedPhraseHash });
-                if (!response.success) return;
+                if (!response.success) return postError();
 
                 setSeedPhrase(seedPhrase);
                 setUserData(response.data);
             } catch (e) {
-                console.log(e);
+                postError();
+            } finally {
+                setIsLoading(false);
             }
         };
     }, [file]);
+
+    return [isLoading, userData];
 };

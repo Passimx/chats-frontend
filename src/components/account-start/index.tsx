@@ -27,10 +27,8 @@ export const AccountStart: FC = memo(() => {
             <div></div>
             <div className={styles.auth_text_2}>{t('protect_your_data')}</div>
             <div className={styles.create_account_buttons_background}>
-                <div className={styles.create_account_button}>
-                    <div className={styles.create_account_button} onClick={createAccount}>
-                        {t('create_account')}
-                    </div>
+                <div className={styles.create_account_button} onClick={createAccount}>
+                    <div className={styles.create_account_button}>{t('create_account')}</div>
                 </div>
                 <div className={styles.create_account_button} onClick={useAccountKey}>
                     <div className={styles.create_account_button}>{t('log_in_with_a_key')}</div>

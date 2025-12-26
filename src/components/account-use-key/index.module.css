@@ -18,19 +18,35 @@
 
     .main{
         display: grid;
-        /*grid-template-rows: 1fr auto;*/
+        grid-template-rows: 1fr 200px;
 
         .key_background{
-            align-items: center;
             display: grid;
+            border-radius: 16px;
+            border: 2px solid white;
+            align-items: center;
+            justify-items: center;
+            cursor: pointer;
 
             .key_main{
-                background-color: red;
+
+                #loading_logo{
+                    animation: rotate .4s linear infinite;
+                }
             }
         }
 
         .name_background{
         }
 
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }
