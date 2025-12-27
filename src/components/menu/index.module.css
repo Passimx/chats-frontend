@@ -1,5 +1,5 @@
 html {
-    --menu-height: calc(54px + 4px);
+    --menu-height: calc(54px);
     --menu-bottom: 8px;
     --menu-padding: 5px;
 }
@@ -8,10 +8,10 @@ html {
     --local-width-menu: 200px;
     padding: var(--menu-padding);
     position: absolute;
-    bottom: calc(var(--menu-bottom) + env(safe-area-inset-bottom, 32px));
+    bottom: calc(var(--menu-bottom) + var(--safe-area-inset-bottom));
     width: var(--local-width-menu);
     height: var(--menu-height);
-    left: calc((var(--menu-width) - var(--local-width-menu)) / 2 - 1px);
+    left: calc((var(--menu-width) - var(--local-width-menu)) / 2 - 1px - var(--menu-padding));
     display: grid;
     grid-template-columns: 50% 50%;
     border-radius: var(--local-width-menu);
@@ -33,7 +33,6 @@ html {
     grid-template-rows: auto;
     cursor: pointer;
     color: white;
-    padding: 6px;
     position: relative;
 }
 

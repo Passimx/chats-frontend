@@ -37,10 +37,13 @@ body,
     right: 0;
     bottom: 0;
     overflow: hidden;
-
     overscroll-behavior: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    /* for dev checking */
+    /*--safe-area-inset-bottom: 32px;*/
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 32px);
 }
 
 /* класс для всего текста, что может быть изменен при выборе другого языка */
