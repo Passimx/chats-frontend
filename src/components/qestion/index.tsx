@@ -10,7 +10,7 @@ const Question: FC<PropsType> = ({ question, answer }) => {
         <div className={styles.background}>
             <div
                 className={`${styles.question_block} text_translate`}
-                style={{ backgroundImage: '/assets/images/question.png' }}
+                style={{ backgroundImage: 'url("/assets/images/question.png")' }}
                 onClick={() => setIsShow(!isShow)}
             >
                 <MdOutlineCancel
