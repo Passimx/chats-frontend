@@ -16,10 +16,14 @@ export default defineConfig({
                 main: resolve(__dirname, 'index.html'),
                 iframe: resolve(__dirname, 'iframe.html'),
             },
+
             output: {
-                entryFileNames: '[public-key-name].js',
-                chunkFileNames: '[public-key-name].js',
-                assetFileNames: '[public-key-name].[ext]',
+                entryFileNames: (chunkInfo) => {
+                    return `${chunkInfo.name}.js`;
+                },
+                chunkFileNames: (chunkInfo) => {
+                    return `${chunkInfo.name}.js`;
+                },
             },
         },
     },
