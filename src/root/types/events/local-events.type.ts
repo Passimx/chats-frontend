@@ -47,6 +47,11 @@ type CopyText = {
     readonly data?: unknown;
 };
 
+type Logout = {
+    readonly event: EventsEnum.LOGOUT;
+    readonly data?: unknown;
+};
+
 export type LocalEvents =
     | ReadMessage
     | AddChat
@@ -56,4 +61,5 @@ export type LocalEvents =
     | PlayNotification
     | Error
     | ChangeLanguage
-    | CopyText;
+    | CopyText
+    | Logout;
