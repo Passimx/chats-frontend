@@ -98,7 +98,11 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
                                 </div>
                                 <Menu />
                             </div>
-                            <div id={styles.chat} onClick={hideMenu}>
+                            <div
+                                id={styles.chat}
+                                style={{ backgroundImage: '/assets/images/background.png' }}
+                                onClick={hideMenu}
+                            >
                                 {children}
                             </div>
                         </StartPage>
