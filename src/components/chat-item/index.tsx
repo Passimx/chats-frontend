@@ -15,10 +15,8 @@ const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redir
     const title = useGetChatTitle(chat);
     const elementId = useMemo(() => `chat-${chat.id}`, [chat.id]);
     const [message, time, countMessages, isPinned] = useMessage(chat);
-    console.log(message);
 
     const authorOfLastMessage = chat?.messages[chat.messages.length - 1]?.user?.name || 'System';
-    console.log(authorOfLastMessage);
 
     useEffect(() => {
         const element = document.getElementById(elementId)!;

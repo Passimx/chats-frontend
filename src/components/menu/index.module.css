@@ -1,5 +1,5 @@
 html {
-    --menu-height: calc(54px + env(safe-area-inset-bottom, 32px) + 4px);
+    --menu-height: calc(54px + 4px);
     --menu-bottom: 8px;
     --menu-padding: 5px;
 }
