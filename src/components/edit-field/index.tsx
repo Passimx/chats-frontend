@@ -81,15 +81,43 @@ export const EditField: FC<PropsType> = memo(({ value, setValue, blur }) => {
         let handler: NodeJS.Timeout;
         const element = document.getElementById(id);
 
-        element?.addEventListener('input', () => {
+        element?.addEventListener('input', (event) => {
+            event.preventDefault();
+
             clearTimeout(handler);
             handler = setTimeout(input, 300);
+        });
+
+        function stopPropagation(event: Event) {
+            event.stopPropagation();
+        }
+
+        const eventsToBlock = [
+            'keydown',
+            'keyup',
+            'keypress',
+            'input',
+            'change',
+            'paste',
+            'cut',
+            'copy',
+            'compositionstart',
+            'compositionupdate',
+            'compositionend',
+            'drop',
+        ];
+
+        eventsToBlock.forEach((eventType) => {
+            element?.addEventListener(eventType, stopPropagation);
         });
 
         element?.addEventListener('paste', paste);
         return () => {
             element?.removeEventListener('input', input);
             element?.removeEventListener('paste', paste);
+            eventsToBlock.forEach((eventType) => {
+                element?.removeEventListener(eventType, stopPropagation);
+            });
         };
     }, [id, setValue]);
 
