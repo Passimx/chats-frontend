@@ -1,4 +1,5 @@
 import { Envs } from '../../common/config/envs/envs.ts';
+import { store } from '../store';
 
 interface request {
     headers?: { [key: string]: string | null };
@@ -32,7 +33,8 @@ export async function Api<T>(url: string, { headers, body, method, params }: req
         'Access-Control-Allow-METHODS': 'GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH',
     };
 
-    if (Envs.socketId?.length) mainHeaders['x-socket-id'] = Envs.socketId;
+    const userId = store.getState().user.id;
+    mainHeaders['x-socket-id'] = userId;
 
     try {
         const result = await fetch(`${Envs.chatsServiceUrl}${url}${query}`, {

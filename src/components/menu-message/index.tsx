@@ -77,7 +77,7 @@ export const MenuMessage: FC = memo(() => {
             navigator.clipboard.writeText(message);
         }
 
-        postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
+        postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'copied' });
     }, [clickMessage]);
 
     const copyMessageWithChat = useCallback(() => {
@@ -85,7 +85,7 @@ export const MenuMessage: FC = memo(() => {
         const url = new URL(window.location.href);
         url.search = ''; // удаляем query-параметры
         navigator.clipboard.writeText(`${url}?number=${clickMessage?.number}`);
-        postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
+        postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'copied' });
     }, [clickMessage]);
 
     const pin = useCallback(() => {

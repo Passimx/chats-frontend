@@ -51,6 +51,7 @@ export const useIndexDbHook = () => {
                     const rsaPrivateKey = await CryptoService.importRSAKey(rsaPrivateKeyString, ['decrypt']);
                     if (!rsaPrivateKey) return setStateApp({ isLoadedChatsFromIndexDb: true });
 
+                    Envs.userId = account.id;
                     Envs.RSAKeys = { publicKey: account.rsaPublicKey, privateKey: rsaPrivateKey };
                     setStateUser({ ...account, rsaPrivateKey });
                     setStateApp({ isLoadedChatsFromIndexDb: true });

@@ -8,7 +8,11 @@ const Question: FC<PropsType> = ({ question, answer }) => {
     const [isShow, setIsShow] = useState<boolean>();
     return (
         <div className={styles.background}>
-            <div className={`${styles.question_block} text_translate`} onClick={() => setIsShow(!isShow)}>
+            <div
+                className={`${styles.question_block} text_translate`}
+                style={{ backgroundImage: 'url("/assets/images/question.png")' }}
+                onClick={() => setIsShow(!isShow)}
+            >
                 <MdOutlineCancel
                     className={`${styles.question_logo} ${setVisibilityCss(styles.logo_show, styles.logo_cancel, isShow)}`}
                 />

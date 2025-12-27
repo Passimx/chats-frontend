@@ -15,8 +15,10 @@ const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redir
     const title = useGetChatTitle(chat);
     const elementId = useMemo(() => `chat-${chat.id}`, [chat.id]);
     const [message, time, countMessages, isPinned] = useMessage(chat);
+    console.log(message);
 
     const authorOfLastMessage = chat?.messages[chat.messages.length - 1]?.user?.name || 'System';
+    console.log(authorOfLastMessage);
 
     useEffect(() => {
         const element = document.getElementById(elementId)!;
@@ -43,7 +45,7 @@ const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redir
                     <div className={`${styles.title} text_translate`}>{`${title}\u00A0 `}</div>
                     <div>
                         {[ChatEnum.IS_SYSTEM].includes(chat.type) && <FaStar className={styles.icon_star} />}
-                        {[ChatEnum.IS_FAVORITES].includes(chat.type) && (
+                        {[ChatEnum.IS_FAVORITES, ChatEnum.IS_DIALOGUE].includes(chat.type) && (
                             <RxLockClosed className={styles.look_svg} color="red" />
                         )}
                     </div>

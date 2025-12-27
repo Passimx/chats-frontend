@@ -6,6 +6,7 @@ export type UserIndexDbType = {
     aesKey: CryptoKey;
     seedPhraseHash: string;
     encryptedRsaPrivateKey: string;
+    encryptedSeedPhrase: string;
 
     rsaPublicKey: CryptoKey;
     rsaPrivateKey?: CryptoKey;

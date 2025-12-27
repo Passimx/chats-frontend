@@ -1,5 +1,4 @@
 import { RsaKeysStringType } from '../../root/types/keys/create-rsa-keys.type.ts';
-import { IKeys } from '../../root/types/keys/keys.type.ts';
 import { FilesType, MimetypeEnum } from '../../root/types/files/types.ts';
 import { createHmac } from 'crypto';
 import { Envs } from '../config/envs/envs.ts';
@@ -22,24 +21,8 @@ export class CryptoService {
         );
     }
 
-    public static async generateExportRSAKeys(): Promise<RsaKeysStringType> {
-        const { publicKey, privateKey } = await window.crypto.subtle.generateKey(
-            {
-                name: 'RSA-OAEP',
-                modulusLength: 4096,
-                publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-                hash: 'SHA-512',
-            },
-            true,
-            ['encrypt', 'decrypt'],
-        );
-
-        const [publicExportedKey, privateExportedKey] = await Promise.all([
-            this.exportKey(publicKey),
-            this.exportKey(privateKey),
-        ]);
-
-        return { publicKey: publicExportedKey, privateKey: privateExportedKey };
+    public static generateEd25519Key(): Promise<CryptoKeyPair> {
+        return crypto.subtle.generateKey({ name: 'Ed25519' }, false, ['sign', 'verify']) as Promise<CryptoKeyPair>;
     }
 
     public static async generateAESKey(
@@ -80,8 +63,19 @@ export class CryptoService {
         const cryptoKey = key instanceof CryptoKey ? key : (JSON.parse(key) as CryptoKey);
 
         const exportedKey = await window.crypto.subtle.exportKey('jwk', cryptoKey);
+        exportedKey.alg = undefined;
 
         return JSON.stringify(exportedKey);
+    }
+
+    public static importEd25519Key(key: JsonWebKey | string, keyUsages: ReadonlyArray<KeyUsage>) {
+        try {
+            const jsonWebKey = typeof key === 'string' ? (JSON.parse(key) as JsonWebKey) : key;
+
+            return crypto.subtle.importKey('jwk', jsonWebKey, { name: 'Ed25519' }, true, keyUsages);
+        } catch (e) {
+            return undefined;
+        }
     }
 
     public static importEASKey(key: JsonWebKey | string, extractable = true): Promise<CryptoKey> {
@@ -100,25 +94,6 @@ export class CryptoService {
             this.importRSAKey(publicKey, ['encrypt']),
             this.importRSAKey(privateKey, ['decrypt']),
         ]);
-        if (!importedPublicKey || !importedPrivateKey) return;
-
-        return { publicKey: importedPublicKey, privateKey: importedPrivateKey };
-    }
-
-    public static async importDecryptRSAKeys(
-        { publicKey, privateKey }: IKeys,
-        passphrase: string | CryptoKey,
-    ): Promise<CryptoKeyPair | undefined> {
-        const myAESKey = typeof passphrase === 'string' ? await this.generateAESKey(passphrase) : passphrase;
-        const importPrivateKey = await this.decryptByAESKey(myAESKey, privateKey);
-
-        if (!importPrivateKey) return undefined;
-
-        const [importedPublicKey, importedPrivateKey] = await Promise.all([
-            this.importRSAKey(publicKey, ['encrypt']),
-            this.importRSAKey(importPrivateKey, ['decrypt']),
-        ]);
-
         if (!importedPublicKey || !importedPrivateKey) return;
 
         return { publicKey: importedPublicKey, privateKey: importedPrivateKey };

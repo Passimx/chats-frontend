@@ -109,7 +109,7 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
                     className={`${styles.button} ${styles.copy_button}`}
                     onClick={() => {
                         navigator.clipboard.writeText(url);
-                        postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
+                        postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'copied' });
                     }}
                 >
                     <div className={'text_translate'}>{t('copy_link')}</div>
