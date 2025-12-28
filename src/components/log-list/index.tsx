@@ -24,7 +24,7 @@ export const LogList: FC = memo(() => {
                         className={styles.log_item}
                         onClick={() => {
                             navigator.clipboard.writeText(log);
-                            postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
+                            postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'copied' });
                         }}
                     >
                         <div className={styles.log_item_copy}>

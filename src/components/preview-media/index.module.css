@@ -30,7 +30,7 @@
     gap: 8px;
     grid-template-rows: auto 1fr auto;
     cursor: auto;
-    max-height: calc(100% - env(safe-area-inset-bottom, 32px) * 2 - 30px);
+    max-height: calc(100% - var(--safe-area-inset-bottom) * 2 - 30px);
 
     @media(width < 600px) {
         width: calc(100% - 30px);
