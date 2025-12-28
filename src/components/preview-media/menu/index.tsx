@@ -1,11 +1,14 @@
 import styles from './index.module.css';
-import { FC, useEffect } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import setVisibilityCss from '../../../common/hooks/set-visibility-css';
 import useClickOutside from '../../../common/hooks/use-click-outside';
 import { PropsType } from './props.type';
+import { BsCheck } from 'react-icons/bs';
+import { ContextMedia } from '../../preview-media-context';
 
 const PreviewMediaMenu: FC<PropsType> = ({ isVisibleOutside, setIsVisibleOutside }) => {
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
+    const { lossless, setLossless } = useContext(ContextMedia)!;
 
     useEffect(() => {
         if (isVisible !== isVisibleOutside && isVisibleOutside !== undefined) {
@@ -17,6 +20,14 @@ const PreviewMediaMenu: FC<PropsType> = ({ isVisibleOutside, setIsVisibleOutside
         if (isVisible !== isVisibleOutside) setIsVisibleOutside(isVisible);
     }, [isVisible]);
 
+    const losslessHandler = () => {
+        if (!lossless) {
+            setLossless(true);
+        } else {
+            setLossless(false);
+        }
+    };
+
     return (
         <>
             {
@@ -27,7 +38,10 @@ const PreviewMediaMenu: FC<PropsType> = ({ isVisibleOutside, setIsVisibleOutside
                     onClick={() => setIsVisible(false)}
                 >
                     <div className={styles.media_menu_item}>Add file</div>
-                    <div className={styles.media_menu_item}>Sent as media</div>
+                    <div className={styles.media_menu_item} onClick={() => losslessHandler()}>
+                        {!lossless && <BsCheck />}
+                        Send as media
+                    </div>
                 </div>
             }
         </>

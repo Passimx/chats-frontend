@@ -14,12 +14,13 @@ import { PreviewMusic } from '../preview-music';
 import { setThemeColor } from '../../common/hooks/set-theme-color.ts';
 import { getFileSize } from '../../common/hooks/get-file-size.ts';
 import PreviewMediaMenu from './menu/index.tsx';
+import { PreviewImage } from '../preview-image/index.tsx';
 
 /** Show files list before send message */
 export const PreviewMedia: FC = memo(() => {
     const [isShowPlaceholder] = useSendMessage();
     const { t } = useTranslation();
-    const { files, setFiles } = useContext(ContextMedia)!;
+    const { files, setFiles, lossless } = useContext(ContextMedia)!;
     const filesArray = useMemo(() => (files ? Array.from(files) : []), [files]);
     const { chatOnPage } = useAppSelector((state) => state.chats);
 
@@ -44,6 +45,7 @@ export const PreviewMedia: FC = memo(() => {
         return files?.reduce((prevSum, file) => prevSum + file.size, 0);
     }, [files?.length]);
 
+    // sizeName читает размер только последнего файла. Нужно исправить чтобы считал размер всех загружаемых файлов
     const sizeName = useMemo(() => {
         const [memory, unit] = getFileSize(size);
         return `${memory} ${t(unit)}`;
@@ -63,13 +65,19 @@ export const PreviewMedia: FC = memo(() => {
                         <MdMoreVert className={styles.menu_logo} onClick={() => setIsVisibleMenu(true)} />
                         <MdOutlineCancel className={styles.cancel_logo} onClick={() => setFiles(undefined)} />
                     </div>
+
                     <PreviewMediaMenu isVisibleOutside={isVisibleMenu} setIsVisibleOutside={setIsVisibleMenu} />
+
                     <div className={styles.files}>
-                        {filesArray.map(
-                            (file, key) =>
-                                (file.type.includes(FileTypeEnum.AUDIO) && (
-                                    <PreviewMusic key={file.randomId} file={file} number={key} />
-                                )) || <PreviewFile key={file.randomId} file={file} number={key} />,
+                        {filesArray.map((file, key) =>
+                            (file.type.includes(FileTypeEnum.AUDIO) && (
+                                <PreviewMusic key={file.randomId} file={file} number={key} />
+                            )) ||
+                            lossless ? (
+                                <PreviewFile key={file.randomId} file={file} number={key} />
+                            ) : (
+                                <PreviewImage key={file.randomId} file={file} number={key} />
+                            ),
                         )}
                     </div>
                     <div className={styles.message_input}>
