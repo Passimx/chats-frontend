@@ -6,26 +6,38 @@
         align-items: center;
         gap: 4px;
 
-        .file_name{
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -moz-box;
-            -moz-box-orient: vertical;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            line-clamp: 1;
-            word-break: break-all;
-            overflow-wrap: anywhere;
-            -webkit-user-modify: read-write-plaintext-only;
-            display: inline-block;
-            white-space: nowrap;
-            vertical-align: middle;
-            border-radius: 6px;
-            transition: background 0.2s;
-            padding: 4px 2px 4px 2px;
+        .file_name_padding{
+            display: grid;
+            grid-template-columns: 1fr;
+            align-items: center;
+
             background-color: #0a4375;
+            border-radius: 6px;
+            padding: 4px 2px 4px 2px;
+            transition: background 0.2s;
+
+            .file_name{
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -moz-box;
+                -moz-box-orient: vertical;
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                line-clamp: 1;
+                word-break: break-all;
+                overflow-wrap: anywhere;
+                -webkit-user-modify: read-write-plaintext-only;
+                display: inline-block;
+                white-space: nowrap;
+                vertical-align: middle;
+            }
+
+            .blur{
+                filter: blur(4px);
+            }
         }
+
 
         .file_name::selection {
             background-color: #439fef;

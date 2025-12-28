@@ -10,7 +10,6 @@ import { useListenAndUpdateChats } from './hooks/use-listen-and-update-chats.hoo
 import { useIsPhone } from './hooks/use-is-phone.hook.ts';
 import { PropsType } from './types/props.type.ts';
 import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
-import { useRequiredChats } from './hooks/use-required-chats.hook.ts';
 import { Menu } from '../../../components/menu';
 import { useMobileKeyboard } from './hooks/use-mobile-keyboard.hook.ts';
 import { AudioPlayer } from '../../contexts/audio-player';
@@ -28,6 +27,7 @@ import { useUpdateStaticCache } from './hooks/use-update-static-cache.hook.ts';
 import { TopElements } from '../../../components/top-elements';
 import { StartPage } from '../../../pages/start';
 import { useMainTab } from './hooks/use-main-tab.hook.ts';
+import { useDragAndDropHook } from './hooks/use-drag-and-drop.hook.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -41,7 +41,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating window size
     useIsPhone();
     // add required chat
-    useRequiredChats();
+    // useRequiredChats();
     // logic for Telegram App
     // useTelegram();
     // logic for mobile keyboard
@@ -65,6 +65,8 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useUpdateStaticCache();
     // get main tab
     useMainTab();
+    // catch drag and drop files
+    useDragAndDropHook();
 
     // set language
     const isLoaded = useTranslation();
@@ -96,7 +98,11 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
                                 </div>
                                 <Menu />
                             </div>
-                            <div id={styles.chat} onClick={hideMenu}>
+                            <div
+                                id={styles.chat}
+                                style={{ backgroundImage: 'url("/assets/images/background.png")' }}
+                                onClick={hideMenu}
+                            >
                                 {children}
                             </div>
                         </StartPage>

@@ -1,7 +1,7 @@
 #background{
     background-color: var(--menu-color);
     position: absolute;
-    bottom: calc(72px + env(safe-area-inset-bottom, 32px));
+    bottom: calc(72px + var(--safe-area-inset-bottom));
     -webkit-user-select: none;
     user-select: none;
     visibility: hidden;

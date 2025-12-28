@@ -32,8 +32,8 @@
 }
 
 .system_background{
-    /* display: contents;
-    justify-content: center; */
+    display: flex;
+    justify-content: center;
 }
 
 .text{
@@ -123,4 +123,10 @@
 
 .file_list{
     display: grid;
+}
+
+.name{
+    cursor: pointer;
+    color: #439fef;
+
 }

@@ -60,7 +60,7 @@ export class MessagesService {
         if (!response.success) return response;
         if (!response.data?.keys?.length) return response;
 
-        const myKey = response.data.keys.find((key) => key.userId === Envs.socketId);
+        const myKey = response.data.keys.find((key) => key.userId === Envs.userId);
         if (!myKey) return response;
 
         const aesKeyString = await CryptoService.decryptByRSAKey(Envs.RSAKeys?.privateKey, myKey.encryptionKey);
@@ -81,7 +81,7 @@ export class MessagesService {
         if (!response.success) return response;
 
         if (response.data.type === ChatEnum.IS_DIALOGUE && !response?.data?.title?.length) {
-            const anotherChatKey = response.data.keys?.find((key) => key.userId !== Envs.socketId);
+            const anotherChatKey = response.data.keys?.find((key) => key.userId !== Envs.userId);
             response.data.title = anotherChatKey?.userId;
         }
 

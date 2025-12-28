@@ -1,6 +1,7 @@
 import { EventsEnum } from './events.enum.ts';
 import { ChatItemIndexDb } from '../chat/chat.type.ts';
 import { UpdateReadChatType } from '../chat/update-read-chat.type.ts';
+import { UserIndexDbType } from '../users/user-index-db.type.ts';
 
 type ReadMessage = {
     readonly event: EventsEnum.READ_MESSAGE;
@@ -42,9 +43,14 @@ type ChangeLanguage = {
     readonly data: string;
 };
 
-type CopyText = {
-    readonly event: EventsEnum.COPY_TEXT;
-    readonly data?: unknown;
+type ShowText = {
+    readonly event: EventsEnum.SHOW_TEXT;
+    readonly data: string;
+};
+
+type CreateUser = {
+    readonly event: EventsEnum.CREATE_USER;
+    readonly data: Partial<UserIndexDbType>;
 };
 
 type Logout = {
@@ -61,5 +67,6 @@ export type LocalEvents =
     | PlayNotification
     | Error
     | ChangeLanguage
-    | CopyText
-    | Logout;
+    | ShowText
+    | Logout
+    | CreateUser;
