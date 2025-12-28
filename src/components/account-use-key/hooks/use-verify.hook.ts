@@ -67,10 +67,10 @@ export const useVerify: (file?: File, password?: string) => [boolean, UserGetMet
                 setIsLoading(true);
                 const content = e.target?.result;
                 if (typeof content !== 'string' || !content) return postError();
-                const [payloadString, signatureString, keyString] = content.split('\n');
+                const [keyString, payloadString, signatureString] = content.split('.').map((data) => atob(data));
 
                 const dataEncoded = new TextEncoder().encode(payloadString);
-                const signature = Uint8Array.from(atob(signatureString), (c) => c.charCodeAt(0));
+                const signature = Uint8Array.from(signatureString, (c) => c.charCodeAt(0));
 
                 const publicEd25519Key = await CryptoService.importEd25519Key(keyString, ['verify']);
                 if (!publicEd25519Key) return postError();

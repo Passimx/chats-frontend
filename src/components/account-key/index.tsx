@@ -15,19 +15,22 @@ export const AccountKey: FC<PropsType> = memo(({ data }) => {
 
     const downloadAccountKey = useCallback(async () => {
         const { userId, words } = data;
-        const seedPhrase = [userId, ...words].join(' ');
         const keyPair = await CryptoService.generateEd25519Key();
 
         const publicKeyEd25519 = await CryptoService.exportKey(keyPair.publicKey);
-        const encoded = new TextEncoder().encode(seedPhrase);
-        const signature = await crypto.subtle.sign('Ed25519', keyPair.privateKey, encoded);
-        const filePayload = `${seedPhrase}\n${btoa(String.fromCharCode(...new Uint8Array(signature)))}\n${publicKeyEd25519}`;
+        const payload = [userId, ...words].join(' ');
+        const signature = await crypto.subtle.sign('Ed25519', keyPair.privateKey, new TextEncoder().encode(payload));
 
-        const blob = new Blob([filePayload], { type: 'text/plain' });
+        const encodedKey = btoa(publicKeyEd25519);
+        const encodedPayload = btoa(payload);
+        const encodedSignature = btoa(String.fromCharCode(...new Uint8Array(signature)));
+        const fileData = `${encodedKey}.${encodedPayload}.${encodedSignature}`;
+
+        const blob = new Blob([fileData], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `${userId}.txt`;
+        link.download = `${userId}.key`;
         link.click();
         URL.revokeObjectURL(url);
         setIsActiveButton(true);
