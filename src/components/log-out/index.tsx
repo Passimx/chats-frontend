@@ -6,7 +6,7 @@ import { EventsEnum } from '../../root/types/events/events.enum.ts';
 
 export const LogOut = memo(() => {
     const { t } = useTranslation();
-    const { postMessageToBroadCastChannel } = useAppAction();
+    const { postMessageToBroadCastChannel, setStateApp } = useAppAction();
 
     return (
         <div className={styles.background}>
@@ -14,11 +14,19 @@ export const LogOut = memo(() => {
             <div className={styles.buttons}>
                 <div
                     className={styles.button}
-                    onClick={() => postMessageToBroadCastChannel({ event: EventsEnum.LOGOUT })}
+                    onClick={() => {
+                        postMessageToBroadCastChannel({ event: EventsEnum.LOGOUT });
+                        setStateApp({ page: undefined });
+                    }}
                 >
                     {t('yes')}
                 </div>
-                <div className={`${styles.button} ${styles.no_button}`}>{t('no')}</div>
+                <div
+                    className={`${styles.button} ${styles.no_button}`}
+                    onClick={() => setStateApp({ page: undefined })}
+                >
+                    {t('no')}
+                </div>
             </div>
         </div>
     );
