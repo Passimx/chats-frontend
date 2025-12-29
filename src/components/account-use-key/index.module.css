@@ -1,0 +1,52 @@
+
+#background{}
+
+.background{
+    display: grid;
+    height: 100%;
+    grid-template-rows: auto 1fr;
+    white-space: nowrap;
+    gap: 16px;
+
+    .title{
+        font-weight: bold;
+        font-size: 18px;
+        display: grid;
+        justify-items: center;
+        align-items: center;
+    }
+
+    .main{
+        display: grid;
+        grid-template-rows: 1fr 200px;
+
+        .key_background{
+            display: grid;
+            border-radius: 16px;
+            border: 2px solid white;
+            align-items: center;
+            justify-items: center;
+            cursor: pointer;
+
+            .key_main{
+
+                #loading_logo{
+                    animation: rotate .4s linear infinite;
+                }
+            }
+        }
+
+        .name_background{
+        }
+
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

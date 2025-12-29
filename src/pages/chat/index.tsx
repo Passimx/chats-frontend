@@ -51,10 +51,9 @@ const Chat: FC = memo(() => {
 
     const ownUserName = useAppSelector((state) => state.user.userName);
 
-    const {isCallActive, setIsCallActive} = useContext(CallContext);
+    const { isCallActive, setIsCallActive } = useContext(CallContext);
 
     if (!chatOnPage) return <></>;
-
 
     return (
         <div id={styles.background}>
@@ -137,7 +136,7 @@ const Chat: FC = memo(() => {
                             className={styles.chat_menu_item}
                             onClick={() => {
                                 navigator.clipboard.writeText(window.location.origin + window.location.pathname);
-                                postMessageToBroadCastChannel({ event: EventsEnum.COPY_TEXT });
+                                postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'copied' });
                             }}
                         >
                             <IoCopyOutline className={styles.chat_menu_item_icon} />

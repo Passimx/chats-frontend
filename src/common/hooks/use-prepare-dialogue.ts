@@ -24,7 +24,7 @@ export const usePrepareDialogue = () => {
             scrollTop: 0,
         };
 
-        const myChatKey = keys?.find((key) => key.userId === Envs.socketId);
+        const myChatKey = keys?.find((key) => key.userId === Envs.userId);
 
         if (!myChatKey || !Envs.RSAKeys?.privateKey) return;
 

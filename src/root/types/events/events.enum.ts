@@ -3,9 +3,10 @@ export enum EventsEnum {
     ADD_CHAT = 'add_chat',
     CREATE_CHAT = 'create_chat',
     CREATE_DIALOGUE = 'create_dialogue',
-    COPY_TEXT = 'COPY_TEXT',
-    CHANGE_LANGUAGE = 'CHANGE_LANGUAGE',
+    SHOW_TEXT = 'show_text',
+    CHANGE_LANGUAGE = 'change_language',
     CREATE_MESSAGE = 'create_message',
+    UPDATE_ME = 'update_me',
     READ_MESSAGE = 'read_message',
     REMOVE_CHAT = 'remove_chat',
     UPDATE_BADGE = 'update_badge',
@@ -16,4 +17,5 @@ export enum EventsEnum {
     PONG = 'pong',
     VERIFY = 'verify',
     ERROR = 'error',
+    CREATE_USER = 'CREATE_USER',
 }
