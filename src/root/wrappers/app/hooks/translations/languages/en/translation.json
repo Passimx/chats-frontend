@@ -82,6 +82,8 @@
   "protect_your_data": "Protect your data",
   "create_account": "Create an account",
   "log_in_with_a_key": "Log in with a key",
+  "wrong_file": "Invalid file format",
+  "incorrect_password": "Incorrect password",
 
   "all": "all",
   "always": "always",

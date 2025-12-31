@@ -29,6 +29,13 @@ export const getChats = async (
     });
 };
 
+export const getChatById = async (chatId: string): Promise<ChatType | null> => {
+    const response = await Api<ChatType[]>('/chats', { params: { chatIds: [chatId] } });
+    if (!response.success) return null;
+    const [chat] = response.data;
+    return chat ?? null;
+};
+
 export const createChat = async (body: CreateChatType): Promise<IData<object>> => {
     return Api('/chats', { method: 'POST', body });
 };
