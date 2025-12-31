@@ -7,18 +7,26 @@ import { AiOutlineClear } from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
 import { ColorLog } from '../color-log/color-log.index.tsx';
 import { IoCopyOutline } from 'react-icons/io5';
+import { EventsEnum } from '../../root/types/events/events.enum.ts';
 
 export const LogList: FC = memo(() => {
     const { t } = useTranslation();
     const { logs } = useAppSelector((state) => state.app);
-    const { setStateApp } = useAppAction();
+    const { setStateApp, postMessageToBroadCastChannel } = useAppAction();
 
     return (
         <div className={styles.background}>
             <MenuTitle icon={<TbLogs />} title={'logs'} />
             <div className={styles.log_list}>
                 {logs?.map((log, index) => (
-                    <div key={index} className={styles.log_item} onClick={() => navigator.clipboard.writeText(log)}>
+                    <div
+                        key={index}
+                        className={styles.log_item}
+                        onClick={() => {
+                            navigator.clipboard.writeText(log);
+                            postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'copied' });
+                        }}
+                    >
                         <div className={styles.log_item_copy}>
                             <IoCopyOutline className={styles.log_item_logo} />
                         </div>

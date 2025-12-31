@@ -1,13 +1,13 @@
 .background{
     display: grid;
-    gap: 2px;
+    gap: 0px;
     cursor: pointer;
     align-items: end;
 }
 
 .bar_item{
-    width: 100%;
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
+    width: 2px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
     transition: background-color .2s linear;
 }

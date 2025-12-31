@@ -9,8 +9,8 @@ import { IoCopyOutline } from 'react-icons/io5';
 import { useTranslation } from 'react-i18next';
 import Loading from '../loading';
 import { LoadingQrCode } from './components/loading-qr-code';
-import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
-import { useAppSelector } from '../../root/store';
+import { useAppAction, useAppSelector } from '../../root/store';
+import { EventsEnum } from '../../root/types/events/events.enum.ts';
 
 function setupHiDPICanvas(canvas: HTMLCanvasElement, width: number, height: number) {
     const ratio = 3;
@@ -32,7 +32,7 @@ function setupHiDPICanvas(canvas: HTMLCanvasElement, width: number, height: numb
 export const QrCode: FC<PropsType> = memo(({ url, text }) => {
     const textAreaHeight = 20;
     const { t } = useTranslation();
-    const visibleText = useShortText(text);
+    const { postMessageToBroadCastChannel } = useAppAction();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const zoom = useAppSelector((state) => state.app.settings?.zoom);
@@ -77,15 +77,15 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
                 ctx.drawImage(logo, (size - logoSize) / 2, (size - logoSize) / 2, logoSize, logoSize);
                 ctx.globalAlpha = 1.0;
 
-                if (visibleText) {
+                if (text) {
                     ctx.font = 'bold 20px sans-serif';
                     ctx.fillStyle = '#0098EA';
                     ctx.textAlign = 'center';
-                    ctx.fillText(`@${visibleText}`, size / 2, size + 8);
+                    ctx.fillText(`@${text}`, size / 2, size + 8);
                 }
             };
         });
-    }, [url, visibleText]);
+    }, [url, text]);
 
     const share = () => {
         canvasRef?.current?.toBlob(async (blob) => {
@@ -107,7 +107,10 @@ export const QrCode: FC<PropsType> = memo(({ url, text }) => {
             <div className={styles.buttons}>
                 <div
                     className={`${styles.button} ${styles.copy_button}`}
-                    onClick={() => navigator.clipboard.writeText(url)}
+                    onClick={() => {
+                        navigator.clipboard.writeText(url);
+                        postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'copied' });
+                    }}
                 >
                     <div className={'text_translate'}>{t('copy_link')}</div>
                     <IoCopyOutline />

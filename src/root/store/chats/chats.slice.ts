@@ -7,6 +7,7 @@ import { MessageType } from '../../types/chat/message.type.ts';
 import { UpdateChat } from './types/update-chat.type.ts';
 import { deleteCacheOne } from '../../../common/cache/delete-chat-cache.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
+import { Types } from '../../types/files/types.ts';
 
 const initialState: StateType = {
     chats: [],
@@ -161,6 +162,31 @@ const ChatsSlice = createSlice({
             for (const [key, value] of Object.entries(payload) as [keyof StateType, StateType[keyof StateType]][]) {
                 state[key] = value as never;
             }
+        },
+
+        updateFile(state, { payload }: PayloadAction<Types>) {
+            const chat = getRawChat(payload.chatId);
+            if (!chat) return;
+
+            const messageIndex = chat.messages.findIndex((message) => message.id === payload.messageId);
+            if (messageIndex === -1) return;
+
+            const messages = [...chat.messages];
+
+            const message = messages[messageIndex];
+            const fileIndex = message.files.findIndex((file) => file.id === payload.id);
+
+            if (fileIndex === -1) return;
+            const updatedFiles = [...message.files];
+            updatedFiles[fileIndex] = payload;
+            messages[messageIndex] = { ...message, files: updatedFiles };
+
+            const updatedChat = { ...chat, messages };
+
+            updateRawChat(updatedChat);
+            upsertChatIndexDb(updatedChat, chat.key);
+            state.chats = [...Array.from(rawChats.chats.values())].reverse();
+            state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
         },
     },
 });

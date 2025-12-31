@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { GrLanguage } from 'react-icons/gr';
 import { memo, useCallback, useMemo } from 'react';
 import { useAppAction, useAppSelector } from '../../root/store';
-import { IoChatboxEllipsesOutline, IoRocketOutline, IoSettingsOutline } from 'react-icons/io5';
-import json from '../../../package.json';
+import { IoChatboxEllipsesOutline, IoRocketOutline, IoSettingsOutline, IoWalletOutline } from 'react-icons/io5';
 import { TbBackground, TbDatabase, TbLogs } from 'react-icons/tb';
 import { ChangeLanguage } from '../../components/change-language';
 import { MenuTitle } from '../../components/menu-title';
@@ -23,7 +22,7 @@ export const Settings = memo(() => {
     const { t } = useTranslation();
     const { setStateApp } = useAppAction();
     const chatsLength = useAppSelector((state) => state.chats.chats.length);
-    const name = useAppSelector((state) => state.app.keyInf?.name);
+    const userName = useAppSelector((state) => state.user.userName);
     const { cacheMemory, pages, activeTab, systemChatName, logs } = useAppSelector((state) => state.app);
 
     const cache = useMemo(() => {
@@ -78,7 +77,7 @@ export const Settings = memo(() => {
                 <div
                     className={styles.item}
                     onClick={() => {
-                        if (name) navigate(name);
+                        if (userName) navigate(userName);
                     }}
                 >
                     <LuStar className={styles.item_logo} />
@@ -111,6 +110,10 @@ export const Settings = memo(() => {
                         </div>
                     </div>
                 )}
+                <div className={styles.item}>
+                    <IoWalletOutline className={styles.item_logo} />
+                    <div className="text_translate">{t('wallet')}</div>
+                </div>
                 {/*{batteryLevel && (*/}
                 {/*    <div className={styles.item} onClick={() => selectMenu(<BatterySaver />)}>*/}
                 {/*        <MdBatteryCharging20 className={styles.item_logo} />*/}
@@ -148,7 +151,7 @@ export const Settings = memo(() => {
                     <div className="text_translate">
                         {t('about_app')}
                         <div className={`${styles.item_value} text_translate`}>
-                            &nbsp;{`(${t('version')} ${json.version})`}
+                            &nbsp;{`(${t('version')} ${Envs.version})`}
                         </div>
                     </div>
                 </div>

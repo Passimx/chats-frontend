@@ -1,8 +1,28 @@
+/* src/components/message/index.module.css */
 .background{
     padding: 8px;
-    background-color: white;
+    background-color: rgb(228, 228, 229);
     border-radius: 10px;
     vertical-align : bottom;
+    box-shadow: 4px 4px 10px #80808047;
+    max-width: 80%;
+
+    @media(width < 600px){
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        touch-action: manipulation;
+    }
+}
+
+.background_own {
+    padding: 8px;
+    background-color: rgb(50, 68, 110);
+    border-radius: 10px;
+    vertical-align : bottom;
+    color:#e8f3fd;
+    box-shadow: 4px 4px 10px #80808047;
+    max-width: 80%;
+    margin-right: 0.5rem;
 
     @media(width < 600px){
         -webkit-user-select: none;
@@ -12,15 +32,22 @@
 }
 
 .system_background{
-    display: grid;
+    display: flex;
     justify-content: center;
 }
 
 .text{
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    margin: 0.2rem 0 0.5rem 0;
     white-space: pre-wrap;
+
+    /* white-space: pre-wrap;
     white-space: -moz-pre-wrap;
     white-space: -o-pre-wrap;
-    word-wrap: break-word;
+    font-size: large;
+    margin: 0.2rem 0 0.5rem 0; */
 }
 
 .text .tags{
@@ -39,15 +66,44 @@
     word-break: break-word;
     text-align: center;
     color: white;
-    padding: 3px;
+    padding: 5px 10px;
     width: fit-content;
 }
 
 .left_div2{
     float: right;
     padding-left: 5px;
-    font-size: 13px;
-    display: inline-block;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .listen_button_background{
+        display: inline-block;
+        padding-right: 4px;
+
+        .listen_button{
+            width: 12px;
+            height: 12px;
+            display: grid;
+            justify-content: center;
+            align-content: center;
+            overflow: hidden;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #7cb8ed;
+            /* background-color: #d8d8d8; */
+            border: 1px solid transparent;
+            transition: color, border 0.5s ease;
+
+            &:hover{
+                border-color: #0098ea;
+                color: #439fef;
+            }
+        }
+    }
 
     .pin{
         display: inline-block;
@@ -59,9 +115,18 @@
     .time{
         display: inline-block;
         opacity: 0.5;
+        -webkit-user-select: none;
+        user-select: none;
+        font-size: 12px;
     }
 }
 
 .file_list{
     display: grid;
+}
+
+.name{
+    cursor: pointer;
+    color: #439fef;
+
 }

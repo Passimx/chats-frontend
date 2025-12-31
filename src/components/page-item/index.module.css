@@ -1,7 +1,7 @@
 .item{
     width: 100%;
     position: absolute;
-    height: calc(100% - env(safe-area-inset-bottom, 32px));
+    height: calc(100% - var(--safe-area-inset-bottom));
     visibility: hidden;
     background-color: var(--menu-color);
     @media(width < 600px) {
@@ -13,7 +13,7 @@
 
 .item_inside{
     height: 100%;
-    padding-bottom: env(safe-area-inset-bottom, 32px);
+    padding-bottom: var(--safe-area-inset-bottom);
 }
 
 .show_slowly{

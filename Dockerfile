@@ -1,5 +1,5 @@
 # Stage 1: base
-FROM node:20.11.1-alpine AS base
+FROM node:22.21.1-alpine AS base
 WORKDIR /app
 RUN npm install -g npm@10.4.0
 
@@ -9,18 +9,20 @@ WORKDIR /app
 COPY ./package.json package-lock.json ./
 RUN npm ci
 
-# Stage 3: build + verify + sign
+# Stage 3: build
 FROM base AS build
 WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
 
 ARG VITE_API_URL
+ARG VERSION
 ARG ENVIRONMENT
 ARG GPG_PRIVATE_KEY
 ARG GPG_PASSPHRASE
 
 ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_APP_VERSION=${VERSION}
 ENV VITE_ENVIRONMENT=${ENVIRONMENT}
 
 # Build project

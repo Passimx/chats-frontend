@@ -2,6 +2,7 @@ import { JSX } from 'react';
 import { Types } from '../../../types/files/types.ts';
 
 export enum TabEnum {
+    AUTHORIZATION = 'authorization',
     CHATS = 'chats',
     SETTINGS = 'settings',
     SERVICES = 'services',
@@ -99,6 +100,5 @@ export type StateType = {
     categories?: Categories;
     files?: Types[];
 
-    keyInf?: Partial<KeyInfType>;
     settings?: SettingsType;
 };

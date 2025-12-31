@@ -10,7 +10,6 @@ import { useListenAndUpdateChats } from './hooks/use-listen-and-update-chats.hoo
 import { useIsPhone } from './hooks/use-is-phone.hook.ts';
 import { PropsType } from './types/props.type.ts';
 import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
-import { useRequiredChats } from './hooks/use-required-chats.hook.ts';
 import { Menu } from '../../../components/menu';
 import { useMobileKeyboard } from './hooks/use-mobile-keyboard.hook.ts';
 import { AudioPlayer } from '../../contexts/audio-player';
@@ -18,16 +17,17 @@ import { useMemory } from './hooks/use-memory.ts';
 import { Settings } from '../../../pages/settings';
 import { PageItem } from '../../../components/page-item';
 import { TabEnum } from '../../store/app/types/state.type.ts';
-import { PreviewMedia } from '../../../components/preview-media';
 import { PreviewMediaContext } from '../../../components/preview-media-context';
 import { useIsIos } from './hooks/use-is-ios.hook.ts';
 import { useBattery } from './hooks/use-battery.hook.ts';
 import { useSettings } from './hooks/use-settings.hook.ts';
 import { useUpdateBadge } from './hooks/use-update-badge.hook.ts';
 import { useCatchLogs } from './hooks/use-catch-logs.hook.ts';
-import { useKeys } from './hooks/use-keys.hook.ts';
-import { Page } from '../../../pages/page';
 import { useUpdateStaticCache } from './hooks/use-update-static-cache.hook.ts';
+import { TopElements } from '../../../components/top-elements';
+import { StartPage } from '../../../pages/start';
+import { useMainTab } from './hooks/use-main-tab.hook.ts';
+import { useDragAndDropHook } from './hooks/use-drag-and-drop.hook.ts';
 
 const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating chat information
@@ -41,7 +41,7 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     // updating window size
     useIsPhone();
     // add required chat
-    useRequiredChats();
+    // useRequiredChats();
     // logic for Telegram App
     // useTelegram();
     // logic for mobile keyboard
@@ -61,12 +61,12 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
     useSettings();
     // update badge
     useUpdateBadge();
-    // get RSA keys
-    useKeys();
     // update static files in cache storage
     useUpdateStaticCache();
-    // verity when open app
-    // const [isAuth] = useVerify();
+    // get main tab
+    useMainTab();
+    // catch drag and drop files
+    useDragAndDropHook();
 
     // set language
     const isLoaded = useTranslation();
@@ -82,25 +82,30 @@ const AppWrapper: FC<PropsType> = ({ children }) => {
             <AudioPlayer>
                 <div id={styles.background}>
                     <PreviewMediaContext>
-                        <PreviewMedia />
-                        <Page />
-                        <div id={styles.menu}>
-                            <div id={styles.pages}>
-                                {/*<PageItem public-key-name={TabEnum.SERVICES}>*/}
-                                {/*    <Services />*/}
-                                {/*</PageItem>*/}
-                                <PageItem name={TabEnum.CHATS}>
-                                    <Chats />
-                                </PageItem>
-                                <PageItem name={TabEnum.SETTINGS}>
-                                    <Settings />
-                                </PageItem>
+                        <TopElements />
+                        <StartPage>
+                            <div id={styles.menu}>
+                                <div id={styles.pages}>
+                                    {/*<PageItem public-key-name={TabEnum.SERVICES}>*/}
+                                    {/*    <Services />*/}
+                                    {/*</PageItem>*/}
+                                    <PageItem name={TabEnum.CHATS}>
+                                        <Chats />
+                                    </PageItem>
+                                    <PageItem name={TabEnum.SETTINGS}>
+                                        <Settings />
+                                    </PageItem>
+                                </div>
+                                <Menu />
                             </div>
-                            <Menu />
-                        </div>
-                        <div id={styles.chat} onClick={hideMenu}>
-                            {children}
-                        </div>
+                            <div
+                                id={styles.chat}
+                                style={{ backgroundImage: 'url("/assets/images/background.png")' }}
+                                onClick={hideMenu}
+                            >
+                                {children}
+                            </div>
+                        </StartPage>
                     </PreviewMediaContext>
                 </div>
             </AudioPlayer>

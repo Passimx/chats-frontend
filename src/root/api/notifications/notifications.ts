@@ -30,6 +30,7 @@ async function connect() {
         if (keys) RASKeys = keys;
     }
 
+    if (socketId) return;
     ws = new WebSocket(`${Envs.notificationsServiceUrl}?publicKey=${RASKeysString.publicKey}`);
     ws.onopen = ping;
     ws.onmessage = (event: MessageEvent<string>) => {
@@ -53,7 +54,7 @@ async function connect() {
 
     ws.onclose = () => {
         socketId = undefined;
-        handleCloseSocket = setTimeout(() => channel.postMessage({ event: EventsEnum.CLOSE_SOCKET }), Envs.waitPong);
+        channel.postMessage({ event: EventsEnum.CLOSE_SOCKET });
         clearTimeout(handlerPing);
         clearTimeout(handlerDisconnect);
         if (navigator.onLine) connect();
@@ -64,8 +65,6 @@ async function connect() {
         ws.close();
     };
 }
-
-connect();
 
 channel.onmessage = (ev) => {
     const event = ev.data?.event;
@@ -81,3 +80,4 @@ self.addEventListener('online', () => {
     if (socketId) ws?.close();
     else connect();
 });
+connect();

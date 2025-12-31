@@ -39,6 +39,8 @@
                 .background_name{
                     color:#0098ea;
                     overflow: hidden;
+                    -webkit-user-select: none;
+                    user-select: none;
                 }
 
                 .copy_logo_background{

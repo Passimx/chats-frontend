@@ -29,6 +29,13 @@ export const getChats = async (
     });
 };
 
+export const getChatById = async (chatId: string): Promise<ChatType | null> => {
+    const response = await Api<ChatType[]>('/chats', { params: { chatIds: [chatId] } });
+    if (!response.success) return null;
+    const [chat] = response.data;
+    return chat ?? null;
+};
+
 export const createChat = async (body: CreateChatType): Promise<IData<object>> => {
     return Api('/chats', { method: 'POST', body });
 };
@@ -49,6 +56,10 @@ export const getSystemChat = (): Promise<IData<ChatType[]>> => {
     return Api<ChatType[]>('/chats/system_chats');
 };
 
-export const createDialogue = (body: BodyCreateDialogueType) => {
-    return Api<ChatType>('/dialogues', { method: 'POST', body });
+export const keepChatKey = (id: string, body: BodyCreateDialogueType) => {
+    return Api(`/chats/${id}/keys/keep`, { method: 'POST', body });
+};
+
+export const receiveKey = (chatId: string) => {
+    return Api(`/chats/${chatId}/keys/receive`, { method: 'POST', body: { chatId } });
 };

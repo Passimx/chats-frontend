@@ -10,7 +10,7 @@
 
 .background:hover {
     @media(width > 600px) {
-        background-color: #ccedff;
+        background-color: rgba(0, 152, 234, 0.485);
     }
 }
 

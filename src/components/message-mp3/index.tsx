@@ -11,6 +11,7 @@ import { FaPause, FaPlay } from 'react-icons/fa';
 import { MdDownloadForOffline } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
 import { useDownloadPreview } from '../../common/hooks/use-download-preview.hook.ts';
+import styles2 from '../../pages/chat/index.module.css';
 
 export const MessageMp3: FC<PropsType> = memo(({ file }) => {
     const r = 17;
@@ -26,7 +27,10 @@ export const MessageMp3: FC<PropsType> = memo(({ file }) => {
     }, [file.size]);
 
     return (
-        <div className={`${styles.background} ${!blob && styles.background_animation}`} onClick={clickFile}>
+        <div
+            className={`${styles.background} ${styles2.hover_item} ${!blob && styles.background_animation}`}
+            onClick={clickFile}
+        >
             <div className={styles.file_background} style={{ backgroundImage }}>
                 {downloadPercent === undefined && audio?.file.id !== file.id && (
                     <div className={styles.file_icon}>

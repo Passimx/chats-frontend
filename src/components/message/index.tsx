@@ -11,48 +11,53 @@ import { FileExtensionEnum, FileTypeEnum } from '../../root/types/files/types.ts
 import { MessageImage } from '../message-image';
 import { MessageMp3 } from '../message-mp3';
 import { CanPlayAudio } from '../../common/hooks/can-play-audio.hook.ts';
-import moment from 'moment/min/moment-with-locales';
-import { useTranslation } from 'react-i18next';
 import { useMessageMenu } from './hooks/use-message-menu.hook.ts';
 import { MessageVideo } from '../message-video';
 import { useReadMessage } from '../../common/hooks/use-read-message.hook.ts';
 import { BsPinAngleFill } from 'react-icons/bs';
 import { usePinned } from '../../common/hooks/use-pinned.hook.ts';
-import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
+import { AiFillSound, AiFillStop } from 'react-icons/ai';
+import { useSpeak } from './hooks/use-speak.hook.ts';
+import { useText } from './hooks/use-text.hook.ts';
+import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 
+/** Message component */
 const Message: FC<PropsType> = memo((props) => {
     const { type, number } = props;
-
     const [ref] = useReadMessage(number);
-    const { t } = useTranslation();
-    const [elementId] = useMessageMenu(props);
-    const title = useAppSelector((state) => state.chats.chatOnPage?.title);
+    const [messageID] = useMessageMenu(props);
+    const [visibleMessage, time] = useText(props);
+    const { handleSpeaking, isSpeaking } = useSpeak(visibleMessage, type);
+    const navigate = useCustomNavigate();
+    const ownUserName = useAppSelector((state) => state.user.userName);
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
     const isPinned = usePinned(props.id, pinnedMessages);
 
-    const [visibleMessage, time] = useMemo(() => {
-        const time = moment(props.createdAt).format('LT');
-        let message;
-        if (type === MessageTypeEnum.IS_CREATED_CHAT) {
-            message = `${t(props.message)} «${title}»`;
-            if (props.chat?.type && [ChatEnum.IS_FAVORITES, ChatEnum.IS_DIALOGUE].includes(props.chat?.type))
-                message = t(props.message);
-        } else if (type === MessageTypeEnum.IS_SYSTEM) message = t(props.message);
-        else message = props.message;
+    const username = useMemo(() => {
+        const maxLength = 20;
+        if (!props.user.name) return;
+        if (props.user.name.length > maxLength) return props.user.name.slice(0, maxLength);
 
-        return [message, time];
-    }, [t]);
+        return props.user.name;
+    }, [props?.user?.name]);
 
     if (type == MessageTypeEnum.IS_CREATED_CHAT)
         return (
-            <div id={elementId} ref={ref} className={styles.system_background}>
+            <div id={messageID} ref={ref} className={styles.system_background}>
                 <div className={`${styles.background} ${styles.system_message} text_translate`}>{visibleMessage}</div>
             </div>
         );
 
     return (
         <>
-            <div ref={ref} id={elementId} className={`${styles.background}`}>
+            <div
+                ref={ref}
+                id={messageID}
+                className={`${props?.user?.id === ownUserName ? styles.background_own : styles.background}`}
+            >
+                <div className={styles.name} onClick={() => navigate(`/${props.user.userName}`)}>
+                    {username}
+                </div>
                 {!!props.parentMessage && <ParentMessage {...{ ...props.parentMessage }} />}
                 <div className={styles.file_list}>
                     {props?.files?.map((file, index) => {
@@ -65,6 +70,13 @@ const Message: FC<PropsType> = memo((props) => {
                 </div>
                 <RenderMessage message={visibleMessage} type={type} />
                 <div className={`${styles.left_div2} text_translate`}>
+                    {props.message?.length && (
+                        <div className={styles.listen_button_background}>
+                            <div className={styles.listen_button} onClick={handleSpeaking}>
+                                {isSpeaking ? <AiFillStop /> : <AiFillSound />}
+                            </div>
+                        </div>
+                    )}
                     {isPinned && <BsPinAngleFill className={styles.pin} />}
                     <div className={styles.time}>{time}</div>
                 </div>

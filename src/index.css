@@ -22,7 +22,9 @@
     border-radius: 4px;
 }
 
-html,body, #root{
+html,
+body,
+#root {
     height: 100%;
     width: 100%;
     background-color: var(--menu-color);
@@ -35,21 +37,30 @@ html,body, #root{
     right: 0;
     bottom: 0;
     overflow: hidden;
-
     overscroll-behavior: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    /* for dev checking */
+    /*--safe-area-inset-bottom: 32px;*/
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 32px);
 }
 
 /* класс для всего текста, что может быть изменен при выборе другого языка */
-.text_translate{}
-
-@keyframes show {
-    from { filter: blur(4px); }
-    to { filter: none }
+.text_translate {
 }
 
-.content_editable, .content_editable *{
+@keyframes show {
+    from {
+        filter: blur(4px);
+    }
+    to {
+        filter: none;
+    }
+}
+
+.content_editable,
+.content_editable * {
     outline: none !important;
     -webkit-box-shadow: none !important;
     -moz-box-shadow: none !important;

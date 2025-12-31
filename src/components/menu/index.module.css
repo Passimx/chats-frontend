@@ -1,18 +1,17 @@
 html {
-    --menu-height: calc(50px + env(safe-area-inset-bottom, 32px));
+    --menu-height: calc(54px);
     --menu-bottom: 8px;
-
-    @media(width < 600px) {
-        --menu-bottom: 8px;
-    }
+    --menu-padding: 5px;
 }
 
 #background{
     --local-width-menu: 200px;
+    padding: var(--menu-padding);
     position: absolute;
-    bottom: calc(var(--menu-bottom) + env(safe-area-inset-bottom, 32px));
+    bottom: calc(var(--menu-bottom) + var(--safe-area-inset-bottom));
     width: var(--local-width-menu);
-    left: calc((var(--menu-width) - var(--local-width-menu)) / 2 - 2px);
+    height: var(--menu-height);
+    left: calc((var(--menu-width) - var(--local-width-menu)) / 2 - 1px - var(--menu-padding));
     display: grid;
     grid-template-columns: 50% 50%;
     border-radius: var(--local-width-menu);
@@ -22,6 +21,7 @@ html {
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255,255,255,0.12);
     box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    right: 0;
 }
 
 .menu_item{
@@ -33,7 +33,6 @@ html {
     grid-template-rows: auto;
     cursor: pointer;
     color: white;
-    padding-top: 6px;
     position: relative;
 }
 

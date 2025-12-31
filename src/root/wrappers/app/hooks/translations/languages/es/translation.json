@@ -16,6 +16,7 @@
   "global_search": "BÚSQUEDA GLOBAL",
   "add_chat": "Añadir chat",
   "copy_link": "Copiar enlace",
+  "call": "Llamar",
   "share": "Compartir",
   "leave_chat": "Salir del chat",
   "draft": "borrador",
@@ -64,14 +65,21 @@
   "max_cache_size": "Tamaño máximo de la caché",
   "cache_limit_warning": "Si el tamaño de la caché supera el límite, se eliminarán los archivos más antiguos",
   "without_name": "Sin título",
-  "qr_code": "Código QR",
-  "scan_qr_code": "Escanear un código QR",
-  "point_camera_at_qr_code": "Apunta la cámara al código QR",
   "pin": "Fijar",
   "unpin": "Desanclar",
   "pinned_messages": "Mensajes fijados",
   "favorites": "Favoritos",
   "appearance": "Apariencia",
+  "copied": "Copiado",
+  "T": "T",
+  "members": "Participantes",
+  "terms_of_use": "Términos de Uso",
+  "privacy_policy_1": "Política de Privacidad",
+  "protect_your_data": "Proteja sus datos",
+  "create_account": "Crear una cuenta",
+  "log_in_with_a_key": "Inicie sesión con una clave",
+  "wrong_file": "Formato de archivo no válido",
+  "incorrect_password": "Contraseña incorrecta",
 
   "all": "todo",
   "always": "siempre",
@@ -149,9 +157,6 @@
   "emoji_symbols": "Símbolos",
   "emoji_flags": "Banderas y países",
 
-  "message_hello": "¡Hola! Este es el Mensajero Anónimo PassimX.\nHemos creado este espacio donde puedes expresar libremente tus pensamientos e ideas sin preocuparte por tu anonimato. Simplemente escribe un mensaje y pulsa \"Enviar\"!\n\n📝 Algunos consejos útiles:\n- ¡Conéctate con personas de todo el mundo!\n- Recuerda, aquí no hay reglas, solo respeto por los demás.\n- Todos los mensajes son anónimos, así que puedes ser tú mismo.\n\n🔗 Enlace de retroalimentación:\n- https://github.com/orgs/Passimx/discussions",
-
   "phrase_1": "ocupa",
   "phrase_2": "espacio libre"
-
 }

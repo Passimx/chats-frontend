@@ -10,14 +10,17 @@ import { MessageType } from '../../root/types/chat/message.type.ts';
 import { useTranslation } from 'react-i18next';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { ContextChat } from '../../pages/chat/context/chat-context.tsx';
+import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { useText } from '../message/hooks/use-text.hook.ts';
 
 export const MenuMessage: FC = memo(() => {
     const { t } = useTranslation();
     const ref = useRef<HTMLDivElement>(null);
     const { isPhone } = useAppSelector((state) => state.app);
     const { clickMessage, isShowMessageMenu, setIsShowMessageMenu } = useContext(ContextChat)!;
-    const { update, setChatOnPage } = useAppAction();
+    const { update, setChatOnPage, postMessageToBroadCastChannel } = useAppAction();
     const pinnedMessages = useAppSelector((state) => state.chats.chatOnPage?.pinnedMessages);
+    const [message] = useText(clickMessage);
 
     useEffect(() => {
         if (isShowMessageMenu) setIsShowMessageMenu(false);
@@ -56,6 +59,7 @@ export const MenuMessage: FC = memo(() => {
             parentMessageId: clickMessage.parentMessageId,
             files: clickMessage.files,
             saveAt: clickMessage.saveAt,
+            user: clickMessage.user,
         };
 
         if (chat) update({ id: clickMessage.chatId, answerMessage });
@@ -65,9 +69,15 @@ export const MenuMessage: FC = memo(() => {
     const copyMessage = useCallback(() => {
         setIsShowMessageMenu(false);
         if (!clickMessage) return;
-        const element = document.getElementById(`message-${clickMessage.number}`)!;
-        const text = element.getElementsByTagName('pre')[0].innerText;
-        navigator.clipboard.writeText(text);
+
+        const selectedText = window.getSelection()?.toString();
+        if (selectedText) {
+            navigator.clipboard.writeText(selectedText);
+        } else {
+            navigator.clipboard.writeText(message);
+        }
+
+        postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'copied' });
     }, [clickMessage]);
 
     const copyMessageWithChat = useCallback(() => {
@@ -75,6 +85,7 @@ export const MenuMessage: FC = memo(() => {
         const url = new URL(window.location.href);
         url.search = ''; // удаляем query-параметры
         navigator.clipboard.writeText(`${url}?number=${clickMessage?.number}`);
+        postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'copied' });
     }, [clickMessage]);
 
     const pin = useCallback(() => {

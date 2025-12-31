@@ -2,7 +2,5 @@
     text-decoration: none;
     color: #439fef;
     cursor: pointer;
-    display: inline-block;
-    width: auto;
-    word-break: break-word;
+    word-break: break-all;
 }

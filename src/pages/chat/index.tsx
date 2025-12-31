@@ -1,6 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import { FC, memo } from 'react';
+import { FC, memo, useContext } from 'react';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import Message from '../../components/message';
 import { useTranslation } from 'react-i18next';
@@ -26,17 +26,32 @@ import { PinnedMessages } from '../../components/pinned-messages';
 import { useGetChatTitle } from '../../common/hooks/use-get-chat-title.hook.ts';
 import { Avatar } from '../../components/avatar';
 import { EmptyMessages } from '../../components/empty-messages';
+import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { useAutoScroll } from './hooks/use-auto-scroll.hook.ts';
+import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
+import { useSwipeBack } from './hooks/use-swipe.hook.ts';
+import { PiPhoneCallFill } from 'react-icons/pi';
+import CallModal from '../../components/call-modal/index.tsx';
+import { CallContext } from '../../root/contexts/call';
 
+/** Main chat component */
 const Chat: FC = memo(() => {
     useGetChat();
     useJoinChat();
-    const { t } = useTranslation();
-    const { setStateApp } = useAppAction();
+    useAutoScroll();
     const [addChat, leave, back] = useMethods();
+    useSwipeBack(back);
+    const { t } = useTranslation();
     const [isLoading, showLastMessages] = useMessages();
     const [wrapperRef, isVisible, setIsVisible] = useClickOutside();
-    const { chatOnPage } = useAppSelector((state) => state.chats);
+    const { setStateApp, postMessageToBroadCastChannel } = useAppAction();
+    const chatOnPage = useAppSelector((state) => state.chats.chatOnPage);
+    const shortName = useShortText(chatOnPage?.id);
     const title = useGetChatTitle(chatOnPage);
+
+    const ownUserName = useAppSelector((state) => state.user.userName);
+
+    const { isCallActive, setIsCallActive } = useContext(CallContext);
 
     if (!chatOnPage) return <></>;
 
@@ -52,15 +67,18 @@ const Chat: FC = memo(() => {
                             isClickable={![ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage.type)}
                         />
                         <div className={`${styles.title_block} text_translate`}>
-                            {[ChatEnum.IS_FAVORITES, ChatEnum.IS_SYSTEM].includes(chatOnPage.type) && (
-                                <FaStar className={styles.icon_star} />
-                            )}
-                            <div id={styles.title}>{title}</div>
-                        </div>
-                        <div className={styles.icon}>
-                            {[ChatEnum.IS_DIALOGUE, ChatEnum.IS_FAVORITES].includes(chatOnPage.type) && (
-                                <RxLockClosed className={styles.look_svg} color="red" />
-                            )}
+                            <div className={styles.title_block_inline}>
+                                {/* Chat title*/}
+                                <h3 id={styles.title}>{title}</h3>
+
+                                {/* icons for system chats*/}
+                                {[ChatEnum.IS_SYSTEM].includes(chatOnPage.type) && (
+                                    <FaStar className={styles.icon_star} />
+                                )}
+                                {[ChatEnum.IS_FAVORITES].includes(chatOnPage.type) && (
+                                    <RxLockClosed className={styles.look_svg} color="red" />
+                                )}
+                            </div>
                         </div>
                         {!!chatOnPage.countMessages && (
                             <div id={styles.chat_menu_button} onClick={() => setIsVisible(true)}>
@@ -94,7 +112,7 @@ const Chat: FC = memo(() => {
                                     page: (
                                         <QrCode
                                             url={window.location.origin + window.location.pathname}
-                                            text={chatOnPage?.id}
+                                            text={shortName}
                                         />
                                     ),
                                 });
@@ -106,7 +124,19 @@ const Chat: FC = memo(() => {
                         <div
                             className={styles.chat_menu_item}
                             onClick={() => {
+                                if (isCallActive || !setIsCallActive) return;
+                                setStateApp({ page: <CallModal /> });
+                                setIsCallActive(true);
+                            }}
+                        >
+                            <PiPhoneCallFill className={styles.chat_menu_item_icon} />
+                            <div className={'text_translate'}>{t('call')}</div>
+                        </div>
+                        <div
+                            className={styles.chat_menu_item}
+                            onClick={() => {
                                 navigator.clipboard.writeText(window.location.origin + window.location.pathname);
+                                postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'copied' });
                             }}
                         >
                             <IoCopyOutline className={styles.chat_menu_item_icon} />
@@ -121,19 +151,28 @@ const Chat: FC = memo(() => {
                             )}
                     </div>
                 }
+                {/* Блок сообщений (переписка) */}
                 {!!chatOnPage?.countMessages && (
                     <div id={styles.messages_block}>
                         <div></div>
                         <div id={styles.messages}>
                             {isLoading === LoadingType.OLD && <RotateLoading />}
-                            {chatOnPage?.messages?.map((message) => (
-                                <Message key={message.id} {...{ ...message, chat: { type: chatOnPage.type } }} />
-                            ))}
+                            {chatOnPage?.messages?.map((message) => {
+                                return (
+                                    <div
+                                        key={message.id}
+                                        id={`container_${message.number}`}
+                                        className={`${message?.user?.id === ownUserName ? styles.message_container_own : styles.message_container}`}
+                                    >
+                                        <Message {...{ ...message }} />
+                                    </div>
+                                );
+                            })}
                             {isLoading === LoadingType.NEW && <RotateLoading />}
                         </div>
                     </div>
                 )}
-                {!chatOnPage?.countMessages && <EmptyMessages />}
+                {chatOnPage?.countMessages === 0 && <EmptyMessages />}
             </div>
             <InputMessage {...{ showLastMessages }} />
         </div>

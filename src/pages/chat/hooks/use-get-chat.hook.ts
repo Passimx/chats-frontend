@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getChatByName } from '../../../root/api/chats';
 import { useAppAction, useAppSelector } from '../../../root/store';
@@ -7,20 +7,24 @@ import { changeHead } from '../../../common/hooks/change-head-inf.hook.ts';
 import { useCustomNavigate } from '../../../common/hooks/use-custom-navigate.hook.ts';
 import { useTranslation } from 'react-i18next';
 import { ChatEnum } from '../../../root/types/chat/chat.enum.ts';
+import { ChatType } from '../../../root/types/chat/chat.type.ts';
+import { EventsEnum } from '../../../root/types/events/events.enum.ts';
 
 const useGetChat = (): void => {
     const { name } = useParams();
     const { t } = useTranslation();
-    const { setChatOnPage } = useAppAction();
+    const { setChatOnPage, postMessageToBroadCastChannel } = useAppAction();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useCustomNavigate();
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
     const socketId = useAppSelector((state) => state.app.socketId);
-    const privateKey = useAppSelector((state) => state.app.keyInf?.RASKeys?.privateKey);
+    const privateKey = useAppSelector((state) => state.user.rsaPrivateKey);
+    const { state }: { state: ChatType | undefined } = useLocation();
 
     useEffect(() => {
         if (!isLoadedChatsFromIndexDb) return;
+        if (state) setChatOnPage(state);
 
         if (getRawChatByName(name)) {
             const chat = getRawChatByName(name!)!;
@@ -33,9 +37,11 @@ const useGetChat = (): void => {
 
         setIsLoading(true);
         getChatByName(name!).then((result) => {
-            setChatOnPage(null);
             if (result.success && result.data) setChatOnPage(result.data);
-            else setChatOnPage(null);
+            else {
+                setChatOnPage(null);
+                postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'no_chats' });
+            }
 
             setIsLoading(false);
         });
