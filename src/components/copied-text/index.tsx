@@ -1,6 +1,5 @@
 import { FC, memo, useEffect, useState } from 'react';
 import styles from './index.module.css';
-import { IoCopyOutline } from 'react-icons/io5';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
 import setVisibilityCss from '../../common/hooks/set-visibility-css.ts';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +28,6 @@ export const CopiedText: FC = memo(() => {
 
     return (
         <div className={`${styles.background} ${setVisibilityCss(styles.show, styles.hide, visible)}`}>
-            <IoCopyOutline />
             <div>{t(data)}</div>
         </div>
     );

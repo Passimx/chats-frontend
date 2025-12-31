@@ -15,8 +15,8 @@ export const useVerify: (file?: File, password?: string) => [boolean, UserGetMet
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { postMessageToBroadCastChannel } = useAppAction();
 
-    const postError = () => {
-        postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'fuck' });
+    const postError = (data: string) => {
+        postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data });
         setIsLoading(false);
     };
 
@@ -32,10 +32,10 @@ export const useVerify: (file?: File, password?: string) => [boolean, UserGetMet
         const rsaPublicKey = await CryptoService.importRSAKey(userData.rsaPublicKey, ['encrypt']);
         const encryptedSeedPhrase = await CryptoService.encryptByAESKey(aesKey, seedPhrase);
 
-        if (!rsaPrivateKeyString?.length) return postError();
-        if (!rsaPublicKey) return postError();
+        if (!rsaPrivateKeyString?.length) return postError('incorrect_password');
+        if (!rsaPublicKey) return postError('incorrect_password');
         const rsaPrivateKey = await CryptoService.importRSAKey(rsaPrivateKeyString, ['decrypt']);
-        if (!rsaPrivateKey) return postError();
+        if (!rsaPrivateKey) return postError('incorrect_password');
 
         setIsLoading(false);
         const data: Partial<UserIndexDbType> = {
@@ -66,28 +66,28 @@ export const useVerify: (file?: File, password?: string) => [boolean, UserGetMet
             try {
                 setIsLoading(true);
                 const content = e.target?.result;
-                if (typeof content !== 'string' || !content) return postError();
+                if (typeof content !== 'string' || !content) return postError('wrong_file');
                 const [keyString, payloadString, signatureString] = content.split('.').map((data) => atob(data));
 
                 const dataEncoded = new TextEncoder().encode(payloadString);
                 const signature = Uint8Array.from(signatureString, (c) => c.charCodeAt(0));
 
                 const publicEd25519Key = await CryptoService.importEd25519Key(keyString, ['verify']);
-                if (!publicEd25519Key) return postError();
+                if (!publicEd25519Key) return postError('wrong_file');
 
                 const verified = await crypto.subtle.verify('Ed25519', publicEd25519Key, signature, dataEncoded);
-                if (!verified) return postError();
+                if (!verified) return postError('wrong_file');
                 const [userId, ...words] = payloadString.split(' ');
                 const seedPhrase = words.join(' ');
                 const seedPhraseHash = CryptoService.getHash(seedPhrase);
 
                 const response = await getUserMe({ id: userId, seedPhraseHash });
-                if (!response.success) return postError();
+                if (!response.success) return postError('wrong_file');
 
                 setSeedPhrase(seedPhrase);
                 setUserData(response.data);
             } catch (e) {
-                postError();
+                postError('wrong_file');
             } finally {
                 setIsLoading(false);
             }
