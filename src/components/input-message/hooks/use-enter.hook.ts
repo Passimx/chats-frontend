@@ -136,6 +136,7 @@ export const useEnterHook = (): UseEnterHookType => {
     const sendMessage = useCallback(async () => {
         if (!chatOnPage?.name) return;
         const element = document.getElementById(styles.new_message)!;
+        const background = document.getElementById(styles.background)!;
         const isFocused = isPhone ? isOpenMobileKeyboard : getIsFocused();
 
         const text = element.innerText.replace(/^\n+|\n+$/g, '').trim();
@@ -145,6 +146,8 @@ export const useEnterHook = (): UseEnterHookType => {
 
         element.innerText = '';
         if (isFocused) element.focus();
+        else background.style.paddingBottom = 'env(safe-area-inset-bottom, 32px)';
+
         setIsShowPlaceholder(true);
         setTextExist(false);
 
