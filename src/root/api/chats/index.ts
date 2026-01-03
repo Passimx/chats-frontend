@@ -1,10 +1,11 @@
 import { Api, IData } from '../index.ts';
 import { CreateChatType } from '../../types/chat/create-chat.type.ts';
-import { ChatType } from '../../types/chat/chat.type.ts';
+import { ChatItemIndexDb, ChatType } from '../../types/chat/chat.type.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import { ChatListenRequestType } from '../../types/chat/chat-listen-request.type.ts';
 import { BodyCreateDialogueType } from '../../types/chat/create-dialogue.type.ts';
 import { MessagesService } from '../../../common/services/messages.service.ts';
+import { ReadMessageType } from '../../types/chat/read-message.type.ts';
 
 export const getChats = async (
     search?: string,
@@ -24,9 +25,11 @@ export const getChats = async (
     const tags = search?.length ? extractTags(search) : undefined;
     const titleWithoutTags = removeTags(search);
 
-    return Api<ChatType[]>('/chats', {
-        params: { search: titleWithoutTags, limit: Envs.chats.limit, offset, notFavoriteChatIds, tags },
-    });
+    return MessagesService.decryptChats(
+        Api<ChatType[]>('/chats', {
+            params: { search: titleWithoutTags, limit: Envs.chats.limit, offset, notFavoriteChatIds, tags },
+        }),
+    );
 };
 
 export const getChatById = async (chatId: string): Promise<ChatType | null> => {
@@ -40,8 +43,8 @@ export const createChat = async (body: CreateChatType): Promise<IData<object>> =
     return Api('/chats', { method: 'POST', body });
 };
 
-export const getChatByName = async (name: string): Promise<IData<ChatType>> => {
-    return MessagesService.decryptChat(MessagesService.keepAesKey(Api<ChatType>(`/chats/${name}`)));
+export const getChatByName = async (name: string): Promise<IData<ChatType | ChatItemIndexDb>> => {
+    return MessagesService.decryptChat(Api<ChatType>(`/chats/${name}`));
 };
 
 export const listenChats = (chats: ChatListenRequestType[]) => {
@@ -62,4 +65,12 @@ export const keepChatKey = (id: string, body: BodyCreateDialogueType) => {
 
 export const receiveKey = (chatId: string) => {
     return Api(`/chats/${chatId}/keys/receive`, { method: 'POST', body: { chatId } });
+};
+
+export const readMessage = (chatId: string, body: ReadMessageType) => {
+    return Api(`/chats/${chatId}/messages/read`, { method: 'POST', body });
+};
+
+export const joinChat = (chatId: string) => {
+    return Api(`/chats/${chatId}/join`, { method: 'POST', body: {} });
 };

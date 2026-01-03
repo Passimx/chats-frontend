@@ -1,17 +1,5 @@
 import { EventsEnum } from './events.enum.ts';
-import { ChatItemIndexDb } from '../chat/chat.type.ts';
-import { UpdateReadChatType } from '../chat/update-read-chat.type.ts';
 import { UserIndexDbType } from '../users/user-index-db.type.ts';
-
-type ReadMessage = {
-    readonly event: EventsEnum.READ_MESSAGE;
-    readonly data: UpdateReadChatType;
-};
-
-type AddChat = {
-    readonly event: EventsEnum.ADD_CHAT;
-    readonly data: ChatItemIndexDb;
-};
 
 type RemoveChat = {
     readonly event: EventsEnum.REMOVE_CHAT;
@@ -54,8 +42,6 @@ type CreateUser = {
 };
 
 export type LocalEvents =
-    | ReadMessage
-    | AddChat
     | RemoveChat
     | UpdateBadge
     | CloseSocket

@@ -5,11 +5,10 @@ import { ChatListenRequestType } from '../../../types/chat/chat-listen-request.t
 import rawChats, { getRawChat, getRawChats } from '../../../store/raw/chats.raw.ts';
 import { ChatItemIndexDb, ChatType } from '../../../types/chat/chat.type.ts';
 import { EventsEnum } from '../../../types/events/events.enum.ts';
-import { usePrepareDialogue } from '../../../../common/hooks/use-prepare-dialogue.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
+import { prepareChat } from '../../../../common/hooks/prepare-chat.ts';
 
 export const useListenAndUpdateChats = () => {
-    const prepareDialogue = usePrepareDialogue();
     const { setStateApp, setToBegin, postMessageToBroadCastChannel, setStateChat } = useAppAction();
     const { socketId, isLoadedChatsFromIndexDb, isOnline } = useAppSelector((state) => state.app);
     const compareFn = useCallback((chat1: ChatType, chat2: ChatType) => {
@@ -59,7 +58,7 @@ export const useListenAndUpdateChats = () => {
 
                     if (chatFromRaw) updatedChat = { ...chatFromRaw, ...chat };
                     else if (chat.type === ChatEnum.IS_DIALOGUE) {
-                        updatedChat = await prepareDialogue(chat);
+                        updatedChat = await prepareChat(chat);
                         if (updatedChat) updatedChat.key = Date.now();
                     }
 

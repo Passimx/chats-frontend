@@ -61,8 +61,8 @@ export const useEnterHook = (): UseEnterHookType => {
             const duration = moment.duration(Date.now() - startTime);
 
             const minutes = Math.floor(duration.asMinutes()); // минуты
-            const seconds = duration.seconds(); // секунды (0-59)
-            const milliseconds = Math.floor(duration.milliseconds() / 10); // сотые доли (0-99)
+            const seconds = duration.seconds(); // секунды
+            const milliseconds = Math.floor(duration.milliseconds() / 10); // сотые доли
 
             setRecoveringTime(
                 `${minutes}:${seconds.toString().padStart(2, '0')},${milliseconds.toString().padStart(2, '0')}`,

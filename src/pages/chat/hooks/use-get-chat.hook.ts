@@ -33,11 +33,11 @@ const useGetChat = (): void => {
             return;
         }
 
-        if (!socketId || !privateKey) return;
+        if (!socketId) return;
 
         setIsLoading(true);
         getChatByName(name!).then((result) => {
-            if (result.success && result.data) setChatOnPage(result.data);
+            if (result.success) setChatOnPage(result.data);
             else {
                 setChatOnPage(null);
                 postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'no_chats' });

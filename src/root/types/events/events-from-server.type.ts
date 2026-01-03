@@ -1,34 +1,12 @@
 import { EventsEnum } from './events.enum.ts';
 import { IData } from '../../api';
-import { ChatUpdateOnlineType } from '../chat/chat-update-online.type.ts';
-import { ChatUpdateMaxUsersOnline } from '../chat/chat-update-max-users-online.type.ts';
-import { ChatType, DialogueType } from '../chat/chat.type.ts';
+import { ChatItemIndexDb, ChatType } from '../chat/chat.type.ts';
 import { MessageType } from '../chat/message.type.ts';
 import { UserIndexDbType } from '../users/user-index-db.type.ts';
 
 type GetSocketId = {
     readonly event: EventsEnum.GET_SOCKET_ID;
     readonly data: IData<string>;
-};
-
-type UpdateChatOnline = {
-    readonly event: EventsEnum.UPDATE_CHAT_ONLINE;
-    readonly data: IData<ChatUpdateOnlineType[]>;
-};
-
-type MaxUsersOnline = {
-    readonly event: EventsEnum.UPDATE_MAX_USERS_ONLINE;
-    readonly data: IData<ChatUpdateMaxUsersOnline[]>;
-};
-
-type CreateChat = {
-    readonly event: EventsEnum.CREATE_CHAT;
-    readonly data: IData<ChatType>;
-};
-
-type CreateDialogue = {
-    readonly event: EventsEnum.CREATE_DIALOGUE;
-    readonly data: IData<DialogueType>;
 };
 
 type CreateMessage = {
@@ -46,18 +24,19 @@ type Pong = {
     readonly data: unknown;
 };
 
-type VERIFY = {
+type Verify = {
     readonly event: EventsEnum.VERIFY;
     readonly data: string;
 };
 
-export type EventsFromServer =
-    | GetSocketId
-    | UpdateChatOnline
-    | MaxUsersOnline
-    | CreateChat
-    | CreateDialogue
-    | CreateMessage
-    | UpdateMe
-    | Pong
-    | VERIFY;
+type AddChat = {
+    readonly event: EventsEnum.ADD_CHAT;
+    readonly data: IData<ChatType>;
+};
+
+type UpdateChat = {
+    readonly event: EventsEnum.UPDATE_CHAT;
+    readonly data: IData<ChatItemIndexDb>;
+};
+
+export type EventsFromServer = GetSocketId | CreateMessage | UpdateMe | Pong | Verify | AddChat | UpdateChat;

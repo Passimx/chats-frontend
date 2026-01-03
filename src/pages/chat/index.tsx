@@ -27,18 +27,18 @@ import { useGetChatTitle } from '../../common/hooks/use-get-chat-title.hook.ts';
 import { Avatar } from '../../components/avatar';
 import { EmptyMessages } from '../../components/empty-messages';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
-import { useAutoScroll } from './hooks/use-auto-scroll.hook.ts';
 import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
 import { useSwipeBack } from './hooks/use-swipe.hook.ts';
 import { PiPhoneCallFill } from 'react-icons/pi';
 import CallModal from '../../components/call-modal/index.tsx';
 import { CallContext } from '../../root/contexts/call';
+import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 
 /** Main chat component */
 const Chat: FC = memo(() => {
     useGetChat();
     useJoinChat();
-    useAutoScroll();
+    // useAutoScroll();
     const [addChat, leave, back] = useMethods();
     useSwipeBack(back);
     const { t } = useTranslation();
@@ -162,7 +162,7 @@ const Chat: FC = memo(() => {
                                     <div
                                         key={message.id}
                                         id={`container_${message.number}`}
-                                        className={`${message?.user?.id === ownUserName ? styles.message_container_own : styles.message_container}`}
+                                        className={`${message?.type === MessageTypeEnum.IS_USER && message?.user?.id === ownUserName ? styles.message_container_own : styles.message_container}`}
                                     >
                                         <Message {...{ ...message }} />
                                     </div>

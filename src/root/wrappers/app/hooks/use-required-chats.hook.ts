@@ -1,13 +1,11 @@
-import { useAppAction, useAppSelector } from '../../../store';
+import { useAppSelector } from '../../../store';
 import { useEffect, useState } from 'react';
 import { getSystemChat, listenChats } from '../../../api/chats';
-import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { rawApp } from '../../../store/app/app.raw.ts';
 import { MessageType } from '../../../types/chat/message.type.ts';
 
 export const useRequiredChats = () => {
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
-    const { postMessageToBroadCastChannel } = useAppAction();
     const { systemChatName, isLoadedChatsFromIndexDb, isListening } = useAppSelector((state) => state.app);
 
     const setSystemChat = async () => {
@@ -20,10 +18,6 @@ export const useRequiredChats = () => {
             const messages: MessageType[] = [];
             if (chat.message) messages.push(chat.message);
 
-            postMessageToBroadCastChannel({
-                event: EventsEnum.ADD_CHAT,
-                data: { ...chat, readMessage: 0, messages, scrollTop: 0, key: Date.now() },
-            });
             listenChats([
                 { chatId: chat?.id, lastMessage: chat?.countMessages, maxUsersOnline: Number(chat?.maxUsersOnline) },
             ]);
