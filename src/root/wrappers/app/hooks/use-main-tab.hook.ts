@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
 import { rawApp } from '../../../store/app/app.raw.ts';
 import { TabsEnum } from '../../../types/events/tabs.enum.ts';
+import { useAppAction } from '../../../store';
 
 export const useMainTab = () => {
+    const { setStateApp } = useAppAction();
+
     useEffect(() => {
         const channel = new BroadcastChannel('ws-channel');
         const instanceId = Date.now();
@@ -11,6 +14,7 @@ export const useMainTab = () => {
         const getMain = () => {
             if ((rawApp.tabs[0] === instanceId) === rawApp.isMainTab) return;
             rawApp.isMainTab = rawApp.tabs[0] === instanceId;
+            setStateApp({ isActiveTab: rawApp.tabs[0] === instanceId });
         };
 
         const createTab = (tab: number) => {

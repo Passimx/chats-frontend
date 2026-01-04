@@ -1,11 +1,6 @@
 import { EventsEnum } from './events.enum.ts';
 import { UserIndexDbType } from '../users/user-index-db.type.ts';
 
-type RemoveChat = {
-    readonly event: EventsEnum.REMOVE_CHAT;
-    readonly data: string;
-};
-
 type UpdateBadge = {
     readonly event: EventsEnum.UPDATE_BADGE;
     readonly data: number;
@@ -41,12 +36,4 @@ type CreateUser = {
     readonly data: Partial<UserIndexDbType>;
 };
 
-export type LocalEvents =
-    | RemoveChat
-    | UpdateBadge
-    | CloseSocket
-    | PlayNotification
-    | Error
-    | ChangeLanguage
-    | ShowText
-    | CreateUser;
+export type LocalEvents = UpdateBadge | CloseSocket | PlayNotification | Error | ChangeLanguage | ShowText | CreateUser;

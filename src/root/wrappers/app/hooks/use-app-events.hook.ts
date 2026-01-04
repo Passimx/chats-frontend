@@ -4,19 +4,19 @@ import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 import { getRawChat } from '../../../store/raw/chats.raw.ts';
-import { deleteChatCache } from '../../../../common/cache/delete-chat-cache.ts';
 import { useCallback } from 'react';
-import { getCacheMemory } from '../../../../common/cache/get-cache-memory.ts';
 import { useUpdateChat } from '../../../../common/hooks/use-update-chat.hook.ts';
 import { MessagesService } from '../../../../common/services/messages.service.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
 import { CryptoService } from '../../../../common/services/crypto.service.ts';
 import { prepareChat } from '../../../../common/hooks/prepare-chat.ts';
+import { useLeaveChat } from '../../../../common/hooks/use-leave-chat.hook.ts';
 
 export const useAppEvents = () => {
+    const leaveChat = useLeaveChat();
     const setToBegin = useUpdateChat();
     const [playNotificationSound] = useLoadSoundsHooks();
-    const { setStateApp, createMessage, removeChat, update, changeSettings, setStateUser } = useAppAction();
+    const { setStateApp, createMessage, update, changeSettings, setStateUser } = useAppAction();
 
     return useCallback(async (dataEvent: DataType) => {
         const { event, data } = dataEvent;
@@ -26,7 +26,7 @@ export const useAppEvents = () => {
                 if (!data.success) break;
                 setStateApp({ socketId: data.data });
                 break;
-            case EventsEnum.ADD_CHAT:
+            case EventsEnum.JOIN_CHAT:
                 if (!data.success) break;
                 if (getRawChat(data.data.id)) break;
                 if (data.data.type === ChatEnum.IS_FAVORITES) setStateApp({ favoritesChatName: data.data.name });
@@ -43,10 +43,9 @@ export const useAppEvents = () => {
             case EventsEnum.UPDATE_CHAT:
                 if (data.success) update(data.data);
                 break;
-            case EventsEnum.REMOVE_CHAT:
-                removeChat(data);
-                await deleteChatCache(data);
-                setStateApp(await getCacheMemory());
+            case EventsEnum.LEAVE_CHAT:
+                if (!data.success) break;
+                await leaveChat(data.data);
                 break;
             case EventsEnum.UPDATE_ME:
                 if (!data.success) break;

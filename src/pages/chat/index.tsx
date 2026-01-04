@@ -33,13 +33,14 @@ import { PiPhoneCallFill } from 'react-icons/pi';
 import CallModal from '../../components/call-modal/index.tsx';
 import { CallContext } from '../../root/contexts/call';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
+import { leaveChat } from '../../root/api/chats';
 
 /** Main chat component */
 const Chat: FC = memo(() => {
     useGetChat();
     useJoinChat();
     // useAutoScroll();
-    const [addChat, leave, back] = useMethods();
+    const [addChat, back] = useMethods();
     useSwipeBack(back);
     const { t } = useTranslation();
     const [isLoading, showLastMessages] = useMessages();
@@ -144,7 +145,7 @@ const Chat: FC = memo(() => {
                         </div>
                         {getRawChat(chatOnPage.id) &&
                             ![ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage!.type) && (
-                                <div className={styles.chat_menu_item} onClick={leave}>
+                                <div className={styles.chat_menu_item} onClick={() => leaveChat(chatOnPage!.id)}>
                                     <MdExitToApp className={`${styles.chat_menu_item_icon} ${styles.rotate}`} />
                                     <div className={'text_translate'}>{t('leave_chat')}</div>
                                 </div>

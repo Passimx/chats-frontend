@@ -2,7 +2,6 @@ import { Api, IData } from '../index.ts';
 import { CreateChatType } from '../../types/chat/create-chat.type.ts';
 import { ChatItemIndexDb, ChatType } from '../../types/chat/chat.type.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
-import { ChatListenRequestType } from '../../types/chat/chat-listen-request.type.ts';
 import { BodyCreateDialogueType } from '../../types/chat/create-dialogue.type.ts';
 import { MessagesService } from '../../../common/services/messages.service.ts';
 import { ReadMessageType } from '../../types/chat/read-message.type.ts';
@@ -47,12 +46,16 @@ export const getChatByName = async (name: string): Promise<IData<ChatType | Chat
     return MessagesService.decryptChat(Api<ChatType>(`/chats/${name}`));
 };
 
-export const listenChats = (chats: ChatListenRequestType[]) => {
-    return MessagesService.decryptChats(Api<ChatType[]>('/chats/join', { method: 'POST', body: { chats } }));
+export const listenChats = async (): Promise<void> => {
+    await Api('/chats/listen', { method: 'POST', body: {} });
 };
 
-export const leaveChats = (chatIds: string[]) => {
-    return Api('/chats/leave', { method: 'POST', body: { chatIds } });
+export const listenChat = (chatId: string, socketId: string) => {
+    return Api(`/chats/${chatId}/listen`, { method: 'POST', body: { socketId } });
+};
+
+export const noListenChat = (chatId: string, socketId: string) => {
+    return Api(`/chats/${chatId}/no_listen`, { method: 'POST', body: { socketId } });
 };
 
 export const getSystemChat = (): Promise<IData<ChatType[]>> => {
@@ -73,4 +76,12 @@ export const readMessage = (chatId: string, body: ReadMessageType) => {
 
 export const joinChat = (chatId: string) => {
     return Api(`/chats/${chatId}/join`, { method: 'POST', body: {} });
+};
+
+export const leaveChat = (chatId: string) => {
+    return Api(`/chats/${chatId}/leave`, { method: 'POST', body: {} });
+};
+
+export const leaveAllChats = () => {
+    return Api('/chats/all/leave', { method: 'POST', body: {} });
 };

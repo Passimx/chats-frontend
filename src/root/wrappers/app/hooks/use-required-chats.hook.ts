@@ -1,6 +1,6 @@
 import { useAppSelector } from '../../../store';
 import { useEffect, useState } from 'react';
-import { getSystemChat, listenChats } from '../../../api/chats';
+import { getSystemChat } from '../../../api/chats';
 import { rawApp } from '../../../store/app/app.raw.ts';
 import { MessageType } from '../../../types/chat/message.type.ts';
 
@@ -18,9 +18,9 @@ export const useRequiredChats = () => {
             const messages: MessageType[] = [];
             if (chat.message) messages.push(chat.message);
 
-            listenChats([
-                { chatId: chat?.id, lastMessage: chat?.countMessages, maxUsersOnline: Number(chat?.maxUsersOnline) },
-            ]);
+            // listenChats([
+            //     { chatId: chat?.id, lastMessage: chat?.countMessages, maxUsersOnline: Number(chat?.maxUsersOnline) },
+            // ]);
         }
     };
 

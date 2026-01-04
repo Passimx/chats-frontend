@@ -29,8 +29,8 @@ type Verify = {
     readonly data: string;
 };
 
-type AddChat = {
-    readonly event: EventsEnum.ADD_CHAT;
+type JoinChat = {
+    readonly event: EventsEnum.JOIN_CHAT;
     readonly data: IData<ChatType>;
 };
 
@@ -39,4 +39,17 @@ type UpdateChat = {
     readonly data: IData<ChatItemIndexDb>;
 };
 
-export type EventsFromServer = GetSocketId | CreateMessage | UpdateMe | Pong | Verify | AddChat | UpdateChat;
+type RemoveChat = {
+    readonly event: EventsEnum.LEAVE_CHAT;
+    readonly data: IData<string[]>;
+};
+
+export type EventsFromServer =
+    | GetSocketId
+    | CreateMessage
+    | UpdateMe
+    | Pong
+    | Verify
+    | JoinChat
+    | UpdateChat
+    | RemoveChat;
