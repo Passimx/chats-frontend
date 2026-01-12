@@ -6,6 +6,7 @@ import { getChatByName } from '../../root/api/chats';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { prepareChat } from '../../common/hooks/prepare-chat.ts';
 
 export const PublicKeyName: FC<PropsType> = memo(({ name }) => {
     const shortName = useShortText(name);
@@ -15,7 +16,7 @@ export const PublicKeyName: FC<PropsType> = memo(({ name }) => {
     const click = useCallback(async () => {
         const response = await getChatByName(name);
         if (!response.success) return postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'no_chats' });
-        const chat = response.data;
+        const chat = await prepareChat(response.data);
 
         navigate(`/${chat.name}`, { state: chat });
     }, []);

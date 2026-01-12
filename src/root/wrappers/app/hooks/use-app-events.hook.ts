@@ -4,20 +4,19 @@ import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 import { getRawChat } from '../../../store/raw/chats.raw.ts';
-import { deleteChatCache } from '../../../../common/cache/delete-chat-cache.ts';
 import { useCallback } from 'react';
-import { getCacheMemory } from '../../../../common/cache/get-cache-memory.ts';
 import { useUpdateChat } from '../../../../common/hooks/use-update-chat.hook.ts';
-import { usePrepareDialogue } from '../../../../common/hooks/use-prepare-dialogue.ts';
 import { MessagesService } from '../../../../common/services/messages.service.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
 import { CryptoService } from '../../../../common/services/crypto.service.ts';
+import { prepareChat } from '../../../../common/hooks/prepare-chat.ts';
+import { useLeaveChat } from '../../../../common/hooks/use-leave-chat.hook.ts';
 
 export const useAppEvents = () => {
+    const leaveChat = useLeaveChat();
     const setToBegin = useUpdateChat();
-    const prepareDialogue = usePrepareDialogue();
     const [playNotificationSound] = useLoadSoundsHooks();
-    const { updateMany, setStateApp, createMessage, removeChat, update, changeSettings, setStateUser } = useAppAction();
+    const { setStateApp, createMessage, update, changeSettings, setStateUser } = useAppAction();
 
     return useCallback(async (dataEvent: DataType) => {
         const { event, data } = dataEvent;
@@ -27,30 +26,12 @@ export const useAppEvents = () => {
                 if (!data.success) break;
                 setStateApp({ socketId: data.data });
                 break;
-            case EventsEnum.ADD_CHAT:
-                if (getRawChat(data.id)) break;
-                setToBegin(data);
-                if (data.type === ChatEnum.IS_SYSTEM) setStateApp({ systemChatName: data.name });
-                playNotificationSound();
-                break;
-            case EventsEnum.CREATE_CHAT:
-                if (!data.success) break;
-                if (getRawChat(data.data.id)) break;
-                setToBegin({
-                    ...data.data,
-                    messages: data.data.message ? [data.data.message] : [],
-                    readMessage: 0,
-                    online: '1',
-                    maxUsersOnline: '1',
-                    scrollTop: 0,
-                });
-                playNotificationSound();
-                break;
-            case EventsEnum.CREATE_DIALOGUE:
+            case EventsEnum.JOIN_CHAT:
                 if (!data.success) break;
                 if (getRawChat(data.data.id)) break;
                 if (data.data.type === ChatEnum.IS_FAVORITES) setStateApp({ favoritesChatName: data.data.name });
-                setToBegin(await prepareDialogue(data.data));
+                if (data.data.type === ChatEnum.IS_SYSTEM) setStateApp({ systemChatName: data.data.name });
+                setToBegin(await prepareChat(data.data));
                 playNotificationSound();
                 break;
             case EventsEnum.CREATE_MESSAGE:
@@ -59,29 +40,16 @@ export const useAppEvents = () => {
                 createMessage(await MessagesService.decryptMessage(data.data));
                 if (getRawChat(data.data.chatId)) setToBegin(getRawChat(data.data.chatId)!);
                 break;
-            case EventsEnum.READ_MESSAGE:
-                update(data);
+            case EventsEnum.UPDATE_CHAT:
+                if (data.success) update(data.data);
                 break;
-            case EventsEnum.REMOVE_CHAT:
-                removeChat(data);
-                await deleteChatCache(data);
-                setStateApp(await getCacheMemory());
-                break;
-            case EventsEnum.UPDATE_CHAT_ONLINE:
+            case EventsEnum.LEAVE_CHAT:
                 if (!data.success) break;
-                updateMany(data.data);
+                await leaveChat(data.data);
                 break;
             case EventsEnum.UPDATE_ME:
                 if (!data.success) break;
                 setStateUser(data.data);
-                break;
-            case EventsEnum.UPDATE_MAX_USERS_ONLINE:
-                if (!data.success) break;
-                data.data.forEach(({ id, maxUsersOnline }) => {
-                    const chat = getRawChat(id);
-                    if (!chat) return;
-                    if (Number(maxUsersOnline) > Number(chat.maxUsersOnline)) update({ id, maxUsersOnline });
-                });
                 break;
             case EventsEnum.CLOSE_SOCKET:
                 setStateApp({ socketId: undefined, isListening: false });
@@ -95,6 +63,9 @@ export const useAppEvents = () => {
             case EventsEnum.ERROR:
                 console.log(`${'\x1B[31m'}error: ${data}${'\x1B[31m'}`);
                 break;
+            case EventsEnum.SET_STATE_APP:
+                setStateApp(data);
+                break;
             case EventsEnum.CREATE_USER:
                 Envs.userId = data.id;
                 setStateUser(data);
@@ -107,7 +78,6 @@ export const useAppEvents = () => {
                         privateKey: await CryptoService.exportKey(data.rsaPrivateKey!),
                     }),
                 );
-
                 break;
         }
     }, []);

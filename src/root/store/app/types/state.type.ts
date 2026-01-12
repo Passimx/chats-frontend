@@ -73,6 +73,7 @@ export type SettingsType = {
 
 export type StateType = {
     isOnline: boolean;
+    isActiveTab?: boolean;
     isOpenPage: boolean;
     activeTab: TabEnum;
     pages: Map<TabEnum, JSX.Element[]>;
