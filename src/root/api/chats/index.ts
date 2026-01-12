@@ -6,11 +6,7 @@ import { BodyCreateDialogueType } from '../../types/chat/create-dialogue.type.ts
 import { MessagesService } from '../../../common/services/messages.service.ts';
 import { ReadMessageType } from '../../types/chat/read-message.type.ts';
 
-export const getChats = async (
-    search?: string,
-    offset?: number,
-    notFavoriteChatIds?: string[],
-): Promise<IData<ChatType[]>> => {
+export const getChats = async (search?: string, offset?: number): Promise<IData<ChatType[]>> => {
     function extractTags(text: string) {
         const matches = text.match(/#(\w+)/g); // Находим слова с `#`
         return matches ? matches.map((tag) => tag.slice(1)) : []; // Убираем `#`
@@ -26,7 +22,7 @@ export const getChats = async (
 
     return MessagesService.decryptChats(
         Api<ChatType[]>('/chats', {
-            params: { search: titleWithoutTags, limit: Envs.chats.limit, offset, notFavoriteChatIds, tags },
+            params: { search: titleWithoutTags, limit: Envs.chats.limit, offset, tags },
         }),
     );
 };
@@ -46,8 +42,8 @@ export const getChatByName = async (name: string): Promise<IData<ChatType | Chat
     return MessagesService.decryptChat(Api<ChatType>(`/chats/${name}`));
 };
 
-export const listenChats = async (): Promise<void> => {
-    await Api('/chats/listen', { method: 'POST', body: {} });
+export const listenChats = async (): Promise<IData<ChatType[]>> => {
+    return Api<ChatType[]>('/chats/listen', { method: 'POST', body: {} });
 };
 
 export const listenChat = (chatId: string, socketId: string) => {

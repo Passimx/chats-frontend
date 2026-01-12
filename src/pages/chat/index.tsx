@@ -143,13 +143,12 @@ const Chat: FC = memo(() => {
                             <IoCopyOutline className={styles.chat_menu_item_icon} />
                             <div className={'text_translate'}>{t('copy_link')}</div>
                         </div>
-                        {getRawChat(chatOnPage.id) &&
-                            ![ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage!.type) && (
-                                <div className={styles.chat_menu_item} onClick={() => leaveChat(chatOnPage!.id)}>
-                                    <MdExitToApp className={`${styles.chat_menu_item_icon} ${styles.rotate}`} />
-                                    <div className={'text_translate'}>{t('leave_chat')}</div>
-                                </div>
-                            )}
+                        {getRawChat(chatOnPage.id) && (
+                            <div className={styles.chat_menu_item} onClick={() => leaveChat(chatOnPage!.id)}>
+                                <MdExitToApp className={`${styles.chat_menu_item_icon} ${styles.rotate}`} />
+                                <div className={'text_translate'}>{t('leave_chat')}</div>
+                            </div>
+                        )}
                     </div>
                 }
                 {/* Блок сообщений (переписка) */}

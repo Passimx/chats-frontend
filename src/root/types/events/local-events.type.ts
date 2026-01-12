@@ -1,5 +1,6 @@
 import { EventsEnum } from './events.enum.ts';
 import { UserIndexDbType } from '../users/user-index-db.type.ts';
+import { StateType as AppStateType } from '../../store/app/types/state.type.ts';
 
 type UpdateBadge = {
     readonly event: EventsEnum.UPDATE_BADGE;
@@ -36,4 +37,17 @@ type CreateUser = {
     readonly data: Partial<UserIndexDbType>;
 };
 
-export type LocalEvents = UpdateBadge | CloseSocket | PlayNotification | Error | ChangeLanguage | ShowText | CreateUser;
+type SetStateApp = {
+    readonly event: EventsEnum.SET_STATE_APP;
+    readonly data: Partial<AppStateType>;
+};
+
+export type LocalEvents =
+    | UpdateBadge
+    | CloseSocket
+    | PlayNotification
+    | Error
+    | ChangeLanguage
+    | ShowText
+    | CreateUser
+    | SetStateApp;

@@ -63,6 +63,9 @@ export const useAppEvents = () => {
             case EventsEnum.ERROR:
                 console.log(`${'\x1B[31m'}error: ${data}${'\x1B[31m'}`);
                 break;
+            case EventsEnum.SET_STATE_APP:
+                setStateApp(data);
+                break;
             case EventsEnum.CREATE_USER:
                 Envs.userId = data.id;
                 setStateUser(data);

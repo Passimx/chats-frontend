@@ -11,6 +11,7 @@ export const prepareChat = async (data: ChatType): Promise<ChatItemIndexDb> => {
     const { keys, ...body } = data;
     let messages: MessageType[] = [];
     const chatOnPage = store.getState().chats.chatOnPage;
+    const key = new Date(data.message?.createdAt ?? new Date()).getTime();
 
     // чтобы не обнулять сообщения, что уже на странице
     if (chatOnPage?.id === data.id && chatOnPage?.messages?.length) {
@@ -18,15 +19,20 @@ export const prepareChat = async (data: ChatType): Promise<ChatItemIndexDb> => {
     } else if (body.message) messages = [body.message];
 
     const payload: ChatItemIndexDb = {
-        ...body,
+        ...data,
         messages,
         readMessage: 0,
         scrollTop: 0,
+        key,
     };
 
     const myChatKey = keys?.find((key) => key.userId === Envs.userId);
     if (!myChatKey || !Envs.RSAKeys?.privateKey) return payload;
     if (!myChatKey.received) await receiveKey(data.id);
+    if (new Date(myChatKey.createdAt).getTime() > key) {
+        payload.key = new Date(myChatKey.createdAt).getTime();
+    }
+
     payload.readMessage = myChatKey.readMessageNumber;
 
     const aesKeyString = await CryptoService.decryptByRSAKey(Envs.RSAKeys.privateKey, myChatKey.encryptionKey);
