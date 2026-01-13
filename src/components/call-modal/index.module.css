@@ -1,8 +1,7 @@
 .background {
     max-width: calc(300px - 48px);
-    max-height: 500px;
     width: 100%;
-    padding: 16px;
+    height: 480px;
     border-radius: 8px;
     background: #79b6ec;
     display: flex;
@@ -37,8 +36,8 @@
 .background[data-fullscreen='active'] {
     max-width: 100%;
     max-height: 100%;
-    width: calc(100% - 32px);
-    height: calc(100% - 16px - calc(16px + var(--safe-area-inset-bottom)));
+    width: 100%;
+    height: 100%;
     border-radius: 0;
     left: 0;
     top: 0;
@@ -58,106 +57,4 @@
 }
 .avatar[data-minimize='active'] {
     display: none;
-}
-
-.minimize,
-.fullscreen {
-    background-color: transparent;
-    border: none;
-    outline: none;
-    cursor: pointer;
-}
-
-.minimize_block {
-    border-radius: 20px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0;
-}
-
-.minimize_btn {
-    background-color: transparent;
-    border: none;
-    outline: none;
-    cursor: pointer;
-}
-
-.control_icons {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.call_controll {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-}
-
-.call_controll[data-minimize='active'] {
-    display: none;
-}
-
-.call_controll[data-fullScreen='active'] {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    column-gap: 40px;
-}
-
-.camera_toggle,
-.microphone_toggle,
-.decline {
-    border: none;
-    outline: none;
-    padding: 12px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.camera_toggle:hover,
-.microphone_toggle:hover,
-.decline:hover{
-    background: rgba(255, 255, 255, 0.5);
-}
-
-.call_block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-
-@media screen and (max-width: 600px) {
-    .fullscreen{
-        display: none;
-    }
-
-    .minimize{
-        margin-left: 10px;
-    }
-
-    .control_icons{
-        padding: 10px;
-    }
-
-    .background[data-minimize='active'] {
-        max-width: 100%;
-        width: 100%;
-        height: 40px;
-        top: 55px;
-        padding: 0;
-    }
-
-    .minimize_block{
-        justify-content: space-around;
-    }
 }

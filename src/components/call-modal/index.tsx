@@ -1,22 +1,25 @@
-import { FC, useState, useContext } from 'react';
-import { FaMinus } from 'react-icons/fa6';
-import { BiFullscreen, BiVideo, BiVideoOff, BiMicrophone, BiMicrophoneOff } from 'react-icons/bi';
-import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
-import { MdCallEnd } from 'react-icons/md';
+import { FC, useState, useContext, useEffect } from 'react';
 import styles from './index.module.css';
 import { Avatar } from '../avatar';
 import { ChatEnum } from '../../root/types/chat/chat.enum';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { CallContext } from '../../root/contexts/call';
+import { VideoPlayer } from './view/video-player/video-player.tsx';
+import ViewMode from './view/view-mode/view-mode.tsx';
+import CallControls from './view/call-controls/CallControls.tsx';
 
 const CallModal: FC = () => {
     const [isFullScreenActive, setIsFullScreenActive] = useState<boolean>(false);
-    const [isMinimize, setMinimize] = useState<boolean>(false);
+    const [isMinimize, setMinimize] = useState(false);
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { setStateApp } = useAppAction();
     const context = useContext(CallContext);
 
-    const { isCameraOn, setIsCameraOn, isMicrophoneOn, setIsMicrophoneOn, isCallActive, setIsCallActive } = context;
+    const { createConnection, localStream, isMicrophoneOn, setIsMicrophoneOn, hangUp } = context;
+
+    useEffect(() => {
+        createConnection();
+    }, []);
 
     return (
         <div
@@ -24,89 +27,33 @@ const CallModal: FC = () => {
             data-fullscreen={(isFullScreenActive && 'active') || ''}
             data-minimize={(isMinimize && 'active') || ''}
         >
-            <div className={styles.control_icons}>
-                {isFullScreenActive ? (
-                    <button
-                        className={styles.fullscreen}
-                        data-fullscreen={(isFullScreenActive && 'active') || ''}
-                        onClick={() => {
-                            setIsFullScreenActive(!isFullScreenActive);
-                        }}
-                    >
-                        <FaCompressAlt size={22} />
-                    </button>
-                ) : isMinimize ? (
-                    <div className={styles.minimize_block}>
-                        <button className={styles.minimize_btn} onClick={() => setMinimize(false)}>
-                            <FaExpandAlt size={22} />
-                        </button>
-                        <button className={styles.minimize_btn} onClick={() => setIsMicrophoneOn(!isMicrophoneOn)}>
-                            {(isMicrophoneOn && <BiMicrophone size={25} />) || <BiMicrophoneOff size={25} />}
-                        </button>
-                        <button className={styles.minimize_btn} onClick={() => setStateApp({ page: undefined })}>
-                            <MdCallEnd size={25} color="#FF595A" />
-                        </button>
-                    </div>
-                ) : (
-                    <>
-                        <button
-                            className={styles.minimize}
-                            data-minimize={(isMinimize && 'active') || ''}
-                            onClick={() => setMinimize(!isMinimize)}
-                        >
-                            <FaMinus size={18} />
-                        </button>
-                        <button
-                            className={styles.fullscreen}
-                            data-fullscreen={(isFullScreenActive && 'active') || ''}
-                            onClick={() => {
-                                setIsFullScreenActive(!isFullScreenActive);
-                            }}
-                        >
-                            <BiFullscreen size={22} />
-                        </button>
-                    </>
-                )}
-            </div>
-            <div className={styles.avatar} data-minimize={(isMinimize && 'active') || ''}>
-                {chatOnPage && (
-                    <Avatar
-                        showIcon={[ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage.type)}
-                        isClickable={![ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage.type)}
-                    />
-                )}
-            </div>
+            <ViewMode
+                isFullScreenActive={isFullScreenActive}
+                setIsFullScreenActive={setIsFullScreenActive}
+                isMinimize={isMinimize}
+                setMinimize={setMinimize}
+                isMicrophoneOn={isMicrophoneOn}
+                setIsMicrophoneOn={setIsMicrophoneOn}
+                setStateApp={setStateApp}
+            />
 
-            <div
-                className={styles.call_controll}
-                data-fullscreen={(isFullScreenActive && 'active') || ''}
-                data-minimize={(isMinimize && 'active') || ''}
-            >
-                <div className={styles.call_block}>
-                    <button className={styles.camera_toggle} onClick={() => setIsCameraOn(!isCameraOn)}>
-                        {(isCameraOn && <BiVideo size={25} />) || <BiVideoOff size={25} />}
-                    </button>
+            {(Boolean(localStream) && <VideoPlayer srcObject={localStream} autoPlay muted />) || (
+                <div className={styles.avatar} data-minimize={(isMinimize && 'active') || ''}>
+                    {chatOnPage && (
+                        <Avatar
+                            showIcon={[ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage.type)}
+                            isClickable={![ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage.type)}
+                        />
+                    )}
                 </div>
+            )}
 
-                <div className={styles.call_block}>
-                    <button className={styles.microphone_toggle} onClick={() => setIsMicrophoneOn(!isMicrophoneOn)}>
-                        {(isMicrophoneOn && <BiMicrophone size={25} />) || <BiMicrophoneOff size={25} />}
-                    </button>
-                </div>
-
-                <div className={styles.call_block}>
-                    <button
-                        className={styles.decline}
-                        onClick={() => {
-                            if (!isCallActive) return;
-                            setIsCallActive(false);
-                            setStateApp({ page: undefined });
-                        }}
-                    >
-                        <MdCallEnd size={25} color="#FF595A" />
-                    </button>
-                </div>
-            </div>
+            <CallControls
+                isMinimize={isMinimize}
+                isFullScreenActive={isFullScreenActive}
+                setStateApp={setStateApp}
+                hangUp={hangUp}
+            />
         </div>
     );
 };

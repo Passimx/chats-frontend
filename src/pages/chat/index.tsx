@@ -51,7 +51,7 @@ const Chat: FC = memo(() => {
 
     const ownUserName = useAppSelector((state) => state.user.userName);
 
-    const { isCallActive, setIsCallActive } = useContext(CallContext);
+    const { isCallActive, setIsCallActive, ws } = useContext(CallContext);
 
     if (!chatOnPage) return <></>;
 
@@ -127,6 +127,7 @@ const Chat: FC = memo(() => {
                                 if (isCallActive || !setIsCallActive) return;
                                 setStateApp({ page: <CallModal /> });
                                 setIsCallActive(true);
+                                ws.emit('create-room');
                             }}
                         >
                             <PiPhoneCallFill className={styles.chat_menu_item_icon} />
