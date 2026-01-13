@@ -1,18 +1,17 @@
 import { MessageFromServerType, MessageType } from '../../root/types/chat/message.type.ts';
 import { IData } from '../../root/api';
 import { CryptoService } from './crypto.service.ts';
-import { ChatType } from '../../root/types/chat/chat.type.ts';
-import { Envs } from '../config/envs/envs.ts';
+import { ChatItemIndexDb, ChatType } from '../../root/types/chat/chat.type.ts';
 import { CreateMessageType } from '../../root/types/messages/create-message.type.ts';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { FilesType } from '../../root/types/files/types.ts';
-import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { CreateChatKeyType } from '../../root/types/chat/create-dialogue.type.ts';
 import { getUserByUserName } from '../../root/api/users';
 import { keepChatKey } from '../../root/api/chats';
-import { getRawChat } from '../../root/store/raw/chats.raw.ts';
+import rawChats, { getRawChat } from '../../root/store/raw/chats.raw.ts';
 import { store } from '../../root/store';
 import { ChatsActions } from '../../root/store/chats/chats.slice.ts';
+import { prepareChat } from '../hooks/prepare-chat.ts';
 
 export class MessagesService {
     public static async setSaveTime(request: Promise<IData<MessageFromServerType[]>>) {
@@ -28,7 +27,7 @@ export class MessagesService {
         request: Promise<IData<MessageFromServerType[]>>,
     ): Promise<IData<MessageFromServerType[]>> {
         const response = await request;
-        const aesKey = getRawChat(chatId)?.aesKey;
+        const aesKey = getRawChat(chatId)?.aesKey ?? rawChats.chatKeys.get(chatId);
         if (!aesKey) return request;
 
         if (!response.success) return response;
@@ -43,7 +42,7 @@ export class MessagesService {
     public static async decryptMessage<T extends MessageFromServerType>(data: T): Promise<T> {
         if (data.type !== MessageTypeEnum.IS_USER) return data;
 
-        const aesKey = getRawChat(data.chatId)?.aesKey;
+        const aesKey = getRawChat(data.chatId)?.aesKey ?? rawChats?.chatKeys.get(data.chatId);
         if (!aesKey) return data;
 
         if (data.message) {
@@ -54,60 +53,23 @@ export class MessagesService {
         return data;
     }
 
-    public static async keepAesKey(request: Promise<IData<ChatType>>): Promise<IData<ChatType>> {
+    public static async decryptChat(request: Promise<IData<ChatType>>): Promise<IData<ChatType | ChatItemIndexDb>> {
         const response = await request;
-        if (!Envs.RSAKeys?.privateKey) return request;
-        if (!response.success) return response;
-        if (!response.data?.keys?.length) return response;
-
-        const myKey = response.data.keys.find((key) => key.userId === Envs.userId);
-        if (!myKey) return response;
-
-        const aesKeyString = await CryptoService.decryptByRSAKey(Envs.RSAKeys?.privateKey, myKey.encryptionKey);
-        if (!aesKeyString) return response;
-
-        const aesKey = await CryptoService.importEASKey(aesKeyString);
-        store.dispatch(ChatsActions.update({ id: response.data.id, aesKey }));
-
+        if (response.success) response.data = await prepareChat(response.data);
         return response;
     }
 
-    public static async decryptChat(request: Promise<IData<ChatType>>): Promise<IData<ChatType>> {
+    public static async decryptChats(
+        request: Promise<IData<ChatType[]>>,
+    ): Promise<IData<(ChatType | ChatItemIndexDb)[]>> {
         const response = await request;
-        if (!response.success) return response;
-        const aesKey = getRawChat(response.data.id)?.aesKey;
-        if (!aesKey) return request;
-
-        if (!response.success) return response;
-
-        if (response.data.type === ChatEnum.IS_DIALOGUE && !response?.data?.title?.length) {
-            const anotherChatKey = response.data.keys?.find((key) => key.userId !== Envs.userId);
-            response.data.title = anotherChatKey?.userId;
-        }
-
-        if (response.data.message) response.data.message = await this.decryptMessage(response.data.message);
-        return response;
-    }
-
-    public static async decryptChats(request: Promise<IData<ChatType[]>>): Promise<IData<ChatType[]>> {
-        const response = await request;
-        if (!response.success) return response;
-
-        const tasks = response.data.map(async (chat) => {
-            const aesKey = getRawChat(chat.id)?.aesKey;
-            if (!aesKey) return chat;
-
-            if (chat.message) chat.message = await this.decryptMessage(chat.message);
-            return chat;
-        });
-
-        response.data = await Promise.all(tasks);
+        if (response.success) response.data = await Promise.all(response.data.map((chat) => prepareChat(chat)));
         return response;
     }
 
     public static async encryptMessage(body: CreateMessageType): Promise<CreateMessageType> {
         if (!body.chatId) return body;
-        const aesKey = getRawChat(body.chatId)?.aesKey;
+        const aesKey = getRawChat(body.chatId)?.aesKey ?? rawChats.chatKeys.get(body.chatId);
         if (!aesKey) return body;
 
         if (body.message?.length) {
@@ -121,7 +83,7 @@ export class MessagesService {
         const chatId = formData.get('chatId') as string | undefined;
         if (!chatId) return formData;
 
-        const aesKey = getRawChat(chatId)?.aesKey;
+        const aesKey = getRawChat(chatId)?.aesKey ?? rawChats.chatKeys.get(chatId);
         if (!aesKey) return formData;
 
         for (const [key, value] of formData.entries()) {
@@ -156,6 +118,7 @@ export class MessagesService {
         await Promise.all(tasks);
         await keepChatKey(chat.id, { keys });
         store.dispatch(ChatsActions.update({ id: chat.id, aesKey }));
+        rawChats.chatKeys.set(chat.id, aesKey);
 
         return true;
     }

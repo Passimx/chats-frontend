@@ -11,7 +11,7 @@ type ReturnType = [string | undefined, string | undefined, string | undefined, b
 export const useMessage = (chat: ChatItemIndexDb): ReturnType => {
     const { isLoadedChatsFromIndexDb } = useAppSelector((state) => state.app);
     const { t } = useTranslation();
-    const [message, setMessage] = useState<string>();
+    const [message, setMessage] = useState<string>(chat.message?.message ?? '');
     const [countMessages, setCountMessages] = useState<string>();
     const [time, setTime] = useState<string>();
     const isPinned = usePinned(chat.message?.id, chat.pinnedMessages);

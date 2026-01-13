@@ -8,11 +8,12 @@ import { useCustomNavigate } from '../../../common/hooks/use-custom-navigate.hoo
 import { useTranslation } from 'react-i18next';
 import { ChatEnum } from '../../../root/types/chat/chat.enum.ts';
 import { ChatType } from '../../../root/types/chat/chat.type.ts';
+import { EventsEnum } from '../../../root/types/events/events.enum.ts';
 
 const useGetChat = (): void => {
     const { name } = useParams();
     const { t } = useTranslation();
-    const { setChatOnPage } = useAppAction();
+    const { setChatOnPage, postMessageToBroadCastChannel } = useAppAction();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useCustomNavigate();
     const { chatOnPage } = useAppSelector((state) => state.chats);
@@ -32,12 +33,15 @@ const useGetChat = (): void => {
             return;
         }
 
-        if (!socketId || !privateKey) return;
+        if (!socketId) return;
 
         setIsLoading(true);
         getChatByName(name!).then((result) => {
-            if (result.success && result.data) setChatOnPage(result.data);
-            else setChatOnPage(null);
+            if (result.success) setChatOnPage(result.data);
+            else {
+                setChatOnPage(null);
+                postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'no_chats' });
+            }
 
             setIsLoading(false);
         });

@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 import { useAppEvents } from './use-app-events.hook.ts';
 import { useAppSelector } from '../../../store';
 import { Envs } from '../../../../common/config/envs/envs.ts';
-import { rawApp } from '../../../store/app/app.raw.ts';
 
 export const useBroadcastChannel = () => {
     const sendMessage = useAppEvents();
     const rsaPublicKey = useAppSelector((state) => state.user.rsaPublicKey);
+    const isActiveTab = useAppSelector((state) => state.app.isActiveTab);
 
     /** App events */
     useEffect(() => {
@@ -29,7 +29,7 @@ export const useBroadcastChannel = () => {
     useEffect(() => {
         if (!rsaPublicKey) return;
 
-        if (rawApp.isMainTab) {
+        if (isActiveTab) {
             const iframeExist = document.querySelector('iframe[data-main-iframe]');
             if (!iframeExist) {
                 const iframe = document.createElement('iframe');
@@ -42,5 +42,5 @@ export const useBroadcastChannel = () => {
             const iframe = document.querySelector('iframe[data-main-iframe]');
             iframe?.remove();
         }
-    }, [rsaPublicKey]);
+    }, [rsaPublicKey, isActiveTab]);
 };

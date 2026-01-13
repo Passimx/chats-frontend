@@ -16,8 +16,7 @@
     user-select: none;
     width: var(--width);
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 8px;
+    grid-template-columns: 1fr;
     align-items: center;
     font-weight: bold;
     visibility: hidden;

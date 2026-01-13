@@ -10,7 +10,7 @@ export const useUpdateChat = () => {
 
     return useCallback((payload?: ChatItemIndexDb) => {
         if (!payload) return;
-        const chat: ChatItemIndexDb = { ...payload, key: Date.now() };
+        const chat: ChatItemIndexDb = { ...payload };
 
         if (getRawChats()[0]?.id === payload.id) return update(chat);
 

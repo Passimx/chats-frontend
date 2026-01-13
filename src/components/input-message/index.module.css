@@ -134,6 +134,7 @@
 
 #new_message, #new_message *{
     background-color: #FFFFFF !important;
+    width: 100% !important;
     outline: none !important;
     -webkit-box-shadow: none !important;
     -moz-box-shadow: none !important;

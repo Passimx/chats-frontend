@@ -27,19 +27,20 @@ import { useGetChatTitle } from '../../common/hooks/use-get-chat-title.hook.ts';
 import { Avatar } from '../../components/avatar';
 import { EmptyMessages } from '../../components/empty-messages';
 import { EventsEnum } from '../../root/types/events/events.enum.ts';
-import { useAutoScroll } from './hooks/use-auto-scroll.hook.ts';
 import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
 import { useSwipeBack } from './hooks/use-swipe.hook.ts';
 import { PiPhoneCallFill } from 'react-icons/pi';
 import CallModal from '../../components/call-modal/index.tsx';
 import { CallContext } from '../../root/contexts/call';
+import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
+import { leaveChat } from '../../root/api/chats';
 
 /** Main chat component */
 const Chat: FC = memo(() => {
     useGetChat();
     useJoinChat();
-    useAutoScroll();
-    const [addChat, leave, back] = useMethods();
+    // useAutoScroll();
+    const [addChat, back] = useMethods();
     useSwipeBack(back);
     const { t } = useTranslation();
     const [isLoading, showLastMessages] = useMessages();
@@ -143,13 +144,12 @@ const Chat: FC = memo(() => {
                             <IoCopyOutline className={styles.chat_menu_item_icon} />
                             <div className={'text_translate'}>{t('copy_link')}</div>
                         </div>
-                        {getRawChat(chatOnPage.id) &&
-                            ![ChatEnum.IS_SYSTEM, ChatEnum.IS_FAVORITES].includes(chatOnPage!.type) && (
-                                <div className={styles.chat_menu_item} onClick={leave}>
-                                    <MdExitToApp className={`${styles.chat_menu_item_icon} ${styles.rotate}`} />
-                                    <div className={'text_translate'}>{t('leave_chat')}</div>
-                                </div>
-                            )}
+                        {getRawChat(chatOnPage.id) && (
+                            <div className={styles.chat_menu_item} onClick={() => leaveChat(chatOnPage!.id)}>
+                                <MdExitToApp className={`${styles.chat_menu_item_icon} ${styles.rotate}`} />
+                                <div className={'text_translate'}>{t('leave_chat')}</div>
+                            </div>
+                        )}
                     </div>
                 }
                 {/* Блок сообщений (переписка) */}
@@ -163,7 +163,7 @@ const Chat: FC = memo(() => {
                                     <div
                                         key={message.id}
                                         id={`container_${message.number}`}
-                                        className={`${message?.user?.id === ownUserName ? styles.message_container_own : styles.message_container}`}
+                                        className={`${message?.type === MessageTypeEnum.IS_USER && message?.user?.id === ownUserName ? styles.message_container_own : styles.message_container}`}
                                     >
                                         <Message {...{ ...message }} />
                                     </div>
