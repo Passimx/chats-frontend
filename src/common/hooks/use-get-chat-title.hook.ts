@@ -1,9 +1,9 @@
-import { ChatItemIndexDb } from '../../root/types/chat/chat.type.ts';
+import { ChatItemIndexDb, ChatType } from '../../root/types/chat/chat.type.ts';
 import { ChatEnum } from '../../root/types/chat/chat.enum.ts';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export const useGetChatTitle = (chat?: ChatItemIndexDb) => {
+export const useGetChatTitle = (chat?: ChatItemIndexDb | ChatType) => {
     const { t } = useTranslation();
 
     return useMemo(() => {

@@ -5,30 +5,19 @@ import styles from './index.module.css';
 import { useTranslation } from 'react-i18next';
 import { MdOutlineDeleteSweep } from 'react-icons/md';
 import { useAppAction, useAppSelector } from '../../root/store';
-import { getRawChats, getRawChatsLength } from '../../root/store/raw/chats.raw.ts';
-import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { getRawChatsLength } from '../../root/store/raw/chats.raw.ts';
 import { SegmentSwitcher } from '../segment-switcher';
-import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
+import { leaveAllChats } from '../../root/api/chats';
 
 export const Chats: FC = memo(() => {
     const { t } = useTranslation();
-    const { postMessageToBroadCastChannel, changeSettings } = useAppAction();
+    const { changeSettings } = useAppAction();
+    const { settings } = useAppSelector((state) => state.app);
     const { chats, updatedChats } = useAppSelector((state) => state.chats);
-    const navigate = useCustomNavigate();
-
-    const deleteChats = useCallback(() => {
-        const chats = getRawChats();
-        chats.forEach((chat) => {
-            postMessageToBroadCastChannel({ event: EventsEnum.REMOVE_CHAT, data: chat.id });
-            navigate('/');
-        });
-    }, []);
 
     const chatsLength = useMemo(() => {
         return getRawChatsLength();
     }, [updatedChats.length + chats.length]);
-
-    const { settings } = useAppSelector((state) => state.app);
 
     const changeMessageLimit = useCallback((value?: number) => {
         if (value) changeSettings({ messagesLimit: value });
@@ -96,7 +85,7 @@ export const Chats: FC = memo(() => {
                     </div>
                     <div></div>
                 </div>
-                <div className={styles.button_background} onClick={deleteChats}>
+                <div className={styles.button_background} onClick={leaveAllChats}>
                     <div className={styles.button}>
                         <div className={styles.button_text}>
                             <MdOutlineDeleteSweep size={24} />

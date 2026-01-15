@@ -2,12 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ChatItemIndexDb, ChatType } from '../../types/chat/chat.type.ts';
 import { StateType } from './types/state.type.ts';
 import rawChats, { deleteChat, getRawChat, updateRawChat } from '../raw/chats.raw.ts';
-import { deleteChatIndexDb, updateChatIndexDb, upsertChatIndexDb } from './index-db/hooks.ts';
+import { deleteChatIndexDb, upsertChatIndexDb } from './index-db/hooks.ts';
 import { MessageType } from '../../types/chat/message.type.ts';
 import { UpdateChat } from './types/update-chat.type.ts';
 import { deleteCacheOne } from '../../../common/cache/delete-chat-cache.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
 import { Types } from '../../types/files/types.ts';
+import { store } from '../index.ts';
 
 const initialState: StateType = {
     chats: [],
@@ -37,15 +38,27 @@ const ChatsSlice = createSlice({
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
         },
 
-        updateMany(state, { payload: data }: PayloadAction<UpdateChat[]>) {
+        updateMany(state, { payload: data }: PayloadAction<ChatItemIndexDb[]>) {
             data.forEach((payload) => {
                 if (payload.id === state.chatOnPage?.id) state.chatOnPage = { ...state.chatOnPage, ...payload };
                 const chat = getRawChat(payload.id);
-                if (!chat) return;
                 const updatedChat = { ...chat, ...payload };
-                updateChatIndexDb(updatedChat);
-                updateRawChat(updatedChat);
+                upsertChatIndexDb(updatedChat, chat?.key);
+
+                deleteChat(updatedChat.id);
+                rawChats.chats.set(updatedChat.id, updatedChat);
+
+                if (chat) {
+                    const diff = payload.countMessages - payload.readMessage - (chat.countMessages - chat.readMessage);
+                    state.messageCount += diff;
+                }
             });
+
+            for (const chat of rawChats.chats.values()) {
+                if (chat.id === data[0]?.id) break;
+                setTimeout(() => store.dispatch(ChatsActions.removeChat(chat.id)));
+            }
+
             state.updatedChats = [...Array.from(rawChats.updatedChats.values())].reverse();
             state.chats = [...Array.from(rawChats.chats.values())].reverse();
         },

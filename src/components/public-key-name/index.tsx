@@ -2,20 +2,21 @@ import { FC, memo, useCallback } from 'react';
 import styles from './index.module.css';
 import { PropsType } from './types.ts';
 import { useAppAction } from '../../root/store';
-import { NotFoundUsername } from '../not-found-username';
 import { getChatByName } from '../../root/api/chats';
 import { useCustomNavigate } from '../../common/hooks/use-custom-navigate.hook.ts';
 import { useShortText } from '../../common/hooks/use-short-text.hook.ts';
+import { EventsEnum } from '../../root/types/events/events.enum.ts';
+import { prepareChat } from '../../common/hooks/prepare-chat.ts';
 
 export const PublicKeyName: FC<PropsType> = memo(({ name }) => {
-    const { setStateApp } = useAppAction();
-    const navigate = useCustomNavigate();
     const shortName = useShortText(name);
+    const { postMessageToBroadCastChannel } = useAppAction();
+    const navigate = useCustomNavigate();
 
     const click = useCallback(async () => {
         const response = await getChatByName(name);
-        if (!response.success) return setStateApp({ page: <NotFoundUsername /> });
-        const chat = response.data;
+        if (!response.success) return postMessageToBroadCastChannel({ event: EventsEnum.SHOW_TEXT, data: 'no_chats' });
+        const chat = await prepareChat(response.data);
 
         navigate(`/${chat.name}`, { state: chat });
     }, []);

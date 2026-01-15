@@ -86,6 +86,8 @@
   "send_as_media": "Send as media",
   "send_as_file": "Send as file",
   "send_as_files": "Send as files",
+  "wrong_file": "Invalid file format",
+  "incorrect_password": "Incorrect password",
 
   "all": "all",
   "always": "always",

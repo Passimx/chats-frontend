@@ -82,6 +82,8 @@
   "send_as_media": "إرسال كوسائط",
   "send_as_file": "إرسال كملف",
   "send_as_files": "إرسال كملفات",
+  "wrong_file": "تنسيق ملف غير صالح",
+  "incorrect_password": "كلمة مرور غير صحيحة",
 
   "all": "الكل",
   "always": "دائمًا",

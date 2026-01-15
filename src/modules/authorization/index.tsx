@@ -27,10 +27,7 @@ export const Authorization: FC = memo(() => {
     const setPage = useCallback(
         (page: JSX.Element) => {
             pages?.push(page);
-            if (pages) {
-                console.log(pages.length);
-                setStateApp({ pages: new Map<TabEnum, JSX.Element[]>([[TabEnum.AUTHORIZATION, pages]]) });
-            }
+            if (pages) setStateApp({ pages: new Map<TabEnum, JSX.Element[]>([[TabEnum.AUTHORIZATION, pages]]) });
         },
         [pages],
     );

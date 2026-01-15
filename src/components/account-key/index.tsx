@@ -29,9 +29,11 @@ export const AccountKey: FC<PropsType> = memo(({ data }) => {
         const blob = new Blob([fileData], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
+        document.body.appendChild(link);
         link.href = url;
         link.download = `${userId}.key`;
         link.click();
+        document.body.removeChild(link);
         URL.revokeObjectURL(url);
         setIsActiveButton(true);
     }, [data]);

@@ -1,16 +1,12 @@
 import { Api, IData } from '../index.ts';
 import { CreateChatType } from '../../types/chat/create-chat.type.ts';
-import { ChatType } from '../../types/chat/chat.type.ts';
+import { ChatItemIndexDb, ChatType } from '../../types/chat/chat.type.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
-import { ChatListenRequestType } from '../../types/chat/chat-listen-request.type.ts';
 import { BodyCreateDialogueType } from '../../types/chat/create-dialogue.type.ts';
 import { MessagesService } from '../../../common/services/messages.service.ts';
+import { ReadMessageType } from '../../types/chat/read-message.type.ts';
 
-export const getChats = async (
-    search?: string,
-    offset?: number,
-    notFavoriteChatIds?: string[],
-): Promise<IData<ChatType[]>> => {
+export const getChats = async (search?: string, offset?: number): Promise<IData<ChatType[]>> => {
     function extractTags(text: string) {
         const matches = text.match(/#(\w+)/g); // Находим слова с `#`
         return matches ? matches.map((tag) => tag.slice(1)) : []; // Убираем `#`
@@ -24,25 +20,38 @@ export const getChats = async (
     const tags = search?.length ? extractTags(search) : undefined;
     const titleWithoutTags = removeTags(search);
 
-    return Api<ChatType[]>('/chats', {
-        params: { search: titleWithoutTags, limit: Envs.chats.limit, offset, notFavoriteChatIds, tags },
-    });
+    return MessagesService.decryptChats(
+        Api<ChatType[]>('/chats', {
+            params: { search: titleWithoutTags, limit: Envs.chats.limit, offset, tags },
+        }),
+    );
+};
+
+export const getChatById = async (chatId: string): Promise<ChatType | null> => {
+    const response = await Api<ChatType[]>('/chats', { params: { chatIds: [chatId] } });
+    if (!response.success) return null;
+    const [chat] = response.data;
+    return chat ?? null;
 };
 
 export const createChat = async (body: CreateChatType): Promise<IData<object>> => {
     return Api('/chats', { method: 'POST', body });
 };
 
-export const getChatByName = async (name: string): Promise<IData<ChatType>> => {
-    return MessagesService.decryptChat(MessagesService.keepAesKey(Api<ChatType>(`/chats/${name}`)));
+export const getChatByName = async (name: string): Promise<IData<ChatType | ChatItemIndexDb>> => {
+    return MessagesService.decryptChat(Api<ChatType>(`/chats/${name}`));
 };
 
-export const listenChats = (chats: ChatListenRequestType[]) => {
-    return MessagesService.decryptChats(Api<ChatType[]>('/chats/join', { method: 'POST', body: { chats } }));
+export const listenChats = async (): Promise<IData<ChatType[]>> => {
+    return Api<ChatType[]>('/chats/listen', { method: 'POST', body: {} });
 };
 
-export const leaveChats = (chatIds: string[]) => {
-    return Api('/chats/leave', { method: 'POST', body: { chatIds } });
+export const listenChat = (chatId: string, socketId: string) => {
+    return Api(`/chats/${chatId}/listen`, { method: 'POST', body: { socketId } });
+};
+
+export const noListenChat = (chatId: string, socketId: string) => {
+    return Api(`/chats/${chatId}/no_listen`, { method: 'POST', body: { socketId } });
 };
 
 export const getSystemChat = (): Promise<IData<ChatType[]>> => {
@@ -55,4 +64,20 @@ export const keepChatKey = (id: string, body: BodyCreateDialogueType) => {
 
 export const receiveKey = (chatId: string) => {
     return Api(`/chats/${chatId}/keys/receive`, { method: 'POST', body: { chatId } });
+};
+
+export const readMessage = (chatId: string, body: ReadMessageType) => {
+    return Api(`/chats/${chatId}/messages/read`, { method: 'POST', body });
+};
+
+export const joinChat = (chatId: string) => {
+    return Api(`/chats/${chatId}/join`, { method: 'POST', body: {} });
+};
+
+export const leaveChat = (chatId: string) => {
+    return Api(`/chats/${chatId}/leave`, { method: 'POST', body: {} });
+};
+
+export const leaveAllChats = () => {
+    return Api('/chats/all/leave', { method: 'POST', body: {} });
 };
