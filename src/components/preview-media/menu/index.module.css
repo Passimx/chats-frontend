@@ -203,7 +203,7 @@
     position: absolute;
     right: 47px;
     top: 4rem;
-    color: gray;
+    color: rgb(91, 91, 91);
     padding: 10px;
 }
 
@@ -214,6 +214,11 @@
     grid-template-columns: auto 1fr;
     gap: 8px;
     align-items: center;
+    border-radius: 4px;
+
+    &.media_menu_item:hover {
+        background-color: #a1cff7;
+    }
 }
 
 .chat_menu_item:hover{
