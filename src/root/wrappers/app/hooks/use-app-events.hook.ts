@@ -4,7 +4,7 @@ import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 import { getRawChat } from '../../../store/raw/chats.raw.ts';
-import { deleteChatCache } from '../../../../common/cache/delete-chat-cache.ts';
+import { deleteChatCache, deleteAllCache } from '../../../../common/cache/delete-chat-cache.ts';
 import { useCallback } from 'react';
 import { getCacheMemory } from '../../../../common/cache/get-cache-memory.ts';
 import { useUpdateChat } from '../../../../common/hooks/use-update-chat.hook.ts';
@@ -111,6 +111,7 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.LOGOUT:
                 logout();
+                deleteAllCache();
                 break;
         }
     }, []);
