@@ -82,6 +82,8 @@
   "protect_your_data": "حماية البيانات الخاصة بك",
   "create_account": "إنشاء حساب",
   "log_in_with_a_key": "تسجيل الدخول باستخدام مفتاح",
+  "wrong_file": "تنسيق ملف غير صالح",
+  "incorrect_password": "كلمة مرور غير صحيحة",
 
   "all": "الكل",
   "always": "دائمًا",

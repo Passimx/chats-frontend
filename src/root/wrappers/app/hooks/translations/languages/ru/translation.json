@@ -82,6 +82,8 @@
   "protect_your_data": "Защитите свои данные",
   "create_account": "Создать аккаунт",
   "log_in_with_a_key": "Войти с помощью ключа",
+  "wrong_file": "Неверный формат файла",
+  "incorrect_password": "Неверный пароль",
 
   "all": "все",
   "always": "всегда",

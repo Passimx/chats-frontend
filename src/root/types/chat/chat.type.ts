@@ -15,7 +15,6 @@ type InnerChatItemType = {
 };
 
 export type ChatType = InnerChatItemType;
-export type DialogueType = ChatType;
 
 export type ChatItemIndexDb = ChatType & {
     key?: number;

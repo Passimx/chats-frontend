@@ -1,22 +1,6 @@
 import { EventsEnum } from './events.enum.ts';
-import { ChatItemIndexDb } from '../chat/chat.type.ts';
-import { UpdateReadChatType } from '../chat/update-read-chat.type.ts';
 import { UserIndexDbType } from '../users/user-index-db.type.ts';
-
-type ReadMessage = {
-    readonly event: EventsEnum.READ_MESSAGE;
-    readonly data: UpdateReadChatType;
-};
-
-type AddChat = {
-    readonly event: EventsEnum.ADD_CHAT;
-    readonly data: ChatItemIndexDb;
-};
-
-type RemoveChat = {
-    readonly event: EventsEnum.REMOVE_CHAT;
-    readonly data: string;
-};
+import { StateType as AppStateType } from '../../store/app/types/state.type.ts';
 
 type UpdateBadge = {
     readonly event: EventsEnum.UPDATE_BADGE;
@@ -58,10 +42,12 @@ type Logout = {
     readonly data?: unknown;
 };
 
+type SetStateApp = {
+    readonly event: EventsEnum.SET_STATE_APP;
+    readonly data: Partial<AppStateType>;
+};
+
 export type LocalEvents =
-    | ReadMessage
-    | AddChat
-    | RemoveChat
     | UpdateBadge
     | CloseSocket
     | PlayNotification
@@ -69,4 +55,5 @@ export type LocalEvents =
     | ChangeLanguage
     | ShowText
     | Logout
-    | CreateUser;
+    | CreateUser
+    | SetStateApp;

@@ -22,13 +22,3 @@ export const deleteChatIndexDb = (chat: ChatItemIndexDb) => {
 
     if (chat.key) IndexDb.transaction('chats', 'readwrite').objectStore('chats').delete(chat.key);
 };
-
-export const updateChatIndexDb = (payload: ChatItemIndexDb) => {
-    const IndexDb = rawChats.indexDb;
-    if (!IndexDb || !rawApp.isMainTab) return; // только главная вкладка может делать операции с IndexDb
-
-    const chat = { ...payload };
-    delete chat.online;
-
-    IndexDb.transaction(['chats'], 'readwrite').objectStore('chats').put(chat, chat.key);
-};

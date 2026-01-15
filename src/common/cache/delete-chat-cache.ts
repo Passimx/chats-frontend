@@ -1,4 +1,5 @@
 import { Envs } from '../config/envs/envs.ts';
+import { rawApp } from '../../root/store/app/app.raw.ts';
 
 export const deleteCacheOne = async (key: string): Promise<void> => {
     const cache = await caches.open(Envs.cache.files);
@@ -7,6 +8,7 @@ export const deleteCacheOne = async (key: string): Promise<void> => {
 
 // возвращает размер удаленного кеша
 export const deleteChatCache = async (chatId: string): Promise<number> => {
+    if (!rawApp.isMainTab) return 0;
     let totalSize = 0;
     const cache = await caches.open(Envs.cache.files);
     const requests = await cache.keys();

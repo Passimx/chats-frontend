@@ -83,6 +83,8 @@
   "protect_your_data": "Proteja sus datos",
   "create_account": "Crear una cuenta",
   "log_in_with_a_key": "Inicie sesión con una clave",
+  "wrong_file": "Formato de archivo no válido",
+  "incorrect_password": "Contraseña incorrecta",
 
   "all": "todo",
   "always": "siempre",

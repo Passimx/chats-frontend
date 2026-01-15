@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { getRawChat } from '../../../root/store/raw/chats.raw.ts';
-import { leaveChats, listenChats } from '../../../root/api/chats';
+import { listenChat, noListenChat } from '../../../root/api/chats';
 import { useAppSelector } from '../../../root/store';
 
 export const useJoinChat = () => {
@@ -11,17 +11,10 @@ export const useJoinChat = () => {
         if (!socketId || !isLoadedChatsFromIndexDb) return;
 
         if (!chatOnPage) return;
-        if (chatOnPage.id && !getRawChat(chatOnPage.id))
-            listenChats([
-                {
-                    chatId: chatOnPage.id,
-                    lastMessage: chatOnPage.countMessages,
-                    maxUsersOnline: Number(chatOnPage.maxUsersOnline),
-                },
-            ]);
+        if (chatOnPage.id && !getRawChat(chatOnPage.id)) listenChat(chatOnPage.id, socketId);
 
         return () => {
-            if (chatOnPage.id && !getRawChat(chatOnPage.id)) leaveChats([chatOnPage.id]);
+            if (chatOnPage.id && !getRawChat(chatOnPage.id)) noListenChat(chatOnPage.id, socketId);
         };
     }, [chatOnPage?.id, socketId, isLoadedChatsFromIndexDb]);
 };

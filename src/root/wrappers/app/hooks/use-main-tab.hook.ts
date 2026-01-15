@@ -1,16 +1,34 @@
 import { useEffect } from 'react';
 import { rawApp } from '../../../store/app/app.raw.ts';
 import { TabsEnum } from '../../../types/events/tabs.enum.ts';
+import { store, useAppAction } from '../../../store';
+import { EventsEnum } from '../../../types/events/events.enum.ts';
 
 export const useMainTab = () => {
+    const { setStateApp, postMessageToBroadCastChannel } = useAppAction();
+
     useEffect(() => {
         const channel = new BroadcastChannel('ws-channel');
         const instanceId = Date.now();
         rawApp.tabs = [instanceId];
 
         const getMain = () => {
-            if ((rawApp.tabs[0] === instanceId) === rawApp.isMainTab) return;
+            if ((rawApp.tabs[0] === instanceId) === rawApp.isMainTab) {
+                const state = store.getState().app;
+                postMessageToBroadCastChannel({
+                    event: EventsEnum.SET_STATE_APP,
+                    data: {
+                        socketId: state.socketId,
+                        isListening: state.isListening,
+                        cacheMemory: state.cacheMemory,
+                        totalMemory: state.totalMemory,
+                        indexedDBMemory: state.indexedDBMemory,
+                    },
+                });
+                return;
+            }
             rawApp.isMainTab = rawApp.tabs[0] === instanceId;
+            setStateApp({ isActiveTab: rawApp.tabs[0] === instanceId });
         };
 
         const createTab = (tab: number) => {
