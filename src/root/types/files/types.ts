@@ -1,7 +1,6 @@
 export type FileMetadataType = {
     duration?: number;
     loudnessData?: number[];
-    lossless?: boolean;
 
     previewId?: string;
     previewMimeType?: MimetypeEnum;

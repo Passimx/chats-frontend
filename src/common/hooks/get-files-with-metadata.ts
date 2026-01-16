@@ -30,7 +30,6 @@ export const getFilesWithMetadata = async (files: FilesType[]): Promise<FilesTyp
                     metadata.previewId = URL.createObjectURL(previewFile);
                     metadata.previewMimeType = previewFile.type as MimetypeEnum;
                     metadata.previewSize = previewFile.size;
-                    metadata.lossless = true;
                 }
 
                 let fileName = '';

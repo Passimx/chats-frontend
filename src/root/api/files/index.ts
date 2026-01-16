@@ -33,11 +33,7 @@ export const CancelDownload = (file: Types) => {
 export const DownloadFilePreview = async (file: Types): Promise<Blob | undefined> => {
     const metadata = file.metadata;
     const cache = await caches.open(Envs.cache.files);
-    /*
-        If lossless = false -> create cacheUrl for download image in original size
-        If lossless = true -> create cacheUrl for download image small preview 
-    */
-    const cacheUrl = metadata?.lossless ? `/${file.chatId}/${metadata.previewId}` : `/${file.chatId}/${file.key}`;
+    const cacheUrl = `/${file.chatId}/${metadata.previewId}`;
     const url = `${Envs.filesServiceUrl}${cacheUrl}`;
 
     if (!metadata.previewId || !metadata.previewMimeType || !metadata.previewSize) return;

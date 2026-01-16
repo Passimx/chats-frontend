@@ -4,6 +4,4 @@ export type ContextType = {
     files?: FilesType[];
     setFiles: (files?: FilesType[]) => void;
     deleteFile: (fileIndex: number) => void;
-    lossless: boolean;
-    setLossless: (boolean: boolean) => void;
 };

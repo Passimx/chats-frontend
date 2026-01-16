@@ -1,7 +1,7 @@
-import { FC, memo, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, memo, useContext, useEffect, useMemo } from 'react';
 import styles from './index.module.css';
 import { ContextMedia } from '../preview-media-context';
-import { MdOutlineCancel, MdMoreVert } from 'react-icons/md';
+import { MdOutlineCancel } from 'react-icons/md';
 import { useAppSelector } from '../../root/store';
 import { PreviewFile } from '../preview-file';
 import { BsFillArrowUpCircleFill } from 'react-icons/bs';
@@ -13,18 +13,14 @@ import { FileTypeEnum } from '../../root/types/files/types.ts';
 import { PreviewMusic } from '../preview-music';
 import { setThemeColor } from '../../common/hooks/set-theme-color.ts';
 import { getFileSize } from '../../common/hooks/get-file-size.ts';
-import PreviewMediaMenu from './menu/index.tsx';
-import { PreviewImage } from '../preview-image/index.tsx';
 
 /** Show files list before send message */
 export const PreviewMedia: FC = memo(() => {
     const [isShowPlaceholder] = useSendMessage();
     const { t } = useTranslation();
-    const { files, setFiles, lossless } = useContext(ContextMedia)!;
+    const { files, setFiles } = useContext(ContextMedia)!;
     const filesArray = useMemo(() => (files ? Array.from(files) : []), [files]);
     const { chatOnPage } = useAppSelector((state) => state.chats);
-
-    const [isVisibleMenu, setIsVisibleMenu] = useState<boolean>();
 
     useEffect(() => {
         if (!files?.length) {
@@ -45,7 +41,6 @@ export const PreviewMedia: FC = memo(() => {
         return files?.reduce((prevSum, file) => prevSum + file.size, 0);
     }, [files?.length]);
 
-    // sizeName читает размер только последнего файла. Нужно исправить чтобы считал размер всех загружаемых файлов
     const sizeName = useMemo(() => {
         const [memory, unit] = getFileSize(size);
         return `${memory} ${t(unit)}`;
@@ -62,22 +57,14 @@ export const PreviewMedia: FC = memo(() => {
                 <div className={styles.main}>
                     <div className={styles.header}>
                         <div className={styles.files_inf}>{sizeName}</div>
-                        <MdMoreVert className={styles.menu_logo} onClick={() => setIsVisibleMenu(true)} />
                         <MdOutlineCancel className={styles.cancel_logo} onClick={() => setFiles(undefined)} />
                     </div>
-
-                    <PreviewMediaMenu isVisibleOutside={isVisibleMenu} setIsVisibleOutside={setIsVisibleMenu} />
-
                     <div className={styles.files}>
-                        {filesArray.map((file, key) =>
-                            (file.type.includes(FileTypeEnum.AUDIO) && (
-                                <PreviewMusic key={file.randomId} file={file} number={key} />
-                            )) ||
-                            lossless ? (
-                                <PreviewFile key={file.randomId} file={file} number={key} />
-                            ) : (
-                                <PreviewImage key={file.randomId} file={file} number={key} />
-                            ),
+                        {filesArray.map(
+                            (file, key) =>
+                                (file.type.includes(FileTypeEnum.AUDIO) && (
+                                    <PreviewMusic key={file.randomId} file={file} number={key} />
+                                )) || <PreviewFile key={file.randomId} file={file} number={key} />,
                         )}
                     </div>
                     <div className={styles.message_input}>

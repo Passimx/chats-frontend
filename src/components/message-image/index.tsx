@@ -10,8 +10,6 @@ import { useTranslation } from 'react-i18next';
 import { useVisibility } from '../../common/hooks/use-visibility.hook.ts';
 import { CiImageOn } from 'react-icons/ci';
 import { useDownloadPreview } from '../../common/hooks/use-download-preview.hook.ts';
-import { useAppAction } from '../../root/store/index.ts';
-import { WatchImage } from '../watch-image/index.tsx';
 
 export const MessageImage: FC<PropsType> = memo(({ file }) => {
     const r = 17;
@@ -20,51 +18,42 @@ export const MessageImage: FC<PropsType> = memo(({ file }) => {
     const [observerTarget] = useVisibility();
     const backgroundImage = useDownloadPreview(file);
     const { downloadPercent, blob, clickFile, downloadOnDevice } = useDownloadFile(file);
-    const { setStateApp } = useAppAction();
 
     const size = useMemo(() => {
         const [memory, unit] = getFileSize(file.size);
         return `${memory} ${t(unit)}`;
     }, [file.size]);
 
-    const handleImageClick = () => {
-        setStateApp({ page: <WatchImage file={file} /> });
-    };
-
-    if (file.metadata.lossless) {
-        return (
-            <div
-                onClick={clickFile}
-                ref={observerTarget}
-                className={`${styles.background} ${!blob && styles.background_animation}`}
-            >
-                <div className={styles.file_background} style={{ backgroundImage }}>
-                    {downloadPercent === undefined && (
-                        <div className={styles.file_icon}>
-                            <CiImageOn className={styles.file_logo} />
-                            <BsDownload className={styles.download_logo} />
-                        </div>
-                    )}
-                    {downloadPercent !== undefined && <div className={styles.stop_button}>X</div>}
-                    {downloadPercent !== undefined && (
-                        <div className={styles.background_stop}>
-                            <LoadRadius radius={r} strokeWidth={strokeWidth} percent={downloadPercent} />
-                        </div>
-                    )}
+    return (
+        <div
+            onClick={clickFile}
+            ref={observerTarget}
+            className={`${styles.background} ${!blob && styles.background_animation}`}
+        >
+            <div className={styles.file_background} style={{ backgroundImage }}>
+                {downloadPercent === undefined && (
+                    <div className={styles.file_icon}>
+                        <CiImageOn className={styles.file_logo} />
+                        <BsDownload className={styles.download_logo} />
+                    </div>
+                )}
+                {downloadPercent !== undefined && <div className={styles.stop_button}>X</div>}
+                {downloadPercent !== undefined && (
+                    <div className={styles.background_stop}>
+                        <LoadRadius radius={r} strokeWidth={strokeWidth} percent={downloadPercent} />
+                    </div>
+                )}
+            </div>
+            <div className={styles.file_inf}>
+                <div className={styles.name_background}>
+                    <MdDownloadForOffline className={styles.name_background_logo} onClick={downloadOnDevice} />
+                    <div className={styles.name}>{file.originalName}</div>
                 </div>
-                <div className={styles.file_inf}>
-                    <div className={styles.name_background}>
-                        <MdDownloadForOffline className={styles.name_background_logo} onClick={downloadOnDevice} />
-                        <div className={styles.name}>{file.originalName}</div>
-                    </div>
-                    <div className={styles.size}>
-                        <div>{size}</div>
-                        <div>{downloadPercent !== undefined ? `(${downloadPercent?.toFixed(0)}%)` : ''}</div>
-                    </div>
+                <div className={styles.size}>
+                    <div>{size}</div>
+                    <div>{downloadPercent !== undefined ? `(${downloadPercent?.toFixed(0)}%)` : ''}</div>
                 </div>
             </div>
-        );
-    } else {
-        return <img className={styles.image_background} src={backgroundImage} alt="image" onClick={handleImageClick} />;
-    }
+        </div>
+    );
 });

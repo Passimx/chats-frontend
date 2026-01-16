@@ -6,7 +6,6 @@ export const ContextMedia = createContext<ContextType | null>(null);
 
 export const PreviewMediaContext: FC<{ children: JSX.Element | JSX.Element[] | undefined }> = ({ children }) => {
     const [files, setFiles] = useState<FilesType[]>();
-    const [lossless, setLossless] = useState(true);
 
     const deleteFile = useCallback(
         (fileIndex: number) => {
@@ -17,6 +16,6 @@ export const PreviewMediaContext: FC<{ children: JSX.Element | JSX.Element[] | u
         [files],
     );
 
-    const value = { files, setFiles, deleteFile, lossless, setLossless };
+    const value = { files, setFiles, deleteFile };
     return <ContextMedia.Provider value={value}>{children}</ContextMedia.Provider>;
 };

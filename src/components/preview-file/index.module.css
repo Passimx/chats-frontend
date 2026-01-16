@@ -7,12 +7,6 @@
     overflow: hidden;
     height: 60px;
     padding: 0 8px 0 8px;
-    transition: all 0.3s ease;
-
-    &:hover {
-        background-color: #184294;
-    }
-    
 }
 
 .file_preview_image, .file_logo_background{
