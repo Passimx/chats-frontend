@@ -37,6 +37,11 @@ type CreateUser = {
     readonly data: Partial<UserIndexDbType>;
 };
 
+type Logout = {
+    readonly event: EventsEnum.LOGOUT;
+    readonly data?: unknown;
+};
+
 type SetStateApp = {
     readonly event: EventsEnum.SET_STATE_APP;
     readonly data: Partial<AppStateType>;
@@ -49,5 +54,6 @@ export type LocalEvents =
     | Error
     | ChangeLanguage
     | ShowText
+    | Logout
     | CreateUser
     | SetStateApp;
