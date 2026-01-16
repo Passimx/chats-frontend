@@ -70,6 +70,14 @@
     max-height: 15px;
 }
 
+.image_background{
+    border-radius: 8px;
+    cursor: pointer;
+    max-width: 16rem;
+    min-width: 10rem;
+    margin-top: 0.5rem;
+}
+
 .file_background{
     width: 40px;
     height: 40px;

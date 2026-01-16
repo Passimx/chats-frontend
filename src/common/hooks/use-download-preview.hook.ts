@@ -10,7 +10,7 @@ export const useDownloadPreview = (file: Types) => {
         if (!blob) return;
 
         const url = URL.createObjectURL(blob);
-        setUrl(`url(${url})`);
+        setUrl(file?.metadata?.lossless ? `url(${url})` : url);
     };
 
     useEffect(() => {

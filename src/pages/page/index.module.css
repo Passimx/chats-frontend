@@ -35,11 +35,11 @@
     }
 
     .cancel_background{
-        display: flex;
-        justify-content: end;
+        position: absolute;
         opacity: 0.5;
+        top: 0;
+        right: 0;
         transition: opacity 0.3s ease;
-        width: 32rem;
 
         &:hover {
             opacity: 0.9;
@@ -52,8 +52,8 @@
         .cancel_button{
             color: white;
             font-weight: bold;
-            font-size: 30px;
-            position: absolute;
+            font-size: 37px;
+            padding: 10px;
         }
     }
 }

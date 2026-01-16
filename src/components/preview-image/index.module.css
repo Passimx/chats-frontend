@@ -1,23 +1,11 @@
 .background{
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 8px;
-    border-radius: 8px;
-    overflow: hidden;
-    height: 60px;
-    padding: 0 8px 0 8px;
-    transition: all 0.3s ease;
-
-    &:hover {
-        background-color: #184294;
-    }
-    
+    display: flex;
+    justify-content: center;
+    align-items: self-start;
 }
 
-.file_preview_image, .file_logo_background{
-    width: 60px;
-    height: 60px;
+.image_view{
+    width: 80%;
     object-fit: cover;
     border-radius: 8px;
 }
@@ -40,7 +28,7 @@
     font-size: 24px;
 }
 
-.styles_background{
+.delete_button{
     width: 40px;
     height: 40px;
     display: grid;
@@ -48,10 +36,15 @@
     align-items: center;
     border-radius: 8px;
     cursor: pointer;
+    margin-left: 1.5rem;
+
+    &:hover {
+        background-color: rgba(222, 71, 98, 0.97);
+    }
 }
 
-.styles_background:hover{
+/* .styles_background:hover{
     @media(width > 600px) {
         background-color: rgba(119,0,21,0.97);
     }
-}
+} */

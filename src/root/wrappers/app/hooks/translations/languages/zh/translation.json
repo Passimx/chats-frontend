@@ -78,6 +78,9 @@
   "protect_your_data": "保护您的数据",
   "create_account": "创建帐户",
   "log_in_with_a_key": "使用密钥登录",
+  "add": "添加",
+  "send_as_media": "作为媒体发送",
+  "send_as_file": "作为文件发送",
   "wrong_file": "文件格式无效",
   "incorrect_password": "密码错误",
 
