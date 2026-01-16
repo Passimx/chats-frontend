@@ -2,27 +2,28 @@ import { ChatItemIndexDb, ChatType } from '../../root/types/chat/chat.type.ts';
 import { MessageType } from '../../root/types/chat/message.type.ts';
 import { Envs } from '../config/envs/envs.ts';
 import { CryptoService } from '../services/crypto.service.ts';
-import rawChats from '../../root/store/raw/chats.raw.ts';
+import rawChats, { getRawChat } from '../../root/store/raw/chats.raw.ts';
 import { MessagesService } from '../services/messages.service.ts';
 import { receiveKey } from '../../root/api/chats';
 import { store } from '../../root/store';
 
 export const prepareChat = async (data: ChatType): Promise<ChatItemIndexDb> => {
-    const { keys, ...body } = data;
+    const { keys } = data;
+    const rawChat = getRawChat(data.id);
     let messages: MessageType[] = [];
     const chatOnPage = store.getState().chats.chatOnPage;
+    const scrollTop = rawChat?.scrollTop ?? chatOnPage?.scrollTop ?? 1;
     const key = new Date(data.message?.createdAt ?? new Date()).getTime();
 
-    // чтобы не обнулять сообщения, что уже на странице
-    if (chatOnPage?.id === data.id && chatOnPage?.messages?.length) {
-        messages = chatOnPage.messages;
-    } else if (body.message) messages = [body.message];
+    if (rawChat) messages = rawChat.messages;
+    else if (chatOnPage?.id === data.id && chatOnPage?.messages?.length) messages = chatOnPage.messages;
+    else if (data.message) messages = [data.message];
 
     const payload: ChatItemIndexDb = {
         ...data,
         messages,
         readMessage: 0,
-        scrollTop: 0,
+        scrollTop,
         key,
     };
 

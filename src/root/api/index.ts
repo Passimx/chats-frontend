@@ -36,20 +36,18 @@ export async function Api<T>(url: string, { headers, body, method, params }: req
     const userId = store.getState().user.id;
     mainHeaders['x-socket-id'] = userId;
 
-    try {
-        const result = await fetch(`${Envs.chatsServiceUrl}${url}${query}`, {
-            headers: {
-                ...headers,
-                ...mainHeaders,
-            },
-            body: body ? JSON.stringify(body ?? {}) : undefined,
-            method,
-            credentials: 'include',
-        });
-        if (result.status.toString()[0] === '2') return (await result.json().catch(() => undefined)) as IData<T>;
-    } catch (e) {
-        console.log(e);
-    }
-
-    return { success: false, data: 'Неизвестная ошибка при запросе.' };
+    return fetch(`${Envs.chatsServiceUrl}${url}${query}`, {
+        headers: {
+            ...headers,
+            ...mainHeaders,
+        },
+        body: body ? JSON.stringify(body ?? {}) : undefined,
+        method,
+        credentials: 'include',
+    })
+        .then(async (result) => {
+            if (result.status.toString()[0] === '2') return (await result.json().catch(() => undefined)) as IData<T>;
+            else return { success: false, data: 'Неизвестная ошибка при запросе.' } as IData<T>;
+        })
+        .catch(() => ({ success: false, data: 'Неизвестная ошибка при запросе.' }));
 }
