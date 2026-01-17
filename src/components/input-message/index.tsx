@@ -23,7 +23,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages }) => {
     const [isVisibleMediaMenu, setIsVisibleMediaMenu] = useState<boolean>();
     const [textExist, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
     const newMessageBlockRef = useRef<HTMLDivElement | null>(null);
-    const [inputsHeight, setInputsHeight] = useState<number>();
+    const [mainBlockHeight, setMainBlockHeight] = useState<number>();
 
     const cancelAnswerMessage = useCallback(() => {
         if (!chatOnPage?.id) return;
@@ -42,7 +42,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages }) => {
         if (newMessageBlockRef.current) {
             const observer = new ResizeObserver((entries) => {
                 const height = entries[0].contentRect.height;
-                setInputsHeight(height);
+                setMainBlockHeight(height);
             });
 
             observer.observe(newMessageBlockRef.current);
@@ -55,7 +55,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages }) => {
 
     return (
         <div id={styles.background}>
-            <div id={styles.main_block} style={{ height: inputsHeight }}>
+            <div id={styles.main_block} style={{ height: mainBlockHeight }}>
                 {chatOnPage?.answerMessage && (
                     <div id={styles.answer_block}>
                         <ParentMessage {...chatOnPage?.answerMessage} />
