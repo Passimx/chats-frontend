@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useMemo, useState, useEffect, useRef } from 'react';
 import styles from './index.module.css';
 import { useAppAction, useAppSelector } from '../../root/store';
 import { ParentMessage } from '../parent-message';
@@ -22,6 +22,8 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages }) => {
     const [isVisibleEmoji, setIsVisibleEmoji] = useState<boolean>();
     const [isVisibleMediaMenu, setIsVisibleMediaMenu] = useState<boolean>();
     const [textExist, setEmoji, placeholder, isShowPlaceholder] = useEnterHook();
+    const newMessageBlockRef = useRef<HTMLDivElement | null>(null);
+    const [mainBlockHeight, setMainBlockHeight] = useState<number>();
 
     const cancelAnswerMessage = useCallback(() => {
         if (!chatOnPage?.id) return;
@@ -36,9 +38,24 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages }) => {
         return diff;
     }, [chatOnPage]);
 
+    useEffect(() => {
+        if (newMessageBlockRef.current) {
+            const observer = new ResizeObserver((entries) => {
+                const height = entries[0].contentRect.height;
+                setMainBlockHeight(height);
+            });
+
+            observer.observe(newMessageBlockRef.current);
+
+            return () => {
+                observer.disconnect();
+            };
+        }
+    }, []);
+
     return (
         <div id={styles.background}>
-            <div id={styles.main_block}>
+            <div id={styles.main_block} style={{ height: mainBlockHeight }}>
                 {chatOnPage?.answerMessage && (
                     <div id={styles.answer_block}>
                         <ParentMessage {...chatOnPage?.answerMessage} />
@@ -68,7 +85,7 @@ export const InputMessage: FC<PropsType> = ({ showLastMessages }) => {
                             <BsEmojiSmile className={styles.button_emoji} />
                         </div>
                     </div>
-                    <div id={styles.new_message_block}>
+                    <div id={styles.new_message_block} ref={newMessageBlockRef}>
                         <div
                             className={`${styles.placeholder_text} ${setVisibilityCss(styles.show_slowly, styles.hide_slowly, isShowPlaceholder)}`}
                             dir="auto"
