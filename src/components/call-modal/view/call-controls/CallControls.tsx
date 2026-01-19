@@ -8,10 +8,9 @@ type PropsType = {
     isMinimize: boolean;
     isFullScreenActive: boolean;
     setStateApp: any;
-    hangUp: any;
 };
 
-const CallControls: FC<PropsType> = ({ isMinimize, setStateApp, isFullScreenActive, hangUp }) => {
+const CallControls: FC<PropsType> = ({ isMinimize, setStateApp, isFullScreenActive }) => {
     const context = useContext(CallContext);
     const { isMicrophoneOn, setIsMicrophoneOn, isCameraOn, setIsCameraOn, isCallActive, setIsCallActive } = context;
 
@@ -38,7 +37,6 @@ const CallControls: FC<PropsType> = ({ isMinimize, setStateApp, isFullScreenActi
                 onClick={() => {
                     if (!isCallActive) return;
                     setIsCallActive(false);
-                    hangUp();
                     setStateApp({ page: undefined });
                 }}
             >

@@ -20,6 +20,7 @@
     "@yudiel/react-qr-scanner": "^2.4.1",
     "i18next": "^23.14.0",
     "md5": "^2.3.0",
+    "mediasoup-client": "^3.18.3",
     "moment": "^2.30.1",
     "music-metadata-browser": "^2.5.11",
     "qrcode": "^1.5.4",
@@ -33,6 +34,7 @@
     "socket.io-client": "^4.8.3",
     "ton-crypto": "^3.2.0",
     "tonweb": "^0.0.66",
+    "uuid": "^13.0.0",
     "vite-plugin-node-polyfills": "^0.24.0"
   },
   "devDependencies": {

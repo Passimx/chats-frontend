@@ -15,11 +15,11 @@ const CallModal: FC = () => {
     const { setStateApp } = useAppAction();
     const context = useContext(CallContext);
 
-    const { createConnection, localStream, isMicrophoneOn, setIsMicrophoneOn, hangUp } = context;
+    const { createConnection, localStream, isMicrophoneOn, setIsMicrophoneOn, routerRtpCapabilities } = context;
 
     useEffect(() => {
-        createConnection();
-    }, []);
+        if (routerRtpCapabilities) createConnection();
+    }, [routerRtpCapabilities]);
 
     return (
         <div
@@ -37,7 +37,7 @@ const CallModal: FC = () => {
                 setStateApp={setStateApp}
             />
 
-            {(Boolean(localStream) && <VideoPlayer srcObject={localStream} autoPlay muted />) || (
+            {(Boolean(localStream) && <VideoPlayer autoPlay muted />) || (
                 <div className={styles.avatar} data-minimize={(isMinimize && 'active') || ''}>
                     {chatOnPage && (
                         <Avatar
@@ -48,12 +48,7 @@ const CallModal: FC = () => {
                 </div>
             )}
 
-            <CallControls
-                isMinimize={isMinimize}
-                isFullScreenActive={isFullScreenActive}
-                setStateApp={setStateApp}
-                hangUp={hangUp}
-            />
+            <CallControls isMinimize={isMinimize} isFullScreenActive={isFullScreenActive} setStateApp={setStateApp} />
         </div>
     );
 };

@@ -35,6 +35,8 @@ import { CallContext } from '../../root/contexts/call';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { leaveChat } from '../../root/api/chats';
 
+const myId = 'http://localhost:3006/1a197adac4c260a09a1151706dd2f0abaf1b87a8264fd05f29d0f76723de0eb8';
+
 /** Main chat component */
 const Chat: FC = memo(() => {
     useGetChat();
@@ -52,7 +54,7 @@ const Chat: FC = memo(() => {
 
     const ownUserName = useAppSelector((state) => state.user.userName);
 
-    const { isCallActive, setIsCallActive, ws } = useContext(CallContext);
+    const { isCallActive, setIsCallActive, roomId, setRouterRtpCapabilities } = useContext(CallContext);
 
     if (!chatOnPage) return <></>;
 
@@ -125,10 +127,26 @@ const Chat: FC = memo(() => {
                         <div
                             className={styles.chat_menu_item}
                             onClick={() => {
-                                if (isCallActive || !setIsCallActive) return;
+                                if (isCallActive || !setIsCallActive || !roomId) return;
                                 setStateApp({ page: <CallModal /> });
                                 setIsCallActive(true);
-                                ws.emit('create-room');
+
+                                if (roomId) {
+                                    fetch('https://passimx.ru/api/media/room', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            roomId,
+                                            initiatorId: myId,
+                                        }),
+                                    })
+                                        .then((response) => response.json())
+                                        .then((data) => {
+                                            setRouterRtpCapabilities(data.routerRtpCapabilities);
+                                        });
+                                }
                             }}
                         >
                             <PiPhoneCallFill className={styles.chat_menu_item_icon} />

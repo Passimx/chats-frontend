@@ -1,185 +1,174 @@
-import { createContext, ReactNode, useEffect, useState } from 'react';
-import socketIOClient from 'socket.io-client';
+import { createContext, ReactNode, useState } from 'react';
+//import { Device } from 'mediasoup-client';
+import { v4 as uuidV4 } from 'uuid';
 
 export type CallContextType = {
-    ws: any;
-    peerConnection: RTCPeerConnection | null;
-    localStream: MediaStream | null;
-    remoteStream: MediaStream | null;
     createConnection: () => Promise<void>;
-    hangUp: () => void;
     isMicrophoneOn: boolean;
     setIsMicrophoneOn: (value: boolean) => void;
     isCameraOn: boolean;
     setIsCameraOn: (value: boolean) => void;
     isCallActive: boolean;
     setIsCallActive: (value: boolean) => void;
+    roomId: string | null;
+    setRoomId: (data: string) => void;
+    routerRtpCapabilities: any | null;
+    setRouterRtpCapabilities: (data: any) => void;
+    localStream: boolean;
+    setLocalStream: (data: boolean) => void;
 };
 
-const WS = 'http://localhost:5000';
+//const device: Device = new Device();
 
 export const CallContext = createContext<CallContextType>({
-    ws: null,
-    peerConnection: null,
-    localStream: null,
-    remoteStream: null,
     createConnection: async () => {},
-    hangUp: () => {},
     isMicrophoneOn: false,
     isCameraOn: false,
     isCallActive: false,
     setIsMicrophoneOn: () => {},
     setIsCameraOn: () => {},
     setIsCallActive: () => {},
+    roomId: '',
+    setRoomId: () => {},
+    routerRtpCapabilities: null,
+    setRouterRtpCapabilities: () => {},
+    localStream: false,
+    setLocalStream: () => {},
 });
 
+//const myId = '1a197adac4c260a09a1151706dd2f0abaf1b87a8264fd05f29d0f76723de0eb8';
+
 export const CallProvider = ({ children }: { children: ReactNode }) => {
-    const [peerConnection, setPeerConnection] = useState<RTCPeerConnection | null>(null);
-    const [localStream, setLocalStream] = useState<MediaStream | null>(null);
-    const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     const [isCameraOn, setIsCameraOn] = useState(false);
     const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
     const [isCallActive, setIsCallActive] = useState(false);
-    const [roomId, setRoomId] = useState<any | null>(null);
-
-    const ws = socketIOClient(WS);
+    const [roomId, setRoomId] = useState<string | null>(uuidV4());
+    const [routerRtpCapabilities, setRouterRtpCapabilities] = useState();
+    const [localStream, setLocalStream] = useState(false);
 
     // Создание WebRTC-соединения
     const createConnection = async () => {
+        /*
         try {
-            // 1. Создаём PeerConnection с ICE-серверами
-            const pc = new RTCPeerConnection({
-                iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
-            });
-            setPeerConnection(pc);
+            // 1. Загружаем RTP-возможности в устройство
+            if (routerRtpCapabilities) {
+                await device.load({ routerRtpCapabilities });
+            }
 
-            // 2. Получаем доступ к камере и микрофону
-            const stream = await navigator.mediaDevices.getUserMedia({
-                audio: true,
-                video: true,
-            });
-            setLocalStream(stream);
+            // 2. Получаем параметры транспорта от сервера
+            const transportParams = await createTransport(roomId!);
 
-            // Добавляем локальные треки в соединение
-            stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+            // 3. Создаём транспорт через mediasoup-client
+            const sendTransport = device.createSendTransport(transportParams);
 
-            // 3. Создаём и отправляем SDP-offer
-            const offer = await pc.createOffer();
-            await pc.setLocalDescription(offer);
-            ws.emit('offer', {
-                roomId: roomId,
-                sdp: offer,
-            });
+            // 4. Настраиваем обработчики событий
+            setupTransportHandlers(sendTransport);
 
-            // 4. Обрабатываем ICE-кандидаты
-            pc.onicecandidate = (event) => {
-                if (event.candidate) {
-                    ws.emit('candidate', {
-                        roomId: roomId,
-                        candidate: event.candidate,
-                    });
-                }
-            };
+            // 5. Подключаем транспорт (отправляем DTLS параметры на сервер)
+            await sendTransport.connect({ dtlsParameters: transportParams.dtlsParameters });
 
-            // 5. Обрабатываем удалённый поток
-            pc.ontrack = (event) => {
-                setRemoteStream(event.streams[0]);
-            };
+            // 6. Публикуем локальные медиа
+            await produceLocalMedia(sendTransport);
         } catch (error) {
-            console.error('Ошибка при создании соединения:', error);
+            console.error('Connection failed:', error);
         }
+
+     */
     };
 
-    // Завершение вызова
-    const hangUp = () => {
-        if (peerConnection) {
-            peerConnection.close();
-            setPeerConnection(null);
-        }
-        setLocalStream(null);
-        setRemoteStream(null);
-    };
-
-    useEffect(() => {
-        ws.on('created-room', (data: any) => {
-            setRoomId(data);
-        });
-
-        // 1. Создаём своё PeerConnection
-        ws.on('offer', async (data: any) => {
-            const pc = new RTCPeerConnection({
-                iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
-            });
-            setPeerConnection(pc);
-
-            // 2. Получаем локальный поток
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-            setLocalStream(stream);
-            stream.getTracks().forEach((track) => pc.addTrack(track, stream));
-
-            // 3. Устанавливаем offer как remoteDescription
-            await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
-
-            // 4. Создаём и отправляем answer
-            const answer = await pc.createAnswer();
-            await pc.setLocalDescription(answer);
-            ws.emit('answer', {
-                roomId: data.roomId,
-                sdp: answer,
-            });
-
-            // 5. Обрабатываем ICE-кандидаты
-            pc.onicecandidate = (event) => {
-                if (event.candidate) {
-                    ws.emit('candidate', {
-                        roomId: data.roomId,
-                        candidate: event.candidate,
-                    });
-                }
-            };
-
-            // 6. Получаем удалённый поток
-            pc.ontrack = (event) => {
-                setRemoteStream(event.streams[0]);
-            };
-        });
-
-        ws.on('answer', (data: any) => {
-            if (peerConnection) {
-                peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
-            }
-        });
-
-        ws.on('candidate', (data: any) => {
-            if (peerConnection) {
-                peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
-            }
-        });
-
-        return () => {
-            ws.off('created-room');
-            ws.off('answer');
-            ws.off('candidate');
-        };
-    }, []);
     return (
         <CallContext.Provider
             value={{
-                ws,
-                peerConnection,
-                localStream,
-                remoteStream,
                 createConnection,
-                hangUp,
                 isMicrophoneOn,
                 isCameraOn,
                 isCallActive,
                 setIsMicrophoneOn,
                 setIsCameraOn,
                 setIsCallActive,
+                roomId,
+                setRoomId,
+                routerRtpCapabilities,
+                setRouterRtpCapabilities,
+                localStream,
+                setLocalStream,
             }}
         >
             {children}
         </CallContext.Provider>
     );
 };
+/*
+async function createTransport(roomId: string) {
+    const myId = 'http://localhost:3006/1a197adac4c260a09a1151706dd2f0abaf1b87a8264fd05f29d0f76723de0eb8';
+
+    return await fetch(`https://passimx.ru/api/media/transport/${roomId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            peerId: myId,
+            direction: 'send', // или 'sendonly'/'recvonly'
+        }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            return data;
+        });
+}
+
+function joinRoom(transportParams: any) {
+    fetch(`https://passimx.ru/api/media/transport/${transportParams.id}/connect`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            dtlsParameters: transportParams.dtlsParameters,
+        }),
+    });
+}
+
+function setupTransportHandlers(transport: any) {
+    // Событие: требуется установить DTLS-соединение
+    transport.on('connect', async ({ dtlsParameters }: { dtlsParameters: any }, callback: any, errback: any) => {
+        try {
+            // Отправляем DTLS параметры на сервер
+            await joinRoom(transport);
+            callback(); // Подтверждаем успешное подключение
+        } catch (error) {
+            errback(error);
+        }
+    });
+
+    // Событие: нужно создать producer (отправить медиа)
+    transport.on('produce', async (params: any, callback: any, errback: any) => {
+        try {
+            const { kind, rtpParameters } = params;
+            // Отправляем запрос на сервер для создания producer
+            const response = await fetch('/api/produce', {
+                method: 'POST',
+                body: JSON.stringify({
+                    transportId: transport.id,
+                    kind,
+                    rtpParameters,
+                }),
+            });
+            const { producerId } = await response.json();
+            callback({ producerId });
+        } catch (error) {
+            errback(error);
+        }
+    });
+
+    // Обработка ошибок транспорта
+    transport.on('connectionstatechange', (state: any) => {
+        console.log('Transport state:', state);
+        if (state === 'failed' || state === 'closed') {
+            console.error('Transport disconnected');
+        }
+    });
+}
+
+ */
