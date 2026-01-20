@@ -82,6 +82,10 @@
   "protect_your_data": "Защитите свои данные",
   "create_account": "Создать аккаунт",
   "log_in_with_a_key": "Войти с помощью ключа",
+  "add": "Добавить",
+  "send_as_media": "Отправить как медиа",
+  "send_as_file": "Отправить как файл",
+  "send_as_files": "Отправить как файлы",
   "wrong_file": "Неверный формат файла",
   "incorrect_password": "Неверный пароль",
 

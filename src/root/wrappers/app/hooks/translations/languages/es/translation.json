@@ -83,6 +83,10 @@
   "protect_your_data": "Proteja sus datos",
   "create_account": "Crear una cuenta",
   "log_in_with_a_key": "Inicie sesión con una clave",
+  "add": "Agregar",
+  "send_as_media": "Enviar como medio",
+  "send_as_file": "Enviar como archivo",
+  "send_as_files": "Enviar como archivos",
   "wrong_file": "Formato de archivo no válido",
   "incorrect_password": "Contraseña incorrecta",
 

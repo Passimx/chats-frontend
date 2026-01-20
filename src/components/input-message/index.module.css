@@ -18,6 +18,8 @@
     overflow: hidden;
     border-radius: 15px;
     display: grid;
+    transition: height .2s ease;
+    min-height: 46px;
 
     @media(width < 600px) {
         border-radius: 0;
