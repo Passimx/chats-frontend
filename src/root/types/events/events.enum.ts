@@ -10,6 +10,7 @@ export enum EventsEnum {
     PONG = 'pong',
     VERIFY = 'verify',
     ERROR = 'error',
+    LOGOUT = 'LOGOUT',
     CREATE_USER = 'create_user',
     UPDATE_CHAT = 'update_chat',
     JOIN_CHAT = 'join_chat',

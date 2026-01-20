@@ -4,6 +4,7 @@ import { EventsEnum } from '../../../types/events/events.enum.ts';
 import { useLoadSoundsHooks } from './use-load-sounds.hooks.ts';
 import { ChatEnum } from '../../../types/chat/chat.enum.ts';
 import { getRawChat } from '../../../store/raw/chats.raw.ts';
+import { deleteAllCache } from '../../../../common/cache/delete-chat-cache.ts';
 import { useCallback } from 'react';
 import { useUpdateChat } from '../../../../common/hooks/use-update-chat.hook.ts';
 import { MessagesService } from '../../../../common/services/messages.service.ts';
@@ -11,12 +12,13 @@ import { Envs } from '../../../../common/config/envs/envs.ts';
 import { CryptoService } from '../../../../common/services/crypto.service.ts';
 import { prepareChat } from '../../../../common/hooks/prepare-chat.ts';
 import { useLeaveChat } from '../../../../common/hooks/use-leave-chat.hook.ts';
+import { TabEnum } from '../../../store/app/types/state.type.ts';
 
 export const useAppEvents = () => {
     const leaveChat = useLeaveChat();
     const setToBegin = useUpdateChat();
     const [playNotificationSound] = useLoadSoundsHooks();
-    const { setStateApp, createMessage, update, changeSettings, setStateUser } = useAppAction();
+    const { setStateApp, createMessage, update, changeSettings, setStateUser, logout } = useAppAction();
 
     return useCallback(async (dataEvent: DataType) => {
         const { event, data } = dataEvent;
@@ -78,6 +80,11 @@ export const useAppEvents = () => {
                         privateKey: await CryptoService.exportKey(data.rsaPrivateKey!),
                     }),
                 );
+                break;
+            case EventsEnum.LOGOUT:
+                logout();
+                deleteAllCache();
+                setStateApp({ activeTab: TabEnum.CHATS });
                 break;
         }
     }, []);
