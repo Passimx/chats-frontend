@@ -12,6 +12,7 @@ import { Envs } from '../../../../common/config/envs/envs.ts';
 import { CryptoService } from '../../../../common/services/crypto.service.ts';
 import { prepareChat } from '../../../../common/hooks/prepare-chat.ts';
 import { useLeaveChat } from '../../../../common/hooks/use-leave-chat.hook.ts';
+import { TabEnum } from '../../../store/app/types/state.type.ts';
 
 export const useAppEvents = () => {
     const leaveChat = useLeaveChat();
@@ -83,6 +84,7 @@ export const useAppEvents = () => {
             case EventsEnum.LOGOUT:
                 logout();
                 deleteAllCache();
+                setStateApp({ activeTab: TabEnum.CHATS });
                 break;
         }
     }, []);
