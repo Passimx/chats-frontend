@@ -1,6 +1,20 @@
-import { createContext, ReactNode, useState } from 'react';
-//import { Device } from 'mediasoup-client';
+import { createContext, ReactNode, useState, useRef } from 'react';
+import { Device } from 'mediasoup-client';
 import { v4 as uuidV4 } from 'uuid';
+import { useAppSelector } from '../../store';
+import {
+    createRoom,
+    createTransport,
+    connectTransport,
+    createProducer,
+    getRoomProducers,
+    createConsumer,
+} from '../../api/calls';
+
+// Типы
+type RtpCapabilities = any;
+type Transport = any;
+type Consumer = any;
 
 export type CallContextType = {
     createConnection: () => Promise<void>;
@@ -12,13 +26,11 @@ export type CallContextType = {
     setIsCallActive: (value: boolean) => void;
     roomId: string | null;
     setRoomId: (data: string) => void;
-    routerRtpCapabilities: any | null;
-    setRouterRtpCapabilities: (data: any) => void;
-    localStream: boolean;
-    setLocalStream: (data: boolean) => void;
+    routerRtpCapabilities: RtpCapabilities | null;
+    setRouterRtpCapabilities: (data: RtpCapabilities) => void;
+    localStream: MediaStream | null;
+    setLocalStream: (stream: MediaStream | null) => void;
 };
-
-//const device: Device = new Device();
 
 export const CallContext = createContext<CallContextType>({
     createConnection: async () => {},
@@ -32,48 +44,152 @@ export const CallContext = createContext<CallContextType>({
     setRoomId: () => {},
     routerRtpCapabilities: null,
     setRouterRtpCapabilities: () => {},
-    localStream: false,
+    localStream: null,
     setLocalStream: () => {},
 });
-
-//const myId = '1a197adac4c260a09a1151706dd2f0abaf1b87a8264fd05f29d0f76723de0eb8';
 
 export const CallProvider = ({ children }: { children: ReactNode }) => {
     const [isCameraOn, setIsCameraOn] = useState(false);
     const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
     const [isCallActive, setIsCallActive] = useState(false);
     const [roomId, setRoomId] = useState<string | null>(uuidV4());
-    const [routerRtpCapabilities, setRouterRtpCapabilities] = useState();
-    const [localStream, setLocalStream] = useState(false);
+    const [routerRtpCapabilities, setRouterRtpCapabilities] = useState<RtpCapabilities | null>(null);
+    const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+
+    const userId = useAppSelector((state) => state.user.id);
+
+    // Refs для хранения объектов mediasoup
+    const deviceRef = useRef<Device | null>(null);
+    const sendTransportRef = useRef<Transport | null>(null);
+    const recvTransportRef = useRef<Transport | null>(null);
+    const consumersRef = useRef<Map<string, Consumer>>(new Map());
 
     // Создание WebRTC-соединения
     const createConnection = async () => {
-        /*
+        if (!roomId || !userId) {
+            console.error('Missing required parameters: roomId or userId');
+            return;
+        }
+
         try {
-            // 1. Загружаем RTP-возможности в устройство
-            if (routerRtpCapabilities) {
-                await device.load({ routerRtpCapabilities });
+            // 1. Создаем комнату (эндпоинт 1/5)
+            const roomResponse = await createRoom(roomId, userId);
+            if (!roomResponse.success) {
+                console.error('Failed to create room:', roomResponse.data);
+                return;
             }
 
-            // 2. Получаем параметры транспорта от сервера
-            const transportParams = await createTransport(roomId!);
+            // 2. Инициализируем Device (обязательно для WebRTC)
+            if (!deviceRef.current) {
+                deviceRef.current = new Device();
+            }
+            await deviceRef.current.load({ routerRtpCapabilities: roomResponse.data.routerRtpCapabilities });
+            setRouterRtpCapabilities(roomResponse.data.routerRtpCapabilities);
 
-            // 3. Создаём транспорт через mediasoup-client
-            const sendTransport = device.createSendTransport(transportParams);
+            // 3. Создаем send transport (эндпоинт 2/5)
+            const sendTransportResponse = await createTransport(roomId, userId, 'send');
+            if (!sendTransportResponse.success) {
+                console.error('Failed to create send transport:', sendTransportResponse.data);
+                return;
+            }
 
-            // 4. Настраиваем обработчики событий
-            setupTransportHandlers(sendTransport);
+            // Создаем WebRTC транспорт на клиенте (обязательно для отправки медиа)
+            const sendTransport = deviceRef.current.createSendTransport(sendTransportResponse.data);
+            sendTransportRef.current = sendTransport;
 
-            // 5. Подключаем транспорт (отправляем DTLS параметры на сервер)
-            await sendTransport.connect({ dtlsParameters: transportParams.dtlsParameters });
+            // Настраиваем обработчики: connect (эндпоинт 3/5) и produce (эндпоинт 4/5)
+            setupSendTransportHandlers(sendTransport, roomId, userId);
 
-            // 6. Публикуем локальные медиа
-            await produceLocalMedia(sendTransport);
+            // Получаем медиа-треки и публикуем их (автоматически вызывает событие 'produce')
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+            setLocalStream(stream);
+            setIsMicrophoneOn(true);
+            setIsCameraOn(true);
+
+            const audioTrack = stream.getAudioTracks()[0];
+            if (audioTrack) {
+                await sendTransport.produce({ track: audioTrack });
+            }
+            const videoTrack = stream.getVideoTracks()[0];
+            if (videoTrack) {
+                await sendTransport.produce({ track: videoTrack });
+            }
+
+            // 4. Создаем recv transport (эндпоинт 2/5, но для приема)
+            const recvTransportResponse = await createTransport(roomId, userId, 'recv');
+            if (!recvTransportResponse.success) {
+                console.error('Failed to create recv transport:', recvTransportResponse.data);
+                return;
+            }
+
+            // Создаем WebRTC транспорт на клиенте (обязательно для приема медиа)
+            const recvTransport = deviceRef.current.createRecvTransport(recvTransportResponse.data);
+            recvTransportRef.current = recvTransport;
+
+            // Настраиваем обработчик connect (эндпоинт 3/5)
+            setupRecvTransportHandlers(recvTransport, roomId, userId);
+
+            // 5. Получаем producers и создаем consumers (эндпоинт 5/5)
+            const producersResponse = await getRoomProducers(roomId, userId);
+            if (producersResponse.success) {
+                for (const producer of producersResponse.data.producers) {
+                    const consumerResponse = await createConsumer(
+                        roomId,
+                        userId,
+                        recvTransport.id,
+                        producer.producerId,
+                        deviceRef.current.rtpCapabilities,
+                    );
+
+                    if (consumerResponse.success) {
+                        const consumer = await recvTransport.consume({
+                            id: consumerResponse.data.id,
+                            producerId: consumerResponse.data.producerId,
+                            kind: consumerResponse.data.kind as 'audio' | 'video',
+                            rtpParameters: consumerResponse.data.rtpParameters,
+                        });
+                        consumersRef.current.set(producer.producerId, consumer);
+                        console.log('Consumer created:', consumer.id, 'kind:', consumer.kind);
+                    }
+                }
+            }
+
+            setIsCallActive(true);
+            console.log('Connection established successfully');
         } catch (error) {
             console.error('Connection failed:', error);
         }
+    };
 
-     */
+    // Настройка обработчиков для send transport
+    // Эти обработчики ОБЯЗАТЕЛЬНЫ - они вызывают эндпоинты при событиях WebRTC
+    const setupSendTransportHandlers = (transport: any, roomIdParam: string, userIdParam: string) => {
+        // Эндпоинт 3/5: Подключение транспорта (вызывается автоматически при первом использовании)
+        transport.on('connect', async ({ dtlsParameters }: any, callback: any, errback: any) => {
+            const response = await connectTransport(transport.id, dtlsParameters);
+            response.success ? callback() : errback(new Error(response.data));
+        });
+
+        // Эндпоинт 4/5: Создание producer (вызывается автоматически при transport.produce())
+        // rtpParameters генерируются автоматически mediasoup-client
+        transport.on('produce', async ({ kind, rtpParameters }: any, callback: any, errback: any) => {
+            const response = await createProducer(roomIdParam, userIdParam, transport.id, kind, rtpParameters);
+            response.success ? callback({ id: response.data.producerId }) : errback(new Error(response.data));
+        });
+
+        transport.on('connectionstatechange', (state: string) => {
+            if (state === 'failed' || state === 'closed') setIsCallActive(false);
+        });
+    };
+
+    // Настройка обработчиков для recv transport
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const setupRecvTransportHandlers = (transport: any, _roomId: string, _userId: string) => {
+        // Эндпоинт 3/5: Подключение транспорта (вызывается автоматически при первом использовании)
+        transport.on('connect', async ({ dtlsParameters }: any, callback: any, errback: any) => {
+            const response = await connectTransport(transport.id, dtlsParameters);
+            response.success ? callback() : errback(new Error(response.data));
+        });
     };
 
     return (
@@ -98,77 +214,3 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         </CallContext.Provider>
     );
 };
-/*
-async function createTransport(roomId: string) {
-    const myId = 'http://localhost:3006/1a197adac4c260a09a1151706dd2f0abaf1b87a8264fd05f29d0f76723de0eb8';
-
-    return await fetch(`https://passimx.ru/api/media/transport/${roomId}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            peerId: myId,
-            direction: 'send', // или 'sendonly'/'recvonly'
-        }),
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            return data;
-        });
-}
-
-function joinRoom(transportParams: any) {
-    fetch(`https://passimx.ru/api/media/transport/${transportParams.id}/connect`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            dtlsParameters: transportParams.dtlsParameters,
-        }),
-    });
-}
-
-function setupTransportHandlers(transport: any) {
-    // Событие: требуется установить DTLS-соединение
-    transport.on('connect', async ({ dtlsParameters }: { dtlsParameters: any }, callback: any, errback: any) => {
-        try {
-            // Отправляем DTLS параметры на сервер
-            await joinRoom(transport);
-            callback(); // Подтверждаем успешное подключение
-        } catch (error) {
-            errback(error);
-        }
-    });
-
-    // Событие: нужно создать producer (отправить медиа)
-    transport.on('produce', async (params: any, callback: any, errback: any) => {
-        try {
-            const { kind, rtpParameters } = params;
-            // Отправляем запрос на сервер для создания producer
-            const response = await fetch('/api/produce', {
-                method: 'POST',
-                body: JSON.stringify({
-                    transportId: transport.id,
-                    kind,
-                    rtpParameters,
-                }),
-            });
-            const { producerId } = await response.json();
-            callback({ producerId });
-        } catch (error) {
-            errback(error);
-        }
-    });
-
-    // Обработка ошибок транспорта
-    transport.on('connectionstatechange', (state: any) => {
-        console.log('Transport state:', state);
-        if (state === 'failed' || state === 'closed') {
-            console.error('Transport disconnected');
-        }
-    });
-}
-
- */
