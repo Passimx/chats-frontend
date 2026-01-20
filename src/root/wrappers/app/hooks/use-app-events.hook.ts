@@ -79,6 +79,28 @@ export const useAppEvents = () => {
                     }),
                 );
                 break;
+
+            // Тут нужно прописать кейсы на события из сервиса уведомлений, пока они не приходят вроде как, но поидее должны
+            case EventsEnum.VIDEO_CALL_STARTED: {
+                if (!data.success) break;
+                console.log('[MEDIA] VIDEO_CALL_STARTED:', data.data);
+                break;
+            }
+            case EventsEnum.VIDEO_CALL_JOINED: {
+                if (!data.success) break;
+                console.log('[MEDIA] VIDEO_CALL_JOINED:', data.data);
+                break;
+            }
+            case EventsEnum.VIDEO_CALL_LEFT: {
+                if (!data.success) break;
+                console.log('[MEDIA] VIDEO_CALL_LEFT:', data.data);
+                break;
+            }
+            case EventsEnum.VIDEO_CALL_ENDED: {
+                if (!data.success) break;
+                console.log('[MEDIA] VIDEO_CALL_ENDED:', data.data);
+                break;
+            }
         }
     }, []);
 };

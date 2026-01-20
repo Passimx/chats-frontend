@@ -1,4 +1,4 @@
-import { FC, useState, useContext, useEffect } from 'react';
+import { FC, useState, useContext, useEffect, useRef } from 'react';
 import styles from './index.module.css';
 import { Avatar } from '../avatar';
 import { ChatEnum } from '../../root/types/chat/chat.enum';
@@ -15,11 +15,15 @@ const CallModal: FC = () => {
     const { setStateApp } = useAppAction();
     const context = useContext(CallContext);
 
-    const { createConnection, localStream, isMicrophoneOn, setIsMicrophoneOn, routerRtpCapabilities } = context;
+    const { createConnection, localStream, isMicrophoneOn, setIsMicrophoneOn } = context;
+    const didStartRef = useRef(false);
 
     useEffect(() => {
-        if (routerRtpCapabilities) createConnection();
-    }, [routerRtpCapabilities]);
+        // React StrictMode (dev) может вызвать эффекты дважды — защищаемся от двойного старта
+        if (didStartRef.current) return;
+        didStartRef.current = true;
+        createConnection();
+    }, []);
 
     return (
         <div
