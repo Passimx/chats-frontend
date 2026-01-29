@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 import { CryptoService } from '../../../common/services/crypto.service.ts';
-import { generateUser } from '../../../root/api/users';
 import { UserFromServerMe } from '../../../root/types/users/user-from-server-me.type.ts';
 import { mnemonicNew } from 'ton-crypto';
 import { CreateUserType, FuncType } from '../types.ts';
+import { generateUser } from '../../../root/api/auth';
 
 export const useCreateUser = (): FuncType => {
     const [isLoading, setIsLoading] = useState<boolean>(false);

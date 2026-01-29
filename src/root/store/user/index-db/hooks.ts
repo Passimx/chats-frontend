@@ -9,6 +9,7 @@ export const upsertAccountIndexDb = (payload: Partial<UserIndexDbType>, oldKey?:
 
     const user = { ...payload };
     delete user.rsaPrivateKey;
+    delete user.token;
 
     const tx = IndexDb.transaction(['accounts'], 'readwrite');
     const accountsStore = tx.objectStore('accounts');

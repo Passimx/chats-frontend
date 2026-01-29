@@ -9,10 +9,10 @@ import { useCallback } from 'react';
 import { useUpdateChat } from '../../../../common/hooks/use-update-chat.hook.ts';
 import { MessagesService } from '../../../../common/services/messages.service.ts';
 import { Envs } from '../../../../common/config/envs/envs.ts';
-import { CryptoService } from '../../../../common/services/crypto.service.ts';
 import { prepareChat } from '../../../../common/hooks/prepare-chat.ts';
 import { useLeaveChat } from '../../../../common/hooks/use-leave-chat.hook.ts';
 import { TabEnum } from '../../../store/app/types/state.type.ts';
+import { prepareUser } from '../../../../common/hooks/prepare-user.ts';
 
 export const useAppEvents = () => {
     const leaveChat = useLeaveChat();
@@ -51,7 +51,7 @@ export const useAppEvents = () => {
                 break;
             case EventsEnum.UPDATE_ME:
                 if (!data.success) break;
-                setStateUser(data.data);
+                setStateUser(await prepareUser(data.data));
                 break;
             case EventsEnum.CLOSE_SOCKET:
                 setStateApp({ socketId: undefined, isListening: false });
@@ -72,19 +72,11 @@ export const useAppEvents = () => {
                 Envs.userId = data.id;
                 setStateUser(data);
                 Envs.RSAKeys = { publicKey: data.rsaPublicKey!, privateKey: data.rsaPrivateKey! };
-
-                localStorage.setItem(
-                    'keys',
-                    JSON.stringify({
-                        publicKey: await CryptoService.exportKey(data.rsaPublicKey!),
-                        privateKey: await CryptoService.exportKey(data.rsaPrivateKey!),
-                    }),
-                );
                 break;
             case EventsEnum.LOGOUT:
                 logout();
-                deleteAllCache();
-                setStateApp({ activeTab: TabEnum.CHATS });
+                await deleteAllCache();
+                setStateApp({ activeTab: TabEnum.CHATS, page: undefined });
                 break;
         }
     }, []);

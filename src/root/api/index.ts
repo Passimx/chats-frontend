@@ -1,5 +1,7 @@
 import { Envs } from '../../common/config/envs/envs.ts';
 import { store } from '../store';
+import { AppActions } from '../store/app/app.slice.ts';
+import { EventsEnum } from '../types/events/events.enum.ts';
 
 interface request {
     headers?: { [key: string]: string | null };
@@ -33,8 +35,7 @@ export async function Api<T>(url: string, { headers, body, method, params }: req
         'Access-Control-Allow-METHODS': 'GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH',
     };
 
-    const userId = store.getState().user.id;
-    mainHeaders['x-socket-id'] = userId;
+    mainHeaders['Authorization'] = store.getState().user.token;
 
     return fetch(`${Envs.chatsServiceUrl}${url}${query}`, {
         headers: {
@@ -46,6 +47,8 @@ export async function Api<T>(url: string, { headers, body, method, params }: req
         credentials: 'include',
     })
         .then(async (result) => {
+            if (result.status === 403)
+                store.dispatch(AppActions.postMessageToBroadCastChannel({ event: EventsEnum.LOGOUT, data: {} }));
             if (result.status.toString()[0] === '2') return (await result.json().catch(() => undefined)) as IData<T>;
             else return { success: false, data: 'Неизвестная ошибка при запросе.' } as IData<T>;
         })

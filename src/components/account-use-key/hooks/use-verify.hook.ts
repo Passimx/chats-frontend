@@ -5,6 +5,7 @@ import { UserGetMetType } from '../../../root/types/users/user-get-met.type.ts';
 import { useAppAction } from '../../../root/store';
 import { EventsEnum } from '../../../root/types/events/events.enum.ts';
 import { UserIndexDbType } from '../../../root/types/users/user-index-db.type.ts';
+import { login } from '../../../root/api/auth';
 
 export const useVerify: (file?: File, password?: string) => [boolean, UserGetMetType | undefined] = (
     file,
@@ -37,6 +38,17 @@ export const useVerify: (file?: File, password?: string) => [boolean, UserGetMet
         const rsaPrivateKey = await CryptoService.importRSAKey(rsaPrivateKeyString, ['decrypt']);
         if (!rsaPrivateKey) return postError('incorrect_password');
 
+        const userId = CryptoService.getHash(userData.rsaPublicKey);
+        const passwordHash = CryptoService.getHash(password);
+        const seedPhraseHash = CryptoService.getHash(seedPhrase);
+        const encryptionUserAgent = (await CryptoService.encryptByRSAKey(rsaPublicKey, navigator.userAgent))!;
+
+        const response = await login({ userId, passwordHash, seedPhraseHash, encryptionUserAgent });
+        if (!response.success) return;
+
+        const token = response.data.token;
+        const encryptedToken = await CryptoService.encryptByAESKey(aesKey, token);
+
         setIsLoading(false);
         const data: Partial<UserIndexDbType> = {
             id: userData.id,
@@ -45,6 +57,8 @@ export const useVerify: (file?: File, password?: string) => [boolean, UserGetMet
             userName: userData.userName,
             aesKey,
             encryptedRsaPrivateKey: userData.encryptedRsaPrivateKey,
+            token,
+            encryptedToken,
             encryptedSeedPhrase,
             rsaPublicKey,
             rsaPrivateKey,
