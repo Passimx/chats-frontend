@@ -44,6 +44,11 @@ type RemoveChat = {
     readonly data: IData<string[]>;
 };
 
+type Logout = {
+    readonly event: EventsEnum.LOGOUT;
+    readonly data?: unknown;
+};
+
 export type EventsFromServer =
     | GetSocketId
     | CreateMessage
@@ -52,4 +57,5 @@ export type EventsFromServer =
     | Verify
     | JoinChat
     | UpdateChat
+    | Logout
     | RemoveChat;
