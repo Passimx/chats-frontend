@@ -1,12 +1,10 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAppSelector } from '../../../root/store';
 import styles from '../index.module.css';
-import { ContextChat } from '../context/chat-context.tsx';
 
 export const useAutoScroll = () => {
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const ownUserName = useAppSelector((state) => state.user.userName);
-    const chatContext = useContext(ContextChat);
 
     const scrollToBottom = () => {
         if (!chatOnPage?.id) return;
@@ -38,29 +36,22 @@ export const useAutoScroll = () => {
     const isScrolledToBottom = (element: HTMLElement | null) => {
         if (!element) return false;
         const { scrollTop, scrollHeight, clientHeight } = element;
-        const threshold = 100;
-        return Math.abs(scrollHeight - scrollTop - clientHeight) < threshold;
+        return Math.abs(scrollHeight - clientHeight - Math.round(scrollTop)) < clientHeight;
     };
 
     useEffect(() => {
         if (!chatOnPage?.messages) return;
+
         const container = document.getElementById(styles.messages);
-
-        const timer = setTimeout(() => {
-            if (chatContext?.isShowLastMessagesButton) {
-                const isNewMessage = chatOnPage.countMessages > chatOnPage.readMessage;
-                if (isNewMessage) {
-                    const lastMessage = chatOnPage.messages[chatOnPage.messages.length - 1];
-                    const username = lastMessage?.user?.userName;
-                    if (username === ownUserName) scrollToBottom();
-                }
-            } else {
-                if (isScrolledToBottom(container)) {
-                    scrollToBottom();
-                }
+        if (!isScrolledToBottom(container)) {
+            const isNewMessage = chatOnPage.countMessages > chatOnPage.readMessage;
+            if (isNewMessage) {
+                const lastMessage = chatOnPage.messages[chatOnPage.messages.length - 1];
+                const username = lastMessage?.user?.userName;
+                if (username === ownUserName) scrollToBottom();
             }
-        }, 300);
-
-        return () => clearTimeout(timer); // Очистка таймера
-    }, [chatOnPage?.message]);
+        } else {
+            scrollToBottom();
+        }
+    }, [chatOnPage?.messages]);
 };
