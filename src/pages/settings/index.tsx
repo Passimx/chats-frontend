@@ -24,6 +24,7 @@ import { LuStar } from 'react-icons/lu';
 import { UserInf } from '../../components/user-inf';
 import { Appearance } from '../../components/appearance';
 import { LogOut } from '../../components/log-out/index.tsx';
+import { MenuPadding } from '../../components/menu/compenents/menu-padding/index.tsx';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
@@ -171,6 +172,8 @@ export const Settings = memo(() => {
                         <div className="text_translate">{t('log_out')}</div>
                     </div>
                 </div>
+
+                <MenuPadding />
             </div>
         </div>
     );
