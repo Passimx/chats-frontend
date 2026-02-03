@@ -30,10 +30,12 @@ export const useMessage = (chat: ChatItemIndexDb): ReturnType => {
     const changeMessage = useCallback(() => {
         const message = chat.message;
         if (!message) return;
+
+        const userName = message.user.name;
         const visibleMessage: string = getVisibleMessage(message, t);
 
         updateTime(message.createdAt);
-        setMessage(visibleMessage);
+        setMessage(`${userName}: ${visibleMessage}`);
     }, [chat.message]);
 
     const changeCountMessages = useCallback(() => {

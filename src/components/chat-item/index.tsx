@@ -15,8 +15,6 @@ const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redir
     const elementId = useMemo(() => `chat-${chat.id}`, [chat.id]);
     const [message, time, countMessages, isPinned] = useMessage(chat);
 
-    const authorOfLastMessage = chat?.messages[chat.messages.length - 1]?.user?.name || 'System';
-
     useEffect(() => {
         const element = document.getElementById(elementId)!;
         const func = (event: MouseEvent) => {
@@ -57,7 +55,7 @@ const ChatItem: FC<PropsType> = memo(({ chat, isNew = false, isChatOnPage, redir
                                 </span>
                             </>
                         ) : (
-                            <span>{`${authorOfLastMessage}: ${message}`}</span>
+                            <span>{message}</span>
                         )}
                     </div>
                     {countMessages && <div className={styles.count_message}>{countMessages}</div>}

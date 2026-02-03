@@ -22,8 +22,6 @@ export const useListenAndUpdateChats = () => {
 
                 updateMany(chats);
             })
-            .catch(() =>
-                postMessageToBroadCastChannel({ event: EventsEnum.SET_STATE_APP, data: { isListening: false } }),
-            );
+            .catch(() => window.location.reload());
     }, [socketId, isLoadedChatsFromIndexDb, isOnline, isListening]);
 };
