@@ -67,6 +67,8 @@ export const useCatchLogs = () => {
         return () => {
             for (const method of methods) {
                 if (originals[method]) {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
                     // // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // // @ts-expect-error
                     console[method] = originals[method] as any;
