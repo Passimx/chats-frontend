@@ -73,6 +73,11 @@ type VideoCallEnded = {
     }>;
 };
 
+type Logout = {
+    readonly event: EventsEnum.LOGOUT;
+    readonly data?: unknown;
+};
+
 export type EventsFromServer =
     | GetSocketId
     | CreateMessage
@@ -81,6 +86,7 @@ export type EventsFromServer =
     | Verify
     | JoinChat
     | UpdateChat
+    | Logout
     | RemoveChat
     | VideoCallStarted
     | VideoCallJoined

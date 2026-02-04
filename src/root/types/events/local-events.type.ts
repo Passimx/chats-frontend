@@ -42,6 +42,11 @@ type SetStateApp = {
     readonly data: Partial<AppStateType>;
 };
 
+type ConnectNotification = {
+    readonly event: EventsEnum.CONNECT_NOTIFICATIONS;
+    readonly data: Partial<UserIndexDbType>;
+};
+
 export type LocalEvents =
     | UpdateBadge
     | CloseSocket
@@ -50,4 +55,5 @@ export type LocalEvents =
     | ChangeLanguage
     | ShowText
     | CreateUser
-    | SetStateApp;
+    | SetStateApp
+    | ConnectNotification;

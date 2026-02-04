@@ -10,12 +10,14 @@ export enum EventsEnum {
     PONG = 'pong',
     VERIFY = 'verify',
     ERROR = 'error',
+    LOGOUT = 'logout',
     CREATE_USER = 'create_user',
     UPDATE_CHAT = 'update_chat',
     JOIN_CHAT = 'join_chat',
     LEAVE_CHAT = 'leave_chat',
 
     SET_STATE_APP = 'set_state_app',
+    CONNECT_NOTIFICATIONS = 'connect_notifications',
 
     VIDEO_CALL_STARTED = 'video_call_started',
     VIDEO_CALL_JOINED = 'video_call_joined',

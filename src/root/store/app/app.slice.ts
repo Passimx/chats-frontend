@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { SettingsType, StateType, TabEnum } from './types/state.type.ts';
-import { LocalEvents } from '../../types/events/local-events.type.ts';
 import { JSX } from 'react';
 import { Envs } from '../../../common/config/envs/envs.ts';
+import { DataType } from '../../types/events/event-data.type.ts';
 
 const channel = new BroadcastChannel('ws-channel');
 
@@ -34,7 +34,7 @@ const AppSlice = createSlice({
             }
         },
 
-        postMessageToBroadCastChannel(_state, { payload }: PayloadAction<LocalEvents>) {
+        postMessageToBroadCastChannel(_state, { payload }: PayloadAction<DataType>) {
             channel.postMessage(payload);
         },
 

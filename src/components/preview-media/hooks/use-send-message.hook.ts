@@ -8,12 +8,11 @@ import { createMessage } from '../../../root/api/messages';
 import { FileExtensionEnum, MimetypeEnum, Types } from '../../../root/types/files/types.ts';
 
 export const useSendMessage = () => {
-    const { files, setFiles } = useContext(ContextMedia)!;
+    const { files, setFiles, lossless } = useContext(ContextMedia)!;
     const { update, setChatOnPage } = useAppAction();
     const [isShowPlaceholder, setIsShowPlaceholder] = useState<boolean>(true);
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { isPhone, isStandalone } = useAppSelector((state) => state.app);
-
     const sendMessage = useCallback(async () => {
         if (!files?.length) return;
 
@@ -22,13 +21,13 @@ export const useSendMessage = () => {
         await Promise.all(
             files.map(async (file, index) => {
                 const myFile = new File([await file.arrayBuffer()], file.name, { type: file.type });
-
                 const data: Partial<Types> = {
                     originalName: file.name,
                     size: file.size,
                     mimeType: file.type as MimetypeEnum,
                     fileType: FileExtensionEnum.IS_MEDIA,
                     metadata: {
+                        lossless: lossless,
                         ...file.metaData,
                     },
                 };
@@ -73,7 +72,7 @@ export const useSendMessage = () => {
         if (getRawChat(chatOnPage?.id))
             update({ id: chatOnPage!.id, inputMessage: undefined, answerMessage: undefined });
         else setChatOnPage({ answerMessage: undefined });
-    }, [chatOnPage, isPhone, files, files?.length]);
+    }, [chatOnPage, isPhone, files, files?.length, lossless]);
 
     useEffect(() => {
         if (!files?.length) return;
