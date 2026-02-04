@@ -1,6 +1,5 @@
 import { createContext, ReactNode, useState, useRef } from 'react';
 import { Device } from 'mediasoup-client';
-import { v4 as uuidV4 } from 'uuid';
 import { useAppSelector } from '../../store';
 import {
     createRoom,
@@ -52,7 +51,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     const [isCameraOn, setIsCameraOn] = useState(false);
     const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
     const [isCallActive, setIsCallActive] = useState(false);
-    const [roomId, setRoomId] = useState<string | null>(uuidV4());
+    const [roomId, setRoomId] = useState<string | null>(crypto.randomUUID());
     const [routerRtpCapabilities, setRouterRtpCapabilities] = useState<RtpCapabilities | null>(null);
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
 
