@@ -9,10 +9,22 @@ export const upsertAccountIndexDb = (payload: Partial<UserIndexDbType>, oldKey?:
 
     const user = { ...payload };
     delete user.rsaPrivateKey;
+    delete user.token;
 
     const tx = IndexDb.transaction(['accounts'], 'readwrite');
     const accountsStore = tx.objectStore('accounts');
 
     if (oldKey) accountsStore.delete(oldKey);
     accountsStore.put(user, user.key);
+};
+
+export const deleteAccountIndexDb = (key: number) => {
+    const IndexDb = rawChats.indexDb;
+    if (!IndexDb) return; // только главная вкладка может делать операции с IndexDb
+    if (!IndexDb || !rawApp.isMainTab) return; // только главная вкладка может делать операции с IndexDb
+
+    const tx = IndexDb.transaction(['accounts'], 'readwrite');
+    const accountsStore = tx.objectStore('accounts');
+
+    accountsStore.delete(key);
 };

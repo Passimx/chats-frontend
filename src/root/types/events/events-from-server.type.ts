@@ -44,6 +44,11 @@ type RemoveChat = {
     readonly data: IData<string[]>;
 };
 
+type Logout = {
+    readonly event: EventsEnum.LOGOUT;
+    readonly data?: unknown;
+};
+
 type VideoCallStarted = {
     readonly event: EventsEnum.VIDEO_CALL_STARTED;
     readonly data: IData<{
@@ -81,8 +86,9 @@ export type EventsFromServer =
     | Verify
     | JoinChat
     | UpdateChat
+    | Logout
     | RemoveChat
     | VideoCallStarted
     | VideoCallJoined
     | VideoCallLeft
-    | VideoCallEnded;
+    | VideoCallEnded

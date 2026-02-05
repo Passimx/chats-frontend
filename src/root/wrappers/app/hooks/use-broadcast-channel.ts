@@ -1,12 +1,15 @@
 import { useEffect } from 'react';
 import { useAppEvents } from './use-app-events.hook.ts';
-import { useAppSelector } from '../../../store';
+import { useAppAction, useAppSelector } from '../../../store';
 import { Envs } from '../../../../common/config/envs/envs.ts';
+import { EventsEnum } from '../../../types/events/events.enum.ts';
 
+let worker: Worker | undefined;
 export const useBroadcastChannel = () => {
     const sendMessage = useAppEvents();
-    const rsaPublicKey = useAppSelector((state) => state.user.rsaPublicKey);
+    const token = useAppSelector((state) => state.user.token);
     const isActiveTab = useAppSelector((state) => state.app.isActiveTab);
+    const { setStateApp } = useAppAction();
 
     /** App events */
     useEffect(() => {
@@ -27,20 +30,22 @@ export const useBroadcastChannel = () => {
 
     /** Notifications service connection */
     useEffect(() => {
-        if (!rsaPublicKey) return;
+        if (!isActiveTab) return;
 
-        if (isActiveTab) {
-            const iframeExist = document.querySelector('iframe[data-main-iframe]');
-            if (!iframeExist) {
-                const iframe = document.createElement('iframe');
-                iframe.src = '/iframe.html';
-                iframe.style.display = 'none';
-                iframe.setAttribute('data-main-iframe', 'true');
-                document.body.appendChild(iframe);
-            }
+        if (token) {
+            if (!worker)
+                worker = new Worker(new URL('../../../api/notifications/notifications.ts', import.meta.url), {
+                    type: 'module',
+                });
+
+            worker.postMessage({
+                event: EventsEnum.CONNECT_NOTIFICATIONS,
+                data: { token },
+            });
         } else {
-            const iframe = document.querySelector('iframe[data-main-iframe]');
-            iframe?.remove();
+            worker?.terminate();
+            worker = undefined;
+            setStateApp({ socketId: undefined, isListening: false });
         }
-    }, [rsaPublicKey, isActiveTab]);
+    }, [token, isActiveTab]);
 };

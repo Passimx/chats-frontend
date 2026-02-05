@@ -105,10 +105,16 @@ export class MessagesService {
         const aesKey = await CryptoService.importEASKey(aesKeyString);
 
         const tasks = chat.keys.map(async ({ userId }) => {
-            const response = await getUserByUserName(userId);
-            if (!response.success) return;
+            const me = store.getState().user;
+            let publicKey: CryptoKey | undefined;
+            if (me.id === userId) {
+                publicKey = me.rsaPublicKey;
+            } else {
+                const response = await getUserByUserName(userId);
+                if (!response.success) return;
+                publicKey = await CryptoService.importRSAKey(response.data.rsaPublicKey, ['encrypt']);
+            }
 
-            const publicKey = await CryptoService.importRSAKey(response.data.rsaPublicKey, ['encrypt']);
             if (!publicKey) return;
             const encryptionKey = await CryptoService.encryptByRSAKey(publicKey, aesKeyString);
             if (!encryptionKey) return;
@@ -116,10 +122,14 @@ export class MessagesService {
         });
 
         await Promise.all(tasks);
-        await keepChatKey(chat.id, { keys });
-        store.dispatch(ChatsActions.update({ id: chat.id, aesKey }));
-        rawChats.chatKeys.set(chat.id, aesKey);
+        const response = await keepChatKey(chat.id, { keys });
 
-        return true;
+        if (response?.success !== false) {
+            store.dispatch(ChatsActions.update({ id: chat.id, aesKey }));
+            rawChats.chatKeys.set(chat.id, aesKey);
+            return true;
+        }
+
+        return false;
     }
 }
