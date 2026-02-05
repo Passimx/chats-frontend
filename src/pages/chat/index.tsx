@@ -1,6 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import { FC, memo, useContext } from 'react';
+import { FC, memo, useContext, useEffect } from 'react';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import Message from '../../components/message';
 import { useTranslation } from 'react-i18next';
@@ -51,9 +51,12 @@ const Chat: FC = memo(() => {
     const title = useGetChatTitle(chatOnPage);
 
     const ownUserName = useAppSelector((state) => state.user.userName);
+    const userId = useAppSelector((state) => state.user.id);
+    const { roomId, setRoomId, setRouterRtpCapabilities } = useContext(CallContext);
 
-    const { isCallActive, setIsCallActive, roomId } = useContext(CallContext);
-
+    useEffect(() => {
+        setRoomId('abc123');
+    }, []);
     if (!chatOnPage) return <></>;
 
     return (
@@ -125,9 +128,24 @@ const Chat: FC = memo(() => {
                         <div
                             className={styles.chat_menu_item}
                             onClick={() => {
-                                if (isCallActive || !setIsCallActive || !roomId) return;
-                                setStateApp({ page: <CallModal /> });
-                                setIsCallActive(true);
+                                if (!roomId) return;
+                                fetch('https://passimx.ru/api/media/room', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        roomId: roomId,
+                                        initiatorId: userId,
+                                    }),
+                                })
+                                    .then((response) => response.json())
+                                    .then((data) => {
+                                        setRouterRtpCapabilities(data);
+                                        setStateApp({ page: <CallModal /> });
+                                    })
+                                    .catch((err: unknown) => {
+                                        const message = err instanceof Error ? err.message : String(err);
+                                        console.log(`request error: ${message}`);
+                                    });
                             }}
                         >
                             <PiPhoneCallFill className={styles.chat_menu_item_icon} />

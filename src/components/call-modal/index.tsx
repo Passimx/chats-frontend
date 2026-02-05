@@ -13,16 +13,40 @@ const CallModal: FC = () => {
     const [isMinimize, setMinimize] = useState(false);
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { setStateApp } = useAppAction();
-    const context = useContext(CallContext);
+    const [producer, setProducer] = useState<any>(null);
+    const { transport, isMicrophoneOn, setIsMicrophoneOn } = useContext(CallContext);
+    const videoRef = useRef<any>(null);
 
-    const { createConnection, localStream, isMicrophoneOn, setIsMicrophoneOn } = context;
-    const didStartRef = useRef(false);
+    const publishVideo = async () => {
+        if (!transport) return;
+        console.log('transport', transport);
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true,
+            });
+            const track = stream.getVideoTracks()[0];
+            const producer = await transport.produce({
+                track,
+                encoding: [{ maxBitrate: 100000 }, { maxBitrate: 300000 }],
+                codecOptions: { videoGoogleStartBitrate: 100 },
+            });
+            setProducer(producer);
+            videoRef.current.srcObject = stream;
+        } catch (err: unknown) {
+            const error = err as Error;
+            console.log(`Ошибка создания консюмера в call-modal ${error.message}`);
+        }
+    };
 
     useEffect(() => {
-        // React StrictMode (dev) может вызвать эффекты дважды — защищаемся от двойного старта
-        if (didStartRef.current) return;
-        didStartRef.current = true;
-        createConnection();
+        publishVideo();
+
+        return () => {
+            if (producer) producer.close();
+            if (transport) transport.close();
+        };
     }, []);
 
     return (
@@ -41,7 +65,9 @@ const CallModal: FC = () => {
                 setStateApp={setStateApp}
             />
 
-            {(Boolean(localStream) && <VideoPlayer autoPlay muted />) || (
+            {(Boolean(videoRef.current.srcObject) && (
+                <VideoPlayer srcObject={videoRef.current.srcObject} autoPlay muted />
+            )) || (
                 <div className={styles.avatar} data-minimize={(isMinimize && 'active') || ''}>
                     {chatOnPage && (
                         <Avatar
