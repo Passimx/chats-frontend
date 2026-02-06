@@ -65,13 +65,11 @@ export const useCatchLogs = () => {
         }
 
         return () => {
-            for (const method of methods) {
-                if (originals[method]) {
-                    // // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // // @ts-expect-error
-                    console[method] = originals[method] as any;
-                }
-            }
+            console.log = originals.log as any;
+            console.warn = originals.warn as any;
+            console.error = originals.error as any;
+            console.info = originals.info as any;
+            console.debug = originals.debug as any;
         };
     }, []);
 };
