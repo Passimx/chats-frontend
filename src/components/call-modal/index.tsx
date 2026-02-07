@@ -14,12 +14,13 @@ const CallModal: FC = () => {
     const [isMinimize, setMinimize] = useState(false);
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { setStateApp } = useAppAction();
-    const { isMicrophoneOn, setIsMicrophoneOn, transport } = useContext(CallContext);
     const [stream, setStream] = useState<MediaStream | null>(null);
     const [producer, setProducer] = useState<Producer | null>(null);
 
+    const { isMicrophoneOn, setIsMicrophoneOn, sendTransport } = useContext(CallContext);
+
     const publishVideo = async () => {
-        if (!transport) return;
+        if (!sendTransport) return;
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
@@ -29,11 +30,12 @@ const CallModal: FC = () => {
             setStream(stream);
             const track = stream.getVideoTracks()[0];
 
-            const producer = await transport.produce({
+            const producer = await sendTransport.produce({
                 track,
                 encodings: [{ maxBitrate: 100000 }, { maxBitrate: 300000 }],
                 codecOptions: { videoGoogleStartBitrate: 100 },
             });
+            console.log('test 2', producer);
             if (producer) {
                 setProducer(producer);
             }
@@ -42,14 +44,17 @@ const CallModal: FC = () => {
             console.log(`Ошибка создания продюсера в call-modal ${error.message}`);
         }
     };
+
     useEffect(() => {
+        if (!sendTransport) return;
+
         publishVideo();
 
         return () => {
             //if (producer) producer.close();
             //if (transport) transport.close();
         };
-    }, [transport, producer]);
+    }, [sendTransport, producer]);
 
     return (
         <div
