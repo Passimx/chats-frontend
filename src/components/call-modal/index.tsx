@@ -1,4 +1,4 @@
-import { FC, useState, useContext, useEffect, useRef } from 'react';
+import { FC, useState, useContext, useEffect } from 'react';
 import styles from './index.module.css';
 import { Avatar } from '../avatar';
 import { ChatEnum } from '../../root/types/chat/chat.enum';
@@ -7,47 +7,49 @@ import { CallContext } from '../../root/contexts/call';
 import { VideoPlayer } from './view/video-player/video-player.tsx';
 import ViewMode from './view/view-mode/view-mode.tsx';
 import CallControls from './view/call-controls/CallControls.tsx';
+import { Producer } from 'mediasoup-client/types';
 
 const CallModal: FC = () => {
     const [isFullScreenActive, setIsFullScreenActive] = useState<boolean>(false);
     const [isMinimize, setMinimize] = useState(false);
     const { chatOnPage } = useAppSelector((state) => state.chats);
     const { setStateApp } = useAppAction();
-    const [producer, setProducer] = useState<any>(null);
-    const { transport, isMicrophoneOn, setIsMicrophoneOn } = useContext(CallContext);
-    const videoRef = useRef<any>(null);
+    const { isMicrophoneOn, setIsMicrophoneOn, transport } = useContext(CallContext);
+    const [stream, setStream] = useState<MediaStream | null>(null);
+    const [producer, setProducer] = useState<Producer | null>(null);
 
     const publishVideo = async () => {
         if (!transport) return;
-        console.log('transport', transport);
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: true,
             });
+            setStream(stream);
             const track = stream.getVideoTracks()[0];
+
             const producer = await transport.produce({
                 track,
-                encoding: [{ maxBitrate: 100000 }, { maxBitrate: 300000 }],
+                encodings: [{ maxBitrate: 100000 }, { maxBitrate: 300000 }],
                 codecOptions: { videoGoogleStartBitrate: 100 },
             });
-            setProducer(producer);
-            videoRef.current.srcObject = stream;
+            if (producer) {
+                setProducer(producer);
+            }
         } catch (err: unknown) {
             const error = err as Error;
-            console.log(`Ошибка создания консюмера в call-modal ${error.message}`);
+            console.log(`Ошибка создания продюсера в call-modal ${error.message}`);
         }
     };
-
     useEffect(() => {
         publishVideo();
 
         return () => {
-            if (producer) producer.close();
-            if (transport) transport.close();
+            //if (producer) producer.close();
+            //if (transport) transport.close();
         };
-    }, []);
+    }, [transport, producer]);
 
     return (
         <div
@@ -65,9 +67,7 @@ const CallModal: FC = () => {
                 setStateApp={setStateApp}
             />
 
-            {(Boolean(videoRef.current.srcObject) && (
-                <VideoPlayer srcObject={videoRef.current.srcObject} autoPlay muted />
-            )) || (
+            {(Boolean(stream) && <VideoPlayer srcObject={stream} autoPlay muted />) || (
                 <div className={styles.avatar} data-minimize={(isMinimize && 'active') || ''}>
                     {chatOnPage && (
                         <Avatar

@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState, useEffect } from 'react';
+import { createContext, ReactNode, useState, useEffect, useCallback } from 'react';
 import { useAppSelector } from '../../store';
 import * as mediasoupClient from 'mediasoup-client';
 import { AppData, Transport } from 'mediasoup-client/types';
@@ -33,6 +33,16 @@ export const CallContext = createContext<CallContextType>({
     setTransport: null,
 });
 
+const logError = (context: string, error: unknown): void => {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`[CallProvider] ${context}: ${message}`);
+};
+async function fetchJson(url: string, options?: RequestInit) {
+    const response = await fetch(url, options);
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    return response.json();
+}
+
 export const CallProvider = ({ children }: { children: ReactNode }) => {
     const [isCameraOn, setIsCameraOn] = useState(false);
     const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
@@ -40,13 +50,108 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     const [roomId, setRoomId] = useState<string | null>(null);
     const [routerRtpCapabilities, setRouterRtpCapabilities] = useState<any | null>(null);
     const [transport, setTransport] = useState<Transport<AppData> | null>(null);
+    const [device, setDevice] = useState<mediasoupClient.Device | null>(null);
     const userId = useAppSelector((state) => state.user.id);
+    const [isDevice, setIsDevice] = useState<boolean>(false);
+
+    const initDevice = useCallback(async () => {
+        if (!routerRtpCapabilities) return;
+
+        try {
+            const newDevice = new mediasoupClient.Device();
+            await newDevice.load({ routerRtpCapabilities });
+            setDevice(newDevice);
+            setIsDevice(true);
+        } catch (error) {
+            logError('Инициализация устройства', error);
+        }
+    }, [routerRtpCapabilities]);
+
+    const createTransport = useCallback(async (): Promise<Transport<AppData> | null> => {
+        if (!roomId || !device) return null;
+
+        try {
+            const transportConfig = await fetchJson(`https://passimx.ru/api/media/transport/${roomId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ peerId: userId, direction: 'send' }),
+            });
+
+            if (!transportConfig.success) return null;
+
+            const transport = device.createSendTransport(transportConfig.data);
+            setTransport(transport);
+            return transport;
+        } catch (error) {
+            logError('Создание транспорта', error);
+            return null;
+        }
+    }, [roomId, userId, isDevice]);
+
+    const setupTransportEvents = useCallback(
+        (transport: Transport<AppData>) => {
+            transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
+                try {
+                    await fetchJson(`https://passimx.ru/api/media/transport/${transport.id}/connect`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ dtlsParameters }),
+                    });
+                    callback();
+                } catch (err) {
+                    const error = err as Error;
+                    logError('Соединение транспорта', error);
+                    errback(error);
+                }
+            });
+
+            transport.on('produce', async ({ kind, rtpParameters }, callback, errback) => {
+                try {
+                    const result = await fetchJson('https://passimx.ru/api/media/producer', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            transportId: transport.id,
+                            kind,
+                            rtpParameters,
+                            roomId,
+                            peerId: userId,
+                        }),
+                    });
+                    callback(result);
+                } catch (err) {
+                    const error = err as Error;
+                    logError('Создание продюсера', error);
+                    errback(error);
+                }
+            });
+        },
+        [userId, roomId],
+    );
+
+    useEffect(() => {
+        if (!routerRtpCapabilities || !roomId) return;
+
+        initDevice().then(async () => {
+            const transport = await createTransport();
+            if (transport) {
+                setupTransportEvents(transport);
+            }
+        });
+    }, [routerRtpCapabilities, roomId, initDevice, createTransport, setupTransportEvents]);
+
+    /*
 
     const connection = async () => {
         if (!routerRtpCapabilities || !roomId) return;
 
         const device = new mediasoupClient.Device();
-        await device.load({ routerRtpCapabilities: routerRtpCapabilities });
+        try {
+            await device.load({ routerRtpCapabilities: routerRtpCapabilities.data.routerRtpCapabilities });
+        } catch (err: unknown) {
+            const error = err as Error;
+            console.log(`Error download device: ${error.message}`);
+        }
 
         const transportConfig = await fetch(`https://passimx.ru/api/media/transport/${roomId}`, {
             method: 'POST',
@@ -60,8 +165,15 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
             .then((data) => data);
         if (!transportConfig.success) return;
 
-        const transport = device?.createSendTransport(transportConfig.data);
-        if (transport) setTransport(transport);
+        let transport: Transport<AppData> | null | undefined;
+        try {
+            transport = device?.createSendTransport(transportConfig.data);
+        } catch (err: unknown) {
+            const e = err as Error;
+            console.log('error creating transport', e.message);
+        }
+        if (!transport || !routerRtpCapabilities) return;
+        setTransport(transport);
 
         transport.on('connect', ({ dtlsParameters }, callback, errback) => {
             try {
@@ -71,7 +183,10 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
                     body: JSON.stringify({
                         dtlsParameters: dtlsParameters,
                     }),
-                }).then(callback);
+                }).then((response) => {
+                    if (!response.ok) throw new Error('Error connection transport');
+                    callback();
+                });
             } catch (err: unknown) {
                 const error = err as Error;
                 console.log(`Ошибка соединения: ${error.message}`);
@@ -88,13 +203,17 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
                         transportId: transport.id,
                         kind,
                         rtpParameters,
+                        roomId,
+                        peerId: userId,
                     }),
                 })
-                    .then((response) => response.json())
+                    .then((response) => {
+                        return response.json();
+                    })
                     .then((data) => {
-                        console.log('data', data);
                         callback(data);
-                    });
+                    })
+                    .catch((err) => console.log('error: ', err));
             } catch (err: unknown) {
                 const error = err as Error;
                 console.log(`Ошибка создания продюсера: ${error.message}`);
@@ -104,8 +223,14 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     };
 
     useEffect(() => {
+        if (!routerRtpCapabilities) {
+            console.log('routerRtpCapabilities not available');
+            return;
+        }
         connection();
     }, [routerRtpCapabilities]);
+
+     */
 
     return (
         <CallContext.Provider
@@ -131,19 +256,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
 /*
 
-    const initDevice = async () => {
-        if (!routerRtpCapabilities) return;
-        try {
-            const newDevice = new mediasoupClient.Device();
-            if (routerRtpCapabilities) {
-                await newDevice.load({ routerRtpCapabilities: routerRtpCapabilities });
-                setDevice(newDevice);
-            }
-        } catch (err: unknown) {
-            const message = err instanceof Error ? err.message : String(err);
-            console.log(`Ошибка инициализации устройства: ${message}`);
-        }
-    };
+
 
     const createTransport = async () => {
         if (!roomId) return;

@@ -10,7 +10,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ srcObject, ...rest }) 
 
     useEffect(() => {
         if (videoRef.current && srcObject) {
-            // Присваиваем MediaStream свойству srcObject нативного DOM-элемента
             videoRef.current.srcObject = srcObject;
         }
     }, [srcObject]);

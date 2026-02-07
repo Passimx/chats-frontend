@@ -139,6 +139,7 @@ const Chat: FC = memo(() => {
                                 })
                                     .then((response) => response.json())
                                     .then((data) => {
+                                        console.log('data', data);
                                         setRouterRtpCapabilities(data);
                                         setStateApp({ page: <CallModal /> });
                                     })
