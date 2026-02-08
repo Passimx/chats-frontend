@@ -34,6 +34,7 @@ import CallModal from '../../components/call-modal/index.tsx';
 import { CallContext } from '../../root/contexts/call';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { leaveChat } from '../../root/api/chats';
+import { createRoom } from '../../root/api/calls';
 
 /** Main chat component */
 const Chat: FC = memo(() => {
@@ -52,11 +53,14 @@ const Chat: FC = memo(() => {
 
     const ownUserName = useAppSelector((state) => state.user.userName);
     const userId = useAppSelector((state) => state.user.id);
-    const { roomId, setRoomId, setRouterRtpCapabilities } = useContext(CallContext);
+    const { setRoomId, setRouterRtpCapabilities } = useContext(CallContext);
 
     useEffect(() => {
-        setRoomId('abc123');
-    }, []);
+        if (chatOnPage?.id) {
+            setRoomId(chatOnPage.id);
+        }
+    }, [chatOnPage?.id, setRoomId]);
+
     if (!chatOnPage) return <></>;
 
     return (
@@ -127,25 +131,25 @@ const Chat: FC = memo(() => {
                         </div>
                         <div
                             className={styles.chat_menu_item}
-                            onClick={() => {
-                                if (!roomId) return;
-                                fetch('https://passimx.ru/api/media/room', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                        roomId: roomId,
-                                        initiatorId: userId,
-                                    }),
-                                })
-                                    .then((response) => response.json())
-                                    .then((data) => {
-                                        setRouterRtpCapabilities(data);
-                                        setStateApp({ page: <CallModal /> });
-                                    })
-                                    .catch((err: unknown) => {
-                                        const message = err instanceof Error ? err.message : String(err);
-                                        console.log(`request error: ${message}`);
-                                    });
+                            onClick={async () => {
+                                if (!chatOnPage?.id || !userId) {
+                                    console.error('Missing chatId or userId');
+                                    return;
+                                }
+
+                                try {
+                                    const result = await createRoom(chatOnPage.id, userId);
+
+                                    if (!result.success) {
+                                        console.error('Failed to create room:', result.data);
+                                        return;
+                                    }
+
+                                    setRouterRtpCapabilities(result.data.routerRtpCapabilities);
+                                    setStateApp({ page: <CallModal /> });
+                                } catch (error) {
+                                    console.error('Error creating room:', error);
+                                }
                             }}
                         >
                             <PiPhoneCallFill className={styles.chat_menu_item_icon} />

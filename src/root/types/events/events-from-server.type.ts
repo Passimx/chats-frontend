@@ -53,6 +53,7 @@ type VideoCallStarted = {
     readonly event: EventsEnum.VIDEO_CALL_STARTED;
     readonly data: IData<{
         roomId: string;
+        initiatorId?: string;
     }>;
 };
 

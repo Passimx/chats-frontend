@@ -102,4 +102,7 @@ export type StateType = {
     files?: Types[];
 
     settings?: SettingsType;
+
+    //Входящий звонок: roomId и initiatorId для кнопки «Присоединиться»
+    incomingCall?: { roomId: string; initiatorId: string } | null;
 };
