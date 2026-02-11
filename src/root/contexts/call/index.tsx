@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState, useEffect, useCallback } from 'react';
+import { createContext, ReactNode, useState, useEffect, useCallback, useRef } from 'react';
 import { useAppSelector } from '../../store';
 import * as mediasoupClient from 'mediasoup-client';
 import { AppData, Transport } from 'mediasoup-client/types';
@@ -18,6 +18,10 @@ export type CallContextType = {
     setSendTransport: any;
     recvTransport: any;
     recvSetTransport: any;
+    device: any;
+    remoteStreams: Map<string, MediaStream>;
+    setRemoteStreams: (streams: Map<string, MediaStream>) => void;
+    consumeProducer: (producerId: string, kind: string) => Promise<void>;
 };
 
 export const CallContext = createContext<CallContextType>({
@@ -35,6 +39,10 @@ export const CallContext = createContext<CallContextType>({
     setSendTransport: null,
     recvTransport: null,
     recvSetTransport: null,
+    device: null,
+    remoteStreams: new Map(),
+    setRemoteStreams: () => {},
+    consumeProducer: async () => {},
 });
 
 const logError = (context: string, error: unknown): void => {
@@ -48,8 +56,6 @@ async function fetchJson(url: string, options?: RequestInit) {
     return response.json();
 }
 
-const partnerId = 'ed30a4145901400c49cf343655077d78596fb5ef5dd5092ea4f982600bda2fe6';
-
 export const CallProvider = ({ children }: { children: ReactNode }) => {
     const [isCameraOn, setIsCameraOn] = useState(false);
     const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
@@ -59,87 +65,49 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     const [sendTransport, setSendTransport] = useState<Transport<AppData> | null>(null);
     const [recvTransport, recvSetTransport] = useState<Transport<AppData> | null>(null);
     const [device, setDevice] = useState<mediasoupClient.Device | null>(null);
+    const [remoteStreams, setRemoteStreams] = useState<Map<string, MediaStream>>(new Map());
     const userId = useAppSelector((state) => state.user.id);
-    const [isDevice, setIsDevice] = useState<boolean>(false);
-    const [isSendTransport, setIsSendTransport] = useState(false);
-    const [isRecvTransport, setIsRecvTransport] = useState(false);
+    const transportsCreatingRef = useRef(false);
 
     const initDevice = useCallback(async () => {
-        if (!routerRtpCapabilities) return;
+        if (!routerRtpCapabilities || device) return;
 
         try {
             const newDevice = new mediasoupClient.Device();
             await newDevice.load({ routerRtpCapabilities });
             setDevice(newDevice);
-            setIsDevice(true);
         } catch (error) {
             logError('Инициализация устройства', error);
         }
-    }, [routerRtpCapabilities]);
+    }, [routerRtpCapabilities, device]);
 
-    const createSendTransport = useCallback(
-        async (userId: string) => {
-            if (!roomId || !device) return null;
+    const createSendTransport = useCallback(async () => {
+        if (!roomId || !device || sendTransport || !userId) return;
 
-            try {
-                const transportConfig = await fetchJson(`https://passimx.ru/api/media/transport/${roomId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ peerId: userId, direction: 'send' }),
-                });
+        try {
+            const transportConfig = await fetchJson(`https://passimx.ru/api/media/transport/${roomId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ peerId: userId, direction: 'send' }),
+            });
 
-                if (!transportConfig.success) return null;
+            if (!transportConfig.success) return;
 
-                const transport = device.createSendTransport(transportConfig.data);
-                setSendTransport(transport);
-                setIsSendTransport(true);
-                console.log('producer создан');
-            } catch (error) {
-                logError('Создание send транспорта', error);
-                return null;
-            }
-        },
-        [roomId, userId, isDevice, isSendTransport],
-    );
-
-    const createRecvTransport = useCallback(
-        async (userId: string) => {
-            if (!device) return;
-
-            try {
-                const transportConfig = await fetchJson(`https://passimx.ru/api/media/transport/${roomId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ peerId: userId, direction: 'recv' }),
-                });
-
-                if (!transportConfig.success) return null;
-
-                const transport = device.createRecvTransport(transportConfig.data);
-                recvSetTransport(transport);
-                setIsRecvTransport(true);
-            } catch (e: unknown) {
-                logError('Создание recv транспорта', e);
-                return null;
-            }
-        },
-        [roomId, isDevice, isRecvTransport],
-    );
-
-    const setupSendTransport = useCallback(
-        (transport: Transport<AppData>, userId: string) => {
+            const transport = device.createSendTransport(transportConfig.data);
+            
+            // Setup transport handlers. Connect вызывается библиотекой лениво — при первом produce().
             transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
                 try {
-                    await fetchJson(`https://passimx.ru/api/media/transport/${transport.id}/connect`, {
+                    const result = await fetchJson(`https://passimx.ru/api/media/transport/${transport.id}/connect`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ dtlsParameters }),
                     });
+                    if (!result.success) throw new Error(String(result.data));
                     callback();
                 } catch (err) {
-                    const error = err as Error;
-                    logError('Соединение транспорта', error);
-                    errback(error);
+                    logError('Send transport connect', err);
+                    errback(err as Error);
                 }
             });
 
@@ -156,100 +124,126 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
                             peerId: userId,
                         }),
                     });
-                    callback(result);
+                    if (!result.success) throw new Error(String(result.data));
+                    const producerId = result.data?.producerId;
+                    if (!producerId) throw new Error('producerId missing');
+                    callback({ id: producerId });
                 } catch (err) {
-                    const error = err as Error;
-                    logError('Создание продюсера', error);
-                    errback(error);
+                    logError('Создание producer', err);
+                    errback(err as Error);
                 }
             });
-        },
-        [userId, roomId, isSendTransport],
-    );
 
-    const setupRecvTransport = useCallback(
-        async (transport: Transport<AppData>, userId: string) => {
-            if (!sendTransport || !transport) return;
+            setSendTransport(transport);
+        } catch (error) {
+            logError('Создание send транспорта', error);
+        }
+    }, [roomId, device, userId, sendTransport]);
+
+    const createRecvTransport = useCallback(async () => {
+        if (!roomId || !device || recvTransport) return;
+
+        try {
+            const transportConfig = await fetchJson(`https://passimx.ru/api/media/transport/${roomId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ peerId: userId, direction: 'recv' }),
+            });
+
+            if (!transportConfig.success) return;
+
+            const transport = device.createRecvTransport(transportConfig.data);
+
+            // Setup transport handlers. Connect вызывается библиотекой лениво — при первом consume().
             transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
                 try {
-                    console.log('consumer connect');
-                    await fetchJson(`https://passimx.ru/api/media/transport/${transport.id}/connect`, {
+                    const result = await fetchJson(`https://passimx.ru/api/media/transport/${transport.id}/connect`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ dtlsParameters }),
                     });
+                    if (!result.success) throw new Error(String(result.data));
                     callback();
                 } catch (err) {
-                    const error = err as Error;
-                    logError('Соединение транспорта', error);
-                    errback(error);
+                    logError('Recv transport connect', err);
+                    errback(err as Error);
                 }
             });
 
-            let producerList: any;
-            try {
-                const { data } = await fetch(`https://passimx.ru/api/media/room/${roomId}/producers`)
-                    .then((response) => response.json())
-                    .then((data) => data)
-                    .catch((e) => console.log(`error getting producers: ${e.message}`));
+            recvSetTransport(transport);
+        } catch (error) {
+            logError('Создание recv транспорта', error);
+        }
+    }, [roomId, device, userId, recvTransport]);
 
-                producerList = data.producers;
-                console.log('producers', producerList);
-            } catch (e) {
-                const message = e instanceof Error ? e.message : String(e);
-                console.log(`Не удалось получить список продюсеров: ${message}`);
-            }
+    // Функция для создания consumer для конкретного producer
+    const consumeProducer = useCallback(
+        async (producerId: string, _kind: string) => {
+            if (!recvTransport || !device || !roomId) return;
 
             try {
-                for (const producer of producerList) {
-                    await fetchJson('https://passimx.ru/api/media/consumer', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            roomId,
-                            peerId: userId,
-                            transportId: transport.id,
-                            producerId: producer.id,
-                            rtpCapabilities: producer.rtpParameters,
-                        }),
-                    });
-                }
+                const result = await fetchJson('https://passimx.ru/api/media/consumer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        roomId,
+                        peerId: userId,
+                        transportId: recvTransport.id,
+                        producerId,
+                        rtpCapabilities: device.rtpCapabilities,
+                    }),
+                });
 
-                console.log('consumer создан');
-            } catch (err) {
-                const error = err as Error;
-                logError('Соединение recv-транспорта', error);
+                if (!result.success) return;
+
+                const consumerData = result.data;
+
+                // Создаем consumer на клиенте
+                const consumer = await recvTransport.consume({
+                    id: consumerData.id,
+                    producerId: consumerData.producerId,
+                    kind: consumerData.kind,
+                    rtpParameters: consumerData.rtpParameters,
+                });
+
+
+
+                // Добавляем track в remoteStreams
+                const stream = new MediaStream([consumer.track]);
+                setRemoteStreams((prev) => {
+                    const next = new Map(prev);
+                    next.set(producerId, stream);
+                    return next;
+                });
+            } catch (error) {
+                logError(`Создание consumer для ${producerId}`, error);
             }
         },
-        [userId, roomId, isRecvTransport],
+        [recvTransport, device, roomId, userId],
     );
 
+    // Инициализация при изменении routerRtpCapabilities
     useEffect(() => {
-        if (!routerRtpCapabilities || !roomId || !userId) return;
+        if (routerRtpCapabilities && roomId && userId) {
+            initDevice();
+        }
+    }, [routerRtpCapabilities, roomId, userId, initDevice]);
 
-        initDevice().then(async () => {
-            createSendTransport(userId);
-            createRecvTransport(userId);
+    // Создание транспортов один раз после инициализации device
+    useEffect(() => {
+        if (!device || !roomId || !userId || sendTransport || recvTransport) return;
+        if (transportsCreatingRef.current) return;
 
-            createSendTransport(partnerId);
-            createRecvTransport(partnerId);
-            if (sendTransport && recvTransport) {
-                setupSendTransport(sendTransport, userId);
-                setupRecvTransport(recvTransport, userId);
-
-                setupSendTransport(sendTransport, partnerId);
-                setupRecvTransport(recvTransport, partnerId);
+        transportsCreatingRef.current = true;
+        (async () => {
+            try {
+                await createSendTransport();
+                await createRecvTransport();
+            } finally {
+                transportsCreatingRef.current = false;
             }
-        });
-    }, [
-        routerRtpCapabilities,
-        roomId,
-        initDevice,
-        createSendTransport,
-        createRecvTransport,
-        setupSendTransport,
-        setupRecvTransport,
-    ]);
+        })();
+    }, [device, roomId, userId]);
 
     return (
         <CallContext.Provider
@@ -268,6 +262,10 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
                 setSendTransport,
                 recvTransport,
                 recvSetTransport,
+                device,
+                remoteStreams,
+                setRemoteStreams,
+                consumeProducer,
             }}
         >
             {children}
