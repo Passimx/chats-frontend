@@ -10,23 +10,40 @@
         overflow-y: auto;
         overflow-x: hidden;
 
-        .tab{
-            border-radius: 8px;
-            background-color: #0C3870;
-            margin-bottom: 16px;
-            padding: 8px;
+        .item{
+            padding: 12px;
+            background-color: #08365e;
+            border-bottom: 1px solid #0c518d;
             display: grid;
-            gap: 8px;
+            gap: 6px;
+            grid-template-columns: auto 1fr auto;
 
-            .item{
-                .header{
-                    padding-bottom: 4px;
-                }
-                .value{
-                    opacity: 0.7;
-                    padding-left: 6px;
-                }
+            .item_logo{
+               font-size: 16px;
+               grid-row: 1 / 2;
             }
+
+            .item_date{
+               grid-column: 2 / 3;
+            }
+
+            .item_opacity{
+                opacity: 0.7;
+            }
+
+        }
+        
+        .item:first-child{
+            border-radius: 8px 8px 0 0;
+        }
+
+        .item:last-child{
+            border-radius: 0 0 8px 8px;
+            border: none;
+        }
+
+        .item:only-child {
+            border-radius: 8px;
         }
     }
     .button_background{
