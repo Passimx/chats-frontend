@@ -33,7 +33,6 @@
     "react-router-dom": "^6.26.2",
     "ton-crypto": "^3.2.0",
     "tonweb": "^0.0.66",
-    "uuid": "^13.0.0",
     "vite-plugin-node-polyfills": "^0.24.0"
   },
   "devDependencies": {
