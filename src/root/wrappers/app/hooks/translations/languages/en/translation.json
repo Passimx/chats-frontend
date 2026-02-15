@@ -92,6 +92,8 @@
   "send_as_files": "Send as files",
   "wrong_file": "Invalid file format",
   "incorrect_password": "Incorrect password",
+  "devices": "Devices",
+  "online": "Online",
 
   "all": "all",
   "always": "always",

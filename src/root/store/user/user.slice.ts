@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { upsertAccountIndexDb, deleteAccountIndexDb } from './index-db/hooks.ts';
 import { UserIndexDbType } from '../../types/users/user-index-db.type.ts';
 import { Envs } from '../../../common/config/envs/envs.ts';
+import { deleteAllChatsIndexDb } from '../chats/index-db/hooks.ts';
 
 const initialState: Partial<UserIndexDbType> = {};
 
@@ -20,6 +21,7 @@ const UserSlice = createSlice({
         },
         logout(state) {
             state.key && deleteAccountIndexDb(state.key);
+            deleteAllChatsIndexDb();
             Envs.RSAKeys = undefined;
             localStorage.removeItem('keys');
             return {};
