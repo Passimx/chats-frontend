@@ -1,6 +1,6 @@
 import useGetChat from './hooks/use-get-chat.hook.ts';
 import styles from './index.module.css';
-import { FC, memo, useContext } from 'react';
+import { FC, memo, useContext, useEffect } from 'react';
 import { IoArrowBackCircleOutline, IoCopyOutline } from 'react-icons/io5';
 import Message from '../../components/message';
 import { useTranslation } from 'react-i18next';
@@ -34,6 +34,7 @@ import CallModal from '../../components/call-modal/index.tsx';
 import { CallContext } from '../../root/contexts/call';
 import { MessageTypeEnum } from '../../root/types/chat/message-type.enum.ts';
 import { leaveChat } from '../../root/api/chats';
+import { createRoom } from '../../root/api/calls';
 
 /** Main chat component */
 const Chat: FC = memo(() => {
@@ -51,8 +52,14 @@ const Chat: FC = memo(() => {
     const title = useGetChatTitle(chatOnPage);
 
     const ownUserName = useAppSelector((state) => state.user.userName);
+    const userId = useAppSelector((state) => state.user.id);
+    const { setRoomId, setRouterRtpCapabilities } = useContext(CallContext);
 
-    const { isCallActive, setIsCallActive } = useContext(CallContext);
+    useEffect(() => {
+        if (chatOnPage?.id) {
+            setRoomId(chatOnPage.id);
+        }
+    }, [chatOnPage?.id, setRoomId]);
 
     if (!chatOnPage) return <></>;
 
@@ -124,10 +131,25 @@ const Chat: FC = memo(() => {
                         </div>
                         <div
                             className={styles.chat_menu_item}
-                            onClick={() => {
-                                if (isCallActive || !setIsCallActive) return;
-                                setStateApp({ page: <CallModal /> });
-                                setIsCallActive(true);
+                            onClick={async () => {
+                                if (!chatOnPage?.id || !userId) {
+                                    console.error('Missing chatId or userId');
+                                    return;
+                                }
+
+                                try {
+                                    const result = await createRoom(chatOnPage.id, userId);
+
+                                    if (!result.success) {
+                                        console.error('Failed to create room:', result.data);
+                                        return;
+                                    }
+
+                                    setRouterRtpCapabilities(result.data.routerRtpCapabilities);
+                                    setStateApp({ page: <CallModal /> });
+                                } catch (error) {
+                                    console.error('Error creating room:', error);
+                                }
                             }}
                         >
                             <PiPhoneCallFill className={styles.chat_menu_item_icon} />
