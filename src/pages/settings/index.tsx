@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { GrLanguage } from 'react-icons/gr';
 import { memo, useCallback, useMemo } from 'react';
 import { useAppAction, useAppSelector } from '../../root/store';
-import { IoChatboxEllipsesOutline, IoRocketOutline, IoSettingsOutline, IoWalletOutline } from 'react-icons/io5';
+import { IoChatboxEllipsesOutline, IoRocketOutline, IoSettingsOutline } from 'react-icons/io5';
 import { TbBackground, TbDatabase, TbLogs } from 'react-icons/tb';
 import { ChangeLanguage } from '../../components/change-language';
 import { MenuTitle } from '../../components/menu-title';
@@ -17,9 +17,9 @@ import { Memory } from '../../components/memory';
 import { LuStar } from 'react-icons/lu';
 import { UserInf } from '../../components/user-inf';
 import { Appearance } from '../../components/appearance';
-import { MenuPadding } from '../../components/menu/compenents/menu-padding/index.tsx';
+import { MenuPadding } from '../../components/menu/compenents/menu-padding';
 import { PiDevicesBold } from 'react-icons/pi';
-import { Devices } from '../../components/devices/index.tsx';
+import { Devices } from '../../components/devices';
 
 export const Settings = memo(() => {
     const { t } = useTranslation();
@@ -114,10 +114,10 @@ export const Settings = memo(() => {
                             </div>
                         </div>
                     )}
-                    <div className={styles.item}>
-                        <IoWalletOutline className={styles.item_logo} />
-                        <div className="text_translate">{t('wallet')}</div>
-                    </div>
+                    {/*<div className={styles.item}>*/}
+                    {/*    <IoWalletOutline className={styles.item_logo} />*/}
+                    {/*    <div className="text_translate">{t('wallet')}</div>*/}
+                    {/*</div>*/}
                     <div className={styles.item} onClick={() => selectMenu(<Devices />)}>
                         <PiDevicesBold className={styles.item_logo} />
                         <div className="text_translate">{t('devices')}</div>
