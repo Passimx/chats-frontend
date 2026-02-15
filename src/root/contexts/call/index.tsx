@@ -94,7 +94,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
             if (!transportConfig.success) return;
 
             const transport = device.createSendTransport(transportConfig.data);
-            
+
             // Setup transport handlers. Connect вызывается библиотекой лениво — при первом produce().
             transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
                 try {
@@ -178,7 +178,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
     // Функция для создания consumer для конкретного producer
     const consumeProducer = useCallback(
-        async (producerId: string, _kind: string) => {
+        async (producerId: string) => {
             if (!recvTransport || !device || !roomId) return;
 
             try {
@@ -205,8 +205,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
                     kind: consumerData.kind,
                     rtpParameters: consumerData.rtpParameters,
                 });
-
-
 
                 // Добавляем track в remoteStreams
                 const stream = new MediaStream([consumer.track]);
