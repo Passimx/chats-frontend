@@ -11,6 +11,7 @@ type EnvsType = {
     chatsServiceUrl: string;
     notificationsServiceUrl: string;
     filesServiceUrl: string;
+    mediaCallsServiceUrl: string;
     intervalPing: number;
     waitPong: number;
     environment: EnvironmentEnum;
@@ -34,6 +35,8 @@ export const Envs: EnvsType = {
     notificationsServiceUrl:
         import.meta.env.VITE_NOTIFICATIONS_SERVICE_URL ?? `wss://${import.meta.env.VITE_API_URL}/api/notifications`,
     filesServiceUrl: import.meta.env.VITE_FILES_SERVICE_URL ?? `https://${import.meta.env.VITE_API_URL}/api/files`,
+    mediaCallsServiceUrl:
+        import.meta.env.VITE_MEDIA_CALLS_SERVICE_URL ?? `https://${import.meta.env.VITE_API_URL}/api/media`,
     intervalPing: 4 * 1000,
     waitPong: 4 * 1000,
     appSalt: 'sha256',

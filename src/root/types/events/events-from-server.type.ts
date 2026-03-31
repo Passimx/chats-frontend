@@ -49,6 +49,36 @@ type Logout = {
     readonly data?: unknown;
 };
 
+type VideoCallStarted = {
+    readonly event: EventsEnum.VIDEO_CALL_STARTED;
+    readonly data: IData<{
+        roomId: string;
+        initiatorId?: string;
+    }>;
+};
+
+type VideoCallJoined = {
+    readonly event: EventsEnum.VIDEO_CALL_JOINED;
+    readonly data: IData<{
+        roomId: string;
+    }>;
+};
+
+type VideoCallLeft = {
+    readonly event: EventsEnum.VIDEO_CALL_LEFT;
+    readonly data: IData<{
+        roomId: string;
+        peerId?: string;
+    }>;
+};
+
+type VideoCallEnded = {
+    readonly event: EventsEnum.VIDEO_CALL_ENDED;
+    readonly data: IData<{
+        roomId: string;
+    }>;
+};
+
 export type EventsFromServer =
     | GetSocketId
     | CreateMessage
@@ -58,4 +88,8 @@ export type EventsFromServer =
     | JoinChat
     | UpdateChat
     | Logout
-    | RemoveChat;
+    | RemoveChat
+    | VideoCallStarted
+    | VideoCallJoined
+    | VideoCallLeft
+    | VideoCallEnded

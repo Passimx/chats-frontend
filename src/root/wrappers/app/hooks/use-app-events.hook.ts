@@ -78,6 +78,44 @@ export const useAppEvents = () => {
                 await deleteAllCache();
                 setStateApp({ activeTab: TabEnum.CHATS, page: undefined });
                 break;
+
+            // Обработка событий видеозвонков
+            case EventsEnum.VIDEO_CALL_STARTED: {
+                if (!data.success) break;
+                const payload = data.data as { roomId?: string; initiatorId?: string } | undefined;
+                const roomId = payload?.roomId;
+                if (roomId) {
+                    setStateApp({ incomingCall: { roomId, initiatorId: payload?.initiatorId ?? '' } });
+                }
+                playNotificationSound();
+                break;
+            }
+            case EventsEnum.VIDEO_CALL_JOINED: {
+                if (!data.success) break;
+                console.log('[MEDIA] VIDEO_CALL_JOINED:', data.data);
+                
+                // Новый участник присоединился - создаем consumers для его producers
+                // Это событие обрабатывается через CallContext.consumeProducer
+                // которое вызывается из компонента где есть доступ к CallContext
+                window.dispatchEvent(new CustomEvent('call:peer-joined', { detail: data.data }));
+                break;
+            }
+            case EventsEnum.VIDEO_CALL_LEFT: {
+                if (!data.success) break;
+                console.log('[MEDIA] VIDEO_CALL_LEFT:', data.data);
+                
+                // Участник вышел - удаляем его stream
+                window.dispatchEvent(new CustomEvent('call:peer-left', { detail: data.data }));
+                break;
+            }
+            case EventsEnum.VIDEO_CALL_ENDED: {
+                if (!data.success) break;
+                console.log('[MEDIA] VIDEO_CALL_ENDED:', data.data);
+                
+                // Звонок завершен
+                window.dispatchEvent(new CustomEvent('call:ended', { detail: data.data }));
+                break;
+            }
         }
     }, []);
 };
